@@ -18,6 +18,7 @@ import {
   ContentsArea,
   ContentsAreaHandle,
   ContentsClass,
+  Grid,
   H6,
   Icon,
   Select,
@@ -223,50 +224,62 @@ export const AppConfig: React.FC = () => {
     {
       label: 'Executable Config',
       content: (
-        <Stack spacing={1.5}>
-          <Stack direction="row" minWidth={210} pb={1}>
-            <Icon strokeWidth={0} size={34} render={PlayIcon} pr={1} />
-            <H6 className={ContentsClass.ItemTitle}>Executable Config</H6>
-          </Stack>
-          <Select
-            label="Select the main executable"
-            value={mainExecutablePath}
-            options={appExecutables.map((item) => ({
-              value: item.path,
-              label: item.name
-            }))}
-            onChange={async (event) => {
-              const path = event.target.value as string;
-              setMainExecutablePath(event.target.value as string);
-              setLoading(true);
-              await wineApp?.updateMainExecutablePath?.(path);
-              setLoading(false);
-            }}
-            disabled={!Boolean(mainExecutablePath)}
-          />
-          <TextField
-            label="Exe flags"
-            value={mainExecutableFlags}
-            onChange={(event) => {
-              const flags = event.currentTarget.value;
-              setMainExecutableFlags(flags);
-            }}
-            onBlur={async () => {
-              setLoading(true);
-              await wineApp?.updateMainExecutableFlags?.(mainExecutableFlags);
-              setLoading(false);
-            }}
-          />
-          <ArtWorkInput
-            refreshImage={signal}
-            onInput={async (file) => {
-              wineApp?.setupAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
-              refresh();
-            }}
-            appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
-            realAppName={realAppName}
-          />
-        </Stack>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Stack direction="row" minWidth={210} pb={1}>
+              <Icon strokeWidth={0} size={34} render={PlayIcon} pr={1} />
+              <H6 className={ContentsClass.ItemTitle}>Executable Config</H6>
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item xs={9.5}>
+                <Stack spacing={1.5}>
+                  <Select
+                    label="Select the main executable"
+                    value={mainExecutablePath}
+                    options={appExecutables.map((item) => ({
+                      value: item.path,
+                      label: item.name
+                    }))}
+                    onChange={async (event) => {
+                      const path = event.target.value as string;
+                      setMainExecutablePath(event.target.value as string);
+                      setLoading(true);
+                      await wineApp?.updateMainExecutablePath?.(path);
+                      setLoading(false);
+                    }}
+                    disabled={!Boolean(mainExecutablePath)}
+                  />
+                  <TextField
+                    label="Exe flags"
+                    value={mainExecutableFlags}
+                    onChange={(event) => {
+                      const flags = event.currentTarget.value;
+                      setMainExecutableFlags(flags);
+                    }}
+                    onBlur={async () => {
+                      setLoading(true);
+                      await wineApp?.updateMainExecutableFlags?.(mainExecutableFlags);
+                      setLoading(false);
+                    }}
+                  />
+                </Stack>
+              </Grid>
+              <Grid item xs={2.5} justifyItems="center" justifyContent="center">
+                <ArtWorkInput
+                  refreshImage={signal}
+                  onInput={async (file) => {
+                    wineApp?.setupAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
+                    refresh();
+                  }}
+                  appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
+                  realAppName={realAppName}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       )
     },
     {

@@ -6,14 +6,8 @@ import { FileFilter } from '@constants/enums';
 import { getAppArtwork as baseGetAppArtwork } from '@utils/getAppArtwork';
 import defaultArtwork from '@assets/imgs/header.jpg';
 
-export type FileInputProps = Omit<
-  TextFieldProps,
-  'type' | 'label' | 'accept' | 'onInput' | 'value'
-> & {
-  noSelectedFileLabel?: string;
-  selectedFileLabel?: string;
+export type ArtWorkInputProps = Pick<TextFieldProps, 'control' | 'name' | 'fieldOptions'> & {
   dialogText?: string;
-  filters?: Array<{ name: string; extensions: string[] }>;
   onInput?: (file: File | undefined) => void;
   value?: string;
   appPath: string | undefined;
@@ -21,16 +15,13 @@ export type FileInputProps = Omit<
   refreshImage?: number;
 };
 
-export const ArtWorkInput: React.FC<FileInputProps> = ({
+export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
   onInput: onInputProp,
   control,
   fieldOptions,
   name,
   value = '',
-  noSelectedFileLabel,
-  selectedFileLabel,
   dialogText = 'Select file',
-  filters = FileFilter.Images,
   appPath,
   realAppName = '',
   refreshImage,
@@ -133,7 +124,7 @@ export const ArtWorkInput: React.FC<FileInputProps> = ({
             }}
             value={fileName}
             onClick={async () => {
-              const { file, fileName } = await openFile(dialogText, { filters });
+              const { file, fileName } = await openFile(dialogText, { filters: FileFilter.Images });
               setFileName(fileName);
               onInput({ target: { value: file } });
               onInputProp?.(file);
