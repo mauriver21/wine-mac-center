@@ -68,8 +68,26 @@ export const ArtWorkInput: React.FC<FileInputProps> = ({
         border={1}
         position="relative"
         onClick={onClick}
-        sx={{ cursor: 'pointer' }}
+        sx={{
+          cursor: 'pointer',
+          '& > div': { opacity: 0 },
+          '&:hover > div': { opacity: 0.8, background: 'black' }
+        }}
       >
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          width="100%"
+          height="100%"
+        >
+          <Body1 textAlign="center" p={1} fontWeight={500} fontSize={12}>
+            Change ArtWork
+          </Body1>
+        </Box>
         <Image
           width="100%"
           height="100%"
