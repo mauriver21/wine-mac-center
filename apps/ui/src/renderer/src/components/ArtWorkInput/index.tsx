@@ -61,11 +61,14 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
         onClick={onClick}
         sx={{
           cursor: 'pointer',
-          '& > div': { opacity: 0 },
-          '&:hover > div': { opacity: 0.8, background: 'black' }
+          '& > .change-legend': { opacity: 0 },
+          '& > .no-artwork-legend': { opacity: 1 },
+          '&:hover > .change-legend': { opacity: 0.8, background: 'black' },
+          '&:hover > .no-artwork-legend': { opacity: 0 }
         }}
       >
         <Box
+          className="change-legend"
           position="absolute"
           top={0}
           left={0}
@@ -90,6 +93,7 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
         />
         {noArtWork ? (
           <Box
+            className="no-artwork-legend"
             position="absolute"
             top={0}
             left={0}
