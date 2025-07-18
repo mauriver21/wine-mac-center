@@ -38,6 +38,7 @@ import { ExitCode } from '@constants/enums';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { useRefresh } from '@utils/useRefresh';
+import { IconInput } from '@components/IconInput';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -264,13 +265,21 @@ export const AppConfig: React.FC = () => {
                       setLoading(false);
                     }}
                   />
+                  <IconInput
+                    refreshImage={signal}
+                    appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
+                    onInput={async (file) => {
+                      file && wineApp?.setupAppIcon({ appIconFile: await file?.arrayBuffer() });
+                      refresh();
+                    }}
+                  />
                 </Stack>
               </Grid>
               <Grid item xs={2.5} justifyItems="center" justifyContent="center">
                 <ArtWorkInput
                   refreshImage={signal}
                   onInput={async (file) => {
-                    wineApp?.setupAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
+                    file && wineApp?.setupAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
                     refresh();
                   }}
                   appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}

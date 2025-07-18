@@ -451,6 +451,7 @@ export const createWineApp = async (appName: string) => {
     setSetupExe,
     bundleApp,
     setupAppArtwork,
+    setupAppIcon,
     listAppExecutables,
     getAppConfig,
     updateMainExecutablePath,
