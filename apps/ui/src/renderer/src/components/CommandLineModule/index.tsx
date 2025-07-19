@@ -1,22 +1,24 @@
 import React from 'react';
 import { BaseModule } from '@components/BaseModule';
-import { RectangleStackIcon } from '@heroicons/react/24/solid';
+import { CommandLineIcon } from '@heroicons/react/24/solid';
 import { Body1 } from 'reactjs-ui-core';
 import { useAppConfigContext } from '@hooks/useAppConfigContext';
 
-export const TaskManagerModule: React.FC = () => {
+export const CommandLineModule: React.FC = () => {
   const { wineApp, setLoading } = useAppConfigContext() || {};
 
   return (
     <BaseModule
-      label="Task Manager"
-      icon={RectangleStackIcon}
+      label="Command Line"
+      icon={CommandLineIcon}
       description={
-        <Body1>Opens Wine&apos;s Task Manager to monitor and manage running Wine processes.</Body1>
+        <Body1>
+          Starts a Windows-like command prompt for running commands and scripts in Wine.
+        </Body1>
       }
       method={() => {
         setLoading?.(true);
-        wineApp?.taskmgr({
+        wineApp?.cmd({
           onExit: () => {
             setLoading?.(false);
           }

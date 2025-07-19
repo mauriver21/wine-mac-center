@@ -1,22 +1,11 @@
-import { RegeditIcon } from '@assets/icons';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Cog6ToothIcon,
-  CommandLineIcon,
-  RectangleStackIcon,
-  WrenchScrewdriverIcon
-} from '@heroicons/react/24/solid';
-import { useEffect, useRef, useState } from 'react';
-import {
-  Body1,
   Box,
   Button,
-  Card,
-  CardContent,
   ContentsArea,
   ContentsAreaHandle,
   ContentsClass,
   H6,
-  Icon,
   Stack,
   TableOfContents
 } from 'reactjs-ui-core';
@@ -29,6 +18,11 @@ import { ExecutableConfigModule } from '@components/ExecutableConfigModule';
 import { AppConfigContext } from '@contexts/AppConfigContext';
 import { ChangeEngineModule } from '@components/ChangeEngineModule';
 import { WinetricksModule } from '@components/WinetricksModule';
+import { WineConfigModule } from '@components/WineConfigModule';
+import { RegistryEditorModule } from '@components/RegistryEditorModule';
+import { TaskManagerModule } from '@components/TaskManagerModule';
+import { CommandLineModule } from '@components/CommandLineModule';
+import { ControlPanelModule } from '@components/ControlPanelModule';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -37,115 +31,29 @@ export const AppConfig: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [wineApp, setWineApp] = useState<WineApp>();
   const { realAppName } = useParams();
+  const { signal, refresh } = useRefresh();
   const navigate = useNavigate();
 
-  const { signal, refresh } = useRefresh();
+  const modules = useMemo(
+    () => [
+      <WineConfigModule />,
+      <RegistryEditorModule />,
+      <TaskManagerModule />,
+      <CommandLineModule />,
+      <ControlPanelModule />,
+      <WinetricksModule />,
+      <ExecutableConfigModule realAppName={realAppName} />,
+      <ChangeEngineModule />
+    ],
+    []
+  );
 
-  const options = [
-    {
-      label: 'Wine Config',
-      icon: Cog6ToothIcon,
-      description: (
-        <Body1>
-          Opens Wine&apos;s configuration tool to set Windows version, drives, libraries, and audio
-          settings.
-        </Body1>
-      ),
-      method: () => {
-        setLoading(true);
-        wineApp?.winecfg({
-          onExit: () => {
-            setLoading(false);
-          }
-        });
-      }
-    },
-    {
-      label: 'Registry Editor',
-      icon: RegeditIcon,
-      description: (
-        <Body1>
-          Launches Wine&apos;s Registry Editor to view and modify the Windows-like registry.
-        </Body1>
-      ),
-      method: () => {
-        setLoading(true);
-        wineApp?.regedit({
-          onExit: () => {
-            setLoading(false);
-          }
-        });
-      }
-    },
-    {
-      label: 'Task Manager',
-      icon: RectangleStackIcon,
-      description: (
-        <Body1>Opens Wine&apos;s Task Manager to monitor and manage running Wine processes.</Body1>
-      ),
-      method: () => {
-        setLoading(true);
-        wineApp?.taskmgr({
-          onExit: () => {
-            setLoading(false);
-          }
-        });
-      }
-    },
-    {
-      label: 'Command Line',
-      icon: CommandLineIcon,
-      description: (
-        <Body1>
-          Starts a Windows-like command prompt for running commands and scripts in Wine.
-        </Body1>
-      ),
-      method: () => {
-        setLoading(true);
-        wineApp?.cmd({
-          onExit: () => {
-            setLoading(false);
-          }
-        });
-      }
-    },
-    {
-      label: 'Control Panel',
-      icon: WrenchScrewdriverIcon,
-      description: (
-        <Body1>
-          Opens Wine&apos;s Control Panel to adjust settings like fonts and installed programs.
-        </Body1>
-      ),
-      method: () => {
-        setLoading(true);
-        wineApp?.control({
-          onExit: () => {
-            setLoading(false);
-          }
-        });
-      }
-    },
-    {
-      label: 'Winetricks Selector',
-      content: <WinetricksModule />
-    },
-    {
-      label: 'Executable Config',
-      content: <ExecutableConfigModule realAppName={realAppName} />
-    },
-    {
-      label: 'Change Engine',
-      content: <ChangeEngineModule />
-    }
-  ];
+  const initWineApp = async () => {
+    realAppName && setWineApp(await createWineApp(realAppName));
+  };
 
   useEffect(() => {
-    (async () => {
-      if (realAppName) {
-        setWineApp(await createWineApp(realAppName));
-      }
-    })();
+    initWineApp();
   }, [realAppName]);
 
   return (
@@ -204,7 +112,7 @@ export const AppConfig: React.FC = () => {
                 pb={2}
                 alignItems="center"
               >
-                {options.map((item, index) => (
+                {modules.map((item, index) => (
                   <Box
                     width="100%"
                     maxWidth={800}
@@ -213,36 +121,7 @@ export const AppConfig: React.FC = () => {
                     sx={ITEM_STYLE}
                     className={ContentsClass.Item}
                   >
-                    <Card>
-                      <CardContent>
-                        {item.content ? (
-                          item.content
-                        ) : (
-                          <Stack direction="row" spacing={1} justifyContent="space-between">
-                            <Stack direction="row" spacing={1}>
-                              <Stack direction="row" minWidth={210} pb={1}>
-                                <Icon strokeWidth={0} size={34} render={item.icon} pr={1} />
-                                <H6 className={ContentsClass.ItemTitle}>{item.label}</H6>
-                              </Stack>
-                              <Box pr={2}>{item.description}</Box>
-                            </Stack>
-                            <Button
-                              title={`Run ${item.label}`}
-                              disabled={wineApp === undefined || loading}
-                              color="secondary"
-                              sx={{
-                                width: 90,
-                                height: 60,
-                                border: (theme) => `1px solid ${theme.palette.primary.main}`
-                              }}
-                              onClick={() => item.method?.()}
-                            >
-                              <Body1>Run</Body1>
-                            </Button>
-                          </Stack>
-                        )}
-                      </CardContent>
-                    </Card>
+                    {item}
                   </Box>
                 ))}
               </Stack>

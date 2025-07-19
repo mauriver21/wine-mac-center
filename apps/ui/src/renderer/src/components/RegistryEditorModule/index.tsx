@@ -9,7 +9,7 @@ export const RegistryEditorModule: React.FC = () => {
 
   return (
     <BaseModule
-      label="Wine Config"
+      label="Registry Editor"
       icon={RegeditIcon}
       description={
         <Body1>

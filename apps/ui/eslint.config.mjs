@@ -39,7 +39,8 @@ export default tseslint.config(
       'no-async-promise-executor': 'off',
       'no-useless-catch': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
-      'no-extra-boolean-cast': 'off'
+      'no-extra-boolean-cast': 'off',
+      'react/jsx-key': 'off'
     }
   }
 );
