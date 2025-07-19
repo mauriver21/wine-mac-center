@@ -3,7 +3,6 @@ import {
   Cog6ToothIcon,
   CommandLineIcon,
   RectangleStackIcon,
-  SparklesIcon,
   WrenchScrewdriverIcon
 } from '@heroicons/react/24/solid';
 import { useEffect, useRef, useState } from 'react';
@@ -25,13 +24,11 @@ import { WineApp } from '@interfaces/WineApp';
 import { useNavigate, useParams } from 'react-router-dom';
 import { createWineApp } from '@utils/createWineApp';
 import { alpha } from '@mui/material';
-import { WinetricksSelector } from '@components/WinetricksSelector';
-import { FormSchema, useSchema } from './useSchema';
-import { useForm } from 'reactjs-ui-form-fields';
 import { useRefresh } from '@utils/useRefresh';
 import { ExecutableConfigModule } from '@components/ExecutableConfigModule';
 import { AppConfigContext } from '@contexts/AppConfigContext';
 import { ChangeEngineModule } from '@components/ChangeEngineModule';
+import { WinetricksModule } from '@components/WinetricksModule';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -41,8 +38,6 @@ export const AppConfig: React.FC = () => {
   const [wineApp, setWineApp] = useState<WineApp>();
   const { realAppName } = useParams();
   const navigate = useNavigate();
-  const schema = useSchema();
-  const form = useForm(schema);
 
   const { signal, refresh } = useRefresh();
 
@@ -133,42 +128,7 @@ export const AppConfig: React.FC = () => {
     },
     {
       label: 'Winetricks Selector',
-      content: (
-        <Stack spacing={1}>
-          <Stack direction="row" minWidth={210} pb={1}>
-            <Icon strokeWidth={0} size={34} render={SparklesIcon} pr={1} />
-            <H6 className={ContentsClass.ItemTitle}>Winetricks</H6>
-          </Stack>
-          <WinetricksSelector disabled={loading} name="winetricksVerbs" control={form.control} />
-          <Stack width="100%" pt={1} alignItems="flex-end">
-            <Button
-              title={`Run Winetricks`}
-              disabled={wineApp === undefined || loading}
-              color="secondary"
-              sx={{
-                width: 90,
-                height: 60,
-                border: (theme) => `1px solid ${theme.palette.primary.main}`
-              }}
-              onClick={async () => {
-                const verbs = (form.getValues() as FormSchema).winetricksVerbs || [];
-                const verbsString = verbs.join(' ');
-                setLoading(true);
-
-                if (verbsString) {
-                  await wineApp?.winetrick(verbsString);
-                  form.reset();
-                  setLoading(false);
-                } else {
-                  setLoading(false);
-                }
-              }}
-            >
-              <Body1>Run</Body1>
-            </Button>
-          </Stack>
-        </Stack>
-      )
+      content: <WinetricksModule />
     },
     {
       label: 'Executable Config',
