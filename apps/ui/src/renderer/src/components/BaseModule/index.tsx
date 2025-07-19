@@ -1,4 +1,5 @@
 import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import React from 'react';
 import {
   Box,
   ContentsClass,
@@ -8,56 +9,45 @@ import {
   Icon,
   H6,
   Button,
-  Body1,
-  BoxProps
+  Body1
 } from 'reactjs-ui-core';
 
-export interface BaseModuleProps extends BoxProps {
+export interface BaseModuleProps {
   icon: React.FC;
   label: string;
-  description: string;
+  description: React.ReactNode;
   method: () => void;
 }
 
-const ITEM_STYLE = { px: '20px !important' };
-
-export const BaseModule: React.FC<BaseModuleProps> = ({
-  icon,
-  label,
-  description,
-  method,
-  ...rest
-}) => {
+export const BaseModule: React.FC<BaseModuleProps> = ({ icon, label, description, method }) => {
   const { wineApp, loading } = useAppConfigContext() || {};
 
   return (
-    <Box width="100%" pt={2} sx={ITEM_STYLE} {...rest}>
-      <Card>
-        <CardContent>
-          <Stack direction="row" spacing={1} justifyContent="space-between">
-            <Stack direction="row" spacing={1}>
-              <Stack direction="row" minWidth={210} pb={1}>
-                <Icon strokeWidth={0} size={34} render={icon} pr={1} />
-                <H6 className={ContentsClass.ItemTitle}>{label}</H6>
-              </Stack>
-              <Box pr={2}>{description}</Box>
+    <Card>
+      <CardContent>
+        <Stack direction="row" spacing={1} justifyContent="space-between">
+          <Stack direction="row" spacing={1}>
+            <Stack direction="row" minWidth={210} pb={1}>
+              <Icon strokeWidth={0} size={34} render={icon} pr={1} />
+              <H6 className={ContentsClass.ItemTitle}>{label}</H6>
             </Stack>
-            <Button
-              title={`Run ${label}`}
-              disabled={wineApp === undefined || loading}
-              color="secondary"
-              sx={{
-                width: 90,
-                height: 60,
-                border: (theme) => `1px solid ${theme.palette.primary.main}`
-              }}
-              onClick={() => method?.()}
-            >
-              <Body1>Run</Body1>
-            </Button>
+            <Box pr={2}>{description}</Box>
           </Stack>
-        </CardContent>
-      </Card>
-    </Box>
+          <Button
+            title={`Run ${label}`}
+            disabled={wineApp === undefined || loading}
+            color="secondary"
+            sx={{
+              width: 90,
+              height: 60,
+              border: (theme) => `1px solid ${theme.palette.primary.main}`
+            }}
+            onClick={() => method?.()}
+          >
+            <Body1>Run</Body1>
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };
