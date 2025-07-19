@@ -10,9 +10,8 @@ export type IconInputProps = Pick<TextFieldProps, 'control' | 'name' | 'fieldOpt
   dialogText?: string;
   onInput?: (file: File | undefined) => void;
   value?: string;
-  appPath: string | undefined;
   refreshImage?: number;
-};
+} & ({ type: 'app'; appPath: string | undefined } | { type: 'image'; imgSrc: string | undefined });
 
 export const IconInput: React.FC<IconInputProps> = ({
   onInput: onInputProp,
@@ -21,7 +20,6 @@ export const IconInput: React.FC<IconInputProps> = ({
   name,
   value = '',
   dialogText = 'Select file',
-  appPath,
   refreshImage,
   ...rest
 }) => {
@@ -30,8 +28,30 @@ export const IconInput: React.FC<IconInputProps> = ({
   const [artWorkSrc, setIconSrc] = useState('');
   const [noIcon, setNoIcon] = useState(false);
 
+  const getSrcPath = () => {
+    switch (rest.type) {
+      case 'app':
+        return rest.appPath || '';
+      case 'image':
+        return rest.imgSrc || '';
+      default:
+        return '';
+    }
+  };
+
+  const getSrc = async () => {
+    switch (rest.type) {
+      case 'app':
+        return baseGetAppIcon(rest.appPath);
+      case 'image':
+        return rest.imgSrc || '';
+      default:
+        return '';
+    }
+  };
+
   const getAppIcon = async () => {
-    const appIcon = await baseGetAppIcon(appPath);
+    const appIcon = await getSrc();
     setNoIcon(!appIcon);
     setIconSrc(appIcon || defaultAppIcon);
   };
@@ -47,7 +67,7 @@ export const IconInput: React.FC<IconInputProps> = ({
   useEffect(() => {
     setIconSrc('');
     getAppIcon();
-  }, [appPath, refreshImage]);
+  }, [getSrcPath(), refreshImage]);
 
   return (
     <>
@@ -112,33 +132,38 @@ export const IconInput: React.FC<IconInputProps> = ({
           <></>
         )}
       </Box>
-      <Field
-        control={control}
-        fieldOptions={fieldOptions}
-        as="input"
-        name={name}
-        render={({ props: { onInput }, helpers }) => (
-          <TextField
-            fullWidth
-            inputRef={inputRef}
-            sx={{ display: 'none' }}
-            {...rest}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
-              readOnly: true
-            }}
-            value={fileName}
-            onClick={async () => {
-              const { file, fileName } = await openFile(dialogText, { filters: FileFilter.Images });
-              setFileName(fileName);
-              onInput({ target: { value: file } });
-              onInputProp?.(file);
-            }}
-            error={helpers.error}
-            errorMessage={helpers.errorMessage}
-          />
-        )}
-      />
+      <Box sx={{ display: 'none' }}>
+        <Field
+          control={control}
+          fieldOptions={fieldOptions}
+          as="input"
+          name={name}
+          render={({ props: { onInput }, helpers }) => (
+            <TextField
+              fullWidth
+              inputRef={inputRef}
+              sx={{ display: 'none' }}
+              {...rest}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{
+                readOnly: true
+              }}
+              value={fileName}
+              onClick={async (event) => {
+                event.preventDefault();
+                const { file, fileName } = await openFile(dialogText, {
+                  filters: FileFilter.Images
+                });
+                setFileName(fileName);
+                onInput({ target: { value: file } });
+                onInputProp?.(file);
+              }}
+              error={helpers.error}
+              errorMessage={helpers.errorMessage}
+            />
+          )}
+        />
+      </Box>
     </>
   );
 };

@@ -132,34 +132,37 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
           <></>
         )}
       </Box>
-      <Field
-        control={control}
-        fieldOptions={fieldOptions}
-        as="input"
-        name={name}
-        render={({ props: { onInput }, helpers }) => (
-          <TextField
-            fullWidth
-            inputRef={inputRef}
-            sx={{ display: 'none' }}
-            {...rest}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
-              readOnly: true
-            }}
-            value={fileName}
-            onClick={async (event) => {
-              event.preventDefault();
-              const { file, fileName } = await openFile(dialogText, { filters: FileFilter.Images });
-              setFileName(fileName);
-              onInput({ target: { value: file } });
-              onInputProp?.(file);
-            }}
-            error={helpers.error}
-            errorMessage={helpers.errorMessage}
-          />
-        )}
-      />
+      <Box sx={{ display: 'none' }}>
+        <Field
+          control={control}
+          fieldOptions={fieldOptions}
+          as="input"
+          name={name}
+          render={({ props: { onInput }, helpers }) => (
+            <TextField
+              fullWidth
+              inputRef={inputRef}
+              {...rest}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{
+                readOnly: true
+              }}
+              value={fileName}
+              onClick={async (event) => {
+                event.preventDefault();
+                const { file, fileName } = await openFile(dialogText, {
+                  filters: FileFilter.Images
+                });
+                setFileName(fileName);
+                onInput({ target: { value: file } });
+                onInputProp?.(file);
+              }}
+              error={helpers.error}
+              errorMessage={helpers.errorMessage}
+            />
+          )}
+        />
+      </Box>
     </>
   );
 };

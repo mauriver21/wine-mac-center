@@ -93,6 +93,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                     }}
                   />
                   <IconInput
+                    type="app"
                     refreshImage={signal}
                     appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
                     onInput={async (file) => {

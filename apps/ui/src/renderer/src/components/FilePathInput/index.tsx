@@ -54,7 +54,11 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
               startAdornment: (
                 <InputAdornment position="start">
                   <Box pr={2}>
-                    <Button type="button">
+                    <Button
+                      sx={{ border: (theme) => `1px solid ${theme.palette.secondary.light}` }}
+                      color="secondary"
+                      type="button"
+                    >
                       {filePath
                         ? selectedFileLabel || 'Change File'
                         : noSelectedFileLabel || 'Select File'}
@@ -72,7 +76,6 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
               onInput({ target: { value: filePath } });
             }}
             error={helpers.error}
-            errorMessage={helpers.errorMessage}
           />
         </>
       )}

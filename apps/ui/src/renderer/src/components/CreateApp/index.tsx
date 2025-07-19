@@ -18,15 +18,15 @@ import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm } from 'reactjs-ui-form-fields';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
-import { FileInput } from '@components/FileInput';
 import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import { FileFilter } from '@constants/enums';
-import { CpuChipIcon, PaintBrushIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
+import { CpuChipIcon, PencilSquareIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 import { CreateAppCardItem } from '@components/CreateAppCardItem';
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { blobToURL } from '@utils/blobToURL';
+import { IconInput } from '@components/IconInput';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -37,6 +37,7 @@ export const CreateApp: React.FC = () => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const navigate = useNavigate();
   const [artworkSrc, setArtWorkSrc] = useState('');
+  const [iconSrc, setIconSrc] = useState('');
 
   const modules = [
     <CreateAppCardItem icon={PencilSquareIcon} label="Application Name">
@@ -45,19 +46,42 @@ export const CreateApp: React.FC = () => {
     <CreateAppCardItem icon={CpuChipIcon} label="Wine Engine">
       <WineEnginesSelect fullWidth control={form.control} name="engineVersion" />
     </CreateAppCardItem>,
-    <CreateAppCardItem icon={PaintBrushIcon} label="Style">
-      <Stack>
-        <ArtWorkInput
-          control={form.control}
-          name="artworkFile"
-          type="image"
-          imgSrc={artworkSrc}
-          onInput={async (file) => {
-            file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
-          }}
-          realAppName={form.watch('name')}
-        />
-      </Stack>
+    <CreateAppCardItem icon={PlayCircleIcon} label="Setup Executable">
+      <Grid container>
+        <Grid item xs={9.5}>
+          <Stack spacing={1.5}>
+            <FilePathInput
+              control={form.control}
+              filters={FileFilter.WindowsExecutables}
+              noSelectedFileLabel="Select Setup Executable"
+              selectedFileLabel="Change Setup Executable"
+              name="setupExecutablePath"
+            />
+            {/* <TextField label="Exe flags" /> */}
+            <IconInput
+              type="image"
+              imgSrc={iconSrc}
+              name="iconFile"
+              control={form.control}
+              onInput={async (file) => {
+                file && setIconSrc(blobToURL(await file?.arrayBuffer()));
+              }}
+            />
+          </Stack>
+        </Grid>
+        <Grid pl={2.2} item xs={2.5} justifyItems="center" justifyContent="flex-end">
+          <ArtWorkInput
+            control={form.control}
+            name="artworkFile"
+            type="image"
+            imgSrc={artworkSrc}
+            realAppName={'No Artwork'}
+            onInput={async (file) => {
+              file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
+            }}
+          />
+        </Grid>
+      </Grid>
     </CreateAppCardItem>
   ];
 
@@ -162,24 +186,7 @@ export const CreateApp: React.FC = () => {
                     <CardContent>
                       <Box>
                         <Grid container spacing={3}>
-                          <Grid item xs={6}>
-                            <FileInput
-                              noSelectedFileLabel="Select Icon"
-                              selectedFileLabel="Change Icon"
-                              control={form.control}
-                              name="iconFile"
-                              filters={FileFilter.Images}
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <FilePathInput
-                              noSelectedFileLabel="Select Setup Executable"
-                              selectedFileLabel="Change Setup Executable"
-                              control={form.control}
-                              name="setupExecutablePath"
-                              filters={FileFilter.WindowsExecutables}
-                            />
-                          </Grid>
+                          <Grid item xs={12}></Grid>
                           <Grid item xs={4}>
                             <Checkbox
                               control={form.control}
