@@ -1,4 +1,5 @@
 import { AppConfig } from '@components/AppConfig';
+import { CreateApp } from '@components/CreateApp';
 import { MainLayout } from '@layouts/MainLayout';
 import { SimpleLayout } from '@layouts/SimpleLayout';
 import { Apps } from '@pages/Apps';
@@ -25,5 +26,10 @@ export const routes: RouteObject[] = [
     path: '/app-config',
     element: <SimpleLayout />,
     children: [{ path: ':realAppName', element: <AppConfig /> }]
+  },
+  {
+    path: '/create-app',
+    element: <SimpleLayout />,
+    children: [{ index: true, element: <CreateApp /> }]
   }
 ];

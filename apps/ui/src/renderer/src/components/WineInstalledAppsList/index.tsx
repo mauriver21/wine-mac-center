@@ -9,6 +9,7 @@ import { InstalledAppCard } from '@components/InstalledAppCard';
 import { SearchField } from '@components/SearchField';
 import { SortDirectionSelect } from '@components/SortDirectionSelect';
 import { RootState } from '@interfaces/RootState';
+import { useNavigate } from 'react-router-dom';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -47,6 +48,7 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 );
 
 export const WineInstalledAppsList: React.FC = () => {
+  const navigate = useNavigate();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const [showDialog, setShowDialog] = useState(false);
   const [filters, setFilters] = useState<
@@ -92,7 +94,7 @@ export const WineInstalledAppsList: React.FC = () => {
               border: (theme) => `1px solid ${theme.palette.primary.main}`
             }}
             color="secondary"
-            onClick={() => setShowDialog(true)}
+            onClick={() => navigate('/create-app')}
           >
             <Icon pr={1} strokeWidth={3} color="primary.main" render={PlusIcon} />
             Create App
