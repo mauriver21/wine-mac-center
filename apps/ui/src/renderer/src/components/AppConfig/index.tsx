@@ -81,7 +81,7 @@ export const AppConfig: React.FC = () => {
               <H6 color="text.secondary" fontWeight={500}>
                 {realAppName}
               </H6>
-              <Button color="secondary" onClick={() => navigate('/apps')}>
+              <Button disabled={loading} color="secondary" onClick={() => navigate('/apps')}>
                 Back
               </Button>
             </Box>
