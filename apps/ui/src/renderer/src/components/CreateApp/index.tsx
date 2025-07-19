@@ -2,8 +2,6 @@ import React, { useRef, useState } from 'react';
 import {
   Box,
   Button,
-  Card,
-  CardContent,
   ContentsArea,
   ContentsAreaHandle,
   ContentsClass,
@@ -22,7 +20,12 @@ import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import { FileFilter } from '@constants/enums';
-import { CpuChipIcon, PencilSquareIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
+import {
+  CpuChipIcon,
+  PencilSquareIcon,
+  PlayCircleIcon,
+  SparklesIcon
+} from '@heroicons/react/24/solid';
 import { CreateAppCardItem } from '@components/CreateAppCardItem';
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { blobToURL } from '@utils/blobToURL';
@@ -79,6 +82,24 @@ export const CreateApp: React.FC = () => {
             onInput={async (file) => {
               file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
             }}
+          />
+        </Grid>
+      </Grid>
+    </CreateAppCardItem>,
+    <CreateAppCardItem icon={SparklesIcon} label="Winetricks">
+      <Grid container>
+        <Grid item xs={4}>
+          <Checkbox control={form.control} name="dxvkEnabled" label="Enable DXVK" />
+        </Grid>
+        <Grid item xs={4}>
+          <Checkbox control={form.control} name="useWinetricks" label="Use Winetricks" />
+        </Grid>
+
+        <Grid mt={1} item xs={12}>
+          <WinetricksSelector
+            disabled={!Boolean(form.watch('useWinetricks'))}
+            control={form.control}
+            name="winetricksVerbs"
           />
         </Grid>
       </Grid>
@@ -175,44 +196,6 @@ export const CreateApp: React.FC = () => {
                     {item}
                   </Box>
                 ))}
-                <Box
-                  width="100%"
-                  maxWidth={800}
-                  pt={2}
-                  sx={ITEM_STYLE}
-                  className={ContentsClass.Item}
-                >
-                  <Card>
-                    <CardContent>
-                      <Box>
-                        <Grid container spacing={3}>
-                          <Grid item xs={12}></Grid>
-                          <Grid item xs={4}>
-                            <Checkbox
-                              control={form.control}
-                              name="dxvkEnabled"
-                              label="Enable DXVK"
-                            />
-                          </Grid>
-                          <Grid item xs={4}>
-                            <Checkbox
-                              control={form.control}
-                              name="useWinetricks"
-                              label="Winetricks"
-                            />
-                          </Grid>
-                          {form.watch('useWinetricks') ? (
-                            <Grid item xs={12}>
-                              <WinetricksSelector control={form.control} name="winetricksVerbs" />
-                            </Grid>
-                          ) : (
-                            <></>
-                          )}
-                        </Grid>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Box>
               </Stack>
             </Box>
             <Box borderLeft={(theme) => `1px solid ${theme.palette.primary.main}`}>

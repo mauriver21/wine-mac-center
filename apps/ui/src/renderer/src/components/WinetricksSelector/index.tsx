@@ -52,6 +52,7 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
     <SkeletonLoader loading={loaders.listingAll}>
       <Stack spacing={1}>
         <SearchField
+          disabled={disabled}
           onChange={(event) => {
             setFilters({ verb: event.target.value });
           }}
@@ -63,7 +64,8 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
                 <Accordion
                   label={category.label}
                   expanded={expandedState[category.key]}
-                  onClick={(state) => {
+                  onClick={(state, event) => {
+                    disabled && event.preventDefault();
                     setExpandedState({ ...DEFAULT_EXPANDED_STATE, [category.key]: state.expanded });
                   }}
                 >
