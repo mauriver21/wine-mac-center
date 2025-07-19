@@ -2,7 +2,6 @@ import { RegeditIcon } from '@assets/icons';
 import {
   Cog6ToothIcon,
   CommandLineIcon,
-  CpuChipIcon,
   RectangleStackIcon,
   SparklesIcon,
   WrenchScrewdriverIcon
@@ -29,11 +28,10 @@ import { alpha } from '@mui/material';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import { FormSchema, useSchema } from './useSchema';
 import { useForm } from 'reactjs-ui-form-fields';
-import { ExitCode } from '@constants/enums';
-import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { useRefresh } from '@utils/useRefresh';
 import { ExecutableConfigModule } from '@components/ExecutableConfigModule';
 import { AppConfigContext } from '@contexts/AppConfigContext';
+import { ChangeEngineModule } from '@components/ChangeEngineModule';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -41,45 +39,12 @@ export const AppConfig: React.FC = () => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const [loading, setLoading] = useState(false);
   const [wineApp, setWineApp] = useState<WineApp>();
-  const [engineVersion, setEngineVersion] = useState<string>('');
   const { realAppName } = useParams();
   const navigate = useNavigate();
   const schema = useSchema();
   const form = useForm(schema);
-  const appConfig = wineApp?.getAppConfig();
+
   const { signal, refresh } = useRefresh();
-
-  const changeWineEngine = async () => {
-    setLoading(true);
-
-    await new Promise((resolve, reject) => {
-      wineApp?.extractEngine(engineVersion, {
-        onStdOut: console.log,
-        onStdErr: console.log,
-        onExit: (output) => {
-          if (output === ExitCode.Error) {
-            reject(`Failed to Extract the Wine Engine ${engineVersion}`);
-          }
-          resolve(undefined);
-        }
-      });
-    });
-
-    await new Promise((resolve, reject) => {
-      wineApp?.wineboot('', {
-        onStdOut: console.log,
-        onStdErr: console.log,
-        onExit: (output) => {
-          if (output === ExitCode.Error) {
-            reject(`Failed to initialize the Wine Engine ${engineVersion}`);
-          }
-          resolve(undefined);
-        }
-      });
-    });
-
-    setLoading(false);
-  };
 
   const options = [
     {
@@ -167,7 +132,7 @@ export const AppConfig: React.FC = () => {
       }
     },
     {
-      label: 'Change Engine',
+      label: 'Winetricks Selector',
       content: (
         <Stack spacing={1}>
           <Stack direction="row" minWidth={210} pb={1}>
@@ -211,33 +176,7 @@ export const AppConfig: React.FC = () => {
     },
     {
       label: 'Change Engine',
-      content: (
-        <Stack spacing={1.5}>
-          <Stack direction="row" minWidth={210} pb={1}>
-            <Icon strokeWidth={0} size={34} render={CpuChipIcon} pr={1} />
-            <H6 className={ContentsClass.ItemTitle}>Change Engine</H6>
-          </Stack>
-          <WineEnginesSelect
-            value={engineVersion}
-            onChange={(event) => setEngineVersion(event.target.value as string)}
-          />
-          <Stack width="100%" pt={1} alignItems="flex-end">
-            <Button
-              title={`Run Change Engine`}
-              disabled={wineApp === undefined || loading}
-              color="secondary"
-              sx={{
-                width: 90,
-                height: 60,
-                border: (theme) => `1px solid ${theme.palette.primary.main}`
-              }}
-              onClick={changeWineEngine}
-            >
-              <Body1>Run</Body1>
-            </Button>
-          </Stack>
-        </Stack>
-      )
+      content: <ChangeEngineModule />
     }
   ];
 
@@ -248,12 +187,6 @@ export const AppConfig: React.FC = () => {
       }
     })();
   }, [realAppName]);
-
-  useEffect(() => {
-    if (appConfig?.name) {
-      setEngineVersion(appConfig?.engineVersion);
-    }
-  }, [appConfig?.name]);
 
   return (
     <AppConfigContext.Provider value={{ loading, setLoading, refresh, signal, wineApp }}>
