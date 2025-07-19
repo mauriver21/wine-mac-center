@@ -3,7 +3,6 @@ import {
   Cog6ToothIcon,
   CommandLineIcon,
   CpuChipIcon,
-  PlayIcon,
   RectangleStackIcon,
   SparklesIcon,
   WrenchScrewdriverIcon
@@ -18,13 +17,10 @@ import {
   ContentsArea,
   ContentsAreaHandle,
   ContentsClass,
-  Grid,
   H6,
   Icon,
-  Select,
   Stack,
-  TableOfContents,
-  TextField
+  TableOfContents
 } from 'reactjs-ui-core';
 import { WineApp } from '@interfaces/WineApp';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -33,12 +29,11 @@ import { alpha } from '@mui/material';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import { FormSchema, useSchema } from './useSchema';
 import { useForm } from 'reactjs-ui-form-fields';
-import { AppExecutable } from '@interfaces/AppExecutable';
 import { ExitCode } from '@constants/enums';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
-import { ArtWorkInput } from '@components/ArtWorkInput';
 import { useRefresh } from '@utils/useRefresh';
-import { IconInput } from '@components/IconInput';
+import { ExecutableConfigModule } from '@components/ExecutableConfigModule';
+import { AppConfigContext } from '@contexts/AppConfigContext';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -46,9 +41,6 @@ export const AppConfig: React.FC = () => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const [loading, setLoading] = useState(false);
   const [wineApp, setWineApp] = useState<WineApp>();
-  const [appExecutables, setAppExecutables] = useState<AppExecutable[]>([]);
-  const [mainExecutablePath, setMainExecutablePath] = useState<string>('');
-  const [mainExecutableFlags, setMainExecutableFlags] = useState<string>('');
   const [engineVersion, setEngineVersion] = useState<string>('');
   const { realAppName } = useParams();
   const navigate = useNavigate();
@@ -56,15 +48,6 @@ export const AppConfig: React.FC = () => {
   const form = useForm(schema);
   const appConfig = wineApp?.getAppConfig();
   const { signal, refresh } = useRefresh();
-
-  const loadMainExecutable = () => {
-    const appConfig = wineApp?.getAppConfig();
-    const mainExecutable = appConfig?.executables?.find((item) => item.main);
-    const mainExecutablePath = mainExecutable?.path || '';
-    const mainExecutableFlags = mainExecutable?.flags || '';
-    setMainExecutablePath(mainExecutablePath);
-    setMainExecutableFlags(mainExecutableFlags);
-  };
 
   const changeWineEngine = async () => {
     setLoading(true);
@@ -224,72 +207,7 @@ export const AppConfig: React.FC = () => {
     },
     {
       label: 'Executable Config',
-      content: (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Stack direction="row" minWidth={210} pb={1}>
-              <Icon strokeWidth={0} size={34} render={PlayIcon} pr={1} />
-              <H6 className={ContentsClass.ItemTitle}>Executable Config</H6>
-            </Stack>
-          </Grid>
-          <Grid item xs={12}>
-            <Grid container spacing={2}>
-              <Grid item xs={9.5}>
-                <Stack spacing={1.5}>
-                  <Select
-                    label="Select the main executable"
-                    value={mainExecutablePath}
-                    options={appExecutables.map((item) => ({
-                      value: item.path,
-                      label: item.name
-                    }))}
-                    onChange={async (event) => {
-                      const path = event.target.value as string;
-                      setMainExecutablePath(event.target.value as string);
-                      setLoading(true);
-                      await wineApp?.updateMainExecutablePath?.(path);
-                      setLoading(false);
-                    }}
-                    disabled={!Boolean(mainExecutablePath)}
-                  />
-                  <TextField
-                    label="Exe flags"
-                    value={mainExecutableFlags}
-                    onChange={(event) => {
-                      const flags = event.currentTarget.value;
-                      setMainExecutableFlags(flags);
-                    }}
-                    onBlur={async () => {
-                      setLoading(true);
-                      await wineApp?.updateMainExecutableFlags?.(mainExecutableFlags);
-                      setLoading(false);
-                    }}
-                  />
-                  <IconInput
-                    refreshImage={signal}
-                    appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
-                    onInput={async (file) => {
-                      file && wineApp?.setupAppIcon({ appIconFile: await file?.arrayBuffer() });
-                      refresh();
-                    }}
-                  />
-                </Stack>
-              </Grid>
-              <Grid item xs={2.5} justifyItems="center" justifyContent="center">
-                <ArtWorkInput
-                  refreshImage={signal}
-                  onInput={async (file) => {
-                    file && wineApp?.setupAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
-                    refresh();
-                  }}
-                  appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
-                  realAppName={realAppName}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      )
+      content: <ExecutableConfigModule realAppName={realAppName} />
     },
     {
       label: 'Change Engine',
@@ -326,123 +244,122 @@ export const AppConfig: React.FC = () => {
   useEffect(() => {
     (async () => {
       if (realAppName) {
-        const wineApp = await createWineApp(realAppName);
         setWineApp(await createWineApp(realAppName));
-        setAppExecutables(await wineApp.listAppExecutables());
       }
     })();
   }, [realAppName]);
 
   useEffect(() => {
     if (appConfig?.name) {
-      loadMainExecutable();
       setEngineVersion(appConfig?.engineVersion);
     }
   }, [appConfig?.name]);
 
   return (
-    <Box display="grid" overflow="auto">
-      <ContentsArea
-        ref={contentsAreaRef}
-        style={{
-          height: '100%',
-          display: 'grid',
-          overflow: 'auto',
-          gridTemplateRows: 'auto 1fr'
-        }}
-      >
-        <Box>
-          <Box
-            p={2}
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{
-              boxShadow: (theme) => `inset 0 -1px ${theme.palette.secondary.main}`
-            }}
-          >
-            <H6 color="text.secondary" fontWeight={500}>
-              {realAppName}
-            </H6>
-            <Button color="secondary" onClick={() => navigate('/apps')}>
-              Back
-            </Button>
-          </Box>
-          <Box
-            sx={{
-              height: '1px',
-              boxShadow: (theme) => `inset 0 1px ${theme.palette.primary.main}`
-            }}
-          ></Box>
-        </Box>
-        <Box display="grid" gridTemplateColumns="1fr 250px" overflow="auto">
-          <Box
-            overflow="auto"
-            display="grid"
-            sx={{
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: (theme) => alpha(theme.palette?.secondary.dark, 0.3)
-              }
-            }}
-          >
-            <Stack
-              className={ContentsClass.ScrollableArea}
-              overflow="auto"
-              spacing={1}
-              sx={{
-                overflowX: 'hidden !important'
-              }}
-              pb={2}
+    <AppConfigContext.Provider value={{ loading, setLoading, refresh, signal, wineApp }}>
+      <Box display="grid" overflow="auto">
+        <ContentsArea
+          ref={contentsAreaRef}
+          style={{
+            height: '100%',
+            display: 'grid',
+            overflow: 'auto',
+            gridTemplateRows: 'auto 1fr'
+          }}
+        >
+          <Box>
+            <Box
+              p={2}
+              display="flex"
               alignItems="center"
+              justifyContent="space-between"
+              sx={{
+                boxShadow: (theme) => `inset 0 -1px ${theme.palette.secondary.main}`
+              }}
             >
-              {options.map((item, index) => (
-                <Box
-                  width="100%"
-                  maxWidth={800}
-                  key={index}
-                  pt={2}
-                  sx={ITEM_STYLE}
-                  className={ContentsClass.Item}
-                >
-                  <Card>
-                    <CardContent>
-                      {item.content ? (
-                        item.content
-                      ) : (
-                        <Stack direction="row" spacing={1} justifyContent="space-between">
-                          <Stack direction="row" spacing={1}>
-                            <Stack direction="row" minWidth={210} pb={1}>
-                              <Icon strokeWidth={0} size={34} render={item.icon} pr={1} />
-                              <H6 className={ContentsClass.ItemTitle}>{item.label}</H6>
+              <H6 color="text.secondary" fontWeight={500}>
+                {realAppName}
+              </H6>
+              <Button color="secondary" onClick={() => navigate('/apps')}>
+                Back
+              </Button>
+            </Box>
+            <Box
+              sx={{
+                height: '1px',
+                boxShadow: (theme) => `inset 0 1px ${theme.palette.primary.main}`
+              }}
+            ></Box>
+          </Box>
+          <Box display="grid" gridTemplateColumns="1fr 250px" overflow="auto">
+            <Box
+              overflow="auto"
+              display="grid"
+              sx={{
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: (theme) => alpha(theme.palette?.secondary.dark, 0.3)
+                }
+              }}
+            >
+              <Stack
+                className={ContentsClass.ScrollableArea}
+                overflow="auto"
+                spacing={1}
+                sx={{
+                  overflowX: 'hidden !important'
+                }}
+                pb={2}
+                alignItems="center"
+              >
+                {options.map((item, index) => (
+                  <Box
+                    width="100%"
+                    maxWidth={800}
+                    key={index}
+                    pt={2}
+                    sx={ITEM_STYLE}
+                    className={ContentsClass.Item}
+                  >
+                    <Card>
+                      <CardContent>
+                        {item.content ? (
+                          item.content
+                        ) : (
+                          <Stack direction="row" spacing={1} justifyContent="space-between">
+                            <Stack direction="row" spacing={1}>
+                              <Stack direction="row" minWidth={210} pb={1}>
+                                <Icon strokeWidth={0} size={34} render={item.icon} pr={1} />
+                                <H6 className={ContentsClass.ItemTitle}>{item.label}</H6>
+                              </Stack>
+                              <Box pr={2}>{item.description}</Box>
                             </Stack>
-                            <Box pr={2}>{item.description}</Box>
+                            <Button
+                              title={`Run ${item.label}`}
+                              disabled={wineApp === undefined || loading}
+                              color="secondary"
+                              sx={{
+                                width: 90,
+                                height: 60,
+                                border: (theme) => `1px solid ${theme.palette.primary.main}`
+                              }}
+                              onClick={() => item.method?.()}
+                            >
+                              <Body1>Run</Body1>
+                            </Button>
                           </Stack>
-                          <Button
-                            title={`Run ${item.label}`}
-                            disabled={wineApp === undefined || loading}
-                            color="secondary"
-                            sx={{
-                              width: 90,
-                              height: 60,
-                              border: (theme) => `1px solid ${theme.palette.primary.main}`
-                            }}
-                            onClick={() => item.method?.()}
-                          >
-                            <Body1>Run</Body1>
-                          </Button>
-                        </Stack>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Box>
-              ))}
-            </Stack>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Box>
+                ))}
+              </Stack>
+            </Box>
+            <Box borderLeft={(theme) => `1px solid ${theme.palette.primary.main}`}>
+              <TableOfContents pt={1} />
+            </Box>
           </Box>
-          <Box borderLeft={(theme) => `1px solid ${theme.palette.primary.main}`}>
-            <TableOfContents pt={1} />
-          </Box>
-        </Box>
-      </ContentsArea>
-    </Box>
+        </ContentsArea>
+      </Box>
+    </AppConfigContext.Provider>
   );
 };
