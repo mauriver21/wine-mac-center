@@ -1,24 +1,22 @@
 import React from 'react';
 import { BaseModule } from '@components/BaseModule';
-import { RegeditIcon } from '@assets/icons';
+import { RectangleStackIcon } from '@heroicons/react/24/solid';
 import { Body1 } from 'reactjs-ui-core';
 import { useAppConfigContext } from '@hooks/useAppConfigContext';
 
-export const RegistryEditorModule: React.FC = () => {
+export const TaskManagerModule: React.FC = () => {
   const { wineApp, setLoading } = useAppConfigContext() || {};
 
   return (
     <BaseModule
       label="Wine Config"
-      icon={RegeditIcon}
+      icon={RectangleStackIcon}
       description={
-        <Body1>
-          Launches Wine&apos;s Registry Editor to view and modify the Windows-like registry.
-        </Body1>
+        <Body1>Opens Wine&apos;s Task Manager to monitor and manage running Wine processes.</Body1>
       }
       method={() => {
         setLoading?.(true);
-        wineApp?.regedit({
+        wineApp?.taskmgr({
           onExit: () => {
             setLoading?.(false);
           }
