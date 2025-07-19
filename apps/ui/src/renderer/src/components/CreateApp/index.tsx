@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -23,6 +23,10 @@ import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import { FileFilter } from '@constants/enums';
+import { CpuChipIcon, PaintBrushIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
+import { CreateAppCardItem } from '@components/CreateAppCardItem';
+import { ArtWorkInput } from '@components/ArtWorkInput';
+import { blobToURL } from '@utils/blobToURL';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -32,6 +36,30 @@ export const CreateApp: React.FC = () => {
   const wineAppPipelineModel = useWineAppPipelineModel();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const navigate = useNavigate();
+  const [artworkSrc, setArtWorkSrc] = useState('');
+
+  const modules = [
+    <CreateAppCardItem icon={PencilSquareIcon} label="Application Name">
+      <TextField autoComplete="off" control={form.control} name="name" label="Application Name" />
+    </CreateAppCardItem>,
+    <CreateAppCardItem icon={CpuChipIcon} label="Wine Engine">
+      <WineEnginesSelect fullWidth control={form.control} name="engineVersion" />
+    </CreateAppCardItem>,
+    <CreateAppCardItem icon={PaintBrushIcon} label="Style">
+      <Stack>
+        <ArtWorkInput
+          control={form.control}
+          name="artworkFile"
+          type="image"
+          imgSrc={artworkSrc}
+          onInput={async (file) => {
+            file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
+          }}
+          realAppName={form.watch('name')}
+        />
+      </Stack>
+    </CreateAppCardItem>
+  ];
 
   const submit = async (data: FormSchema) => {
     const {
@@ -111,6 +139,18 @@ export const CreateApp: React.FC = () => {
                 pb={2}
                 alignItems="center"
               >
+                {modules.map((item, index) => (
+                  <Box
+                    key={index}
+                    width="100%"
+                    maxWidth={800}
+                    pt={2}
+                    sx={ITEM_STYLE}
+                    className={ContentsClass.Item}
+                  >
+                    {item}
+                  </Box>
+                ))}
                 <Box
                   width="100%"
                   maxWidth={800}
@@ -122,26 +162,6 @@ export const CreateApp: React.FC = () => {
                     <CardContent>
                       <Box>
                         <Grid container spacing={3}>
-                          <Grid item xs={12}>
-                            <TextField
-                              autoComplete="off"
-                              control={form.control}
-                              name="name"
-                              label="Application Name"
-                            />
-                          </Grid>
-                          <Grid item xs={12}>
-                            <WineEnginesSelect control={form.control} name="engineVersion" />
-                          </Grid>
-                          <Grid item xs={6}>
-                            <FileInput
-                              noSelectedFileLabel="Select Artwork"
-                              selectedFileLabel="Change Artwork"
-                              control={form.control}
-                              name="artworkFile"
-                              filters={FileFilter.Images}
-                            />
-                          </Grid>
                           <Grid item xs={6}>
                             <FileInput
                               noSelectedFileLabel="Select Icon"

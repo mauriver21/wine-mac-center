@@ -10,10 +10,9 @@ export type ArtWorkInputProps = Pick<TextFieldProps, 'control' | 'name' | 'field
   dialogText?: string;
   onInput?: (file: File | undefined) => void;
   value?: string;
-  appPath: string | undefined;
   realAppName: string | undefined;
   refreshImage?: number;
-};
+} & ({ type: 'app'; appPath: string | undefined } | { type: 'image'; imgSrc: string | undefined });
 
 export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
   onInput: onInputProp,
@@ -22,7 +21,6 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
   name,
   value = '',
   dialogText = 'Select file',
-  appPath,
   realAppName = '',
   refreshImage,
   ...rest
@@ -32,8 +30,30 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
   const [artWorkSrc, setArtWorkSrc] = useState('');
   const [noArtWork, setNoArtWork] = useState(false);
 
+  const getSrcPath = () => {
+    switch (rest.type) {
+      case 'app':
+        return rest.appPath || '';
+      case 'image':
+        return rest.imgSrc || '';
+      default:
+        return '';
+    }
+  };
+
+  const getSrc = async () => {
+    switch (rest.type) {
+      case 'app':
+        return baseGetAppArtwork(rest.appPath);
+      case 'image':
+        return rest.imgSrc || '';
+      default:
+        return '';
+    }
+  };
+
   const getAppArtwork = async () => {
-    const artWork = await baseGetAppArtwork(appPath);
+    const artWork = await getSrc();
     setNoArtWork(!artWork);
     setArtWorkSrc(artWork || defaultArtwork);
   };
@@ -49,7 +69,7 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
   useEffect(() => {
     setArtWorkSrc('');
     getAppArtwork();
-  }, [appPath, refreshImage]);
+  }, [getSrcPath(), refreshImage]);
 
   return (
     <>
@@ -57,6 +77,7 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
         width={130}
         height={200}
         border={1}
+        borderColor="primary.main"
         position="relative"
         onClick={onClick}
         sx={{
@@ -127,7 +148,8 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
               readOnly: true
             }}
             value={fileName}
-            onClick={async () => {
+            onClick={async (event) => {
+              event.preventDefault();
               const { file, fileName } = await openFile(dialogText, { filters: FileFilter.Images });
               setFileName(fileName);
               onInput({ target: { value: file } });

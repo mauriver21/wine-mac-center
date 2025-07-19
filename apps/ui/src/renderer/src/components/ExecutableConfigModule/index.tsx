@@ -104,6 +104,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
               </Grid>
               <Grid item xs={2.5} justifyItems="center" justifyContent="center">
                 <ArtWorkInput
+                  type="app"
                   refreshImage={signal}
                   onInput={async (file) => {
                     file && wineApp?.setupAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
