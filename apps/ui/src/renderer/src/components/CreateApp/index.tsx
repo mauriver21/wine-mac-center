@@ -42,6 +42,12 @@ export const CreateApp: React.FC = () => {
   const [artworkSrc, setArtWorkSrc] = useState('');
   const [iconSrc, setIconSrc] = useState('');
 
+  const reset = () => {
+    setArtWorkSrc('');
+    setIconSrc('');
+    form.reset();
+  };
+
   const modules = [
     <CreateAppCardItem icon={PencilSquareIcon} label="Application Name">
       <TextField autoComplete="off" control={form.control} name="name" label="Application Name" />
@@ -125,7 +131,7 @@ export const CreateApp: React.FC = () => {
       artworkFile: await data.artworkFile?.arrayBuffer(),
       winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
     });
-    form.reset();
+    reset();
   };
 
   return (
@@ -153,14 +159,18 @@ export const CreateApp: React.FC = () => {
               <H6 color="text.secondary" fontWeight={500}>
                 Create App
               </H6>
-              <Button color="secondary" onClick={() => navigate('/apps')}>
+              <Button
+                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                color="secondary"
+                onClick={() => navigate('/apps')}
+              >
                 Back
               </Button>
             </Box>
             <Box
               sx={{
                 height: '1px',
-                boxShadow: (theme) => `inset 0 1px ${theme.palette.primary.main}`
+                boxShadow: (theme) => `inset 0 1px ${theme.palette.secondary.light}`
               }}
             ></Box>
           </Box>
@@ -197,8 +207,24 @@ export const CreateApp: React.FC = () => {
                   </Box>
                 ))}
               </Stack>
+              <Stack
+                borderTop={(theme) => `1px solid ${theme.palette.secondary.light}`}
+                p={2}
+                direction="row"
+                spacing={1}
+                justifyContent="flex-end"
+              >
+                <Button
+                  sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                  color="secondary"
+                  disabled={form.isInvalid()}
+                  type="submit"
+                >
+                  Create
+                </Button>
+              </Stack>
             </Box>
-            <Box borderLeft={(theme) => `1px solid ${theme.palette.primary.main}`}>
+            <Box borderLeft={(theme) => `1px solid ${theme.palette.secondary.light}`}>
               <TableOfContents pt={1} />
             </Box>
           </Box>

@@ -81,14 +81,19 @@ export const AppConfig: React.FC = () => {
               <H6 color="text.secondary" fontWeight={500}>
                 {realAppName}
               </H6>
-              <Button disabled={loading} color="secondary" onClick={() => navigate('/apps')}>
+              <Button
+                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                disabled={loading}
+                color="secondary"
+                onClick={() => navigate('/apps')}
+              >
                 Back
               </Button>
             </Box>
             <Box
               sx={{
                 height: '1px',
-                boxShadow: (theme) => `inset 0 1px ${theme.palette.primary.main}`
+                boxShadow: (theme) => `inset 0 1px ${theme.palette.secondary.light}`
               }}
             ></Box>
           </Box>
@@ -126,7 +131,7 @@ export const AppConfig: React.FC = () => {
                 ))}
               </Stack>
             </Box>
-            <Box borderLeft={(theme) => `1px solid ${theme.palette.primary.main}`}>
+            <Box borderLeft={(theme) => `1px solid ${theme.palette.secondary.light}`}>
               <TableOfContents pt={1} />
             </Box>
           </Box>
