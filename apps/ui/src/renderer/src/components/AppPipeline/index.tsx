@@ -27,6 +27,8 @@ export const AppPipeline: React.FC = () => {
   const { realAppName } = useParams();
   contentsAreaRef.current?.refreshTableOfContents();
 
+  console.log(wineAppPipeline.status);
+
   return (
     <Box display="grid" overflow="auto">
       <ContentsArea
@@ -49,7 +51,7 @@ export const AppPipeline: React.FC = () => {
             }}
           >
             <H6 color="text.secondary" fontWeight={500}>
-              {realAppName}
+              {realAppName || wineAppPipeline.meta.wineApp?.name}
             </H6>
           </Box>
           <Box
