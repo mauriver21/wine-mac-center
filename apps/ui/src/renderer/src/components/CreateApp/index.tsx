@@ -132,7 +132,7 @@ export const CreateApp: React.FC = () => {
       winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
     });
     reset();
-    navigate('/app-pipeline');
+    navigate(`/app-pipeline/${name}`);
   };
 
   return (

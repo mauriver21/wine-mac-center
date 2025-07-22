@@ -31,7 +31,7 @@ export const routes: RouteObject[] = [
   {
     path: '/app-pipeline',
     element: <SimpleLayout />,
-    children: [{ index: true, element: <AppPipeline /> }]
+    children: [{ path: ':realAppName', element: <AppPipeline /> }]
   },
   {
     path: '/create-app',

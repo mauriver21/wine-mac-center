@@ -4,6 +4,7 @@ import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { alpha } from '@mui/material';
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
   Body1,
   Box,
@@ -23,7 +24,7 @@ export const AppPipeline: React.FC = () => {
     wineAppPipelineModel.selectWineAppPipelineWithMeta(state)
   );
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-
+  const { realAppName } = useParams();
   contentsAreaRef.current?.refreshTableOfContents();
 
   return (
@@ -48,8 +49,7 @@ export const AppPipeline: React.FC = () => {
             }}
           >
             <H6 color="text.secondary" fontWeight={500}>
-              {JSON.stringify(wineAppPipeline.meta)}
-              {wineAppPipeline.meta.wineApp?.name}
+              {realAppName}
             </H6>
           </Box>
           <Box
