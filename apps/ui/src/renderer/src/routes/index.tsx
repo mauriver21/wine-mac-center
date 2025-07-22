@@ -1,4 +1,5 @@
 import { AppConfig } from '@components/AppConfig';
+import { AppPipeline } from '@components/AppPipeline';
 import { CreateApp } from '@components/CreateApp';
 import { MainLayout } from '@layouts/MainLayout';
 import { SimpleLayout } from '@layouts/SimpleLayout';
@@ -26,6 +27,11 @@ export const routes: RouteObject[] = [
     path: '/app-config',
     element: <SimpleLayout />,
     children: [{ path: ':realAppName', element: <AppConfig /> }]
+  },
+  {
+    path: '/app-pipeline',
+    element: <SimpleLayout />,
+    children: [{ index: true, element: <AppPipeline /> }]
   },
   {
     path: '/create-app',

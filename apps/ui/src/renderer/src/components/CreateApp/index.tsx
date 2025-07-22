@@ -132,6 +132,7 @@ export const CreateApp: React.FC = () => {
       winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
     });
     reset();
+    navigate('/app-pipeline');
   };
 
   return (
@@ -185,7 +186,6 @@ export const CreateApp: React.FC = () => {
               }}
             >
               <Stack
-                className={ContentsClass.ScrollableArea}
                 overflow="auto"
                 spacing={1}
                 sx={{
