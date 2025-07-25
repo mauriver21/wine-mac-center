@@ -2,6 +2,7 @@ import { ProcessStatus, ExitCode } from '@constants/enums';
 import { FilePath } from '@interfaces/FilePath';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
+import { WineAppJob } from '@interfaces/WineAppJob';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
 import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
 import { WineAppStep } from '@interfaces/WineAppStep';
@@ -55,13 +56,33 @@ export const createWineAppPipeline = async (options: {
     }
   };
 
-  const pipelineConfig = {
-    appConfig: options.appConfig
+  let pipelineConfig: WineAppPipelineConfig = {
+    appConfig: options.appConfig,
+    jobs: []
+  };
+
+  const updatePipelineJob = (job: WineAppJob) => {
+    pipelineConfig = {
+      ...pipelineConfig,
+      jobs: pipelineConfig.jobs.map((item) => {
+        if (item.name === job.name) return { ...item, ...job };
+        return item;
+      })
+    };
+  };
+
+  const updatePipelineConfigJobStep = (jobName: string, step: WineAppStep) => {
+    const foundJob = pipelineConfig.jobs.find((item) => item.name == jobName);
+    if (foundJob?.steps) {
+      foundJob.steps = foundJob.steps.map((item) => {
+        if (item.name == step.name) return { ...item, ...step };
+        return item;
+      });
+    }
   };
 
   const readPipelineConfig = async (): Promise<WineAppPipelineConfig> => {
     const path = WINE_ENV.WINE_APP_PIPELINE_CONFIG_JSON_PATH;
-
     if (await fileExists(path)) {
       return JSON.parse(await readFileAsString(path)) as WineAppPipelineConfig;
     } else {
@@ -69,12 +90,9 @@ export const createWineAppPipeline = async (options: {
     }
   };
 
-  const writePipelineConfig = async (pipelineConfig: Partial<WineAppPipelineConfig>) => {
-    const updatedPipelineConfig = { ...pipelineConfig };
-    await writeFile(
-      WINE_ENV.WINE_APP_PIPELINE_CONFIG_JSON_PATH,
-      JSON.stringify(updatedPipelineConfig)
-    );
+  const writePipelineConfig = async () => {
+    console.log(pipelineConfig);
+    await writeFile(WINE_ENV.WINE_APP_PIPELINE_CONFIG_JSON_PATH, JSON.stringify(pipelineConfig));
   };
 
   const checkEngineExists = async () => {
@@ -123,12 +141,15 @@ export const createWineAppPipeline = async (options: {
   const wineApp = await createWineApp(name);
   const pipeline: WineAppPipeline = {
     _: {
-      std(action, step, data, updateProcess) {
+      async std(jobName, action, step, data, updateProcess) {
         options.debug && console.log(action, step.name);
+
+        const { script, ...restStep } = step;
 
         if (store.killAllProcesses) {
           updateProcess?.('exit');
           step.status = ProcessStatus.Cancelled;
+          updatePipelineConfigJobStep(jobName, restStep);
           return;
         }
 
@@ -142,6 +163,9 @@ export const createWineAppPipeline = async (options: {
         if (data === ExitCode.Error) {
           step.status = ProcessStatus.Error;
         }
+
+        updatePipelineConfigJobStep(jobName, restStep);
+        await writePipelineConfig();
 
         handleOutput(() => {
           options.debug && console.log(action, data);
@@ -266,6 +290,8 @@ export const createWineAppPipeline = async (options: {
     ],
     async run() {
       for (const job of pipeline.jobs) {
+        updatePipelineJob(job);
+
         for (const step of job.steps) {
           if (store.killAllProcesses) {
             step.status = ProcessStatus.Cancelled;
@@ -278,9 +304,11 @@ export const createWineAppPipeline = async (options: {
           }
 
           await step.script({
-            onStdOut: (data, updateProcess) => this._.std('stdOut', step, data, updateProcess),
-            onStdErr: (data, updateProcess) => this._.std('stdErr', step, data, updateProcess),
-            onExit: (data) => this._.std('exit', step, data)
+            onStdOut: (data, updateProcess) =>
+              this._.std(job.name, 'stdOut', step, data, updateProcess),
+            onStdErr: (data, updateProcess) =>
+              this._.std(job.name, 'stdErr', step, data, updateProcess),
+            onExit: (data) => this._.std(job.name, 'exit', step, data)
           });
         }
       }

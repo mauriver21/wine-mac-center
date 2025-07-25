@@ -7,6 +7,7 @@ export type WineAppPipeline = {
   _: {
     onUpdate?: (status: WineAppPipelineStatus) => void;
     std: (
+      jobName: string,
       action: 'stdOut' | 'stdErr' | 'exit',
       step: WineAppStep & {
         script: (args: SpawnProcessArgs) => Promise<void>;
