@@ -24,7 +24,6 @@ export const createWineAppPipeline = async (options: {
   const id = uuid();
   const store = { outputEnabled: true, killAllProcesses: false };
   const env = createEnv();
-
   const {
     iconURL,
     iconFile,
@@ -38,40 +37,30 @@ export const createWineAppPipeline = async (options: {
     setupExecutablePath
   } = options.appConfig;
 
-  const WINE_ENV = {
-    get WINE_APP_NAME() {
-      return options.appConfig.name;
-    },
-    get WINE_APP_PATH() {
-      return `${env.get().HOME}/Wine/apps/${WINE_ENV.WINE_APP_NAME}.app`;
-    },
-    get WINE_CONFIG_APP_PATH() {
-      return `${WINE_ENV.WINE_APP_PATH}/Config.app`;
-    },
-    get WINE_APP_DATA_PATH() {
-      return `${WINE_ENV.WINE_CONFIG_APP_PATH}/Contents/Resources/data`;
-    },
-    get WINE_APP_PIPELINE_CONFIG_JSON_PATH() {
-      return `${WINE_ENV.WINE_APP_DATA_PATH}/pipeline.json`;
-    }
-  };
+  const wineApp = await createWineApp(name);
+  const appEnv = wineApp.getWineEnv();
+  const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
 
   let pipelineConfig: WineAppPipelineConfig = {
     appConfig: options.appConfig,
     jobs: []
   };
 
-  const updatePipelineJob = (job: WineAppJob) => {
-    pipelineConfig = {
-      ...pipelineConfig,
-      jobs: pipelineConfig.jobs.map((item) => {
-        if (item.name === job.name) return { ...item, ...job };
-        return item;
-      })
-    };
+  const savePipelineJob = (job: WineAppJob) => {
+    if (pipelineConfig.jobs.some((item) => item.name == job.name)) {
+      pipelineConfig = {
+        ...pipelineConfig,
+        jobs: pipelineConfig.jobs.map((item) => {
+          if (item.name === job.name) return { ...item, ...job };
+          return item;
+        })
+      };
+    } else {
+      pipelineConfig.jobs.push(job);
+    }
   };
 
-  const updatePipelineConfigJobStep = (jobName: string, step: WineAppStep) => {
+  const savePipelineConfigJobStep = (jobName: string, step: WineAppStep) => {
     const foundJob = pipelineConfig.jobs.find((item) => item.name == jobName);
     if (foundJob?.steps) {
       foundJob.steps = foundJob.steps.map((item) => {
@@ -82,17 +71,21 @@ export const createWineAppPipeline = async (options: {
   };
 
   const readPipelineConfig = async (): Promise<WineAppPipelineConfig> => {
-    const path = WINE_ENV.WINE_APP_PIPELINE_CONFIG_JSON_PATH;
-    if (await fileExists(path)) {
-      return JSON.parse(await readFileAsString(path)) as WineAppPipelineConfig;
+    if (await fileExists(PIPELINE_CONFIG_JSON_PATH)) {
+      return JSON.parse(await readFileAsString(PIPELINE_CONFIG_JSON_PATH)) as WineAppPipelineConfig;
     } else {
       return pipelineConfig;
     }
   };
 
+  console.log(readPipelineConfig);
+
   const writePipelineConfig = async () => {
-    console.log(pipelineConfig);
-    await writeFile(WINE_ENV.WINE_APP_PIPELINE_CONFIG_JSON_PATH, JSON.stringify(pipelineConfig));
+    console.log({
+      PIPELINE_CONFIG_JSON_PATH,
+      pipelineConfig
+    });
+    await writeFile(PIPELINE_CONFIG_JSON_PATH, JSON.stringify(pipelineConfig));
   };
 
   const checkEngineExists = async () => {
@@ -138,18 +131,15 @@ export const createWineAppPipeline = async (options: {
   const concatDataToOutput = (data: string | number | null, output = '') =>
     `${output || ''}\n${data}`;
 
-  const wineApp = await createWineApp(name);
   const pipeline: WineAppPipeline = {
     _: {
       async std(jobName, action, step, data, updateProcess) {
         options.debug && console.log(action, step.name);
 
-        const { script, ...restStep } = step;
-
         if (store.killAllProcesses) {
           updateProcess?.('exit');
           step.status = ProcessStatus.Cancelled;
-          updatePipelineConfigJobStep(jobName, restStep);
+          savePipelineConfigJobStep(jobName, step);
           return;
         }
 
@@ -164,8 +154,7 @@ export const createWineAppPipeline = async (options: {
           step.status = ProcessStatus.Error;
         }
 
-        updatePipelineConfigJobStep(jobName, restStep);
-        await writePipelineConfig();
+        savePipelineConfigJobStep(jobName, step);
 
         handleOutput(() => {
           options.debug && console.log(action, data);
@@ -290,7 +279,7 @@ export const createWineAppPipeline = async (options: {
     ],
     async run() {
       for (const job of pipeline.jobs) {
-        updatePipelineJob(job);
+        savePipelineJob(job);
 
         for (const step of job.steps) {
           if (store.killAllProcesses) {
@@ -300,6 +289,8 @@ export const createWineAppPipeline = async (options: {
               jobs: pipeline.jobs,
               status: ProcessStatus.Cancelled
             });
+
+            savePipelineConfigJobStep(job.name, step);
             continue;
           }
 
@@ -313,6 +304,8 @@ export const createWineAppPipeline = async (options: {
         }
       }
 
+      writePipelineConfig();
+
       if (!store.killAllProcesses) {
         this._.onUpdate?.({
           pipelineId: id,
@@ -323,9 +316,5 @@ export const createWineAppPipeline = async (options: {
     }
   };
 
-  return {
-    pipeline,
-    readPipelineConfig,
-    writePipelineConfig
-  };
+  return pipeline;
 };

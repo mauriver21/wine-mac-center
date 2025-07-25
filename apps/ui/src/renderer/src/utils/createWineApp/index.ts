@@ -94,6 +94,19 @@ export const createWineApp = async (appName: string) => {
   };
 
   /**
+   * Setup unique app name
+   */
+  const setupUniqueAppName = async () => {
+    const { stdOut, stdErr } = await execScript('buildUniqueAppName');
+    if (stdErr) throw new Error(stdErr);
+    if (appName != stdOut) {
+      appName = stdOut.trim();
+    }
+
+    updateAppConfig({ name: appName }, { writeAppConfig: false });
+  };
+
+  /**
    * Read app config file.
    */
   const readAppConfig = async (): Promise<WineAppConfig> => {
@@ -137,17 +150,10 @@ export const createWineApp = async (appName: string) => {
     },
     args?: SpawnProcessArgs
   ) => {
-    const { stdOut, stdErr } = await execScript('buildUniqueAppName');
-    if (stdErr) throw new Error(stdErr);
-    if (appName != stdOut) {
-      appName = stdOut.trim();
-      await updateAppConfig({ name: appName }, { writeAppConfig: false });
-    }
     return spawnScript('scaffoldApp', '', {
       ...args,
       onExit: async (data) => {
         await args?.onExit?.(data);
-        await updateAppConfig({ name: appName });
         await setupAppIcon(params);
         await setupAppArtwork(params);
       }
@@ -424,6 +430,11 @@ export const createWineApp = async (appName: string) => {
    * Initialize wine env exports.
    */
   buildWineEnvExports();
+
+  /**
+   * Setup unique app name.
+   */
+  await setupUniqueAppName();
 
   /**
    * Initialize app config.

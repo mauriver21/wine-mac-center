@@ -61,7 +61,7 @@ export const useWineAppPipelineModel = () => {
 
       const iconFile = config.iconFile;
 
-      const { pipeline } = await createWineAppPipeline({
+      const pipeline = await createWineAppPipeline({
         appConfig: { ...config, iconFile },
         debug: true,
         outputEveryMs: 1000
