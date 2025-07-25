@@ -3,6 +3,7 @@ import { FilePath } from '@interfaces/FilePath';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppJob } from '@interfaces/WineAppJob';
+import { WineAppJobWithScript } from '@interfaces/WineAppJobWithScript';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
 import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
 import { WineAppStep } from '@interfaces/WineAppStep';
@@ -43,7 +44,12 @@ export const createWineAppPipeline = async (options: {
 
   let pipelineConfig: WineAppPipelineConfig = {
     appConfig: options.appConfig,
-    jobs: []
+    jobs: [],
+    status: ProcessStatus.Pending
+  };
+
+  const savePipelineStatus = (status: ProcessStatus) => {
+    pipelineConfig = { ...pipelineConfig, status };
   };
 
   const savePipelineJob = (job: WineAppJob) => {
@@ -78,14 +84,32 @@ export const createWineAppPipeline = async (options: {
     }
   };
 
-  console.log(readPipelineConfig);
-
   const writePipelineConfig = async () => {
-    console.log({
-      PIPELINE_CONFIG_JSON_PATH,
-      pipelineConfig
-    });
     await writeFile(PIPELINE_CONFIG_JSON_PATH, JSON.stringify(pipelineConfig));
+  };
+
+  const initJobs = async (jobs: WineAppJobWithScript[]) => {
+    const pipelineConfig = await readPipelineConfig();
+    const foundJobs = pipelineConfig.jobs;
+    const hasJobs = Boolean(foundJobs.length);
+
+    if (hasJobs) {
+      let i = 0;
+      for (const job of jobs) {
+        let j = 0;
+        const foundJob = foundJobs[i];
+        job.name = foundJob.name;
+
+        for (const step of job.steps) {
+          const foundStep = job.steps[j];
+          job.steps[j] = { ...step, ...foundStep };
+          j++;
+        }
+        i++;
+      }
+    }
+
+    return jobs;
   };
 
   const checkEngineExists = async () => {
@@ -278,7 +302,9 @@ export const createWineAppPipeline = async (options: {
       }
     ],
     async run() {
-      for (const job of pipeline.jobs) {
+      const jobs = await initJobs(pipeline.jobs);
+
+      for (const job of jobs) {
         savePipelineJob(job);
 
         for (const step of job.steps) {
@@ -312,6 +338,7 @@ export const createWineAppPipeline = async (options: {
           jobs: pipeline.jobs,
           status: ProcessStatus.Success
         });
+        savePipelineStatus(ProcessStatus.Success);
       }
     }
   };
