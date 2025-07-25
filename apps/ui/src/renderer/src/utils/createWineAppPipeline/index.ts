@@ -3,11 +3,15 @@ import { FilePath } from '@interfaces/FilePath';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
+import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
 import { WineAppStep } from '@interfaces/WineAppStep';
 import { clone } from '@utils/clone';
 import { createEnv } from '@utils/createEnv';
 import { createWineApp } from '@utils/createWineApp';
+import { fileExists } from '@utils/fileExists';
 import { readDirectory } from '@utils/readDirectory';
+import { readFileAsString } from '@utils/readFileAsString';
+import { writeFile } from '@utils/writeFile';
 import { v4 as uuid } from 'uuid';
 
 export const createWineAppPipeline = async (options: {
@@ -32,6 +36,46 @@ export const createWineAppPipeline = async (options: {
     setupExecutableURL,
     setupExecutablePath
   } = options.appConfig;
+
+  const WINE_ENV = {
+    get WINE_APP_NAME() {
+      return options.appConfig.name;
+    },
+    get WINE_APP_PATH() {
+      return `${env.get().HOME}/Wine/apps/${WINE_ENV.WINE_APP_NAME}.app`;
+    },
+    get WINE_CONFIG_APP_PATH() {
+      return `${WINE_ENV.WINE_APP_PATH}/Config.app`;
+    },
+    get WINE_APP_DATA_PATH() {
+      return `${WINE_ENV.WINE_CONFIG_APP_PATH}/Contents/Resources/data`;
+    },
+    get WINE_APP_PIPELINE_CONFIG_JSON_PATH() {
+      return `${WINE_ENV.WINE_APP_DATA_PATH}/pipeline.json`;
+    }
+  };
+
+  const pipelineConfig = {
+    appConfig: options.appConfig
+  };
+
+  const readPipelineConfig = async (): Promise<WineAppPipelineConfig> => {
+    const path = WINE_ENV.WINE_APP_PIPELINE_CONFIG_JSON_PATH;
+
+    if (await fileExists(path)) {
+      return JSON.parse(await readFileAsString(path)) as WineAppPipelineConfig;
+    } else {
+      return pipelineConfig;
+    }
+  };
+
+  const writePipelineConfig = async (pipelineConfig: Partial<WineAppPipelineConfig>) => {
+    const updatedPipelineConfig = { ...pipelineConfig };
+    await writeFile(
+      WINE_ENV.WINE_APP_PIPELINE_CONFIG_JSON_PATH,
+      JSON.stringify(updatedPipelineConfig)
+    );
+  };
 
   const checkEngineExists = async () => {
     const ENGINES_PATH = `${env.get().WINE_ENGINES_PATH}`;
@@ -251,5 +295,9 @@ export const createWineAppPipeline = async (options: {
     }
   };
 
-  return pipeline;
+  return {
+    pipeline,
+    readPipelineConfig,
+    writePipelineConfig
+  };
 };

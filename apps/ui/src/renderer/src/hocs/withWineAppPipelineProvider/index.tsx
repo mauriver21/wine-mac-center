@@ -45,7 +45,7 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
     const createWineAppPipeline: WineAppPipelineContextType['createWineAppPipeline'] = async (
       args
     ) => {
-      const pipeline = await baseCreateWineAppPipeline({
+      const instance = await baseCreateWineAppPipeline({
         ...args,
         promptMainExeCallback: async (appExecutables) => {
           setOpenSelectExecutableDialog(true);
@@ -55,8 +55,9 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
           return mainExe;
         }
       });
-      store.current.pipelines.push(pipeline);
-      return pipeline;
+
+      store.current.pipelines.push(instance.pipeline);
+      return instance;
     };
 
     const findWineAppPipeline = (id: string | undefined) =>
