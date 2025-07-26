@@ -10,7 +10,9 @@ export type WineAppPipeline = {
       jobName: string,
       action: 'stdOut' | 'stdErr' | 'exit',
       step: WineAppStep & {
-        script: (args: SpawnProcessArgs) => Promise<void>;
+        script: (args: SpawnProcessArgs) => Promise<{
+          pid: number;
+        }>;
       },
       data: string | number | null,
       updateProcess?: UpdateProcess

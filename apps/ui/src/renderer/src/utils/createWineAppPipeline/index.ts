@@ -11,6 +11,7 @@ import { WineAppStep } from '@interfaces/WineAppStep';
 import { clone } from '@utils/clone';
 import { createEnv } from '@utils/createEnv';
 import { createWineApp } from '@utils/createWineApp';
+import { execCommand } from '@utils/execCommand';
 import { fileExists } from '@utils/fileExists';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
@@ -25,7 +26,7 @@ export const createWineAppPipeline = async (options: {
   mode: WineAppMode;
 }) => {
   const id = uuid();
-  const store = { outputEnabled: true, killAllProcesses: false };
+  const store = { outputEnabled: true, killAllProcesses: false, currentProcess: { pid: 0 } };
   const env = createEnv();
   const {
     iconURL,
@@ -222,7 +223,9 @@ export const createWineAppPipeline = async (options: {
         jobs: pipeline.jobs,
         status: ProcessStatus.Cancelled
       }),
-    kill: () => {
+    kill: async () => {
+      const pid = store.currentProcess.pid;
+      pid && execCommand(`kill -9 ${pid}`);
       store.killAllProcesses = true;
     },
     jobs: [
@@ -345,7 +348,7 @@ export const createWineAppPipeline = async (options: {
             continue;
           }
 
-          await step.script({
+          store.currentProcess = await step.script({
             onStdOut: (data, updateProcess) =>
               this._.std(job.name, 'stdOut', step, data, updateProcess),
             onStdErr: (data, updateProcess) =>
