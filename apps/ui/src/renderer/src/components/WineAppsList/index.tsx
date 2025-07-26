@@ -7,6 +7,7 @@ import {
   DialogContent,
   H6,
   SkeletonLoader,
+  sleep,
   Stack
 } from 'reactjs-ui-core';
 import { useSelector } from 'react-redux';
@@ -18,6 +19,7 @@ import { SearchField } from '@components/SearchField';
 import { SortDirectionSelect } from '@components/SortDirectionSelect';
 import { WineAppsListContext } from '@contexts/WineAppsListContext';
 import { Button } from '@components/Button';
+import { useNavigateApp } from '@hooks/useNavigateApp';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -59,12 +61,15 @@ export const WineAppsList: React.FC = () => {
   const wineAppModel = useWineAppModel();
   const [showDialog, setShowDialog] = useState(false);
   const [appName, setAppName] = useState<string>();
+  const [loading, setLoading] = useState(false);
+  const [appConfigId, setAppConfigId] = useState<string>();
   const [filters, setFilters] = useState<Parameters<typeof wineAppModel.selectWineApps>[1]>({
     criteria: '',
     order: 'asc'
   });
   const { loaders } = wineAppModel;
   const wineApps = useSelector((state: RootState) => wineAppModel.selectWineApps(state, filters));
+  const navigate = useNavigateApp();
 
   useEffect(() => {
     wineAppModel.listAll();
@@ -74,8 +79,18 @@ export const WineAppsList: React.FC = () => {
     setShowDialog(false);
   };
 
+  const navigateToAppPipeline = async () => {
+    setLoading(true);
+    setShowDialog(false);
+    await sleep(200);
+    navigate.navigateToAppPipeline(appConfigId);
+    setLoading(false);
+  };
+
   return (
-    <WineAppsListContext.Provider value={{ showDialog, setShowDialog, appName, setAppName }}>
+    <WineAppsListContext.Provider
+      value={{ showDialog, setShowDialog, appName, setAppName, appConfigId, setAppConfigId }}
+    >
       <Box display="grid" gridTemplateRows="auto 1fr">
         <Stack direction="row" spacing={1} pt={2} px={3}>
           <Stack spacing={1} direction="row" width="100%" maxWidth={450}>
@@ -121,8 +136,14 @@ export const WineAppsList: React.FC = () => {
           <Body1>Select the type of installation:</Body1>
         </DialogContent>
         <DialogActions>
-          <Button>Manual</Button>
-          <Button>Automatic</Button>
+          <Button
+            disabled={loading}
+            onClick={async () => {
+              navigateToAppPipeline();
+            }}
+          >
+            Automatic
+          </Button>
         </DialogActions>
       </Dialog>
     </WineAppsListContext.Provider>
