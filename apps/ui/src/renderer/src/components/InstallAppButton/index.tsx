@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { Button, ButtonProps, CircularProgress, Icon } from 'reactjs-ui-core';
 import { InstallIcon } from '@assets/icons';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
-import { useNavigate } from 'react-router-dom';
+import { useWineAppsListContext } from '@hooks/useWineAppsListContext';
+import { useWineAppModel } from '@models/useWineAppModel';
+import { RootState } from '@interfaces/RootState';
+import { useSelector } from 'react-redux';
 
 export interface InstallAppButtonProps extends ButtonProps {
   appConfigId?: string;
@@ -13,16 +16,20 @@ export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
   onClick: onClickProp,
   ...rest
 }) => {
+  const wineAppModel = useWineAppModel();
+  const wineApp = useSelector((state: RootState) => wineAppModel.selectWineApp(state, appConfigId));
   const wineAppConfigModel = useWineAppConfigModel();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { setShowDialog, setAppName, setAppConfigId } = useWineAppsListContext() || {};
 
   const onClick: InstallAppButtonProps['onClick'] = async (event) => {
     setLoading(true);
     await wineAppConfigModel.read(appConfigId);
     onClickProp?.(event);
     setLoading(false);
-    navigate(`/app-pipeline?appConfigId=${appConfigId}`);
+    setShowDialog?.(true);
+    setAppName?.(wineApp?.name);
+    setAppConfigId?.(appConfigId);
   };
 
   return (

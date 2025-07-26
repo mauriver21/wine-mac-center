@@ -58,7 +58,7 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 export const WineAppsList: React.FC = () => {
   const wineAppModel = useWineAppModel();
   const [showDialog, setShowDialog] = useState(false);
-  const [appName, setAppName] = useState('');
+  const [appName, setAppName] = useState<string>();
   const [filters, setFilters] = useState<Parameters<typeof wineAppModel.selectWineApps>[1]>({
     criteria: '',
     order: 'asc'
