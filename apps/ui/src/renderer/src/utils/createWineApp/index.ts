@@ -154,6 +154,7 @@ export const createWineApp = async (appName: string) => {
       ...args,
       onExit: async (data) => {
         await args?.onExit?.(data);
+        await updateAppConfig({ name: appName });
         await setupAppIcon(params);
         await setupAppArtwork(params);
       }

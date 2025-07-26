@@ -302,9 +302,7 @@ export const createWineAppPipeline = async (options: {
       }
     ],
     async run() {
-      const jobs = await initJobs(pipeline.jobs);
-
-      for (const job of jobs) {
+      for (const job of pipeline.jobs) {
         savePipelineJob(job);
 
         for (const step of job.steps) {
@@ -342,6 +340,8 @@ export const createWineAppPipeline = async (options: {
       }
     }
   };
+
+  await initJobs(pipeline.jobs);
 
   return pipeline;
 };

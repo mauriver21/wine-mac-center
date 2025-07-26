@@ -121,7 +121,7 @@ export const CreateApp: React.FC = () => {
       useWinetricks,
       winetricksVerbs
     } = data;
-    wineAppPipelineModel.runWineAppPipeline({
+    wineAppPipelineModel.runWineAppPipelineByAppConfig({
       id: uuid(),
       name,
       dxvkEnabled,

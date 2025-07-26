@@ -1,4 +1,4 @@
-import { WINE_APP_CONFIG_JSON_PATH } from '@constants/paths';
+import { WINE_APP_CONFIG_JSON_PATH, WINE_APP_PIPELINE_JSON_PATH } from '@constants/paths';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineInstalledApp } from '@interfaces/WineInstalledApp';
 import { fileExists } from '@utils/fileExists';
@@ -7,6 +7,7 @@ import { readDirectory } from '@utils/readDirectory';
 import { useEnv } from '@utils/useEnv';
 import { readFileAsString } from '@utils/readFileAsString';
 import { spawnProcess } from '@utils/spawnProcess';
+import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
 
 export const useWineInstalledAppApiClient = () => {
   const env = useEnv();
@@ -14,22 +15,37 @@ export const useWineInstalledAppApiClient = () => {
 
   const listAll = async () => {
     const directories = await readDirectory(WINE_APPS_PATH);
-    const promises: Array<Promise<{ appPath: string; config: string } | undefined>> = [];
+    const promises: Array<
+      Promise<{ appPath: string; config: string; pipeline: string } | undefined>
+    > = [];
     let configs: Array<WineInstalledApp> = [];
 
     for (const dir of directories) {
       const APP_PATH = `${WINE_APPS_PATH}/${dir}`;
       const CONFIG_FILE = `${APP_PATH}/${WINE_APP_CONFIG_JSON_PATH}`;
-      const promise = new Promise<{ appPath: string; config: string } | undefined>(
-        async (resolve) => {
-          if (await fileExists(CONFIG_FILE)) {
-            const config = await readFileAsString(CONFIG_FILE);
-            resolve({ appPath: APP_PATH, config });
-          } else {
-            resolve(undefined);
-          }
+      const PIPELINE_FILE = `${APP_PATH}/${WINE_APP_PIPELINE_JSON_PATH}`;
+      const promise = new Promise<
+        { appPath: string; config: string; pipeline: string } | undefined
+      >(async (resolve) => {
+        let config = '';
+        let pipeline = '';
+        const hasConfigFile = await fileExists(CONFIG_FILE);
+        const hasPipelineFile = await fileExists(PIPELINE_FILE);
+
+        if (hasConfigFile) {
+          config = await readFileAsString(CONFIG_FILE);
         }
-      );
+
+        if (hasPipelineFile) {
+          pipeline = await readFileAsString(PIPELINE_FILE);
+        }
+
+        if (!hasConfigFile) {
+          resolve(undefined);
+        }
+
+        resolve({ appPath: APP_PATH, config, pipeline });
+      });
       promises.push(promise);
     }
 
@@ -37,13 +53,15 @@ export const useWineInstalledAppApiClient = () => {
       .filter((item) => item !== undefined)
       .map((item) => ({
         ...item,
-        config: parseJson<WineAppConfig>(item?.config)
+        config: parseJson<WineAppConfig>(item?.config),
+        pipeline: parseJson<WineAppPipelineConfig>(item?.pipeline)
       }))
       .map((item) => ({
         ...item.config,
         configId: item.config?.id,
         id: item.config?.appId,
-        appPath: item.appPath
+        appPath: item.appPath,
+        pipeline: item.pipeline
       })) as WineInstalledApp[];
 
     return configs;

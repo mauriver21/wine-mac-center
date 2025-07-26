@@ -29,7 +29,7 @@ export const useWineAppPipelineModel = () => {
         throw Error('Wine application config not found.');
       }
 
-      await runWineAppPipeline({
+      await runWineAppPipelineByAppConfig({
         ...wineAppConfig,
         id: wineAppConfig.id,
         name: wineApp.name,
@@ -40,41 +40,52 @@ export const useWineAppPipelineModel = () => {
     }
   };
 
-  const runWineAppPipeline = async (
+  const loadWineAppPipelineByAppConfig = async (
+    appConfig: Omit<WineAppConfig, 'engineURLs'> & {
+      engineURLs?: string[];
+      name: string;
+    }
+  ) => {
+    let config = {
+      ...appConfig,
+      engineURLs: [...(appConfig.engineURLs || [])]
+    };
+
+    if (!config.engineURLs.length) {
+      config = {
+        ...appConfig,
+        engineURLs: wineEngineModel.findEngineURLs(appConfig.engineVersion)
+      };
+    }
+
+    const iconFile = config.iconFile;
+
+    const pipeline = await createWineAppPipeline({
+      appConfig: { ...config, iconFile },
+      debug: true,
+      outputEveryMs: 1000
+    });
+
+    dispatchPatch({
+      ...pipeline.getInitialStatus(),
+      appConfigId: appConfig.id
+    });
+
+    pipeline.onUpdate((pipelineStatus) => {
+      dispatchPatch({ ...pipelineStatus, appConfigId: appConfig.id });
+    });
+
+    return pipeline;
+  };
+
+  const runWineAppPipelineByAppConfig = async (
     appConfig: Omit<WineAppConfig, 'engineURLs'> & {
       engineURLs?: string[];
       name: string;
     }
   ) => {
     try {
-      let config = {
-        ...appConfig,
-        engineURLs: [...(appConfig.engineURLs || [])]
-      };
-
-      if (!config.engineURLs.length) {
-        config = {
-          ...appConfig,
-          engineURLs: wineEngineModel.findEngineURLs(appConfig.engineVersion)
-        };
-      }
-
-      const iconFile = config.iconFile;
-
-      const pipeline = await createWineAppPipeline({
-        appConfig: { ...config, iconFile },
-        debug: true,
-        outputEveryMs: 1000
-      });
-
-      dispatchPatch({
-        ...pipeline.getInitialStatus(),
-        appConfigId: appConfig.id
-      });
-
-      pipeline.onUpdate((pipelineStatus) => {
-        dispatchPatch({ ...pipelineStatus, appConfigId: appConfig.id });
-      });
+      const pipeline = await loadWineAppPipelineByAppConfig(appConfig);
       pipeline.run();
     } catch (error) {
       appModel.dispatchError(error);
@@ -119,7 +130,7 @@ export const useWineAppPipelineModel = () => {
   );
 
   return {
-    runWineAppPipeline,
+    runWineAppPipelineByAppConfig,
     runWineAppPipelineByAppConfigId,
     killWineAppPipeline,
     clearWineAppPipeline,

@@ -1,9 +1,10 @@
 import { StatusBox } from '@components/StatusBox';
 import { ProcessStatus } from '@constants/enums';
+import { useQueryParam } from '@hooks/useQueryParam';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { alpha } from '@mui/material';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -20,6 +21,8 @@ import {
 } from 'reactjs-ui-core';
 
 export const AppPipeline: React.FC = () => {
+  const queryParam = useQueryParam();
+  const appConfigId = queryParam.get('appConfigId');
   const wineAppPipelineModel = useWineAppPipelineModel();
   const navigate = useNavigate();
   const wineAppPipeline = useSelector((state: RootState) =>
@@ -28,6 +31,10 @@ export const AppPipeline: React.FC = () => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const { realAppName } = useParams();
   contentsAreaRef.current?.refreshTableOfContents();
+
+  useEffect(() => {
+    appConfigId && wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId);
+  }, [appConfigId]);
 
   return (
     <Box display="grid" overflow="auto">

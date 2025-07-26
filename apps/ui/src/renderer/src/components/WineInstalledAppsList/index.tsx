@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-import { AppConfigDialog } from '@components/AppConfigDialog';
 import { InstalledAppCard } from '@components/InstalledAppCard';
 import { SearchField } from '@components/SearchField';
 import { SortDirectionSelect } from '@components/SortDirectionSelect';
@@ -50,7 +49,6 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 export const WineInstalledAppsList: React.FC = () => {
   const navigate = useNavigate();
   const wineInstalledAppModel = useWineInstalledAppModel();
-  const [showDialog, setShowDialog] = useState(false);
   const [filters, setFilters] = useState<
     Parameters<typeof wineInstalledAppModel.selectWineInstalledApps>[1]
   >({ criteria: '', order: 'asc' });
@@ -114,13 +112,6 @@ export const WineInstalledAppsList: React.FC = () => {
           )}
         />
       </SkeletonLoader>
-      <AppConfigDialog
-        setOpen={setShowDialog}
-        open={showDialog}
-        onClose={() => {
-          setShowDialog(false);
-        }}
-      />
     </Box>
   );
 };

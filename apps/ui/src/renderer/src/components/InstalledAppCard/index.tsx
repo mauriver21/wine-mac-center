@@ -2,12 +2,14 @@ import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-ui-cor
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppModel } from '@models/useWineAppModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { getAppArtwork } from '@utils/getAppArtwork';
 import defaultArtwork from '@assets/imgs/header.jpg';
 import { useNavigate } from 'react-router-dom';
+import { ProcessStatus } from '@constants/enums';
 
 export interface InstalledAppCardProps extends CardProps {
   realAppName?: string;
@@ -28,6 +30,10 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName,
 
   const navigateToAppConfig = () => {
     navigate(`/app-config/${installedWineApp?.realAppName}`);
+  };
+
+  const navigateToAppPipeline = () => {
+    navigate(`/app-pipeline/${installedWineApp?.realAppName}`);
   };
 
   useEffect(() => {
@@ -81,15 +87,27 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName,
           </Box>
         </Box>
         <Box display="flex" justifyContent="end">
-          <Button
-            sx={{ borderRadius: 2 }}
-            equalSize={40}
-            color="secondary"
-            title="Configure App"
-            onClick={navigateToAppConfig}
-          >
-            <Icon render={Cog6ToothIcon} />
-          </Button>
+          {installedWineApp?.pipeline?.status == ProcessStatus.Pending ? (
+            <Button
+              sx={{ borderRadius: 2 }}
+              equalSize={40}
+              color="secondary"
+              title="Installation pending"
+              onClick={navigateToAppPipeline}
+            >
+              <Icon color="warning.main" strokeWidth={2} render={ExclamationTriangleIcon} />
+            </Button>
+          ) : (
+            <Button
+              sx={{ borderRadius: 2 }}
+              equalSize={40}
+              color="secondary"
+              title="Configure App"
+              onClick={navigateToAppConfig}
+            >
+              <Icon render={Cog6ToothIcon} />
+            </Button>
+          )}
         </Box>
       </Box>
     </Card>
