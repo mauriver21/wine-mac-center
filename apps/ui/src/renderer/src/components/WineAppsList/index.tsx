@@ -1,5 +1,14 @@
 import React, { forwardRef, useEffect, useState } from 'react';
-import { Box, SkeletonLoader, Stack } from 'reactjs-ui-core';
+import {
+  Body1,
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  H6,
+  SkeletonLoader,
+  Stack
+} from 'reactjs-ui-core';
 import { useSelector } from 'react-redux';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { useWineAppModel } from '@models/useWineAppModel';
@@ -7,6 +16,8 @@ import { RootState } from '@interfaces/RootState';
 import { AppCard } from '@components/AppCard';
 import { SearchField } from '@components/SearchField';
 import { SortDirectionSelect } from '@components/SortDirectionSelect';
+import { WineAppsListContext } from '@contexts/WineAppsListContext';
+import { Button } from '@components/Button';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -46,6 +57,8 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 
 export const WineAppsList: React.FC = () => {
   const wineAppModel = useWineAppModel();
+  const [showDialog, setShowDialog] = useState(false);
+  const [appName, setAppName] = useState('');
   const [filters, setFilters] = useState<Parameters<typeof wineAppModel.selectWineApps>[1]>({
     criteria: '',
     order: 'asc'
@@ -57,39 +70,61 @@ export const WineAppsList: React.FC = () => {
     wineAppModel.listAll();
   }, []);
 
+  const closeDialog = () => {
+    setShowDialog(false);
+  };
+
   return (
-    <Box display="grid" gridTemplateRows="auto 1fr">
-      <Stack direction="row" spacing={1} pt={2} px={3}>
-        <Stack spacing={1} direction="row" width="100%" maxWidth={450}>
-          <SearchField
-            onChange={(event) =>
-              setFilters((prev) => ({
-                ...prev,
-                criteria: event.currentTarget.value
-              }))
-            }
-          />
-          <SortDirectionSelect
-            value={filters?.order}
-            onChange={(order) =>
-              setFilters((prev) => ({
-                ...prev,
-                order
-              }))
-            }
-          />
+    <WineAppsListContext.Provider value={{ showDialog, setShowDialog, appName, setAppName }}>
+      <Box display="grid" gridTemplateRows="auto 1fr">
+        <Stack direction="row" spacing={1} pt={2} px={3}>
+          <Stack spacing={1} direction="row" width="100%" maxWidth={450}>
+            <SearchField
+              onChange={(event) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  criteria: event.currentTarget.value
+                }))
+              }
+            />
+            <SortDirectionSelect
+              value={filters?.order}
+              onChange={(order) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  order
+                }))
+              }
+            />
+          </Stack>
         </Stack>
-      </Stack>
-      <SkeletonLoader loading={loaders.listingAll}>
-        <VirtuosoGrid
-          style={{ height: '100%' }}
-          data={wineApps}
-          components={{ List, Item }}
-          itemContent={(_, wineApp) => (
-            <AppCard key={wineApp.appConfigId} appConfigId={wineApp.appConfigId} />
+        <SkeletonLoader loading={loaders.listingAll}>
+          <VirtuosoGrid
+            style={{ height: '100%' }}
+            data={wineApps}
+            components={{ List, Item }}
+            itemContent={(_, wineApp) => (
+              <AppCard key={wineApp.appConfigId} appConfigId={wineApp.appConfigId} />
+            )}
+          />
+        </SkeletonLoader>
+      </Box>
+      <Dialog onClose={closeDialog} open={showDialog} fullWidth maxWidth="sm">
+        <DialogContent>
+          {appName ? (
+            <H6 color="text.secondary" mb={2}>
+              Install {appName}
+            </H6>
+          ) : (
+            <></>
           )}
-        />
-      </SkeletonLoader>
-    </Box>
+          <Body1>Select the type of installation:</Body1>
+        </DialogContent>
+        <DialogActions>
+          <Button>Manual</Button>
+          <Button>Automatic</Button>
+        </DialogActions>
+      </Dialog>
+    </WineAppsListContext.Provider>
   );
 };
