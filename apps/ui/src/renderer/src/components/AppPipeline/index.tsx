@@ -3,6 +3,7 @@ import { ProcessStatus } from '@constants/enums';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
+import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { alpha } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
@@ -25,12 +26,17 @@ export const AppPipeline: React.FC = () => {
   const appConfigId = queryParam.get('appConfigId');
   const realAppName = queryParam.get('realAppName');
   const wineAppPipelineModel = useWineAppPipelineModel();
+  const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
   const wineAppPipeline = useSelector((state: RootState) =>
     wineAppPipelineModel.selectWineAppPipelineWithMeta(state)
   );
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   contentsAreaRef.current?.refreshTableOfContents();
+  const installedApp = useSelector((state: RootState) =>
+    installedAppModel.selectWineInstalledAppByRealName(state, realAppName)
+  );
+  const pipelineStatus = installedApp?.pipeline?.status;
 
   useEffect(() => {
     appConfigId && wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId);
@@ -138,6 +144,19 @@ export const AppPipeline: React.FC = () => {
                   >
                     Close
                   </Button>
+                )}
+                {pipelineStatus === ProcessStatus.Pending ? (
+                  <Button
+                    sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                    color="secondary"
+                    onClick={() => {
+                      realAppName && wineAppPipelineModel.runWineAppPipelineByAppName(realAppName);
+                    }}
+                  >
+                    Resume
+                  </Button>
+                ) : (
+                  <></>
                 )}
               </Stack>
             </Box>

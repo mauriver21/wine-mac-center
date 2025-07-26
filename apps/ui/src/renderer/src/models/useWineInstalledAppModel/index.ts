@@ -131,7 +131,7 @@ export const useWineInstalledAppModel = () => {
   const selectWineInstalledAppByRealName = createSelector(
     [
       (state: RootState) => selectWineInstalledApps(state),
-      (_: RootState, realAppName?: string) => realAppName
+      (_: RootState, realAppName?: string | null) => realAppName
     ],
     (wineInstalledApps, realAppName) =>
       wineInstalledApps?.find(

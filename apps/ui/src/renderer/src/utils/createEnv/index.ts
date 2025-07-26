@@ -1,5 +1,7 @@
 import { ENV } from '@constants/envs';
 import { buildEnvExports } from '@utils/buildEnvExports';
+import { createDirectory } from '@utils/createDirectory';
+import { dirExists } from '@utils/dirExists';
 import { execCommand } from '@utils/execCommand';
 import { getAppPath } from '@utils/getAppPath';
 import { pathJoin } from '@utils/pathJoin';
@@ -33,11 +35,27 @@ export const createEnv = () => {
     ENV.WINE_LIBS_PATH = `${ENV.HOME}/Wine/libs`;
     ENV.SCRIPTS_PATH = `${ENV.RESOURCES_PATH}/bash`;
     ENV.COMPRESSED_PATH = `${ENV.RESOURCES_PATH}/compressed`;
+
+    await createDirs();
   };
 
   const dirname = () => ENV.DIRNAME;
 
   const getEnvExports = () => buildEnvExports(ENV);
+
+  const createDirs = async () => {
+    if ((await dirExists(ENV.WINE_APPS_PATH)) === false) {
+      await createDirectory(ENV.WINE_APPS_PATH);
+    }
+
+    if ((await dirExists(ENV.WINE_ASSETS_PATH)) === false) {
+      await createDirectory(ENV.WINE_ASSETS_PATH);
+    }
+
+    if ((await dirExists(ENV.WINE_ENGINES_PATH)) === false) {
+      await createDirectory(ENV.WINE_ENGINES_PATH);
+    }
+  };
 
   return {
     dirname,

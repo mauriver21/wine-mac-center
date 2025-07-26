@@ -49,9 +49,10 @@ export const useWineAppPipelineModel = () => {
     );
     try {
       if (installedWineApp === undefined) throw Error('Wine application config not found.');
-      await loadWineAppPipelineByAppConfig(installedWineApp, { keepAppName: true });
+      return await loadWineAppPipelineByAppConfig(installedWineApp, { keepAppName: true });
     } catch (error) {
       appModel.dispatchError(error);
+      return;
     }
   };
 
@@ -93,6 +94,15 @@ export const useWineAppPipelineModel = () => {
     });
 
     return pipeline;
+  };
+
+  const runWineAppPipelineByAppName = async (appName: string) => {
+    try {
+      const pipeline = await loadWineAppPipelineByAppName(appName);
+      pipeline?.run();
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
   };
 
   const runWineAppPipelineByAppConfig = async (
@@ -150,6 +160,7 @@ export const useWineAppPipelineModel = () => {
     loadWineAppPipelineByAppName,
     runWineAppPipelineByAppConfig,
     runWineAppPipelineByAppConfigId,
+    runWineAppPipelineByAppName,
     killWineAppPipeline,
     clearWineAppPipeline,
     dispatchPatch,
