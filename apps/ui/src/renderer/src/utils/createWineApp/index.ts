@@ -21,7 +21,7 @@ import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { isURL } from '@utils/isURL';
 import { AppExecutable } from '@interfaces/AppExecutable';
 
-export const createWineApp = async (appName: string) => {
+export const createWineApp = async (appName: string, options?: { keepAppName?: boolean }) => {
   const env = createEnv();
   const wineEngineApiClient = createWineEngineApiClient();
   const SCRIPTS_PATH = env.get().SCRIPTS_PATH;
@@ -435,7 +435,9 @@ export const createWineApp = async (appName: string) => {
   /**
    * Setup unique app name.
    */
-  await setupUniqueAppName();
+  if (options?.keepAppName !== true) {
+    await setupUniqueAppName();
+  }
 
   /**
    * Initialize app config.
