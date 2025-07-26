@@ -65,7 +65,6 @@ export const useWinetrickApiClient = () => {
 
     let winetricks: Winetricks = {
       apps: [],
-      benchmarks: [],
       dlls: [],
       fonts: [],
       settings: []
@@ -78,14 +77,13 @@ export const useWinetrickApiClient = () => {
     if (!(await fileExists(WINETRICKS_PATH)) || options?.force) {
       const promises = await Promise.all([
         await listApps(),
-        await listBenchmarks(),
         await listDlls(),
         await listFonts(),
         await listSettings()
       ]);
 
-      const [apps, benchmarks, dlls, fonts, settings] = promises;
-      winetricks = { apps, benchmarks, dlls, fonts, settings };
+      const [apps, dlls, fonts, settings] = promises;
+      winetricks = { apps, dlls, fonts, settings };
       await writeFile(WINETRICKS_PATH, JSON.stringify(winetricks));
     } else {
       winetricks = {

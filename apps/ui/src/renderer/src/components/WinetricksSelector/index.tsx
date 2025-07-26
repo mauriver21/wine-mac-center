@@ -15,7 +15,6 @@ export interface WinetricksSelectorProps extends FieldProps {
 
 const CATEGORIES = [
   { key: 'apps', label: 'Apps' },
-  { key: 'benchmarks', label: 'Benchmarks' },
   { key: 'dlls', label: 'Dlls' },
   { key: 'fonts', label: 'Fonts' },
   { key: 'settings', label: 'Settings' }

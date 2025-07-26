@@ -49,7 +49,7 @@ export const AppConfig: React.FC = () => {
   );
 
   const initWineApp = async () => {
-    realAppName && setWineApp(await createWineApp(realAppName));
+    realAppName && setWineApp(await createWineApp(realAppName, { keepAppName: true }));
   };
 
   useEffect(() => {

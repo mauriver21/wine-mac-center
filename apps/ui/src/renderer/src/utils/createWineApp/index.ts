@@ -189,7 +189,7 @@ export const createWineApp = async (appName: string, options?: { keepAppName?: b
 
   const downloadWineEngine = async (urls: string[], version: string, args?: SpawnProcessArgs) => {
     try {
-      const engineTmpFolder = `${WINE_ENV.WINE_TMP_PATH}/${version}`;
+      const engineTmpFolder = `${WINE_ENV.WINE_TMP_PATH}/${version.trim() || 'NO_VERSION'}`;
       let fileNamePart = '';
 
       for (const url of urls) {
@@ -205,6 +205,8 @@ export const createWineApp = async (appName: string, options?: { keepAppName?: b
         const file = await downloadFile(url);
         await writeBinaryFile(`${WINE_ENV.WINE_TMP_PATH}/${version}/${fileName}`, file);
       }
+
+      console.log(`----> ${engineTmpFolder}/${fileNamePart} ${WINE_ENV.WINE_ENGINES_PATH}`, args);
 
       return spawnScript(
         'joinWineEngine',
