@@ -354,8 +354,6 @@ export const createWineAppPipeline = async (options: {
         }
       }
 
-      writePipelineConfig();
-
       if (!store.killAllProcesses) {
         this._.onUpdate?.({
           pipelineId: id,
@@ -364,6 +362,8 @@ export const createWineAppPipeline = async (options: {
         });
         savePipelineStatus(ProcessStatus.Success);
       }
+
+      writePipelineConfig();
     }
   };
 

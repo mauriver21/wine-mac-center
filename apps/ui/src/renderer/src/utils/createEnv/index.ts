@@ -28,11 +28,12 @@ export const createEnv = () => {
     }
 
     ENV.HOME = (await execCommand('echo $HOME')).stdOut.trim();
-    ENV.WINE_APPS_PATH = `${ENV.HOME}/Wine/apps`;
-    ENV.WINE_ASSETS_PATH = `${ENV.HOME}/Wine/assets`;
-    ENV.WINE_ENGINES_PATH = `${ENV.HOME}/Wine/engines`;
-    ENV.WINE_TMP_PATH = `${ENV.HOME}/Wine/tmp`;
-    ENV.WINE_LIBS_PATH = `${ENV.HOME}/Wine/libs`;
+    ENV.WINE_PATH = `${ENV.HOME}/Wine`;
+    ENV.WINE_APPS_PATH = `${ENV.WINE_PATH}/apps`;
+    ENV.WINE_ASSETS_PATH = `${ENV.WINE_PATH}/assets`;
+    ENV.WINE_ENGINES_PATH = `${ENV.WINE_PATH}/engines`;
+    ENV.WINE_TMP_PATH = `${ENV.WINE_PATH}/tmp`;
+    ENV.WINE_LIBS_PATH = `${ENV.WINE_PATH}/libs`;
     ENV.SCRIPTS_PATH = `${ENV.RESOURCES_PATH}/bash`;
     ENV.COMPRESSED_PATH = `${ENV.RESOURCES_PATH}/compressed`;
 
@@ -44,6 +45,10 @@ export const createEnv = () => {
   const getEnvExports = () => buildEnvExports(ENV);
 
   const createDirs = async () => {
+    if ((await dirExists(ENV.WINE_PATH)) === false) {
+      await createDirectory(ENV.WINE_PATH);
+    }
+
     if ((await dirExists(ENV.WINE_APPS_PATH)) === false) {
       await createDirectory(ENV.WINE_APPS_PATH);
     }

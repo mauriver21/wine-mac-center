@@ -46,6 +46,12 @@ export const AppPipeline: React.FC = () => {
     realAppName && wineAppPipelineModel.loadWineAppPipelineByAppName(realAppName);
   }, [realAppName]);
 
+  useEffect(() => {
+    installedAppModel.listAll();
+  }, [wineAppPipeline.status]);
+
+  console.log({ installedApp, status: wineAppPipeline.status });
+
   return (
     <Box display="grid" overflow="auto">
       <ContentsArea

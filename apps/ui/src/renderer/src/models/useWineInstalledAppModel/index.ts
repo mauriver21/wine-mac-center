@@ -145,6 +145,7 @@ export const useWineInstalledAppModel = () => {
     dispatchListAll,
     runApp,
     killApp,
+    dispatchPatch,
     selectWineInstalledAppState,
     selectWineInstalledApps,
     selectWineInstalledAppById,

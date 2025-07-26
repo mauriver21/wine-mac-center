@@ -4,6 +4,7 @@ export const ENV = {
   SCRIPTS_PATH: '',
   COMPRESSED_PATH: '',
   DIRNAME: '',
+  WINE_PATH: '',
   WINE_APPS_PATH: '',
   WINE_ASSETS_PATH: '',
   WINE_ENGINES_PATH: '',
