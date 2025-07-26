@@ -6,6 +6,7 @@ import { WineAppJob } from '@interfaces/WineAppJob';
 import { WineAppJobWithScript } from '@interfaces/WineAppJobWithScript';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
 import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
+import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { WineAppStep } from '@interfaces/WineAppStep';
 import { clone } from '@utils/clone';
 import { createEnv } from '@utils/createEnv';
@@ -151,6 +152,25 @@ export const createWineAppPipeline = async (options: {
     }
 
     return steps;
+  };
+
+  const resetJobStepsStatus = (
+    steps: WineAppJobWithScript['steps'],
+    onUpdate: ((status: WineAppPipelineStatus) => void) | undefined
+  ) => {
+    for (const step of steps) {
+      if (step.status == ProcessStatus.Success) {
+        continue;
+      }
+
+      step.status = ProcessStatus.Pending;
+    }
+
+    onUpdate?.({
+      pipelineId: id,
+      jobs: pipeline.jobs,
+      status: ProcessStatus.Pending
+    });
   };
 
   const concatDataToOutput = (data: string | number | null, output = '') =>
@@ -305,8 +325,13 @@ export const createWineAppPipeline = async (options: {
     async run() {
       for (const job of pipeline.jobs) {
         savePipelineJob(job);
+        resetJobStepsStatus(job.steps, this._.onUpdate);
 
         for (const step of job.steps) {
+          if (step.status == ProcessStatus.Success) {
+            continue;
+          }
+
           if (store.killAllProcesses) {
             step.status = ProcessStatus.Cancelled;
             this._.onUpdate?.({
