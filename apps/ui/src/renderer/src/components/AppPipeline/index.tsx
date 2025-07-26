@@ -6,7 +6,7 @@ import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { alpha } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Body1,
   Box,
@@ -23,18 +23,22 @@ import {
 export const AppPipeline: React.FC = () => {
   const queryParam = useQueryParam();
   const appConfigId = queryParam.get('appConfigId');
+  const realAppName = queryParam.get('realAppName');
   const wineAppPipelineModel = useWineAppPipelineModel();
   const navigate = useNavigate();
   const wineAppPipeline = useSelector((state: RootState) =>
     wineAppPipelineModel.selectWineAppPipelineWithMeta(state)
   );
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  const { realAppName } = useParams();
   contentsAreaRef.current?.refreshTableOfContents();
 
   useEffect(() => {
     appConfigId && wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId);
   }, [appConfigId]);
+
+  useEffect(() => {
+    realAppName && wineAppPipelineModel.loadWineAppPipelineByAppName(realAppName);
+  }, [realAppName]);
 
   return (
     <Box display="grid" overflow="auto">

@@ -33,7 +33,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName,
   };
 
   const navigateToAppPipeline = () => {
-    navigate(`/app-pipeline/${installedWineApp?.realAppName}`);
+    navigate(`/app-pipeline?realAppName=${installedWineApp?.realAppName}`);
   };
 
   useEffect(() => {

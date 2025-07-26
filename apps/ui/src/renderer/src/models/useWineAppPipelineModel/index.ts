@@ -11,10 +11,12 @@ import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useWineAppModel } from '@models/useWineAppModel';
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
+import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
   const wineAppModel = useWineAppModel();
+  const installedWineAppModel = useWineInstalledAppModel();
   const wineAppConfigModel = useWineAppConfigModel();
   const wineEngineModel = useWineEngineModel();
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
@@ -35,6 +37,19 @@ export const useWineAppPipelineModel = () => {
         name: wineApp.name,
         iconURL: wineApp.iconURL
       });
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
+
+  const loadWineAppPipelineByAppName = async (appName: string) => {
+    const installedWineApp = installedWineAppModel.selectWineInstalledAppByRealName(
+      store.getState(),
+      appName
+    );
+    try {
+      if (installedWineApp === undefined) throw Error('Wine application config not found.');
+      await loadWineAppPipelineByAppConfig(installedWineApp);
     } catch (error) {
       appModel.dispatchError(error);
     }
@@ -130,6 +145,7 @@ export const useWineAppPipelineModel = () => {
   );
 
   return {
+    loadWineAppPipelineByAppName,
     runWineAppPipelineByAppConfig,
     runWineAppPipelineByAppConfigId,
     killWineAppPipeline,
