@@ -23,6 +23,7 @@ import { RegistryEditorModule } from '@components/RegistryEditorModule';
 import { TaskManagerModule } from '@components/TaskManagerModule';
 import { CommandLineModule } from '@components/CommandLineModule';
 import { ControlPanelModule } from '@components/ControlPanelModule';
+import { WineAppMode } from '@constants/enums';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -49,7 +50,7 @@ export const AppConfig: React.FC = () => {
   );
 
   const initWineApp = async () => {
-    realAppName && setWineApp(await createWineApp(realAppName, { keepAppName: true }));
+    realAppName && setWineApp(await createWineApp(realAppName, { mode: WineAppMode.Update }));
   };
 
   useEffect(() => {

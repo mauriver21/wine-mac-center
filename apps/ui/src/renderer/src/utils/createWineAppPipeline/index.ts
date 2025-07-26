@@ -1,4 +1,4 @@
-import { ProcessStatus, ExitCode } from '@constants/enums';
+import { ProcessStatus, ExitCode, WineAppMode } from '@constants/enums';
 import { FilePath } from '@interfaces/FilePath';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
@@ -19,10 +19,10 @@ import { v4 as uuid } from 'uuid';
 
 export const createWineAppPipeline = async (options: {
   appConfig: WineAppConfig;
-  keepAppName?: boolean;
   debug?: boolean;
   outputEveryMs?: number;
   promptMainExeCallback?: (appExecutables: Array<FilePath>) => Promise<string>;
+  mode: WineAppMode;
 }) => {
   const id = uuid();
   const store = { outputEnabled: true, killAllProcesses: false };
@@ -40,7 +40,7 @@ export const createWineAppPipeline = async (options: {
     setupExecutablePath
   } = options.appConfig;
 
-  const wineApp = await createWineApp(name, { keepAppName: options.keepAppName });
+  const wineApp = await createWineApp(name, { mode: options.mode });
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
 
@@ -107,6 +107,7 @@ export const createWineAppPipeline = async (options: {
           job.steps[j] = { ...step, ...foundStep };
           j++;
         }
+
         i++;
       }
     }
@@ -354,7 +355,7 @@ export const createWineAppPipeline = async (options: {
         }
       }
 
-      if (!store.killAllProcesses) {
+      if (store.killAllProcesses === false) {
         this._.onUpdate?.({
           pipelineId: id,
           jobs: pipeline.jobs,
@@ -363,7 +364,7 @@ export const createWineAppPipeline = async (options: {
         savePipelineStatus(ProcessStatus.Success);
       }
 
-      writePipelineConfig();
+      await writePipelineConfig();
     }
   };
 

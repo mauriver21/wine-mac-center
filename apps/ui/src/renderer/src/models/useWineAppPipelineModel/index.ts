@@ -12,6 +12,7 @@ import { useWineAppModel } from '@models/useWineAppModel';
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
+import { WineAppMode } from '@constants/enums';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
@@ -22,7 +23,10 @@ export const useWineAppPipelineModel = () => {
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
   const dispatch = useDispatch<Dispatch<WineAppPipelineAction>>();
 
-  const runWineAppPipelineByAppConfigId = async (appConfigId?: string) => {
+  const runWineAppPipelineByAppConfigId = async (
+    appConfigId: string | undefined,
+    options: { mode: WineAppMode }
+  ) => {
     try {
       const wineApp = wineAppModel.selectWineApp(store.getState(), appConfigId);
       const wineAppConfig = wineAppConfigModel.selectWineAppConfig(store.getState(), appConfigId);
@@ -31,29 +35,35 @@ export const useWineAppPipelineModel = () => {
         throw Error('Wine application config not found.');
       }
 
-      await runWineAppPipelineByAppConfig({
-        ...wineAppConfig,
-        id: wineAppConfig.id,
-        name: wineApp.name,
-        iconURL: wineApp.iconURL
-      });
+      await runWineAppPipelineByAppConfig(
+        {
+          ...wineAppConfig,
+          id: wineAppConfig.id,
+          name: wineApp.name,
+          iconURL: wineApp.iconURL
+        },
+        { mode: options.mode }
+      );
     } catch (error) {
       appModel.dispatchError(error);
     }
   };
 
-  const loadWineAppPipelineByAppName = async (appName: string) => {
+  const loadWineAppPipelineByAppName = async (appName: string, options: { mode: WineAppMode }) => {
     const installedWineApp = wineInstalledAppModel.selectWineInstalledAppByRealName(
       store.getState(),
       appName
     );
+    const appConfig = installedWineApp?.pipeline?.appConfig;
 
     try {
-      if (installedWineApp?.pipeline?.appConfig === undefined)
-        throw Error('Wine application config not found.');
-      return await loadWineAppPipelineByAppConfig(installedWineApp?.pipeline?.appConfig, {
-        keepAppName: true
-      });
+      if (appConfig === undefined) throw Error('Wine application config not found.');
+      return await loadWineAppPipelineByAppConfig(
+        { ...appConfig, name: appName },
+        {
+          mode: options.mode
+        }
+      );
     } catch (error) {
       appModel.dispatchError(error);
       return;
@@ -65,7 +75,7 @@ export const useWineAppPipelineModel = () => {
       engineURLs?: string[];
       name: string;
     },
-    options?: { keepAppName?: boolean }
+    options: { mode: WineAppMode }
   ) => {
     let config = {
       ...appConfig,
@@ -85,7 +95,7 @@ export const useWineAppPipelineModel = () => {
       appConfig: { ...config, iconFile },
       debug: true,
       outputEveryMs: 1000,
-      keepAppName: options?.keepAppName
+      mode: options.mode
     });
 
     dispatchPatch({
@@ -100,9 +110,9 @@ export const useWineAppPipelineModel = () => {
     return pipeline;
   };
 
-  const runWineAppPipelineByAppName = async (appName: string) => {
+  const runWineAppPipelineByAppName = async (appName: string, options: { mode: WineAppMode }) => {
     try {
-      const pipeline = await loadWineAppPipelineByAppName(appName);
+      const pipeline = await loadWineAppPipelineByAppName(appName, { mode: options.mode });
       pipeline?.run();
     } catch (error) {
       appModel.dispatchError(error);
@@ -113,10 +123,11 @@ export const useWineAppPipelineModel = () => {
     appConfig: Omit<WineAppConfig, 'engineURLs'> & {
       engineURLs?: string[];
       name: string;
-    }
+    },
+    options: { mode: WineAppMode }
   ) => {
     try {
-      const pipeline = await loadWineAppPipelineByAppConfig(appConfig);
+      const pipeline = await loadWineAppPipelineByAppConfig(appConfig, { mode: options.mode });
       pipeline.run();
     } catch (error) {
       appModel.dispatchError(error);

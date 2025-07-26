@@ -1,5 +1,5 @@
 import { StatusBox } from '@components/StatusBox';
-import { ProcessStatus } from '@constants/enums';
+import { ProcessStatus, WineAppMode } from '@constants/enums';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
@@ -39,18 +39,20 @@ export const AppPipeline: React.FC = () => {
   const pipelineStatus = installedApp?.pipeline?.status;
 
   useEffect(() => {
-    appConfigId && wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId);
+    appConfigId &&
+      wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId, {
+        mode: WineAppMode.Create
+      });
   }, [appConfigId]);
 
   useEffect(() => {
-    realAppName && wineAppPipelineModel.loadWineAppPipelineByAppName(realAppName);
+    realAppName &&
+      wineAppPipelineModel.loadWineAppPipelineByAppName(realAppName, { mode: WineAppMode.Update });
   }, [realAppName]);
 
   useEffect(() => {
     installedAppModel.listAll();
   }, [wineAppPipeline.status]);
-
-  console.log({ installedApp, status: wineAppPipeline.status });
 
   return (
     <Box display="grid" overflow="auto">
@@ -156,7 +158,10 @@ export const AppPipeline: React.FC = () => {
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                     color="secondary"
                     onClick={() => {
-                      realAppName && wineAppPipelineModel.runWineAppPipelineByAppName(realAppName);
+                      realAppName &&
+                        wineAppPipelineModel.runWineAppPipelineByAppName(realAppName, {
+                          mode: WineAppMode.Update
+                        });
                     }}
                   >
                     Resume

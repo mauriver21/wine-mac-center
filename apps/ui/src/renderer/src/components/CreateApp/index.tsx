@@ -19,7 +19,7 @@ import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
-import { FileFilter } from '@constants/enums';
+import { FileFilter, WineAppMode } from '@constants/enums';
 import {
   CpuChipIcon,
   PencilSquareIcon,
@@ -121,16 +121,19 @@ export const CreateApp: React.FC = () => {
       useWinetricks,
       winetricksVerbs
     } = data;
-    wineAppPipelineModel.runWineAppPipelineByAppConfig({
-      id: uuid(),
-      name,
-      dxvkEnabled,
-      engineVersion,
-      setupExecutablePath,
-      iconFile: await data.iconFile?.arrayBuffer(),
-      artworkFile: await data.artworkFile?.arrayBuffer(),
-      winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
-    });
+    wineAppPipelineModel.runWineAppPipelineByAppConfig(
+      {
+        id: uuid(),
+        name,
+        dxvkEnabled,
+        engineVersion,
+        setupExecutablePath,
+        iconFile: await data.iconFile?.arrayBuffer(),
+        artworkFile: await data.artworkFile?.arrayBuffer(),
+        winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
+      },
+      { mode: WineAppMode.Create }
+    );
     reset();
     navigate(`/app-pipeline/${name}?source=apps`);
   };

@@ -10,7 +10,7 @@ import { dirExists } from '@utils/dirExists';
 import { downloadFile } from '@utils/downloadFile';
 import { fileExists } from '@utils/fileExists';
 import { createEnv } from '@utils/createEnv';
-import { FileName } from '@constants/enums';
+import { FileName, WineAppMode } from '@constants/enums';
 import { spawnProcess as baseSpawnProcess } from '@utils/spawnProcess';
 import { writeFile } from '@utils/writeFile';
 import { createWineEngineApiClient } from '@api-clients/createWineEngineApiClient';
@@ -21,7 +21,7 @@ import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { isURL } from '@utils/isURL';
 import { AppExecutable } from '@interfaces/AppExecutable';
 
-export const createWineApp = async (appName: string, options?: { keepAppName?: boolean }) => {
+export const createWineApp = async (appName: string, options: { mode: WineAppMode }) => {
   const env = createEnv();
   const wineEngineApiClient = createWineEngineApiClient();
   const SCRIPTS_PATH = env.get().SCRIPTS_PATH;
@@ -205,8 +205,6 @@ export const createWineApp = async (appName: string, options?: { keepAppName?: b
         const file = await downloadFile(url);
         await writeBinaryFile(`${WINE_ENV.WINE_TMP_PATH}/${version}/${fileName}`, file);
       }
-
-      console.log(`----> ${engineTmpFolder}/${fileNamePart} ${WINE_ENV.WINE_ENGINES_PATH}`, args);
 
       return spawnScript(
         'joinWineEngine',
@@ -437,7 +435,7 @@ export const createWineApp = async (appName: string, options?: { keepAppName?: b
   /**
    * Setup unique app name.
    */
-  if (options?.keepAppName !== true) {
+  if (options.mode === WineAppMode.Create) {
     await setupUniqueAppName();
   }
 
