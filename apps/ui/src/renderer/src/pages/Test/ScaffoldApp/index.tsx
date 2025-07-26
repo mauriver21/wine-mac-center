@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Button, Stack, TextField } from 'reactjs-ui-core';
 import { useWineAppContext } from '@pages/Test';
 import { Code } from '@components/Code';
+import { findOutputPID } from '@utils/findOutputPID';
 
 export const ScaffoldApp: React.FC = () => {
   const { wineApp } = useWineAppContext();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();
+  const [pid, setPid] = useState(0);
 
   const scaffoldApp = async () => {
     setLoading(true);
@@ -14,6 +16,8 @@ export const ScaffoldApp: React.FC = () => {
       { appIconURL: '' },
       {
         onStdOut: (data) => {
+          const pid = findOutputPID(data);
+          pid && setPid(pid);
           setData(data);
         },
         onStdErr: (data) => {
@@ -31,6 +35,7 @@ export const ScaffoldApp: React.FC = () => {
         <h3>Scaffold App</h3>
         <hr />
       </div>
+      <p>PID: {pid}</p>
       <TextField
         InputProps={{ readOnly: true }}
         label="Application name"

@@ -17,4 +17,6 @@ mkdir -p "$WINE_APP_ENGINE_PATH"
 mkdir -p "$WINE_APP_PREFIX_PATH"
 
 # Frameworks path is taken from Config.app env
-tar -xf "$COMPRESSED_PATH/Frameworks.zip" -C "$WINE_APP_CONTENTS_PATH" -v
+tar -xf "$COMPRESSED_PATH/Frameworks.zip" -C "$WINE_APP_CONTENTS_PATH" -v &
+PID=$!
+echo "[PID_START]$PID[PID_END]"
