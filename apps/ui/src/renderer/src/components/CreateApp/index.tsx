@@ -141,6 +141,7 @@ export const CreateApp: React.FC = () => {
       dxvkEnabled,
       engineVersion,
       setupExecutablePath,
+      appFolderPath,
       useWinetricks,
       winetricksVerbs
     } = data;
@@ -151,6 +152,7 @@ export const CreateApp: React.FC = () => {
         dxvkEnabled,
         engineVersion,
         setupExecutablePath,
+        appFolderPath,
         iconFile: await data.iconFile?.arrayBuffer(),
         artworkFile: await data.artworkFile?.arrayBuffer(),
         winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined

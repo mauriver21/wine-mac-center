@@ -90,6 +90,12 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
     },
     get WINE_APP_DRIVE_C_PATH() {
       return `${WINE_ENV.WINE_APP_PREFIX_PATH}/drive_c`;
+    },
+    get WINE_APP_PROGRAM_FILES() {
+      return `${WINE_ENV.WINE_APP_DRIVE_C_PATH}/Program Files`;
+    },
+    get WINE_APP_PROGRAM_FILES_X86() {
+      return `${WINE_ENV.WINE_APP_DRIVE_C_PATH}/Program Files (x86)`;
     }
   };
 
@@ -281,6 +287,17 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
   };
 
   /**
+   * Copy windows application.
+   */
+  const copyWindowsApplication = (appFolderPath: string, processArgs?: SpawnProcessArgs) => {
+    return spawnScript(
+      'copyWindowsApplication',
+      `${appFolderPath.replace(/( |\\ )/g, '\\ ')}`,
+      processArgs
+    );
+  };
+
+  /**
    * Run winecfg.
    */
   const winecfg = (processArgs?: SpawnProcessArgs) => {
@@ -462,6 +479,7 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
     control,
     winetrick,
     runExe,
+    copyWindowsApplication,
     setSetupExe,
     bundleApp,
     setupAppArtwork,

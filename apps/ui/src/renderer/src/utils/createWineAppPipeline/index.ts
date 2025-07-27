@@ -38,7 +38,8 @@ export const createWineAppPipeline = async (options: {
     dxvkEnabled,
     winetricks,
     setupExecutableURL,
-    setupExecutablePath
+    setupExecutablePath,
+    appFolderPath
   } = options.appConfig;
 
   const wineApp = await createWineApp(name, { mode: options.mode });
@@ -290,16 +291,31 @@ export const createWineAppPipeline = async (options: {
                 }
               ]
             : []),
-          {
-            name: 'Running setup executable',
-            script: (args) => {
-              setupExecutablePath && wineApp.setSetupExe(setupExecutablePath);
-              console.log({ setupExePath: wineApp.getAppConfig().setupExecutablePath });
-              return wineApp.runExe(wineApp.getAppConfig().setupExecutablePath || '', args);
-            },
-            status: ProcessStatus.Pending,
-            output: ''
-          },
+          ...(setupExecutablePath
+            ? [
+                {
+                  name: 'Running setup executable',
+                  script: (args?: SpawnProcessArgs) => {
+                    setupExecutablePath && wineApp.setSetupExe(setupExecutablePath);
+                    return wineApp.runExe(wineApp.getAppConfig().setupExecutablePath || '', args);
+                  },
+                  status: ProcessStatus.Pending,
+                  output: ''
+                }
+              ]
+            : []),
+          ...(appFolderPath
+            ? [
+                {
+                  name: 'Copying windows application',
+                  script: (args?: SpawnProcessArgs) => {
+                    return wineApp.copyWindowsApplication(appFolderPath || '', args);
+                  },
+                  status: ProcessStatus.Pending,
+                  output: ''
+                }
+              ]
+            : []),
           {
             name: 'Bundling app',
             script: async (args) => {

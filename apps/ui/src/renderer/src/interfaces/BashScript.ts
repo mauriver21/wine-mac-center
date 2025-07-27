@@ -4,6 +4,7 @@ export type BashScript =
   | 'joinWineEngine'
   | 'cmd'
   | 'control'
+  | 'copyWindowsApplication'
   | 'scaffoldApp'
   | 'extractWineEngine'
   | 'listAppExecutables'

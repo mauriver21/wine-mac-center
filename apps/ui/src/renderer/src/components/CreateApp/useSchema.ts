@@ -5,7 +5,7 @@ import { schema, Schema } from 'reactjs-ui-form-fields';
 
 export type FormSchema = Pick<
   WineAppConfig,
-  'name' | 'engineVersion' | 'dxvkEnabled' | 'setupExecutablePath'
+  'name' | 'engineVersion' | 'dxvkEnabled' | 'setupExecutablePath' | 'appFolderPath'
 > & {
   artworkFile?: File;
   iconFile?: File;
