@@ -1,1 +1,1 @@
-find "$WINE_APP_DRIVE_C_PATH" -type f -path "*Program Files*" -name "*.exe"
+find "$WINE_APP_DRIVE_C_PATH" -type f -name "*.exe"

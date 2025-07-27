@@ -66,10 +66,16 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                   <Select
                     label="Select the main executable"
                     value={mainExecutablePath}
-                    options={appExecutables.map((item) => ({
-                      value: item.path,
-                      label: item.name
-                    }))}
+                    options={appExecutables
+                      .map((item) => ({
+                        value: item.path,
+                        label: item.name
+                      }))
+                      .sort((a, b) => {
+                        if (a.label < b.label) return -1;
+                        if (a.label > b.label) return 1;
+                        return 0;
+                      })}
                     onChange={async (event) => {
                       const path = event.target.value as string;
                       setMainExecutablePath(event.target.value as string);

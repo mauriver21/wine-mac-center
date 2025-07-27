@@ -135,7 +135,7 @@ export const CreateApp: React.FC = () => {
       { mode: WineAppMode.Create }
     );
     reset();
-    navigate(`/app-pipeline/${name}?source=apps`);
+    navigate(`/app-pipeline/${name}`);
   };
 
   return (

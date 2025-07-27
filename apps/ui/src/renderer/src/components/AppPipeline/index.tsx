@@ -7,7 +7,7 @@ import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { alpha } from '@mui/material';
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Body1,
   Box,
@@ -25,6 +25,7 @@ export const AppPipeline: React.FC = () => {
   const queryParam = useQueryParam();
   const appConfigId = queryParam.get('appConfigId');
   const realAppName = queryParam.get('realAppName');
+  const { realAppName: realAppNameParam } = useParams();
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ export const AppPipeline: React.FC = () => {
             }}
           >
             <H6 color="text.secondary" fontWeight={500}>
-              {realAppName || wineAppPipeline.meta.wineApp?.name}
+              {realAppNameParam || realAppName || wineAppPipeline.meta.wineApp?.name}
             </H6>
           </Box>
           <Box
