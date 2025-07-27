@@ -9,6 +9,7 @@ export type FilePathInputProps = Omit<TextFieldProps, 'type' | 'label' | 'accept
   selectedFileLabel?: string;
   filters?: Array<{ name: string; extensions: string[] }>;
   dialogText?: string;
+  properties?: Electron.OpenDialogOptions['properties'];
 };
 
 export const FilePathInput: React.FC<FilePathInputProps> = ({
@@ -21,6 +22,7 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
   selectedFileLabel,
   dialogText = 'Select file',
   filters,
+  properties,
   ...rest
 }) => {
   const [filePath, setFilePath] = useState('');
@@ -28,7 +30,8 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
   const selectFile = async () => {
     const result = await showOpenDialog({
       title: dialogText,
-      filters
+      filters,
+      properties
     });
 
     return result.filePaths;

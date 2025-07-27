@@ -30,7 +30,13 @@ export const useSchema = () => {
           message: 'File exceeds 1000kb',
           test: (file) => fileMaxSize(file, 1000000)
         }),
-        setupExecutablePath: schema.string().required(),
+        installBy: schema.string().required().default('executable'),
+        setupExecutablePath: schema
+          .string()
+          .when('installBy', { is: 'executable', then: (schema) => schema.required() }),
+        appFolderPath: schema
+          .string()
+          .when('installBy', { is: 'path', then: (schema) => schema.required() }),
         useWinetricks: schema.bool().required().default(false),
         winetricksVerbs: schema
           .array()

@@ -14,7 +14,7 @@ import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
-import { TextField, Checkbox, useForm } from 'reactjs-ui-form-fields';
+import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
@@ -59,14 +59,37 @@ export const CreateApp: React.FC = () => {
       <Grid container>
         <Grid item xs={9.5}>
           <Stack spacing={1.5}>
-            <FilePathInput
+            <Select
+              label="Install By"
+              name="installBy"
               control={form.control}
-              filters={FileFilter.WindowsExecutables}
-              noSelectedFileLabel="Select Setup Executable"
-              selectedFileLabel="Change Setup Executable"
-              name="setupExecutablePath"
+              options={[
+                { value: 'executable', label: 'Setup Executable' },
+                { value: 'folder', label: 'Copying Application Folder' }
+              ]}
             />
-            {/* <TextField label="Exe flags" /> */}
+            {form.watch('installBy') === 'executable' ? (
+              <FilePathInput
+                control={form.control}
+                filters={FileFilter.WindowsExecutables}
+                noSelectedFileLabel="Select Setup Executable"
+                selectedFileLabel="Change Setup Executable"
+                name="setupExecutablePath"
+              />
+            ) : (
+              <></>
+            )}
+            {form.watch('installBy') === 'folder' ? (
+              <FilePathInput
+                control={form.control}
+                properties={['openDirectory']}
+                noSelectedFileLabel="Select Folder Path"
+                selectedFileLabel="Change Folder Path"
+                name="appFolderPath"
+              />
+            ) : (
+              <></>
+            )}
             <IconInput
               type="image"
               imgSrc={iconSrc}
