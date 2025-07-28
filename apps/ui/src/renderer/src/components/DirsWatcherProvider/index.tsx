@@ -1,5 +1,7 @@
+import { WINE_APPS_PATH, WINE_ENGINES_PATH } from '@constants/paths';
 import { DirsWatcherContext } from '@contexts/DirsWatcherContext';
 import { WatchDirEvent } from '@interfaces/WatchDirEvent';
+import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { createDirsWatcher } from '@utils/createDirsWatcher';
 import { useEnv } from '@utils/useEnv';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -11,6 +13,7 @@ export interface DirsWatcherProviderProps {
 export const DirsWatcherProvider: React.FC<DirsWatcherProviderProps> = ({ children }) => {
   const store = useRef({ listenerId: '' });
   const env = useEnv();
+  const wineInstalledAppModel = useWineInstalledAppModel();
   const [watchDirEvent, setWatchDirEvent] = useState<WatchDirEvent>();
   const dirsWatcher = useMemo(() => {
     return createDirsWatcher();
@@ -30,7 +33,15 @@ export const DirsWatcherProvider: React.FC<DirsWatcherProviderProps> = ({ childr
     };
   }, []);
 
-  console.log({ watchDirEvent });
+  useEffect(() => {
+    if (watchDirEvent?.from?.match(WINE_APPS_PATH)) {
+      wineInstalledAppModel.listAll();
+    }
+
+    if (watchDirEvent?.from?.match(WINE_ENGINES_PATH)) {
+      console.log(2);
+    }
+  }, [watchDirEvent?.id]);
 
   return (
     <DirsWatcherContext.Provider value={{ watchDirEvent }}>{children}</DirsWatcherContext.Provider>
