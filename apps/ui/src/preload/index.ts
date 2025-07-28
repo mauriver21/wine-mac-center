@@ -1,8 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
+import { v4 as uuid } from 'uuid';
 import { ElectronApi } from '../types/ElectronApi';
 import { RendererApi } from '../types/RendererApi';
 import { WatchDirEvent } from '../types';
+
+const listeners = {};
 
 // Custom APIs for renderer
 const api: RendererApi = {
@@ -37,9 +40,14 @@ const api: RendererApi = {
     };
     ipcRenderer.on(ElectronApi.SpawnExit, cleanupOnExit);
   },
-  onWatchDir: (callback: (event: WatchDirEvent) => void) => {
-    const listener = (_, event) => callback(event);
-    ipcRenderer.on(ElectronApi.FolderChange, listener);
+  subscribeToWatchDirs: (callback: (event: WatchDirEvent) => void) => {
+    const id = uuid();
+    listeners[id] = (_, event: WatchDirEvent) => callback({ ...event, listenerId: id });
+    ipcRenderer.on(ElectronApi.SubscribeWatchDirs, listeners[id]);
+  },
+  unsubscribeFromWatchDirs: (listenerId: string) => {
+    listeners[listenerId] &&
+      ipcRenderer.removeListener(ElectronApi.SubscribeWatchDirs, listeners[listenerId]);
   },
   fileExists: (...args) => ipcRenderer.invoke(ElectronApi.FileExists, ...args),
   writeFile: (...args) => ipcRenderer.invoke(ElectronApi.WriteFile, ...args),

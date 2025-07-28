@@ -27,5 +27,6 @@ export type Api = {
   onExit: (callback: (code: number) => void) => void;
   watchDirs: (dirPaths: Array<string>) => void;
   unwatchDirs: () => Promise<void>;
-  onWatchDir: (callback: (event: WatchDirEvent) => void) => void;
+  subscribeToWatchDirs: (callback: (event: WatchDirEvent) => void) => void;
+  unsubscribeFromWatchDirs: (listenerId: string) => void;
 };

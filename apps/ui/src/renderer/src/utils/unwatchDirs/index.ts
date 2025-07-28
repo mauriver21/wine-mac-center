@@ -1,1 +1,1 @@
-export const unwatchDirs = () => window.api.unwatchDirs();
+export const unwatchDirs = window.api.unwatchDirs;
