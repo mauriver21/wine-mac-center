@@ -15,6 +15,8 @@ import {
   readFileAsString,
   showOpenDialog,
   spawn,
+  unwatchDirs,
+  watchDirs,
   writeBinaryFile,
   writeFile
 } from './commands';
@@ -33,6 +35,8 @@ ipcMain.handle(ElectronApi.CreateDirectory, createDirectory);
 ipcMain.handle(ElectronApi.ReadFileAsString, readFileAsString);
 ipcMain.handle(ElectronApi.WriteBinaryFile, writeBinaryFile);
 ipcMain.handle(ElectronApi.ShowOpenDialog, showOpenDialog);
+ipcMain.handle(ElectronApi.WatchDirs, watchDirs);
+ipcMain.handle(ElectronApi.UnwatchDirs, unwatchDirs);
 
 function createWindow(): void {
   singleton.mainWindow = new BrowserWindow({

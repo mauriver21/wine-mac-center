@@ -15,5 +15,7 @@ export enum ElectronApi {
   SpawnStdout = 'spawn-stdout',
   SpawnStderr = 'spawn-stderr',
   SpawnExit = 'spawn-exit',
-  FolderChange = 'folder-change'
+  FolderChange = 'folder-change',
+  WatchDirs = 'watch-dirs',
+  UnwatchDirs = 'unwatch-dirs'
 }

@@ -24,6 +24,8 @@ type Api = {
   onStdOut: (callback: (data: string) => void) => void;
   onStdErr: (callback: (data: string) => void) => void;
   onExit: (callback: (code: number) => void) => void;
+  watchDirs: (dirPaths: Array<string>) => void;
+  unwatchDirs: (_: Electron.IpcMainInvokeEvent) => Promise<void>;
 };
 
 export type RendererApi = {

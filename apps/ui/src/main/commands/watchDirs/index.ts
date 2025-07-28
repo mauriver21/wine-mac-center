@@ -2,7 +2,7 @@ import { watch } from 'chokidar';
 import { singleton } from '../../singleton';
 import { ElectronApi } from '../../types/ElectronApi';
 
-export const watchDirs = (dirPaths: Array<string>) => {
+export const watchDirs = (_: Electron.IpcMainInvokeEvent, dirPaths: Array<string>) => {
   for (const dirPath of dirPaths) {
     const watcher = watch(dirPath, { ignoreInitial: true });
     const { mainWindow } = singleton;
