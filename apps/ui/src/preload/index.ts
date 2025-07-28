@@ -1,7 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
-import { ElectronApi } from '../main/types/ElectronApi';
-import { RendererApi } from './types/RendererApi';
+import { ElectronApi } from '../types/ElectronApi';
+import { RendererApi } from '../types/RendererApi';
+import { WatchDirEvent } from '../types';
 
 // Custom APIs for renderer
 const api: RendererApi = {
@@ -28,13 +29,17 @@ const api: RendererApi = {
     ipcRenderer.on(ElectronApi.SpawnExit, cleanupOnExit);
   },
   onExit: (callback: (code: number) => void) => {
-    const listener = (_, data) => callback(data);
+    const listener = (_, code) => callback(code);
     ipcRenderer.on(ElectronApi.SpawnExit, listener);
     const cleanupOnExit = (_: Electron.IpcRendererEvent, _exitCode: number) => {
       ipcRenderer.removeListener(ElectronApi.SpawnExit, listener);
       ipcRenderer.removeListener(ElectronApi.SpawnExit, cleanupOnExit);
     };
     ipcRenderer.on(ElectronApi.SpawnExit, cleanupOnExit);
+  },
+  onWatchDir: (callback: (event: WatchDirEvent) => void) => {
+    const listener = (_, event) => callback(event);
+    ipcRenderer.on(ElectronApi.FolderChange, listener);
   },
   fileExists: (...args) => ipcRenderer.invoke(ElectronApi.FileExists, ...args),
   writeFile: (...args) => ipcRenderer.invoke(ElectronApi.WriteFile, ...args),

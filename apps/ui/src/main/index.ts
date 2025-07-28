@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import { ElectronApi } from './types/ElectronApi';
+import { ElectronApi } from '../types/ElectronApi';
 import { singleton } from './singleton';
 import {
   createDirectory,

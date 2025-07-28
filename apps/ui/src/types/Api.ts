@@ -1,7 +1,8 @@
 import { dialog } from 'electron';
 import { PathOrFileDescriptor } from 'fs';
+import { WatchDirEvent } from './WatchDirEvent';
 
-type Api = {
+export type Api = {
   getAppPath: () => Promise<string>;
   execCommand: (cmd: string) => Promise<{
     stdOut: string;
@@ -25,9 +26,6 @@ type Api = {
   onStdErr: (callback: (data: string) => void) => void;
   onExit: (callback: (code: number) => void) => void;
   watchDirs: (dirPaths: Array<string>) => void;
-  unwatchDirs: (_: Electron.IpcMainInvokeEvent) => Promise<void>;
-};
-
-export type RendererApi = {
-  [K in keyof Api]: (...args: Parameters<Api[K]>) => ReturnType<Api[K]>;
+  unwatchDirs: () => Promise<void>;
+  onWatchDir: (callback: (event: WatchDirEvent) => void) => void;
 };

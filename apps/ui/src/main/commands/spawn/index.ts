@@ -1,7 +1,7 @@
 import { ChildProcessWithoutNullStreams, spawn as nodeSpawn } from 'child_process';
 import { v4 as uuid } from 'uuid';
 import { singleton } from '../../singleton';
-import { ElectronApi } from '../../types/ElectronApi';
+import { ElectronApi } from '../../../types/ElectronApi';
 
 const processMap = new Map<string, ChildProcessWithoutNullStreams>();
 

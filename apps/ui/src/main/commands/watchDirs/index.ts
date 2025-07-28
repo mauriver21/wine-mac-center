@@ -1,6 +1,6 @@
 import { watch } from 'chokidar';
 import { singleton } from '../../singleton';
-import { ElectronApi } from '../../types/ElectronApi';
+import { ElectronApi } from '../../../types/ElectronApi';
 
 export const watchDirs = (_: Electron.IpcMainInvokeEvent, dirPaths: Array<string>) => {
   for (const dirPath of dirPaths) {
@@ -9,10 +9,18 @@ export const watchDirs = (_: Electron.IpcMainInvokeEvent, dirPaths: Array<string
 
     watcher
       .on('add', (filePath) => {
-        mainWindow?.webContents.send(ElectronApi.FolderChange, { type: 'add', filePath });
+        mainWindow?.webContents.send(ElectronApi.FolderChange, {
+          type: 'add',
+          from: dirPath,
+          filePath
+        });
       })
       .on('unlink', (filePath) => {
-        mainWindow?.webContents.send(ElectronApi.FolderChange, { type: 'unlink', filePath });
+        mainWindow?.webContents.send(ElectronApi.FolderChange, {
+          type: 'unlink',
+          from: dirPath,
+          filePath
+        });
       });
 
     singleton.watchers.push(watcher);
