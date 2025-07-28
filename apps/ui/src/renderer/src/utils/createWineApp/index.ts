@@ -286,6 +286,10 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
     return spawnScript('wine', `WINDOWS_EXE ${args.replace(/( |\\ )/g, '\\ ')}`, processArgs);
   };
 
+  const runMainExe = (processArgs?: SpawnProcessArgs) => {
+    return spawnScript('runExecutable', '', processArgs);
+  };
+
   /**
    * Copy windows application.
    */
@@ -479,6 +483,7 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
     control,
     winetrick,
     runExe,
+    runMainExe,
     copyWindowsApplication,
     setSetupExe,
     bundleApp,

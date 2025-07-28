@@ -12,6 +12,7 @@ export type BashScript =
   | 'regedit'
   | 'taskmgr'
   | 'uninstaller'
+  | 'runExecutable'
   | 'wine'
   | 'wineboot'
   | 'winecfg'

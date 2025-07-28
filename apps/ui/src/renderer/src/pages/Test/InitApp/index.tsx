@@ -11,7 +11,7 @@ export const InitApp: React.FC = () => {
 
   const start = async () => {
     setLoading(true);
-    const wineApp = await createWineApp(appName, { mode: WineAppMode.Create });
+    const wineApp = await createWineApp(appName, { mode: WineAppMode.Update });
     setWineApp(wineApp);
     setLoading(false);
   };

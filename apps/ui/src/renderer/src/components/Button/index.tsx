@@ -3,12 +3,12 @@ import { Button as BaseButton, ButtonProps as BaseButtonProps } from 'reactjs-ui
 
 export interface ButtonProps extends BaseButtonProps {}
 
-export const Button: React.FC<ButtonProps> = (props) => {
+export const Button: React.FC<ButtonProps> = ({ sx, ...rest }) => {
   return (
     <BaseButton
-      sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+      sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}`, ...sx }}
       color="secondary"
-      {...props}
+      {...rest}
     />
   );
 };

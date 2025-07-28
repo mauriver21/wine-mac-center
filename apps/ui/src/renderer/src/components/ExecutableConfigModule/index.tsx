@@ -1,6 +1,5 @@
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { IconInput } from '@components/IconInput';
-import { AppExecutable } from '@interfaces/AppExecutable';
 import { useEffect, useState } from 'react';
 import {
   Grid,
@@ -8,21 +7,23 @@ import {
   Icon,
   H6,
   ContentsClass,
-  Select,
   TextField,
   CardContent,
-  Card
+  Card,
+  Body1
 } from 'reactjs-ui-core';
 import { useAppConfigContext } from '@hooks/useAppConfigContext';
 import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
+import { FilePathInput } from '@components/FilePathInput';
+import { Button } from '@components/Button';
 
 export interface ExecutableConfigModuleProps {
   realAppName: string | undefined;
 }
 
 export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ realAppName }) => {
-  const { wineApp, setLoading, refresh, signal } = useAppConfigContext() || {};
-  const [appExecutables, setAppExecutables] = useState<AppExecutable[]>([]);
+  const { wineApp, loading, setLoading, refresh, signal } = useAppConfigContext() || {};
+  const [driveCPath, setDriveCPath] = useState<string>('');
   const [mainExecutablePath, setMainExecutablePath] = useState<string>('');
   const [mainExecutableFlags, setMainExecutableFlags] = useState<string>('');
 
@@ -37,6 +38,12 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
     setMainExecutableFlags(mainExecutableFlags);
   };
 
+  const runExe = async () => {
+    setLoading?.(true);
+    await wineApp?.runMainExe();
+    setLoading?.(false);
+  };
+
   useEffect(() => {
     if (appConfig?.name) {
       loadMainExecutable();
@@ -45,7 +52,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
 
   useEffect(() => {
     (async () => {
-      wineApp && setAppExecutables(await wineApp.listAppExecutables());
+      wineApp && setDriveCPath(wineApp.getWineEnv().WINE_APP_DRIVE_C_PATH);
     })();
   }, [appConfig?.id]);
 
@@ -63,22 +70,14 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
             <Grid container spacing={2}>
               <Grid item xs={9.5}>
                 <Stack spacing={1.5}>
-                  <Select
-                    label="Select the main executable"
+                  <FilePathInput
+                    relativeToDriveC
+                    noSelectedFileLabel="Select Executable"
+                    selectedFileLabel="Change Executable"
+                    defaultPath={driveCPath}
                     value={mainExecutablePath}
-                    options={appExecutables
-                      .map((item) => ({
-                        value: item.path,
-                        label: item.name
-                      }))
-                      .sort((a, b) => {
-                        if (a.label < b.label) return -1;
-                        if (a.label > b.label) return 1;
-                        return 0;
-                      })}
-                    onChange={async (event) => {
-                      const path = event.target.value as string;
-                      setMainExecutablePath(event.target.value as string);
+                    onInput={async (path) => {
+                      setMainExecutablePath(path);
                       setLoading?.(true);
                       await wineApp?.updateMainExecutablePath?.(path);
                       setLoading?.(false);
@@ -120,6 +119,23 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                   appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
                   realAppName={realAppName}
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <Stack width="100%" alignItems="flex-end">
+                  <Button
+                    title={`Run Change Engine`}
+                    disabled={wineApp === undefined || loading}
+                    color="secondary"
+                    onClick={runExe}
+                    sx={{
+                      width: 90,
+                      height: 60,
+                      border: (theme) => `1px solid ${theme.palette.primary.main}`
+                    }}
+                  >
+                    <Body1>Run</Body1>
+                  </Button>
+                </Stack>
               </Grid>
             </Grid>
           </Grid>

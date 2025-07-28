@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Button, TextField } from 'reactjs-ui-core';
 import { Field, TextFieldProps } from 'reactjs-ui-form-fields';
 import { InputAdornment } from '@mui/material';
 import { showOpenDialog } from '@utils/showOpenDialog';
+import { DRIVE_C_PATH } from '@constants/paths';
 
-export type FilePathInputProps = Omit<TextFieldProps, 'type' | 'label' | 'accept'> & {
+export type FilePathInputProps = Omit<
+  TextFieldProps,
+  'type' | 'label' | 'accept' | 'onInput' | 'onChange'
+> & {
   noSelectedFileLabel?: string;
   selectedFileLabel?: string;
   filters?: Array<{ name: string; extensions: string[] }>;
   dialogText?: string;
   properties?: Electron.OpenDialogOptions['properties'];
+  defaultPath?: Electron.OpenDialogOptions['defaultPath'];
+  relativeToDriveC?: boolean;
+  onInput?: (path: string) => void;
 };
 
 export const FilePathInput: React.FC<FilePathInputProps> = ({
@@ -17,12 +24,14 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
   control,
   fieldOptions,
   name,
-  value: _,
+  value,
   noSelectedFileLabel,
   selectedFileLabel,
   dialogText = 'Select file',
   filters,
   properties,
+  defaultPath,
+  relativeToDriveC,
   ...rest
 }) => {
   const [filePath, setFilePath] = useState('');
@@ -31,13 +40,16 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
     const result = await showOpenDialog({
       title: dialogText,
       filters,
-      properties
+      properties,
+      defaultPath
     });
 
     return result.filePaths;
-
-    return [];
   };
+
+  useEffect(() => {
+    setFilePath(value);
+  }, [value]);
 
   return (
     <Field
@@ -51,6 +63,7 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
             fullWidth
             {...rest}
             {...props}
+            value={filePath}
             InputLabelProps={{ shrink: true }}
             InputProps={{
               readOnly: true,
@@ -70,13 +83,15 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
                 </InputAdornment>
               )
             }}
-            onInput={(event) => {
-              onInputProp?.(event);
-            }}
             onClick={async () => {
-              const [filePath] = await selectFile();
+              let [filePath] = await selectFile();
+              if (relativeToDriveC && filePath.match(DRIVE_C_PATH)) {
+                const exePath = filePath.split(DRIVE_C_PATH)?.[1];
+                filePath = `/${DRIVE_C_PATH}${exePath}`;
+              }
               setFilePath(filePath);
               onInput({ target: { value: filePath } });
+              onInputProp?.(filePath);
             }}
             error={helpers.error}
           />
