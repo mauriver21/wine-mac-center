@@ -123,7 +123,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
               <Grid item xs={12}>
                 <Stack width="100%" alignItems="flex-end">
                   <Button
-                    title={`Run Change Engine`}
+                    title={`Run Main Executable`}
                     disabled={wineApp === undefined || loading}
                     color="secondary"
                     onClick={runExe}
