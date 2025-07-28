@@ -3,7 +3,7 @@ import { Box, Button, TextField } from 'reactjs-ui-core';
 import { Field, TextFieldProps } from 'reactjs-ui-form-fields';
 import { InputAdornment } from '@mui/material';
 import { showOpenDialog } from '@utils/showOpenDialog';
-import { DRIVE_C_PATH } from '@constants/paths';
+import { getRelativeDriveCPath } from '@utils/getRelativeDriveCPath';
 
 export type FilePathInputProps = Omit<
   TextFieldProps,
@@ -85,10 +85,7 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
             }}
             onClick={async () => {
               let [filePath] = await selectFile();
-              if (relativeToDriveC && filePath.match(DRIVE_C_PATH)) {
-                const exePath = filePath.split(DRIVE_C_PATH)?.[1];
-                filePath = `/${DRIVE_C_PATH}${exePath}`;
-              }
+              if (relativeToDriveC) filePath = getRelativeDriveCPath(filePath);
               setFilePath(filePath);
               onInput({ target: { value: filePath } });
               onInputProp?.(filePath);

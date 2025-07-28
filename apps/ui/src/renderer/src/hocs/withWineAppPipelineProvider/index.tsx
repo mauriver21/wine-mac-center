@@ -1,8 +1,9 @@
 import { createContext, useContext, useRef, useState } from 'react';
 import { createWineAppPipeline as baseCreateWineAppPipeline } from '@utils/createWineAppPipeline';
-import { Box, Button, Dialog, Select, Stack } from 'reactjs-ui-core';
-import { FilePath } from '@interfaces/FilePath';
+import { Body1, Dialog, Stack } from 'reactjs-ui-core';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
+import { FilePathInput } from '@components/FilePathInput';
+import { FileFilter } from '@constants/enums';
 
 export type WineAppPipelineContextType = {
   createWineAppPipeline: typeof baseCreateWineAppPipeline;
@@ -16,14 +17,13 @@ export const useWineAppPipeline = () => useContext(WineAppPipelineContext);
 export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
   return (props: T & JSX.IntrinsicAttributes) => {
     const [openSelectExecutableDialog, setOpenSelectExecutableDialog] = useState(false);
-    const [selectedExecutable, setSelectedExecutable] = useState('');
-    const [executables, setExecutables] = useState<Array<FilePath>>([]);
 
     const store = useRef<{
       pipelines: Array<WineAppPipeline>;
       mainExePath: string;
       intervalId?: NodeJS.Timeout;
-    }>({ pipelines: [], mainExePath: '' });
+      driveCPath: string;
+    }>({ pipelines: [], mainExePath: '', driveCPath: '' });
 
     const mainExecutableSelection = () => {
       return new Promise<string>((resolve) => {
@@ -36,10 +36,9 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
     };
 
     const resetMainExecutable = () => {
-      setSelectedExecutable('');
-      setExecutables([]);
       clearInterval(store.current.intervalId);
       store.current.mainExePath = '';
+      store.current.driveCPath = '';
     };
 
     const createWineAppPipeline: WineAppPipelineContextType['createWineAppPipeline'] = async (
@@ -47,11 +46,12 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
     ) => {
       const pipeline = await baseCreateWineAppPipeline({
         ...args,
-        promptMainExeCallback: async (appExecutables) => {
+        promptMainExeCallback: async ({ driveCPath }) => {
+          store.current.driveCPath = driveCPath;
           setOpenSelectExecutableDialog(true);
-          setExecutables(appExecutables);
           const mainExe = await mainExecutableSelection();
           resetMainExecutable();
+          setOpenSelectExecutableDialog(false);
           return mainExe;
         }
       });
@@ -84,29 +84,17 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
           maxWidth="sm"
           open={openSelectExecutableDialog}
         >
-          <Box p={2} bgcolor="secondary.main">
-            <Stack spacing={2}>
-              <Select
-                label="Select the main executable"
-                options={executables.map((item) => ({
-                  value: item.path,
-                  label: item.name
-                }))}
-                onChange={(event) => setSelectedExecutable(event.target.value as string)}
-              />
-              <Stack direction="row" justifyContent="flex-end">
-                <Button
-                  disabled={!selectedExecutable}
-                  onClick={() => {
-                    store.current.mainExePath = selectedExecutable;
-                    setOpenSelectExecutableDialog(false);
-                  }}
-                >
-                  Select
-                </Button>
-              </Stack>
-            </Stack>
-          </Box>
+          <Stack p={2} bgcolor="secondary.main" spacing={2}>
+            <Body1 color="text.secondary">Select the main executable</Body1>
+            <FilePathInput
+              filters={FileFilter.WindowsExecutables}
+              defaultPath={store.current.driveCPath}
+              relativeToDriveC
+              onInput={(path) => {
+                store.current.mainExePath = path;
+              }}
+            />
+          </Stack>
         </Dialog>
       </WineAppPipelineContext.Provider>
     );

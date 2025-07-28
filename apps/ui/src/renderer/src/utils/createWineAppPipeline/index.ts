@@ -22,7 +22,10 @@ export const createWineAppPipeline = async (options: {
   appConfig: WineAppConfig;
   debug?: boolean;
   outputEveryMs?: number;
-  promptMainExeCallback?: (appExecutables: Array<FilePath>) => Promise<string>;
+  promptMainExeCallback?: (args: {
+    appExecutables: Array<FilePath>;
+    driveCPath: string;
+  }) => Promise<string>;
   mode: WineAppMode;
 }) => {
   const id = uuid();
@@ -317,7 +320,7 @@ export const createWineAppPipeline = async (options: {
               ]
             : []),
           {
-            name: 'Bundling app',
+            name: 'Configuring app executable',
             script: async (args) => {
               let executables = options.appConfig.executables || [];
 
@@ -326,7 +329,10 @@ export const createWineAppPipeline = async (options: {
 
                 if (options.promptMainExeCallback) {
                   const appExecutables = await wineApp.listAppExecutables();
-                  exePath = await options.promptMainExeCallback(appExecutables);
+                  exePath = await options.promptMainExeCallback({
+                    appExecutables,
+                    driveCPath: appEnv.WINE_APP_DRIVE_C_PATH
+                  });
                 } else {
                   exePath = (window as Window).prompt('Type the main executable path') || '';
                 }

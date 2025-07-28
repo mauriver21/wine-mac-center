@@ -16,6 +16,7 @@ import { useAppConfigContext } from '@hooks/useAppConfigContext';
 import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
 import { FilePathInput } from '@components/FilePathInput';
 import { Button } from '@components/Button';
+import { FileFilter } from '@constants/enums';
 
 export interface ExecutableConfigModuleProps {
   realAppName: string | undefined;
@@ -75,6 +76,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                     noSelectedFileLabel="Select Executable"
                     selectedFileLabel="Change Executable"
                     defaultPath={driveCPath}
+                    filters={FileFilter.WindowsExecutables}
                     value={mainExecutablePath}
                     onInput={async (path) => {
                       setMainExecutablePath(path);
