@@ -1,97 +1,38 @@
-import path, { join } from 'path';
-// @ts-ignore
-import icon from '../../resources/icon.png?asset';
+import { join } from 'path';
 import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
-import {
-  promises as fs,
-  existsSync,
-  readFile,
-  writeFileSync,
-  mkdirSync,
-  PathOrFileDescriptor
-} from 'fs';
-// @ts-ignore (renderer type)
-import { SpawnProcessArgs, UpdateProcess } from '../renderer/src/interfaces';
-// @ts-ignore
 import { ElectronApi } from './types/ElectronApi';
-import { dialog } from 'electron';
-import { getAppPath, exec, pathJoin, spawn } from './commands';
 import { singleton } from './singleton';
+import {
+  createDirectory,
+  dirExists,
+  exec,
+  fileExists,
+  getAppPath,
+  pathJoin,
+  readBinaryFile,
+  readDirectory,
+  readFileAsString,
+  showOpenDialog,
+  spawn,
+  writeBinaryFile,
+  writeFile
+} from './commands';
+import icon from '../../resources/icon.png?asset';
 
 ipcMain.handle(ElectronApi.GetAppPath, getAppPath);
 ipcMain.handle(ElectronApi.ExecCommand, exec);
 ipcMain.handle(ElectronApi.PathJoin, pathJoin);
 ipcMain.handle(ElectronApi.SpawnProcess, spawn);
-
-ipcMain.handle(ElectronApi.FileExists, async (_, filePath: string) => {
-  try {
-    const fullPath = path.resolve(filePath);
-    await fs.access(fullPath);
-    return true;
-  } catch {
-    return false;
-  }
-});
-
-ipcMain.handle(ElectronApi.WriteFile, async (_, file: PathOrFileDescriptor, data: string) =>
-  writeFileSync(file, data)
-);
-
-ipcMain.handle(ElectronApi.ReadDirectory, async (_, dirPath: string) => {
-  try {
-    const entries = await fs.readdir(dirPath);
-    return entries;
-  } catch (error) {
-    console.error(`Error reading directory at ${dirPath}:`, error);
-    throw error;
-  }
-});
-
-ipcMain.handle(ElectronApi.DirExists, async (_, dirPath: string) => existsSync(dirPath));
-ipcMain.handle(ElectronApi.ReadBinaryFile, async (_, filePath: string): Promise<Buffer> => {
-  return new Promise((resolve, reject) => {
-    readFile(filePath, (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
-});
-
-ipcMain.handle(ElectronApi.CreateDirectory, async (_, dirPath: string) => {
-  try {
-    await fs.mkdir(dirPath);
-  } catch (error) {
-    console.error(`Error reading directory at ${dirPath}:`, error);
-    throw error;
-  }
-});
-
-ipcMain.handle(ElectronApi.ReadFileAsString, async (_, filePath: string): Promise<string> => {
-  try {
-    return fs.readFile(filePath, 'utf-8');
-  } catch (error) {
-    throw error;
-  }
-});
-
-ipcMain.handle(
-  ElectronApi.WriteBinaryFile,
-  async (_, filePath: string, arrayBuffer: ArrayBuffer) => {
-    const buffer = Buffer.from(arrayBuffer);
-    const dirPath = path.dirname(filePath);
-    dirPath && mkdirSync(dirPath, { recursive: true });
-    writeFileSync(filePath, buffer);
-  }
-);
-
-ipcMain.handle(
-  ElectronApi.ShowOpenDialog,
-  async (_, ...args: Parameters<typeof dialog.showOpenDialog>) => dialog.showOpenDialog(...args)
-);
+ipcMain.handle(ElectronApi.FileExists, fileExists);
+ipcMain.handle(ElectronApi.WriteFile, writeFile);
+ipcMain.handle(ElectronApi.ReadDirectory, readDirectory);
+ipcMain.handle(ElectronApi.DirExists, dirExists);
+ipcMain.handle(ElectronApi.ReadBinaryFile, readBinaryFile);
+ipcMain.handle(ElectronApi.CreateDirectory, createDirectory);
+ipcMain.handle(ElectronApi.ReadFileAsString, readFileAsString);
+ipcMain.handle(ElectronApi.WriteBinaryFile, writeBinaryFile);
+ipcMain.handle(ElectronApi.ShowOpenDialog, showOpenDialog);
 
 function createWindow(): void {
   singleton.mainWindow = new BrowserWindow({
