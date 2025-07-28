@@ -1,10 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import path, { join } from 'path';
-import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 // @ts-ignore
 import icon from '../../resources/icon.png?asset';
-import { ChildProcessWithoutNullStreams, exec } from 'child_process';
-import { spawn } from 'child_process';
+import { app, shell, BrowserWindow, ipcMain } from 'electron';
+import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import {
   promises as fs,
   existsSync,
@@ -16,63 +14,15 @@ import {
 // @ts-ignore (renderer type)
 import { SpawnProcessArgs, UpdateProcess } from '../renderer/src/interfaces';
 // @ts-ignore
-import { ElectronApi } from '../types/ElectronApi';
+import { ElectronApi } from './types/ElectronApi';
 import { dialog } from 'electron';
-import { v4 as uuid } from 'uuid';
+import { getAppPath, exec, pathJoin, spawn } from './commands';
+import { singleton } from './singleton';
 
-let mainWindow: BrowserWindow;
-const processMap = new Map<string, ChildProcessWithoutNullStreams>();
-
-ipcMain.handle(ElectronApi.GetAppPath, async () => {
-  return app.getAppPath(); // or __dirname
-});
-ipcMain.handle(ElectronApi.ExecCommand, async (_, cmd: string) => {
-  return new Promise<{ stdOut: string; stdErr: string }>((resolve, reject) => {
-    exec(cmd, (error, stdOut, stdErr) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve({ stdOut, stdErr });
-      }
-    });
-  });
-});
-ipcMain.handle(ElectronApi.PathJoin, (_, ...paths: string[]) => path.join(...paths));
-ipcMain.handle(
-  ElectronApi.SpawnProcess,
-  (_, command: string, action?: { type: string; data: string }) => {
-    const child = spawn(command, {
-      stdio: 'pipe',
-      shell: true // Required to run the whole string in a shell
-    });
-
-    const processId = String(child.pid || uuid());
-    child.pid && processMap.set(processId, child);
-
-    if (action?.type === 'stdIn') {
-      child.stdin.write(action?.data);
-      child.stdin.end();
-    } else if (action?.type === 'stdInEnd' || action?.type === 'exit') {
-      child.stdin.end();
-    }
-
-    return new Promise((resolve) => {
-      child.stdout.on('data', async (data) => {
-        mainWindow.webContents.send(ElectronApi.SpawnStdout, data.toString());
-      });
-
-      child.stderr.on('data', async (data) => {
-        mainWindow.webContents.send(ElectronApi.SpawnStderr, data.toString());
-      });
-
-      child.on('exit', async (code) => {
-        mainWindow.webContents.send(ElectronApi.SpawnExit, code);
-        processMap.delete(processId);
-        resolve({ pid: child.pid });
-      });
-    });
-  }
-);
+ipcMain.handle(ElectronApi.GetAppPath, getAppPath);
+ipcMain.handle(ElectronApi.ExecCommand, exec);
+ipcMain.handle(ElectronApi.PathJoin, pathJoin);
+ipcMain.handle(ElectronApi.SpawnProcess, spawn);
 
 ipcMain.handle(ElectronApi.FileExists, async (_, filePath: string) => {
   try {
@@ -144,8 +94,7 @@ ipcMain.handle(
 );
 
 function createWindow(): void {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
+  singleton.mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -161,12 +110,11 @@ function createWindow(): void {
     }
   });
 
+  const { mainWindow } = singleton;
   mainWindow.webContents.openDevTools();
-
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
   });
-
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url);
     return { action: 'deny' };

@@ -1,12 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
-// @ts-ignore
-import { SpawnProcessArgs } from '../renderer/src/interfaces';
 import { PathOrFileDescriptor } from 'fs';
-// @ts-ignore
-import { ChildProcessWithoutNullStreams } from 'child_process';
-// @ts-ignore
-import { ElectronApi } from '../types/ElectronApi';
+import { ElectronApi } from '../main/types/ElectronApi';
 import { dialog } from 'electron';
 
 export type Api = {
