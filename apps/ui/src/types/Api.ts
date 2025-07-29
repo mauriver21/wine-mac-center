@@ -30,5 +30,5 @@ export type Api = {
   unwatchDirs: () => Promise<void>;
   subscribeToWatchDirs: (callback: (event: WatchDirEvent) => void) => void;
   unsubscribeFromWatchDirs: (listenerId: string) => void;
-  buildPlist: (...args: Parameters<typeof plist.build>) => Promise<string>;
+  buildPlist: (obj: plist.PlistValue) => Promise<string>;
 };

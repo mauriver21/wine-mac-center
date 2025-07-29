@@ -1,4 +1,3 @@
-import plist from 'plist';
 import { v4 as uuid } from 'uuid';
 import { BashScript } from '@interfaces/BashScript';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
@@ -20,6 +19,7 @@ import { execCommand as baseExecCommand } from '@utils/execCommand';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { isURL } from '@utils/isURL';
 import { AppExecutable } from '@interfaces/AppExecutable';
+import { buildPlist } from '@utils/buildPlist';
 
 export const createWineApp = async (appName: string, options: { mode: WineAppMode }) => {
   const env = createEnv();
@@ -358,12 +358,12 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
     });
 
     const mainExecutable = executables.find((item) => item.main === true);
-    const infoPlistXML = plist
-      .build({
+    const infoPlistXML = (
+      await buildPlist({
         CFBundleExecutable: FileName.CFBundleExecutable,
         CFBundleIconFile: FileName.CFBundleIconFile
       })
-      .replace(/\n/gi, '');
+    ).replace(/\n/gi, '');
 
     const exePath = mainExecutable!.path.replace(/\n/gi, '');
 
