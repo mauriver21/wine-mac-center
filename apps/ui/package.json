@@ -78,7 +78,9 @@
       "target": [
         "dmg",
         "zip"
-      ]
+      ],
+      "identity": null,
+      "gatekeeperAssess": false
     },
     "extraResources": [
       {
