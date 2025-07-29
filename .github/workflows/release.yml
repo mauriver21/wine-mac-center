@@ -3,14 +3,12 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - develop
       - master
     paths:
       - apps/ui/**
       - .github/workflows/release.yml
   pull_request:
     branches:
-      - develop
       - master
     paths:
       - apps/ui/**
