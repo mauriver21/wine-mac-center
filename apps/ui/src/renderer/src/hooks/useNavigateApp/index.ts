@@ -7,7 +7,17 @@ export const useNavigateApp = () => {
     navigate(`/app-pipeline?appConfigId=${appConfigId}`);
   };
 
+  const navigateToApps = () => {
+    navigate('/apps');
+  };
+
+  const navigateToAppNotFound = (realAppName: string) => {
+    navigate(`/app-not-found/${realAppName}`);
+  };
+
   return {
-    navigateToAppPipeline
+    navigateToAppPipeline,
+    navigateToApps,
+    navigateToAppNotFound
   };
 };

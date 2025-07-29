@@ -1,6 +1,7 @@
 import { AppConfig } from '@components/AppConfig';
 import { AppPipeline } from '@components/AppPipeline';
 import { CreateApp } from '@components/CreateApp';
+import { NotFoundApp } from '@components/NotFoundApp';
 import { MainLayout } from '@layouts/MainLayout';
 import { SimpleLayout } from '@layouts/SimpleLayout';
 import { Apps } from '@pages/Apps';
@@ -40,5 +41,10 @@ export const routes: RouteObject[] = [
     path: '/create-app',
     element: <SimpleLayout />,
     children: [{ index: true, element: <CreateApp /> }]
+  },
+  {
+    path: '/app-not-found',
+    element: <SimpleLayout />,
+    children: [{ path: ':realAppName', element: <NotFoundApp /> }]
   }
 ];

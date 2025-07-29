@@ -41,6 +41,8 @@ export const DirsWatcherProvider: React.FC<DirsWatcherProviderProps> = ({ childr
     if (watchDirEvent?.from?.match(WINE_ENGINES_PATH)) {
       console.log(2);
     }
+
+    setWatchDirEvent(undefined);
   }, [watchDirEvent?.id]);
 
   return (

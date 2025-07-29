@@ -10,7 +10,7 @@ import {
   TableOfContents
 } from 'reactjs-ui-core';
 import { WineApp } from '@interfaces/WineApp';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { createWineApp } from '@utils/createWineApp';
 import { alpha } from '@mui/material';
 import { useRefresh } from '@utils/useRefresh';
@@ -24,6 +24,9 @@ import { TaskManagerModule } from '@components/TaskManagerModule';
 import { CommandLineModule } from '@components/CommandLineModule';
 import { ControlPanelModule } from '@components/ControlPanelModule';
 import { WineAppMode } from '@constants/enums';
+import { useDirsWatcherContext } from '@hooks/useDirsWatcherContext';
+import { extractAppName } from '@utils/extractAppName';
+import { useNavigateApp } from '@hooks/useNavigateApp';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -33,7 +36,8 @@ export const AppConfig: React.FC = () => {
   const [wineApp, setWineApp] = useState<WineApp>();
   const { realAppName } = useParams();
   const { signal, refresh } = useRefresh();
-  const navigate = useNavigate();
+  const { watchDirEvent } = useDirsWatcherContext() || {};
+  const { navigateToApps, navigateToAppNotFound } = useNavigateApp();
 
   const modules = useMemo(
     () => [
@@ -56,6 +60,12 @@ export const AppConfig: React.FC = () => {
   useEffect(() => {
     initWineApp();
   }, [realAppName]);
+
+  useEffect(() => {
+    if (watchDirEvent === undefined || realAppName === undefined) return;
+    const comingRealAppName = extractAppName(watchDirEvent.dirPath);
+    if (comingRealAppName !== realAppName) navigateToAppNotFound(realAppName);
+  }, [watchDirEvent?.id]);
 
   return (
     <AppConfigContext.Provider value={{ loading, setLoading, refresh, signal, wineApp }}>
@@ -86,7 +96,7 @@ export const AppConfig: React.FC = () => {
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 disabled={loading}
                 color="secondary"
-                onClick={() => navigate('/apps')}
+                onClick={() => navigateToApps()}
               >
                 Back
               </Button>
