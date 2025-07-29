@@ -19,9 +19,21 @@ importers:
       '@electron-toolkit/utils':
         specifier: ^4.0.0
         version: 4.0.0(electron@34.2.0)
+      '@emotion/react':
+        specifier: ^11.11.1
+        version: 11.14.0(@types/react@18.3.18)(react@18.3.1)
+      '@emotion/styled':
+        specifier: ^11.11.0
+        version: 11.14.1(@emotion/react@11.14.0)(@types/react@18.3.18)(react@18.3.1)
       '@heroicons/react':
         specifier: ^2.2.0
         version: 2.2.0(react@18.3.1)
+      '@mui/icons-material':
+        specifier: ^5.14.0
+        version: 5.18.0(@mui/material@5.13.6)(@types/react@18.3.18)(react@18.3.1)
+      '@mui/material':
+        specifier: ^5.13.6
+        version: 5.13.6(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1)
       '@reduxjs/toolkit':
         specifier: ^2.6.1
         version: 2.6.1(react-redux@9.2.0)(react@18.3.1)
@@ -34,6 +46,9 @@ importers:
       electron-updater:
         specifier: ^6.3.9
         version: 6.3.9
+      i18next:
+        specifier: ^23.15.1
+        version: 23.16.8
       notistack:
         specifier: ^3.0.2
         version: 3.0.2(csstype@3.1.3)(react-dom@18.3.1)(react@18.3.1)
@@ -46,18 +61,24 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+      react-i18next:
+        specifier: ^15.0.2
+        version: 15.6.1(i18next@23.16.8)(react-dom@18.3.1)(react@18.3.1)(typescript@5.7.3)
       react-redux:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@18.3.18)(react@18.3.1)(redux@5.0.1)
       react-router-dom:
         specifier: ^6.15.0
         version: 6.15.0(react-dom@18.3.1)(react@18.3.1)
+      react-syntax-highlighter:
+        specifier: ^15.6.1
+        version: 15.6.1(react@18.3.1)
       react-virtuoso:
         specifier: ^4.12.6
         version: 4.12.6(react-dom@18.3.1)(react@18.3.1)
       reactjs-ui-core:
         specifier: ^0.0.24
-        version: 0.0.24(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@mui/icons-material@5.18.0)(@mui/material@5.18.0)(i18next@23.16.8)(notistack@3.0.2)(react-i18next@15.6.1)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1)
+        version: 0.0.24(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@mui/icons-material@5.18.0)(@mui/material@5.13.6)(i18next@23.16.8)(notistack@3.0.2)(react-i18next@15.6.1)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1)
       reactjs-ui-form-fields:
         specifier: ^0.0.5
         version: 0.0.5(react@18.3.1)(reactjs-ui-core@0.0.24)
@@ -1236,11 +1257,36 @@ packages:
       - supports-color
     dev: true
 
+  /@mui/base@5.0.0-beta.5(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-vy3TWLQYdGNecTaufR4wDNQFV2WEg6wRPi6BVbx6q1vP3K1mbxIn1+XOqOzfYBXjFHvMx0gZAo2TgWbaqfgvAA==}
+    engines: {node: '>=12.0.0'}
+    deprecated: This package has been replaced by @base-ui-components/react
+    peerDependencies:
+      '@types/react': ^17.0.0 || ^18.0.0
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.28.2
+      '@emotion/is-prop-valid': 1.3.1
+      '@mui/types': 7.4.4(@types/react@18.3.18)
+      '@mui/utils': 5.17.1(@types/react@18.3.18)(react@18.3.1)
+      '@popperjs/core': 2.11.8
+      '@types/react': 18.3.18
+      clsx: 1.2.1
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-is: 18.3.1
+    dev: false
+
   /@mui/core-downloads-tracker@5.18.0:
     resolution: {integrity: sha512-jbhwoQ1AY200PSSOrNXmrFCaSDSJWP7qk6urkTmIirvRXDROkqe+QwcLlUiw/PrREwsIF/vm3/dAXvjlMHF0RA==}
     dev: false
 
-  /@mui/icons-material@5.18.0(@mui/material@5.18.0)(@types/react@18.3.18)(react@18.3.1):
+  /@mui/icons-material@5.18.0(@mui/material@5.13.6)(@types/react@18.3.18)(react@18.3.1):
     resolution: {integrity: sha512-1s0vEZj5XFXDMmz3Arl/R7IncFqJ+WQ95LDp1roHWGDE2oCO3IS4/hmiOv1/8SD9r6B7tv9GLiqVZYHo+6PkTg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -1252,20 +1298,20 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.28.2
-      '@mui/material': 5.18.0(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1)
+      '@mui/material': 5.13.6(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1)
       '@types/react': 18.3.18
       react: 18.3.1
     dev: false
 
-  /@mui/material@5.18.0(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-bbH/HaJZpFtXGvWg3TsBWG4eyt3gah3E7nCNU8GLyRjVoWcA91Vm/T+sjHfUcwgJSw9iLtucfHBoq+qW/T30aA==}
+  /@mui/material@5.13.6(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-/c2ZApeQm2sTYdQXjqEnldaBMBcUEiyu2VRS6bS39ZeNaAcCLBQbYocLR46R+f0S5dgpBzB0T4AsOABPOFYZ5Q==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@emotion/react': ^11.5.0
       '@emotion/styled': ^11.3.0
-      '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
-      react: ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
+      '@types/react': ^17.0.0 || ^18.0.0
+      react: ^17.0.0 || ^18.0.0
+      react-dom: ^17.0.0 || ^18.0.0
     peerDependenciesMeta:
       '@emotion/react':
         optional: true
@@ -1277,19 +1323,19 @@ packages:
       '@babel/runtime': 7.28.2
       '@emotion/react': 11.14.0(@types/react@18.3.18)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0)(@types/react@18.3.18)(react@18.3.1)
+      '@mui/base': 5.0.0-beta.5(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1)
       '@mui/core-downloads-tracker': 5.18.0
       '@mui/system': 5.18.0(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.18)(react@18.3.1)
-      '@mui/types': 7.2.24(@types/react@18.3.18)
+      '@mui/types': 7.4.4(@types/react@18.3.18)
       '@mui/utils': 5.17.1(@types/react@18.3.18)(react@18.3.1)
-      '@popperjs/core': 2.11.8
       '@types/react': 18.3.18
       '@types/react-transition-group': 4.4.12(@types/react@18.3.18)
-      clsx: 2.1.1
+      clsx: 1.2.1
       csstype: 3.1.3
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-is: 19.1.1
+      react-is: 18.3.1
       react-transition-group: 4.4.5(react-dom@18.3.1)(react@18.3.1)
     dev: false
 
@@ -1371,6 +1417,18 @@ packages:
       '@types/react':
         optional: true
     dependencies:
+      '@types/react': 18.3.18
+    dev: false
+
+  /@mui/types@7.4.4(@types/react@18.3.18):
+    resolution: {integrity: sha512-p63yhbX52MO/ajXC7hDHJA5yjzJekvWD3q4YDLl1rSg+OXLczMYPvTuSuviPRCgRX8+E42RXz1D/dz9SxPSlWg==}
+    peerDependencies:
+      '@types/react': ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.28.2
       '@types/react': 18.3.18
     dev: false
 
@@ -5179,6 +5237,10 @@ packages:
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
+  /react-is@18.3.1:
+    resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
+    dev: false
+
   /react-is@19.1.1:
     resolution: {integrity: sha512-tr41fA15Vn8p4X9ntI+yCyeGSf1TlYaY5vlTZfQmeLBrFo3psOPX6HhTDnFNL9uj3EhP0KAQ80cugCl4b4BERA==}
     dev: false
@@ -5275,7 +5337,7 @@ packages:
       loose-envify: 1.4.0
     dev: false
 
-  /reactjs-ui-core@0.0.24(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@mui/icons-material@5.18.0)(@mui/material@5.18.0)(i18next@23.16.8)(notistack@3.0.2)(react-i18next@15.6.1)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1):
+  /reactjs-ui-core@0.0.24(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@mui/icons-material@5.18.0)(@mui/material@5.13.6)(i18next@23.16.8)(notistack@3.0.2)(react-i18next@15.6.1)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1):
     resolution: {integrity: sha512-Jz1Gl+wX8x9NhbuIjS+b+Z8IFBxt0lTXzjBM2M4R7sHkOgOTTPh7e4Y8PDKb5TrR5Mpq9py3bNh4L9LIYAEUDw==}
     peerDependencies:
       '@emotion/react': ^11.11.1
@@ -5290,8 +5352,8 @@ packages:
     dependencies:
       '@emotion/react': 11.14.0(@types/react@18.3.18)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0)(@types/react@18.3.18)(react@18.3.1)
-      '@mui/icons-material': 5.18.0(@mui/material@5.18.0)(@types/react@18.3.18)(react@18.3.1)
-      '@mui/material': 5.18.0(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1)
+      '@mui/icons-material': 5.18.0(@mui/material@5.13.6)(@types/react@18.3.18)(react@18.3.1)
+      '@mui/material': 5.13.6(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1)
       i18next: 23.16.8
       notistack: 3.0.2(csstype@3.1.3)(react-dom@18.3.1)(react@18.3.1)
       react-i18next: 15.6.1(i18next@23.16.8)(react-dom@18.3.1)(react@18.3.1)(typescript@5.7.3)
@@ -5307,7 +5369,7 @@ packages:
     dependencies:
       '@hookform/resolvers': 3.10.0(react-hook-form@7.61.1)
       react-hook-form: 7.61.1(react@18.3.1)
-      reactjs-ui-core: 0.0.24(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@mui/icons-material@5.18.0)(@mui/material@5.18.0)(i18next@23.16.8)(notistack@3.0.2)(react-i18next@15.6.1)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1)
+      reactjs-ui-core: 0.0.24(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@mui/icons-material@5.18.0)(@mui/material@5.13.6)(i18next@23.16.8)(notistack@3.0.2)(react-i18next@15.6.1)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1)
       yup: 1.6.1
     transitivePeerDependencies:
       - react
