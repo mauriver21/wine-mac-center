@@ -7,14 +7,14 @@ on:
       - master
     paths:
       - apps/ui/**
-      - .github/workflows/ui.yml
+      - .github/workflows/release.yml
   pull_request:
     branches:
       - develop
       - master
     paths:
       - apps/ui/**
-      - .github/workflows/ui.yml
+      - .github/workflows/release.yml
   workflow_dispatch: # allow manual trigger
 jobs:
   build:
@@ -24,34 +24,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '22.14.0'
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: '10.9.0'
-
       - name: Install dependencies
         run: pnpm install
-
-      - name: Build
-        run: pnpm ui:build:mac
-
       - name: Bump patch version
-        if: github.ref_name == 'main' && github.event_name == 'push'
+        if: github.ref_name == 'master' && github.event_name == 'push'
         run: pnpm ui:bump-patch-version
         env:
           GIT_AUTHOR_NAME: github-actions
           GIT_AUTHOR_EMAIL: actions@github.com
           GIT_COMMITTER_NAME: github-actions
           GIT_COMMITTER_EMAIL: actions@github.com
-
+      - name: Build
+        run: pnpm ui:build:mac
       - name: Upload bundled files
-        if: github.ref_name == 'main' && github.event_name == 'push'
+        if: github.ref_name == 'master' && github.event_name == 'push'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -61,7 +55,7 @@ jobs:
           asset_name: Wine Mac Center.zip
           asset_content_type: application/zip
       - name: Commit bumped version
-        if: github.ref_name == 'main' && github.event_name == 'push'
+        if: github.ref_name == 'master' && github.event_name == 'push'
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
@@ -71,7 +65,7 @@ jobs:
           git tag v$VERSION
 
       - name: Push changes and tag
-        if: github.ref_name == 'main' && github.event_name == 'push'
+        if: github.ref_name == 'master' && github.event_name == 'push'
         run: |
           git push origin HEAD
           git push origin --tags
