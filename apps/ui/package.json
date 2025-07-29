@@ -36,6 +36,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
+    "react-router-dom": "^6.15.0",
     "react-virtuoso": "^4.12.6",
     "reactjs-ui-core": "^0.0.24",
     "reactjs-ui-form-fields": "^0.0.5",
