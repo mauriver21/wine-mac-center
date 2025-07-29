@@ -7,14 +7,14 @@ on:
       - master
     paths:
       - apps/ui/**
-      - .github/workflows/ui.yml
+      - .github/workflows/release.yml
   pull_request:
     branches:
       - develop
       - master
     paths:
       - apps/ui/**
-      - .github/workflows/ui.yml
+      - .github/workflows/release.yml
   workflow_dispatch: # allow manual trigger
 jobs:
   build:
