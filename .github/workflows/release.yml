@@ -77,8 +77,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add packages/ui/package.json # adjust if your bump affects more files
-          VERSION=$(node -p "require('./packages/ui/package.json').version")
+          git add apps/ui/package.json # adjust if your bump affects more files
+          VERSION=$(node -p "require('./apps/ui/package.json').version")
           git commit -m "chore: bump version to v$VERSION [skip ci]"
           git tag v$VERSION
 
