@@ -6,14 +6,14 @@ on:
       - develop
       - master
     paths:
-      - packages/ui/**
+      - apps/ui/**
       - .github/workflows/ui.yml
   pull_request:
     branches:
       - develop
       - master
     paths:
-      - packages/ui/**
+      - apps/ui/**
       - .github/workflows/ui.yml
   workflow_dispatch: # allow manual trigger
 jobs:
