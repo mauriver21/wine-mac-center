@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { ElectronApi } from '../types/ElectronApi';
 import { singleton } from './singleton';
 import {
+  buildPlist,
   createDirectory,
   dirExists,
   exec,
@@ -37,6 +38,7 @@ ipcMain.handle(ElectronApi.WriteBinaryFile, writeBinaryFile);
 ipcMain.handle(ElectronApi.ShowOpenDialog, showOpenDialog);
 ipcMain.handle(ElectronApi.WatchDirs, watchDirs);
 ipcMain.handle(ElectronApi.UnwatchDirs, unwatchDirs);
+ipcMain.handle(ElectronApi.BuildPlist, buildPlist);
 
 function createWindow(): void {
   singleton.mainWindow = new BrowserWindow({

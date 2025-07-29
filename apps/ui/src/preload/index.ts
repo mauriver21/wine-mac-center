@@ -59,7 +59,8 @@ const api: RendererApi = {
   writeBinaryFile: (...args) => ipcRenderer.invoke(ElectronApi.WriteBinaryFile, ...args),
   showOpenDialog: (...args) => ipcRenderer.invoke(ElectronApi.ShowOpenDialog, ...args),
   watchDirs: (...args) => ipcRenderer.invoke(ElectronApi.WatchDirs, ...args),
-  unwatchDirs: (...args) => ipcRenderer.invoke(ElectronApi.UnwatchDirs, ...args)
+  unwatchDirs: (...args) => ipcRenderer.invoke(ElectronApi.UnwatchDirs, ...args),
+  buildPlist: (...args) => ipcRenderer.invoke(ElectronApi.BuildPlist, ...args)
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

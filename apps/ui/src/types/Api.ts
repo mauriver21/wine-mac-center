@@ -1,3 +1,4 @@
+import plist from 'plist';
 import { dialog } from 'electron';
 import { PathOrFileDescriptor } from 'fs';
 import { WatchDirEvent } from './WatchDirEvent';
@@ -29,4 +30,5 @@ export type Api = {
   unwatchDirs: () => Promise<void>;
   subscribeToWatchDirs: (callback: (event: WatchDirEvent) => void) => void;
   unsubscribeFromWatchDirs: (listenerId: string) => void;
+  buildPlist: (...args: Parameters<typeof plist.build>) => Promise<string>;
 };

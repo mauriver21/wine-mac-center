@@ -18,5 +18,6 @@ export enum ElectronApi {
   WatchDirs = 'watch-dirs',
   UnwatchDirs = 'unwatch-dirs',
   SubscribeWatchDirs = 'subscribe-watch-dirs',
-  UnsubscribeUnwatchDirs = 'unsubscribe-watch-dirs'
+  UnsubscribeUnwatchDirs = 'unsubscribe-watch-dirs',
+  BuildPlist = 'build-plist'
 }
