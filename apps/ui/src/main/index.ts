@@ -40,13 +40,16 @@ ipcMain.handle(ElectronApi.UnwatchDirs, unwatchDirs);
 
 function createWindow(): void {
   singleton.mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1170,
+    height: 768,
+    minWidth: 1170,
+    minHeight: 768,
     show: false,
     autoHideMenuBar: true,
+    title: 'Wine Mac Center',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      devTools: true,
+      devTools: process.env.VITE_APP_ENV === 'development',
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: false,

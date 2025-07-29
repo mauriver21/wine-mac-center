@@ -7,6 +7,10 @@ export const useNavigateApp = () => {
     navigate(`/app-pipeline?appConfigId=${appConfigId}`);
   };
 
+  const navigateToHome = () => {
+    navigate('/home');
+  };
+
   const navigateToApps = () => {
     navigate('/apps');
   };
@@ -18,6 +22,7 @@ export const useNavigateApp = () => {
   return {
     navigateToAppPipeline,
     navigateToApps,
-    navigateToAppNotFound
+    navigateToAppNotFound,
+    navigateToHome
   };
 };
