@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "library-ui:dev": "pnpm --filter library-ui dev",
-    "neu-wine-api:build": "pnpm --filter neu-wine-api build",
-    "library-ui:neu-build": "pnpm --filter library-ui neu-build",
-    "build": "pnpm neu-wine-api:build && pnpm library-ui:neu-build"
+    "ui:build:mac": "pnpm --filter ui build:mac",
+    "ui:bump-patch-version": "pnpm --filter ui bump-patch-version"
   },
   "keywords": [],
   "author": "Mauricio Rivera",

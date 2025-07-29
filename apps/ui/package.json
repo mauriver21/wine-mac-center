@@ -20,23 +20,34 @@
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "electron-vite build && VITE_APP_ENV=production electron-builder --mac",
-    "build:linux": "electron-vite build && electron-builder --linux"
+    "build:linux": "electron-vite build && electron-builder --linux",
+    "bump-patch-version": "npm version patch -m 'chore: bump patch version to %s'"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@heroicons/react": "^2.2.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.0",
+    "@mui/material": "^5.13.6",
+    "i18next": "^23.15.1",
+    "react-i18next": "^15.0.2",
+    "react-syntax-highlighter": "^15.6.1",
     "@reduxjs/toolkit": "^2.6.1",
     "axios": "^1.8.4",
     "chokidar": "^4.0.3",
     "electron-updater": "^6.3.9",
     "notistack": "^3.0.2",
+    "plist": "^3.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
+    "react-router-dom": "^6.15.0",
     "react-virtuoso": "^4.12.6",
     "reactjs-ui-core": "^0.0.24",
-    "reactjs-ui-form-fields": "^0.0.5"
+    "reactjs-ui-form-fields": "^0.0.5",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
@@ -63,6 +74,7 @@
   },
   "build": {
     "mac": {
+      "artifactName": "${productName}.${ext}",
       "target": [
         "dmg",
         "zip"
