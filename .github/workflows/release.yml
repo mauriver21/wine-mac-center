@@ -47,7 +47,7 @@ jobs:
       - name: Get package version
         if: github.ref_name == 'master' && github.event_name == 'push'
         run: |
-          VERSION=$(jq -r .version < package.json)
+          VERSION=$(jq -r .version < ./apps/ui/package.json)
           echo $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Create Release
