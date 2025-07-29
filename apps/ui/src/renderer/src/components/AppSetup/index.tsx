@@ -28,5 +28,5 @@ export const AppSetup: React.FC<AppSetupProps> = ({ children }) => {
     asyncSetup();
   }, []);
 
-  return starting ? <></> : <>{children}</>;
+  return starting ? <>Starting...</> : <>{children}</>;
 };

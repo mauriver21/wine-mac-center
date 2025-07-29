@@ -37,6 +37,8 @@ export const createEnv = () => {
     ENV.SCRIPTS_PATH = `${ENV.RESOURCES_PATH}/bash`;
     ENV.COMPRESSED_PATH = `${ENV.RESOURCES_PATH}/compressed`;
 
+    console.log({ ENV });
+
     await createDirs();
   };
 

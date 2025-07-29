@@ -28,15 +28,15 @@ export const spawn = (
 
   return new Promise((resolve) => {
     child.stdout.on('data', async (data) => {
-      mainWindow.webContents.send(ElectronApi.SpawnStdout, data.toString());
+      mainWindow?.webContents.send(ElectronApi.SpawnStdout, data.toString());
     });
 
     child.stderr.on('data', async (data) => {
-      mainWindow.webContents.send(ElectronApi.SpawnStderr, data.toString());
+      mainWindow?.webContents.send(ElectronApi.SpawnStderr, data.toString());
     });
 
     child.on('exit', async (code) => {
-      mainWindow.webContents.send(ElectronApi.SpawnExit, code);
+      mainWindow?.webContents.send(ElectronApi.SpawnExit, code);
       processMap.delete(processId);
       resolve({ pid: child.pid });
     });
