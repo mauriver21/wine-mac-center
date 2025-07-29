@@ -44,6 +44,24 @@ jobs:
           GIT_COMMITTER_EMAIL: actions@github.com
       - name: Build
         run: pnpm ui:build:mac
+      - name: Get package version
+        if: github.ref_name == 'master' && github.event_name == 'push'
+        run: |
+          VERSION=$(jq -r .version < package.json)
+          echo $VERSION
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Create Release
+        if: github.ref_name == 'master' && github.event_name == 'push'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: Release v${{ env.VERSION }}
+          body: 'Automatically generated release for version ${{ env.VERSION }}'
+          draft: false
+          prerelease: false
       - name: Upload bundled files
         if: github.ref_name == 'master' && github.event_name == 'push'
         uses: actions/upload-release-asset@v1
