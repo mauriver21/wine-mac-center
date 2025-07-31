@@ -1,4 +1,4 @@
-import { StatusBox } from '@components/StatusBox';
+import { PipelineStep } from '@components/PipelineStep';
 import { ProcessStatus, WineAppMode } from '@constants/enums';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { RootState } from '@interfaces/RootState';
@@ -9,10 +9,8 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Body1,
   Box,
   Button,
-  Card,
   ContentsArea,
   ContentsAreaHandle,
   ContentsClass,
@@ -104,25 +102,7 @@ export const AppPipeline: React.FC = () => {
                   <Stack alignItems="center" key={item.name} spacing={2}>
                     {item?.steps?.map((step, index) => (
                       <Box key={index} width="100%" maxWidth={800} className={ContentsClass.Item}>
-                        <Card key={index}>
-                          <Stack spacing={1}>
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              justifyContent="space-between"
-                              p={1}
-                            >
-                              <Body1
-                                className={ContentsClass.ItemTitle}
-                                fontWeight={500}
-                                color="text.secondary"
-                              >
-                                {step.name}
-                              </Body1>
-                              <StatusBox status={step.status} />
-                            </Stack>
-                          </Stack>
-                        </Card>
+                        <PipelineStep step={step} />
                       </Box>
                     ))}
                   </Stack>
