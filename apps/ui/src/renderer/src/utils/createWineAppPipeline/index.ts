@@ -125,7 +125,7 @@ export const createWineAppPipeline = async (options: {
     const entries = (await readDirectory(ENGINES_PATH))
       .filter((item) => item !== '.DS_Store')
       .map((item) => item.replace(/.tar.7z$/, ''));
-    return entries.includes(`${engineVersion}.tar.7z`);
+    return entries.includes(engineVersion);
   };
 
   const ENGINE_EXISTS = await checkEngineExists();
