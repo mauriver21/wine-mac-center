@@ -18,7 +18,7 @@ export const useSchema = () => {
     () =>
       schema.object({
         name: schema.string().required(),
-        engineVersion: schema.string().required(),
+        engineVersion: schema.string().required().default(''),
         dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(true),
         iconFile: schema.mixed<File>().test({
           name: 'fileSize',

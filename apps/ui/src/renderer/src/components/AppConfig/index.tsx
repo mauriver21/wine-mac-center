@@ -63,7 +63,7 @@ export const AppConfig: React.FC = () => {
 
   useEffect(() => {
     if (watchDirEvent === undefined || realAppName === undefined) return;
-    const comingRealAppName = extractAppName(watchDirEvent.dirPath);
+    const comingRealAppName = extractAppName(watchDirEvent.path);
     if (comingRealAppName !== realAppName) navigateToAppNotFound(realAppName);
   }, [watchDirEvent?.id]);
 

@@ -19,9 +19,5 @@ export const EnvProvider: React.FC<EnvProviderProps> = ({ children }) => {
     })();
   }, []);
 
-  return (
-    <EnvContext.Provider value={env}>
-      {initializing ? 'Initializing...' : children}
-    </EnvContext.Provider>
-  );
+  return <EnvContext.Provider value={env}>{initializing ? <></> : children}</EnvContext.Provider>;
 };

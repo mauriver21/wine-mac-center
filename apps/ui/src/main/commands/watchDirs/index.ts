@@ -9,22 +9,40 @@ export const watchDirs = (_: Electron.IpcMainInvokeEvent, dirPaths: Array<string
     const { mainWindow } = singleton;
 
     watcher
-      .on('addDir', (dirPath) => {
+      .on('addDir', (path) => {
+        const id = uuid();
+        mainWindow?.webContents.send(ElectronApi.SubscribeWatchDirs, {
+          id,
+          type: 'addDir',
+          from: dirPath,
+          path
+        });
+      })
+      .on('unlinkDir', (path) => {
+        const id = uuid();
+        mainWindow?.webContents.send(ElectronApi.SubscribeWatchDirs, {
+          id,
+          type: 'unlinkDir',
+          from: dirPath,
+          path
+        });
+      })
+      .on('add', (path) => {
         const id = uuid();
         mainWindow?.webContents.send(ElectronApi.SubscribeWatchDirs, {
           id,
           type: 'add',
           from: dirPath,
-          dirPath
+          path
         });
       })
-      .on('unlinkDir', (dirPath) => {
+      .on('unlink', (path) => {
         const id = uuid();
         mainWindow?.webContents.send(ElectronApi.SubscribeWatchDirs, {
           id,
           type: 'unlink',
           from: dirPath,
-          dirPath
+          path
         });
       });
 
