@@ -27,7 +27,7 @@ export const useWinetrickApiClient = () => {
   };
 
   const execScript = async (args: string) =>
-    execCommand(`${env.get().SCRIPTS_PATH}/winetricks.sh ${args}`);
+    execCommand(`"${env.get().SCRIPTS_PATH}/winetricks.sh" ${args}`);
 
   const getWinetricks = async (cmd: string) => {
     const { stdOut, stdErr } = await execScript(cmd);
