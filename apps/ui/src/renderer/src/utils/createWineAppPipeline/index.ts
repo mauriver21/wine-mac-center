@@ -11,6 +11,7 @@ import { WineAppStep } from '@interfaces/WineAppStep';
 import { clone } from '@utils/clone';
 import { createEnv } from '@utils/createEnv';
 import { createWineApp } from '@utils/createWineApp';
+import { dirExists } from '@utils/dirExists';
 import { fileExists } from '@utils/fileExists';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
@@ -91,7 +92,9 @@ export const createWineAppPipeline = async (options: {
   };
 
   const writePipelineConfig = async () => {
-    await writeFile(PIPELINE_CONFIG_JSON_PATH, JSON.stringify(pipelineConfig));
+    if (await dirExists(appEnv.WINE_APP_DATA_PATH)) {
+      await writeFile(PIPELINE_CONFIG_JSON_PATH, JSON.stringify(pipelineConfig));
+    }
   };
 
   const initJobs = async (jobs: WineAppJobWithScript[]) => {
