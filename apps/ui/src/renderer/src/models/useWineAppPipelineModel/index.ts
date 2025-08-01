@@ -13,6 +13,7 @@ import { useWineEngineModel } from '@models/useWineEngineModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { WineAppMode } from '@constants/enums';
+import { sleep } from 'reactjs-ui-core';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
@@ -113,7 +114,10 @@ export const useWineAppPipelineModel = () => {
   const runWineAppPipelineByAppName = async (appName: string, options: { mode: WineAppMode }) => {
     try {
       const pipeline = await loadWineAppPipelineByAppName(appName, { mode: options.mode });
-      pipeline?.run();
+      const promise = pipeline?.run();
+      await sleep(200);
+      wineInstalledAppModel.listAll();
+      await promise;
     } catch (error) {
       appModel.dispatchError(error);
     }

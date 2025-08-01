@@ -5,7 +5,7 @@ import { RootState } from '@interfaces/RootState';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { alpha } from '@mui/material';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -20,6 +20,8 @@ import {
 } from 'reactjs-ui-core';
 
 export const AppPipeline: React.FC = () => {
+  const [resuming, setResuming] = useState(false);
+  const [stopping, setStopping] = useState(false);
   const queryParam = useQueryParam();
   const appConfigId = queryParam.get('appConfigId');
   const realAppName = queryParam.get('realAppName');
@@ -36,6 +38,22 @@ export const AppPipeline: React.FC = () => {
     installedAppModel.selectWineInstalledAppByRealName(state, realAppName)
   );
   const pipelineStatus = installedApp?.pipeline?.status;
+
+  const runPipeline = async () => {
+    if (realAppName) {
+      setStopping(false);
+      setResuming(true);
+      await wineAppPipelineModel.runWineAppPipelineByAppName(realAppName, {
+        mode: WineAppMode.Update
+      });
+      setResuming(false);
+    }
+  };
+
+  const killPipeline = async () => {
+    setStopping(true);
+    await wineAppPipelineModel.killWineAppPipeline(wineAppPipeline.pipelineId);
+  };
 
   useEffect(() => {
     appConfigId &&
@@ -117,11 +135,10 @@ export const AppPipeline: React.FC = () => {
               >
                 {wineAppPipeline.status === ProcessStatus.InProgress ? (
                   <Button
+                    disabled={stopping}
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                     color="secondary"
-                    onClick={() =>
-                      wineAppPipelineModel.killWineAppPipeline(wineAppPipeline.pipelineId)
-                    }
+                    onClick={killPipeline}
                   >
                     Stop
                   </Button>
@@ -134,16 +151,12 @@ export const AppPipeline: React.FC = () => {
                     Close
                   </Button>
                 )}
-                {pipelineStatus === ProcessStatus.Pending ? (
+                {pipelineStatus === ProcessStatus.Cancelled ? (
                   <Button
+                    disabled={resuming}
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                     color="secondary"
-                    onClick={() => {
-                      realAppName &&
-                        wineAppPipelineModel.runWineAppPipelineByAppName(realAppName, {
-                          mode: WineAppMode.Update
-                        });
-                    }}
+                    onClick={runPipeline}
                   >
                     Resume
                   </Button>

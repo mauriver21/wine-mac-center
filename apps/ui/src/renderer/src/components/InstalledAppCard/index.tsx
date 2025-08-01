@@ -87,7 +87,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName,
           </Box>
         </Box>
         <Box display="flex" justifyContent="end">
-          {installedWineApp?.pipeline?.status == ProcessStatus.Pending ? (
+          {installedWineApp?.pipeline?.status == ProcessStatus.Cancelled ? (
             <Button
               sx={{ borderRadius: 2 }}
               equalSize={40}

@@ -22,6 +22,6 @@ export type WineAppPipeline = {
   onUpdate: (fn: (status: WineAppPipelineStatus) => void) => void;
   getInitialStatus: () => WineAppPipelineStatus;
   jobs: WineAppJobWithScript[];
-  run: () => void;
-  kill: () => void;
+  run: () => Promise<void>;
+  kill: () => Promise<void>;
 };

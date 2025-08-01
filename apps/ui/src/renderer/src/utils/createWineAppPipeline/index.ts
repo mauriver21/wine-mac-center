@@ -11,7 +11,6 @@ import { WineAppStep } from '@interfaces/WineAppStep';
 import { clone } from '@utils/clone';
 import { createEnv } from '@utils/createEnv';
 import { createWineApp } from '@utils/createWineApp';
-import { execCommand } from '@utils/execCommand';
 import { fileExists } from '@utils/fileExists';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
@@ -229,8 +228,9 @@ export const createWineAppPipeline = async (options: {
       }),
     kill: async () => {
       const pid = store.currentProcess.pid;
-      pid && execCommand(`kill -9 ${pid}`);
+      pid && (await wineApp.execScript('killPid', `${pid}`));
       store.killAllProcesses = true;
+      savePipelineStatus(ProcessStatus.Cancelled);
     },
     jobs: [
       {
@@ -349,6 +349,9 @@ export const createWineAppPipeline = async (options: {
       }
     ],
     async run() {
+      savePipelineStatus(ProcessStatus.InProgress);
+      await writePipelineConfig();
+
       for (const job of pipeline.jobs) {
         savePipelineJob(job);
         resetJobStepsStatus(job.steps, this._.onUpdate);

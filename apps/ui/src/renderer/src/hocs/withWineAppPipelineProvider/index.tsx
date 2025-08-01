@@ -8,7 +8,7 @@ import { FileFilter } from '@constants/enums';
 export type WineAppPipelineContextType = {
   createWineAppPipeline: typeof baseCreateWineAppPipeline;
   findWineAppPipeline: (id: string | undefined) => WineAppPipeline | undefined;
-  killWineAppPipeline: (id: string | undefined) => void;
+  killWineAppPipeline: (id: string | undefined) => Promise<void>;
 };
 
 export const WineAppPipelineContext = createContext<WineAppPipelineContextType>({} as any);
@@ -63,9 +63,9 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
     const findWineAppPipeline = (id: string | undefined) =>
       store.current.pipelines.find((item) => item.id === id);
 
-    const killWineAppPipeline = (id: string | undefined) => {
+    const killWineAppPipeline = async (id: string | undefined) => {
       const foundPipeline = findWineAppPipeline(id);
-      foundPipeline?.kill();
+      await foundPipeline?.kill();
     };
 
     return (
