@@ -40,6 +40,8 @@ ipcMain.handle(ElectronApi.WatchDirs, watchDirs);
 ipcMain.handle(ElectronApi.UnwatchDirs, unwatchDirs);
 ipcMain.handle(ElectronApi.BuildPlist, buildPlist);
 
+let isQuitting = false;
+
 function createWindow(): void {
   singleton.mainWindow = new BrowserWindow({
     width: 1170,
@@ -61,6 +63,7 @@ function createWindow(): void {
   });
 
   const { mainWindow } = singleton;
+
   mainWindow.webContents.openDevTools();
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
@@ -86,9 +89,6 @@ app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron');
 
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
@@ -99,10 +99,29 @@ app.whenReady().then(() => {
   createWindow();
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    mainWindow?.show();
   });
+
+  const { mainWindow } = singleton;
+  mainWindow?.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+
+      if (mainWindow?.isFullScreen()) {
+        mainWindow.setFullScreen(false);
+      }
+
+      if (mainWindow?.isMaximized()) {
+        mainWindow.unmaximize();
+      }
+
+      mainWindow?.hide();
+    }
+  });
+});
+
+app.on('before-quit', () => {
+  isQuitting = true;
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
