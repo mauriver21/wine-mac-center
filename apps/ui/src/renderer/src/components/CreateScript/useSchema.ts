@@ -1,8 +1,9 @@
-import { fileMaxSize } from '@utils/fileMaxSize';
 import { useMemo } from 'react';
 import { schema, Schema } from 'reactjs-ui-form-fields';
+import { v4 as uuid } from 'uuid';
 
 export type FormSchema = {
+  appConfigId: string;
   keyName: string;
   appName: string;
   engineVersion: string;
@@ -13,28 +14,16 @@ export const useSchema = () => {
   return useMemo<Schema<FormSchema>>(
     () =>
       schema.object({
+        appConfigId: schema.string().required().default(uuid()),
         keyName: schema.string().required(),
         appName: schema.string().required(),
         version: schema.string().required().default('steam'),
         engineVersion: schema.string().required().default(''),
         dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(true),
-        iconFile: schema.mixed<File>().test({
-          name: 'fileSize',
-          message: 'File exceeds 200kb',
-          test: (file) => fileMaxSize(file, 200000)
+        setupExecutableURL: schema.string().when('setupExecutableStrategy', {
+          is: 'downloadSetupExecutable',
+          then: (schema) => schema.required()
         }),
-        artworkFile: schema.mixed<File>().test({
-          name: 'fileSize',
-          message: 'File exceeds 1000kb',
-          test: (file) => fileMaxSize(file, 1000000)
-        }),
-        installBy: schema.string().required().default('executable'),
-        setupExecutablePath: schema
-          .string()
-          .when('installBy', { is: 'executable', then: (schema) => schema.required() }),
-        appFolderPath: schema
-          .string()
-          .when('installBy', { is: 'path', then: (schema) => schema.required() }),
         useWinetricks: schema.bool().required().default(false),
         winetricksVerbs: schema
           .array()

@@ -19,6 +19,10 @@ export const useNavigateApp = () => {
     navigate(`/app-not-found/${realAppName}`);
   };
 
+  const navigateToScripts = () => {
+    navigate(`/scripts`);
+  };
+
   const navigateToCreateScript = () => {
     navigate(`/create-script`);
   };
@@ -28,6 +32,7 @@ export const useNavigateApp = () => {
     navigateToApps,
     navigateToAppNotFound,
     navigateToHome,
+    navigateToScripts,
     navigateToCreateScript
   };
 };

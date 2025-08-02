@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import {
   Box,
   Button,
@@ -10,24 +10,14 @@ import {
   Stack,
   TableOfContents
 } from 'reactjs-ui-core';
-import { useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
-import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
-import { FileFilter } from '@constants/enums';
-import {
-  CpuChipIcon,
-  PencilSquareIcon,
-  PlayCircleIcon,
-  SparklesIcon
-} from '@heroicons/react/24/solid';
+import { CpuChipIcon, PencilSquareIcon, SparklesIcon } from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
-import { ArtWorkInput } from '@components/ArtWorkInput';
-import { blobToURL } from '@utils/blobToURL';
-import { IconInput } from '@components/IconInput';
+import { useNavigateApp } from '@hooks/useNavigateApp';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -35,15 +25,7 @@ export const CreateScript: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  const navigate = useNavigate();
-  const [artworkSrc, setArtWorkSrc] = useState('');
-  const [iconSrc, setIconSrc] = useState('');
-
-  const reset = () => {
-    setArtWorkSrc('');
-    setIconSrc('');
-    form.reset();
-  };
+  const { navigateToScripts } = useNavigateApp();
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -68,6 +50,13 @@ export const CreateScript: React.FC = () => {
           InputProps={{ disabled: true }}
           autoComplete="off"
           control={form.control}
+          name="appConfigId"
+          label="App Config Id"
+        />
+        <TextField
+          InputProps={{ disabled: true }}
+          autoComplete="off"
+          control={form.control}
           name="keyName"
           label="Key Name"
         />
@@ -75,66 +64,6 @@ export const CreateScript: React.FC = () => {
     </CardItem>,
     <CardItem icon={CpuChipIcon} label="Wine Engine">
       <WineEnginesSelect fullWidth control={form.control} name="engineVersion" />
-    </CardItem>,
-    <CardItem icon={PlayCircleIcon} label="Setup Executable">
-      <Grid container>
-        <Grid item xs={9.5}>
-          <Stack spacing={1.5}>
-            <Select
-              label="Install By"
-              name="installBy"
-              control={form.control}
-              options={[
-                { value: 'executable', label: 'Setup Executable' },
-                { value: 'folder', label: 'Copying Application Folder' }
-              ]}
-            />
-            {form.watch('installBy') === 'executable' ? (
-              <FilePathInput
-                control={form.control}
-                filters={FileFilter.WindowsExecutables}
-                noSelectedFileLabel="Select Setup Executable"
-                selectedFileLabel="Change Setup Executable"
-                name="setupExecutablePath"
-              />
-            ) : (
-              <></>
-            )}
-            {form.watch('installBy') === 'folder' ? (
-              <FilePathInput
-                control={form.control}
-                properties={['openDirectory']}
-                noSelectedFileLabel="Select Folder Path"
-                selectedFileLabel="Change Folder Path"
-                name="appFolderPath"
-              />
-            ) : (
-              <></>
-            )}
-            <IconInput
-              type="image"
-              imgSrc={iconSrc}
-              name="iconFile"
-              control={form.control}
-              onInput={async (file) => {
-                file && setIconSrc(blobToURL(await file?.arrayBuffer()));
-              }}
-            />
-          </Stack>
-        </Grid>
-        <Grid pl={2.2} item xs={2.5} justifyItems="center" justifyContent="flex-end">
-          <ArtWorkInput
-            control={form.control}
-            name="artworkFile"
-            type="image"
-            imgSrc={artworkSrc}
-            realAppName={'No Artwork'}
-            onInput={async (file) => {
-              file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
-            }}
-          />
-        </Grid>
-      </Grid>
     </CardItem>,
     <CardItem icon={SparklesIcon} label="Winetricks">
       <Grid container>
@@ -156,7 +85,9 @@ export const CreateScript: React.FC = () => {
     </CardItem>
   ];
 
-  const submit = async (data: FormSchema) => {};
+  const submit = async (data: FormSchema) => {
+    console.log(data);
+  };
 
   return (
     <form onSubmit={form.handleSubmit(submit as any)} style={{ display: 'contents' }}>
@@ -186,7 +117,7 @@ export const CreateScript: React.FC = () => {
               <Button
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
-                onClick={() => navigate('/apps')}
+                onClick={navigateToScripts}
               >
                 Back
               </Button>
