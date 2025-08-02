@@ -3,7 +3,7 @@
   "winetricks": { "verbs": ["steam"] },
   "engineVersion": "WS12WineCX64Bit23.7.1-2",
   "dxvkEnabled": true,
-  "setupExecutableURLs": ["{{Steam}}"],
+  "setupExecutableURL": "{{Steam}}",
   "executables": [
     {
       "main": true,

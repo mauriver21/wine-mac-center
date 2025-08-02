@@ -12,7 +12,7 @@
   },
   "engineVersion": "WS11WineCX64Bit23.6.0",
   "dxvkEnabled": true,
-  "setupExecutableURLs": ["{{Steam}}"],
+  "setupExecutableURL": "{{Steam}}",
   "executables": [
     {
       "main": true,
