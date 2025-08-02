@@ -10,16 +10,14 @@ import {
   Stack,
   TableOfContents
 } from 'reactjs-ui-core';
-import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
-import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
-import { FileFilter, WineAppMode } from '@constants/enums';
+import { FileFilter } from '@constants/enums';
 import {
   CpuChipIcon,
   PencilSquareIcon,
@@ -36,7 +34,6 @@ const ITEM_STYLE = { px: '20px !important' };
 export const CreateScript: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
-  const wineAppPipelineModel = useWineAppPipelineModel();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const navigate = useNavigate();
   const [artworkSrc, setArtWorkSrc] = useState('');
@@ -49,8 +46,32 @@ export const CreateScript: React.FC = () => {
   };
 
   const modules = [
-    <CardItem icon={PencilSquareIcon} label="Application Name">
-      <TextField autoComplete="off" control={form.control} name="name" label="Application Name" />
+    <CardItem icon={PencilSquareIcon} label="Script Details">
+      <Stack spacing={2}>
+        <TextField
+          autoComplete="off"
+          control={form.control}
+          name="appName"
+          label="Application Name"
+        />
+        <Select
+          label="Version"
+          name="version"
+          control={form.control}
+          options={[
+            { value: 'steam', label: 'Steam' },
+            { value: 'gog', label: 'GOG' },
+            { value: 'standalone', label: 'Standalone' }
+          ]}
+        />
+        <TextField
+          InputProps={{ disabled: true }}
+          autoComplete="off"
+          control={form.control}
+          name="keyName"
+          label="Key Name"
+        />
+      </Stack>
     </CardItem>,
     <CardItem icon={CpuChipIcon} label="Wine Engine">
       <WineEnginesSelect fullWidth control={form.control} name="engineVersion" />
@@ -135,33 +156,7 @@ export const CreateScript: React.FC = () => {
     </CardItem>
   ];
 
-  const submit = async (data: FormSchema) => {
-    const {
-      name,
-      dxvkEnabled,
-      engineVersion,
-      setupExecutablePath,
-      appFolderPath,
-      useWinetricks,
-      winetricksVerbs
-    } = data;
-    wineAppPipelineModel.runWineAppPipelineByAppConfig(
-      {
-        id: uuid(),
-        name,
-        dxvkEnabled,
-        engineVersion,
-        setupExecutablePath,
-        appFolderPath,
-        iconFile: await data.iconFile?.arrayBuffer(),
-        artworkFile: await data.artworkFile?.arrayBuffer(),
-        winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
-      },
-      { mode: WineAppMode.Create }
-    );
-    reset();
-    navigate(`/app-pipeline/${name}`);
-  };
+  const submit = async (data: FormSchema) => {};
 
   return (
     <form onSubmit={form.handleSubmit(submit as any)} style={{ display: 'contents' }}>

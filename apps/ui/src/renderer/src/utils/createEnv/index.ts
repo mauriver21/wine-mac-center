@@ -32,7 +32,7 @@ export const createEnv = () => {
     ENV.WINE_APPS_PATH = `${ENV.WINE_PATH}/apps`;
     ENV.WINE_ASSETS_PATH = `${ENV.WINE_PATH}/assets`;
     ENV.WINE_ENGINES_PATH = `${ENV.WINE_PATH}/engines`;
-    ENV.WINE_SCRIPTS_PATH = `${ENV.WINE_PATH}/scripts`;
+    ENV.WINE_SCRIPTS_PATH = `${ENV.WINE_ASSETS_PATH}/scripts`;
     ENV.WINE_TMP_PATH = `${ENV.WINE_PATH}/tmp`;
     ENV.WINE_LIBS_PATH = `${ENV.WINE_PATH}/libs`;
     ENV.SCRIPTS_PATH = `${ENV.RESOURCES_PATH}/bash`;
@@ -60,6 +60,10 @@ export const createEnv = () => {
 
     if ((await dirExists(ENV.WINE_ENGINES_PATH)) === false) {
       await createDirectory(ENV.WINE_ENGINES_PATH);
+    }
+
+    if ((await dirExists(ENV.WINE_SCRIPTS_PATH)) === false) {
+      await createDirectory(ENV.WINE_SCRIPTS_PATH);
     }
   };
 
