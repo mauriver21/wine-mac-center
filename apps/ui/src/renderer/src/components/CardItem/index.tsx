@@ -1,13 +1,13 @@
 import React from 'react';
 import { Card, CardContent, Stack, Icon, H6, ContentsClass } from 'reactjs-ui-core';
 
-export interface CreateAppCardItemProps {
+export interface CardItemProps {
   children?: React.ReactElement;
   label: string;
   icon: React.FC;
 }
 
-export const CreateAppCardItem: React.FC<CreateAppCardItemProps> = ({ children, label, icon }) => {
+export const CardItem: React.FC<CardItemProps> = ({ children, label, icon }) => {
   return (
     <Card>
       <CardContent>

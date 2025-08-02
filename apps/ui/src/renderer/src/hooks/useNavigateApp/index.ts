@@ -19,10 +19,15 @@ export const useNavigateApp = () => {
     navigate(`/app-not-found/${realAppName}`);
   };
 
+  const navigateToCreateScript = () => {
+    navigate(`/create-script`);
+  };
+
   return {
     navigateToAppPipeline,
     navigateToApps,
     navigateToAppNotFound,
-    navigateToHome
+    navigateToHome,
+    navigateToCreateScript
   };
 };

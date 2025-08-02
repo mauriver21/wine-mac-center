@@ -7,9 +7,10 @@ import { SimpleLayout } from '@layouts/SimpleLayout';
 import { Apps } from '@pages/Apps';
 import { Home } from '@pages/Home';
 import { Settings } from '@pages/Settings';
-import { Tasks } from '@pages/Tasks';
+import { Scripts } from '@pages/Scripts';
 import { Test } from '@pages/Test';
 import { RouteObject } from 'react-router-dom';
+import { CreateScript } from '@components/CreateScript';
 
 export const routes: RouteObject[] = [
   {
@@ -20,7 +21,7 @@ export const routes: RouteObject[] = [
       { path: 'home', element: <Home /> },
       { path: 'apps', element: <Apps /> },
       { path: 'settings', element: <Settings /> },
-      { path: 'tasks', element: <Tasks /> },
+      { path: 'scripts', element: <Scripts /> },
       { path: 'test', element: <Test /> }
     ]
   },
@@ -46,5 +47,10 @@ export const routes: RouteObject[] = [
     path: '/app-not-found',
     element: <SimpleLayout />,
     children: [{ path: ':realAppName', element: <NotFoundApp /> }]
+  },
+  {
+    path: '/create-script',
+    element: <SimpleLayout />,
+    children: [{ index: true, element: <CreateScript /> }]
   }
 ];

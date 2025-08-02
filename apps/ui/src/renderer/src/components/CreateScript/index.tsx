@@ -33,7 +33,7 @@ import { IconInput } from '@components/IconInput';
 
 const ITEM_STYLE = { px: '20px !important' };
 
-export const CreateApp: React.FC = () => {
+export const CreateScript: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
   const wineAppPipelineModel = useWineAppPipelineModel();
@@ -186,7 +186,7 @@ export const CreateApp: React.FC = () => {
               }}
             >
               <H6 color="text.secondary" fontWeight={500}>
-                Create App
+                Create Script
               </H6>
               <Button
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
