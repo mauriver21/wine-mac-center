@@ -1,0 +1,14 @@
+{
+  "id": "75e68294-7993-4500-be47-14ee3755873d",
+  "winetricks": { "verbs": ["steam"] },
+  "engineVersion": "WS12WineCX64Bit23.7.1-2",
+  "dxvkEnabled": true,
+  "setupExecutableURLs": ["{{Steam}}"],
+  "executables": [
+    {
+      "main": true,
+      "path": "/drive_c/Program Files (x86)/Steam/steam.exe",
+      "flags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 242760"
+    }
+  ]
+}
