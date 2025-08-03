@@ -18,6 +18,7 @@ import { WinetricksSelector } from '@components/WinetricksSelector';
 import { CpuChipIcon, PencilSquareIcon, SparklesIcon } from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { getHiphenatedString } from '@utils/getHiphenatedString';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -59,6 +60,7 @@ export const PipelineScript: React.FC = () => {
           control={form.control}
           name="keyName"
           label="Key Name"
+          value={getHiphenatedString(form.watch('appName')).toLowerCase()}
         />
       </Stack>
     </CardItem>,
