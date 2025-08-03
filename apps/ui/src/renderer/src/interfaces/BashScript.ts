@@ -14,6 +14,8 @@ export type BashScript =
   | 'taskmgr'
   | 'uninstaller'
   | 'runExecutable'
+  | 'remove'
+  | 'copy'
   | 'wine'
   | 'wineboot'
   | 'winecfg'

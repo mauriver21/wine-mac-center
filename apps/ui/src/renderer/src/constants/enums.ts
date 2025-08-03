@@ -26,3 +26,11 @@ export enum WineAppMode {
   Create = 'Create',
   Update = 'Update'
 }
+
+export enum ScriptOperation {
+  DOWNLOAD = 'DOWNLOAD',
+  UNZIP = 'UNZIP',
+  COPY = 'COPY',
+  REMOVE = 'REMOVE',
+  RUN_WINDOWS_EXE = 'RUN_WINDOWS_EXE'
+}

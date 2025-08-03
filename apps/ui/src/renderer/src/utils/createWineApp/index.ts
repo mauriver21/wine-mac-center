@@ -296,7 +296,7 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
   const copyWindowsApplication = (appFolderPath: string, processArgs?: SpawnProcessArgs) => {
     return spawnScript(
       'copyWindowsApplication',
-      `${appFolderPath.replace(/( |\\ )/g, '\\ ')}`,
+      `"${appFolderPath.replace(/( |\\ )/g, '\\ ')}"`,
       processArgs
     );
   };

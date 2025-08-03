@@ -15,7 +15,12 @@ import { FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
-import { CpuChipIcon, PencilSquareIcon, SparklesIcon } from '@heroicons/react/24/solid';
+import {
+  CpuChipIcon,
+  PencilSquareIcon,
+  PlayCircleIcon,
+  SparklesIcon
+} from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { getHiphenatedString } from '@utils/getHiphenatedString';
@@ -79,7 +84,8 @@ export const PipelineScript: React.FC = () => {
           <WinetricksSelector control={form.control} name="winetricksVerbs" />
         </Grid>
       </Grid>
-    </CardItem>
+    </CardItem>,
+    <CardItem icon={PlayCircleIcon} label="Setup Executable"></CardItem>
   ];
 
   const submit = async (data: FormSchema) => {

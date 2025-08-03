@@ -31,6 +31,7 @@ export const createEnv = () => {
     ENV.WINE_PATH = `${ENV.HOME}/Wine`;
     ENV.WINE_APPS_PATH = `${ENV.WINE_PATH}/apps`;
     ENV.WINE_ASSETS_PATH = `${ENV.WINE_PATH}/assets`;
+    ENV.WINE_DOWNLOADS_PATH = `${ENV.WINE_ASSETS_PATH}/downloads`;
     ENV.WINE_ENGINES_PATH = `${ENV.WINE_PATH}/engines`;
     ENV.WINE_SCRIPTS_PATH = `${ENV.WINE_ASSETS_PATH}/scripts`;
     ENV.WINE_TMP_PATH = `${ENV.WINE_PATH}/tmp`;

@@ -1,5 +1,6 @@
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineAppStep } from '@interfaces/WineAppStep';
+import { PipelineScript } from '@interfaces/PipelineScript';
 
 export type WineAppJobWithScript = {
   name: string;
@@ -8,6 +9,7 @@ export type WineAppJobWithScript = {
       script: (args: SpawnProcessArgs) => Promise<{
         pid: number;
       }>;
+      pipelineScript?: PipelineScript;
     }
   >;
 };

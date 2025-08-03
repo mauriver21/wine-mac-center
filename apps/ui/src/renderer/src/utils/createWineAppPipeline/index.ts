@@ -1,5 +1,6 @@
-import { ProcessStatus, ExitCode, WineAppMode } from '@constants/enums';
+import { ProcessStatus, ExitCode, WineAppMode, ScriptOperation } from '@constants/enums';
 import { FilePath } from '@interfaces/FilePath';
+import { PipelineScript } from '@interfaces/PipelineScript';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppJob } from '@interfaces/WineAppJob';
@@ -12,14 +13,17 @@ import { clone } from '@utils/clone';
 import { createEnv } from '@utils/createEnv';
 import { createWineApp } from '@utils/createWineApp';
 import { dirExists } from '@utils/dirExists';
+import { downloadFile } from '@utils/downloadFile';
 import { fileExists } from '@utils/fileExists';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
+import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { writeFile } from '@utils/writeFile';
 import { v4 as uuid } from 'uuid';
 
 export const createWineAppPipeline = async (options: {
   appConfig: WineAppConfig;
+  pipelineScripts: Array<PipelineScript>;
   debug?: boolean;
   outputEveryMs?: number;
   promptMainExeCallback?: (args: {
@@ -44,7 +48,7 @@ export const createWineAppPipeline = async (options: {
     setupExecutablePath,
     appFolderPath
   } = options.appConfig;
-
+  const { pipelineScripts } = options;
   const wineApp = await createWineApp(name, { mode: options.mode });
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
@@ -179,6 +183,54 @@ export const createWineAppPipeline = async (options: {
       jobs: pipeline.jobs,
       status: ProcessStatus.Pending
     });
+  };
+
+  const runPipelineScript = async (args: PipelineScript) => {
+    const { operation } = args;
+    const WINE_DOWNLOADS_PATH = `${env.get().WINE_DOWNLOADS_PATH}`;
+
+    switch (operation) {
+      case ScriptOperation.DOWNLOAD: {
+        const file = await downloadFile(args.url);
+        await writeBinaryFile(`${WINE_DOWNLOADS_PATH}/${args.downloadName}`, file);
+        break;
+      }
+      case ScriptOperation.COPY: {
+        const from = `${WINE_DOWNLOADS_PATH}/${args.from.replace(/^\//, '')}`;
+        return wineApp.spawnScript('copy', `"${from}" "${args.target}"`, args.spawnProcessArgs);
+      }
+      case ScriptOperation.REMOVE: {
+        return wineApp.spawnScript('remove', `"${args.target}"`, args.spawnProcessArgs);
+      }
+      case ScriptOperation.RUN_WINDOWS_EXE: {
+        return wineApp.runExe(`"${args.exePath}"`, args.spawnProcessArgs);
+      }
+    }
+  };
+
+  const buildPipelineStepsFromScripts = () => {
+    let steps: Array<
+      WineAppStep & {
+        script: (args: SpawnProcessArgs) => Promise<{
+          pid: number;
+        } | void>;
+      }
+    > = [];
+
+    for (const script of pipelineScripts) {
+      steps = [
+        ...steps,
+        {
+          name: script.name,
+          output: '',
+          status: ProcessStatus.Pending,
+          script: async (args) => {
+            console.log(args);
+          }
+        }
+      ];
+    }
+    return steps;
   };
 
   const concatDataToOutput = (data: string | number | null, output = '') =>
@@ -347,7 +399,8 @@ export const createWineAppPipeline = async (options: {
             },
             status: ProcessStatus.Pending,
             output: ''
-          }
+          },
+          ...buildPipelineStepsFromScripts()
         ]
       }
     ],
