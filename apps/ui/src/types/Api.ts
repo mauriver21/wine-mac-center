@@ -1,6 +1,6 @@
 import plist from 'plist';
 import { dialog } from 'electron';
-import { PathOrFileDescriptor } from 'fs';
+import { MakeDirectoryOptions, PathOrFileDescriptor } from 'fs';
 import { WatchDirEvent } from './WatchDirEvent';
 
 export type Api = {
@@ -19,7 +19,10 @@ export type Api = {
   readDirectory: (dirPath: string) => Promise<string[]>;
   dirExists: (dirPath: string) => Promise<boolean>;
   readBinaryFile: (filePath: string) => Promise<Buffer>;
-  createDirectory: (dirPath: string) => Promise<void>;
+  createDirectory: (
+    dirPath: string,
+    options?: MakeDirectoryOptions & { recursive: true }
+  ) => Promise<void>;
   readFileAsString: (filePath: string) => Promise<string>;
   writeBinaryFile: (filePath: string, arrayBuffer: ArrayBuffer) => Promise<void>;
   showOpenDialog: typeof dialog.showOpenDialog;

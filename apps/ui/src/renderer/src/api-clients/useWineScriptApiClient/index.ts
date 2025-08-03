@@ -1,5 +1,8 @@
+import { WineScriptAppConfig } from '@interfaces/WineScriptAppConfig';
 import { WineScriptConfig } from '@interfaces/WineScriptConfig';
 import { WineScriptIndexConfig } from '@interfaces/WineScriptIndexConfig';
+import { createDirectory } from '@utils/createDirectory';
+import { dirExists } from '@utils/dirExists';
 import { fileExists } from '@utils/fileExists';
 import { parseJson } from '@utils/parseJson';
 import { readFileAsString } from '@utils/readFileAsString';
@@ -26,7 +29,7 @@ export const useWineScriptApiClient = () => {
 
   const generateUniqueKeyName = (index: Array<WineScriptIndexConfig>, keyName: string) => {
     let number = 1;
-    let newKeyname = '';
+    let newKeyname = keyName;
 
     while (index.some((item) => item.keyName == keyName)) {
       newKeyname = `${keyName}-${number}`;
@@ -36,10 +39,30 @@ export const useWineScriptApiClient = () => {
     return newKeyname;
   };
 
+  const writeScript = async (data: WineScriptConfig) => {
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.keyName}`;
+    const config: WineScriptAppConfig = {
+      id: data.appConfigId,
+      dxvkEnabled: data.dxvkEnabled || false,
+      setupExecutableURL: '',
+      engineVersion: data.engineVersion,
+      winetricks: { verbs: [] },
+      executables: [{ main: true, path: '', flags: '' }]
+    };
+    const VERSIONS_PATH = `${SCRIPT_PATH}/versions/${data.version}`;
+
+    if ((await dirExists(VERSIONS_PATH)) === false) {
+      await createDirectory(VERSIONS_PATH, { recursive: true });
+    }
+
+    writeFile(`${VERSIONS_PATH}/index.json`, JSON.stringify(config));
+  };
+
   const create = async (data: WineScriptConfig) => {
     await initIndex();
     let index = (await getIndex()) || [];
     const keyName = generateUniqueKeyName(index, data.keyName);
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.keyName}`;
     index = [
       ...index,
       {
@@ -50,6 +73,11 @@ export const useWineScriptApiClient = () => {
       }
     ];
     await writeIndex(index);
+
+    if ((await dirExists(SCRIPT_PATH)) === false) {
+      await createDirectory(SCRIPT_PATH);
+      await writeScript({ ...data, keyName });
+    }
   };
 
   return {

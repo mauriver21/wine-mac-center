@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ import { CpuChipIcon, PencilSquareIcon, SparklesIcon } from '@heroicons/react/24
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { getHiphenatedString } from '@utils/getHiphenatedString';
+import { useWineScriptApiClient } from '@api-clients/useWineScriptApiClient';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -27,6 +28,8 @@ export const PipelineScript: React.FC = () => {
   const form = useForm(schema);
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const { navigateToScripts } = useNavigateApp();
+  const wineScriptApiClient = useWineScriptApiClient();
+  const [loading, setLoading] = useState(false);
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -80,7 +83,9 @@ export const PipelineScript: React.FC = () => {
   ];
 
   const submit = async (data: FormSchema) => {
-    console.log(data);
+    setLoading(true);
+    await wineScriptApiClient.create(data);
+    setLoading(false);
   };
 
   return (
@@ -165,7 +170,7 @@ export const PipelineScript: React.FC = () => {
                 <Button
                   sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                   color="secondary"
-                  disabled={form.isInvalid()}
+                  disabled={loading || form.isInvalid()}
                   type="submit"
                 >
                   Create

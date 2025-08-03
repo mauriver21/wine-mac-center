@@ -4,7 +4,7 @@ import { v4 as uuid } from 'uuid';
 
 export type FormSchema = {
   appConfigId: string;
-  keyName?: string;
+  keyName: string;
   dxvkEnabled: boolean;
   appName: string;
   engineVersion: string;
@@ -17,7 +17,7 @@ export const useSchema = () => {
     () =>
       schema.object({
         appConfigId: schema.string().required().default(uuid()),
-        keyName: schema.string(),
+        keyName: schema.string().required(),
         appName: schema.string().required(),
         version: schema.string().required().default('steam'),
         engineVersion: schema.string().required().default(''),
