@@ -5,9 +5,11 @@ import { v4 as uuid } from 'uuid';
 export type FormSchema = {
   appConfigId: string;
   keyName?: string;
+  dxvkEnabled: boolean;
   appName: string;
   engineVersion: string;
   version: string;
+  winetricksVerbs?: Array<string | undefined>;
 };
 
 export const useSchema = () => {
@@ -20,17 +22,7 @@ export const useSchema = () => {
         version: schema.string().required().default('steam'),
         engineVersion: schema.string().required().default(''),
         dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
-        setupExecutableURL: schema.string().when('setupExecutableStrategy', {
-          is: 'downloadSetupExecutable',
-          then: (schema) => schema.required()
-        }),
-        winetricksVerbs: schema
-          .array()
-          .when('useWinetricks', {
-            is: true,
-            then: (arrSchema) => arrSchema.of(schema.string())
-          })
-          .default([])
+        winetricksVerbs: schema.array().of(schema.string()).default([])
       }),
     []
   );
