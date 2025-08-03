@@ -185,7 +185,7 @@ export const createWineAppPipeline = async (options: {
     });
   };
 
-  const runPipelineScript = async (args: PipelineScript) => {
+  const runPipelineScript = async (args: PipelineScript, spawnProcessArgs: SpawnProcessArgs) => {
     const { operation } = args;
     const WINE_DOWNLOADS_PATH = `${env.get().WINE_DOWNLOADS_PATH}`;
 
@@ -197,15 +197,19 @@ export const createWineAppPipeline = async (options: {
       }
       case ScriptOperation.COPY: {
         const from = `${WINE_DOWNLOADS_PATH}/${args.from.replace(/^\//, '')}`;
-        return wineApp.spawnScript('copy', `"${from}" "${args.target}"`, args.spawnProcessArgs);
+        return wineApp.spawnScript('copy', `"${from}" "${args.target}"`, spawnProcessArgs);
       }
       case ScriptOperation.REMOVE: {
-        return wineApp.spawnScript('remove', `"${args.target}"`, args.spawnProcessArgs);
+        return wineApp.spawnScript('remove', `"${args.target}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
-        return wineApp.runExe(`"${args.exePath}"`, args.spawnProcessArgs);
+        return wineApp.runExe(`"${args.exePath}"`, spawnProcessArgs);
       }
+      default:
+        return;
     }
+
+    return;
   };
 
   const buildPipelineStepsFromScripts = () => {
@@ -224,9 +228,7 @@ export const createWineAppPipeline = async (options: {
           name: script.name,
           output: '',
           status: ProcessStatus.Pending,
-          script: async (args) => {
-            console.log(args);
-          }
+          script: async (args) => runPipelineScript(script, args)
         }
       ];
     }
