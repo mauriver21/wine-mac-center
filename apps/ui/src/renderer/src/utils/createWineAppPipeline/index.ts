@@ -23,7 +23,7 @@ import { v4 as uuid } from 'uuid';
 
 export const createWineAppPipeline = async (options: {
   appConfig: WineAppConfig;
-  pipelineScripts: Array<PipelineScript>;
+  pipelineScripts?: Array<PipelineScript>;
   debug?: boolean;
   outputEveryMs?: number;
   promptMainExeCallback?: (args: {
@@ -48,7 +48,7 @@ export const createWineAppPipeline = async (options: {
     setupExecutablePath,
     appFolderPath
   } = options.appConfig;
-  const { pipelineScripts } = options;
+  const { pipelineScripts = [] } = options;
   const wineApp = await createWineApp(name, { mode: options.mode });
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;

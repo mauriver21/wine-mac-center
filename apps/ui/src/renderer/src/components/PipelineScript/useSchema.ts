@@ -1,3 +1,5 @@
+import { ScriptOperation } from '@constants/enums';
+import { PipelineScript } from '@interfaces/PipelineScript';
 import { useMemo } from 'react';
 import { schema, Schema } from 'reactjs-ui-form-fields';
 import { v4 as uuid } from 'uuid';
@@ -10,6 +12,7 @@ export type FormSchema = {
   engineVersion: string;
   version: string;
   winetricksVerbs?: Array<string | undefined>;
+  pipelineScripts: Array<PipelineScript>;
 };
 
 export const useSchema = () => {
@@ -22,7 +25,14 @@ export const useSchema = () => {
         version: schema.string().required().default('steam'),
         engineVersion: schema.string().required().default(''),
         dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
-        winetricksVerbs: schema.array().of(schema.string()).default([])
+        winetricksVerbs: schema.array().of(schema.string()).default([]),
+        pipelineScripts: schema.array().default([
+          {
+            name: 'Download setup executable',
+            operation: ScriptOperation.DOWNLOAD,
+            target: ''
+          }
+        ])
       }),
     []
   );

@@ -13,6 +13,7 @@ import {
 import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
+import { useFieldArray } from 'react-hook-form';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import {
@@ -25,6 +26,7 @@ import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { getHiphenatedString } from '@utils/getHiphenatedString';
 import { useWineScriptApiClient } from '@api-clients/useWineScriptApiClient';
+import { ScriptOperation } from '@constants/enums';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -35,6 +37,10 @@ export const PipelineScript: React.FC = () => {
   const { navigateToScripts } = useNavigateApp();
   const wineScriptApiClient = useWineScriptApiClient();
   const [loading, setLoading] = useState(false);
+  const { fields } = useFieldArray<FormSchema>({
+    name: 'pipelineScripts',
+    control: form.control
+  });
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -85,7 +91,21 @@ export const PipelineScript: React.FC = () => {
         </Grid>
       </Grid>
     </CardItem>,
-    <CardItem icon={PlayCircleIcon} label="Setup Executable"></CardItem>
+    <CardItem icon={PlayCircleIcon} label="Installation Script">
+      <Stack>
+        {fields.map((_, index) => (
+          <Stack key={index} spacing={2}>
+            <Select
+              label="Operation"
+              control={form.control}
+              name={`pipelineScripts.${index}.operation`}
+              options={[{ value: ScriptOperation.DOWNLOAD, label: 'Download File' }]}
+            />
+            <TextField label="Hello World" />
+          </Stack>
+        ))}
+      </Stack>
+    </CardItem>
   ];
 
   const submit = async (data: FormSchema) => {
