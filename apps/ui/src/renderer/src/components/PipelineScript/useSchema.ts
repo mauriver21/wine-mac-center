@@ -19,12 +19,11 @@ export const useSchema = () => {
         appName: schema.string().required(),
         version: schema.string().required().default('steam'),
         engineVersion: schema.string().required().default(''),
-        dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(true),
+        dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
         setupExecutableURL: schema.string().when('setupExecutableStrategy', {
           is: 'downloadSetupExecutable',
           then: (schema) => schema.required()
         }),
-        useWinetricks: schema.bool().required().default(false),
         winetricksVerbs: schema
           .array()
           .when('useWinetricks', {

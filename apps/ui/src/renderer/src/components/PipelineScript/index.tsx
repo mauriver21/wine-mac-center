@@ -21,7 +21,7 @@ import { useNavigateApp } from '@hooks/useNavigateApp';
 
 const ITEM_STYLE = { px: '20px !important' };
 
-export const CreateScript: React.FC = () => {
+export const PipelineScript: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
@@ -70,16 +70,8 @@ export const CreateScript: React.FC = () => {
         <Grid item xs={4}>
           <Checkbox control={form.control} name="dxvkEnabled" label="Enable DXVK" />
         </Grid>
-        <Grid item xs={4}>
-          <Checkbox control={form.control} name="useWinetricks" label="Use Winetricks" />
-        </Grid>
-
         <Grid mt={1} item xs={12}>
-          <WinetricksSelector
-            disabled={!Boolean(form.watch('useWinetricks'))}
-            control={form.control}
-            name="winetricksVerbs"
-          />
+          <WinetricksSelector control={form.control} name="winetricksVerbs" />
         </Grid>
       </Grid>
     </CardItem>

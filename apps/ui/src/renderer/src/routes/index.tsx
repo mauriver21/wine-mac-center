@@ -10,7 +10,7 @@ import { Settings } from '@pages/Settings';
 import { Scripts } from '@pages/Scripts';
 import { Test } from '@pages/Test';
 import { RouteObject } from 'react-router-dom';
-import { CreateScript } from '@components/CreateScript';
+import { PipelineScript } from '@components/PipelineScript';
 
 export const routes: RouteObject[] = [
   {
@@ -51,6 +51,6 @@ export const routes: RouteObject[] = [
   {
     path: '/create-script',
     element: <SimpleLayout />,
-    children: [{ index: true, element: <CreateScript /> }]
+    children: [{ index: true, element: <PipelineScript /> }]
   }
 ];

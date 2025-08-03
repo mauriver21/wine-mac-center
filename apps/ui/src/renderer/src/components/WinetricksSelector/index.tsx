@@ -2,7 +2,7 @@ import { Virtuoso } from 'react-virtuoso';
 import { SearchField } from '@components/SearchField';
 import { RootState } from '@interfaces/RootState';
 import { useWinetrickModel } from '@models/useWinetrickModel';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Accordion, Box, Grid, SkeletonLoader, Stack } from 'reactjs-ui-core';
 import { Checkbox, Field, FieldProps } from 'reactjs-ui-form-fields';
@@ -57,7 +57,7 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
           }}
         />
         {CATEGORIES.map((category, index) => (
-          <>
+          <React.Fragment key={index}>
             {winetricks[category.key] ? (
               <Box key={index}>
                 <Accordion
@@ -111,7 +111,7 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
             ) : (
               <></>
             )}
-          </>
+          </React.Fragment>
         ))}
       </Stack>
     </SkeletonLoader>
