@@ -99,9 +99,15 @@ export const PipelineScript: React.FC = () => {
               label="Operation"
               control={form.control}
               name={`pipelineScripts.${index}.operation`}
-              options={[{ value: ScriptOperation.DOWNLOAD, label: 'Download File' }]}
+              options={[
+                { value: ScriptOperation.DOWNLOAD, label: 'Download File' },
+                { value: ScriptOperation.COPY, label: 'Copy' },
+                { value: ScriptOperation.REMOVE, label: 'Remove' },
+                { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' },
+                { value: ScriptOperation.DECOMPRESS, label: 'Decompress' }
+              ]}
             />
-            <TextField label="Hello World" />
+            <TextField label="File URL" />
           </Stack>
         ))}
       </Stack>

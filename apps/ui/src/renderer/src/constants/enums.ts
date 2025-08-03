@@ -29,7 +29,7 @@ export enum WineAppMode {
 
 export enum ScriptOperation {
   DOWNLOAD = 'DOWNLOAD',
-  UNZIP = 'UNZIP',
+  DECOMPRESS = 'DECOMPRESS',
   COPY = 'COPY',
   REMOVE = 'REMOVE',
   RUN_WINDOWS_EXE = 'RUN_WINDOWS_EXE'
