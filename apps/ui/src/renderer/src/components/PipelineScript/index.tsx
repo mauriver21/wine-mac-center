@@ -10,7 +10,7 @@ import {
   Stack,
   TableOfContents
 } from 'reactjs-ui-core';
-import { alpha } from '@mui/material';
+import { alpha, Chip } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
 import { useFieldArray } from 'react-hook-form';
@@ -27,6 +27,9 @@ import { useNavigateApp } from '@hooks/useNavigateApp';
 import { getHiphenatedString } from '@utils/getHiphenatedString';
 import { useWineScriptApiClient } from '@api-clients/useWineScriptApiClient';
 import { ScriptOperation } from '@constants/enums';
+import { ENV } from '@constants/envs';
+import { getRelativeWinePath } from '@utils/getRelativeWinePath';
+import { DRIVE_C_PATH as RELATIVE_DRIVE_C_PATH } from '@constants/paths';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -41,6 +44,8 @@ export const PipelineScript: React.FC = () => {
     name: 'pipelineScripts',
     control: form.control
   });
+  const WINE_DOWNLOADS_PATH = `$HOME${getRelativeWinePath(ENV.WINE_DOWNLOADS_PATH)}`;
+  const DRIVE_C_PATH = `$WINE_APP_PREFIX_PATH/${RELATIVE_DRIVE_C_PATH}`;
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -93,23 +98,68 @@ export const PipelineScript: React.FC = () => {
     </CardItem>,
     <CardItem icon={PlayCircleIcon} label="Installation Script">
       <Stack>
-        {fields.map((_, index) => (
-          <Stack key={index} spacing={2}>
-            <Select
-              label="Operation"
-              control={form.control}
-              name={`pipelineScripts.${index}.operation`}
-              options={[
-                { value: ScriptOperation.DOWNLOAD, label: 'Download File' },
-                { value: ScriptOperation.COPY, label: 'Copy' },
-                { value: ScriptOperation.REMOVE, label: 'Remove' },
-                { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' },
-                { value: ScriptOperation.DECOMPRESS, label: 'Decompress' }
-              ]}
-            />
-            <TextField label="File URL" />
-          </Stack>
-        ))}
+        {fields.map((_, index) => {
+          const operation = form.watch(`pipelineScripts.${index}.operation`);
+
+          return (
+            <Stack key={index} spacing={2}>
+              <Select
+                label="Operation"
+                control={form.control}
+                name={`pipelineScripts.${index}.operation`}
+                options={[
+                  { value: ScriptOperation.DOWNLOAD, label: 'Download File' },
+                  { value: ScriptOperation.COPY, label: 'Copy' },
+                  { value: ScriptOperation.REMOVE, label: 'Remove' },
+                  { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' }
+                ]}
+              />
+              {operation === ScriptOperation.DOWNLOAD ? <TextField label="File URL" /> : <></>}
+              {operation === ScriptOperation.COPY ? (
+                <>
+                  <TextField
+                    InputProps={{
+                      startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
+                    }}
+                    label="From Path"
+                    placeholder="/your/relative/downloaded/folder/path"
+                  />
+                  <TextField
+                    InputProps={{
+                      startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
+                    }}
+                    label="To Path"
+                    placeholder="/your/relative/app/target/folder/path"
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+              {operation === ScriptOperation.REMOVE ? <TextField label="Target Path" /> : <></>}
+              {operation === ScriptOperation.RUN_WINDOWS_EXE ? (
+                <TextField
+                  InputProps={{
+                    startAdornment: (
+                      <Box mr={2}>
+                        <Select
+                          sx={{ height: 34 }}
+                          options={[
+                            { value: WINE_DOWNLOADS_PATH, label: WINE_DOWNLOADS_PATH },
+                            { value: DRIVE_C_PATH, label: DRIVE_C_PATH }
+                          ]}
+                          value={WINE_DOWNLOADS_PATH}
+                        />
+                      </Box>
+                    )
+                  }}
+                  label="Executable Path"
+                />
+              ) : (
+                <></>
+              )}
+            </Stack>
+          );
+        })}
       </Stack>
     </CardItem>
   ];
