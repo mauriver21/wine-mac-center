@@ -1,4 +1,6 @@
 import { ScriptOperation } from '@constants/enums';
+import { isDownloadableURL } from '@utils/isDownloadableURL';
+import { isURL } from '@utils/isURL';
 import { schema, InferType } from 'reactjs-ui-form-fields';
 import { v4 as uuid } from 'uuid';
 
@@ -10,13 +12,36 @@ const schemaObject = schema.object({
   engineVersion: schema.string().required().default(''),
   dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
   winetricksVerbs: schema.array().of(schema.string()).default([]),
-  pipelineScripts: schema.array().default([
-    {
-      name: 'Download setup executable',
-      operation: ScriptOperation.DOWNLOAD,
-      target: ''
-    }
-  ])
+  pipelineScripts: schema
+    .array(
+      schema.object({
+        name: schema.string().required(),
+        operation: schema
+          .string()
+          .oneOf([ScriptOperation.DOWNLOAD, ScriptOperation.COPY, ScriptOperation.RUN_WINDOWS_EXE])
+          .required(),
+        url: schema
+          .string()
+          .test({
+            name: 'isURL',
+            message: 'Invalid URL',
+            test: (url) => isURL(url || '')
+          })
+          .test({
+            name: 'isDownloadableURL',
+            message: 'URL not downloadable',
+            test: async (url) => await isDownloadableURL(url || '')
+          })
+          .when('operation', { is: ScriptOperation.DOWNLOAD, then: (schema) => schema.required() })
+      })
+    )
+    .default([
+      {
+        name: 'Download setup executable',
+        operation: ScriptOperation.DOWNLOAD,
+        url: ''
+      }
+    ])
 });
 
 export type FormSchema = InferType<typeof schemaObject>;

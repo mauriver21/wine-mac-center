@@ -114,7 +114,15 @@ export const PipelineScript: React.FC = () => {
                   { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' }
                 ]}
               />
-              {operation === ScriptOperation.DOWNLOAD ? <TextField label="File URL" /> : <></>}
+              {operation === ScriptOperation.DOWNLOAD ? (
+                <TextField
+                  control={form.control}
+                  name={`pipelineScripts.${index}.url`}
+                  label="File URL"
+                />
+              ) : (
+                <></>
+              )}
               {operation === ScriptOperation.COPY ? (
                 <>
                   <TextField
