@@ -4,6 +4,12 @@ import { isURL } from '@utils/isURL';
 import { schema, InferType } from 'reactjs-ui-form-fields';
 import { v4 as uuid } from 'uuid';
 
+export const DEFAULT_PIPELINE_SCRIPT = {
+  name: 'Download setup executable',
+  operation: ScriptOperation.DOWNLOAD,
+  url: ''
+} as const;
+
 const schemaObject = schema.object({
   appConfigId: schema.string().required().default(uuid()),
   keyName: schema.string().required(),
@@ -35,13 +41,7 @@ const schemaObject = schema.object({
           .when('operation', { is: ScriptOperation.DOWNLOAD, then: (schema) => schema.required() })
       })
     )
-    .default([
-      {
-        name: 'Download setup executable',
-        operation: ScriptOperation.DOWNLOAD,
-        url: ''
-      }
-    ])
+    .default([DEFAULT_PIPELINE_SCRIPT])
 });
 
 export type FormSchema = InferType<typeof schemaObject>;

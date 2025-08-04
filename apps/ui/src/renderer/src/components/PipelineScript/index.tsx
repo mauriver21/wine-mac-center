@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import {
   Box,
-  Button,
   ContentsArea,
   ContentsAreaHandle,
   ContentsClass,
@@ -11,7 +10,7 @@ import {
   TableOfContents
 } from 'reactjs-ui-core';
 import { alpha, Chip } from '@mui/material';
-import { FormSchema, useSchema } from './useSchema';
+import { DEFAULT_PIPELINE_SCRIPT, FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
 import { useFieldArray } from 'react-hook-form';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
@@ -30,6 +29,7 @@ import { ScriptOperation } from '@constants/enums';
 import { ENV } from '@constants/envs';
 import { getRelativeWinePath } from '@utils/getRelativeWinePath';
 import { DRIVE_C_PATH as RELATIVE_DRIVE_C_PATH } from '@constants/paths';
+import { Button } from '@components/Button';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -40,12 +40,14 @@ export const PipelineScript: React.FC = () => {
   const { navigateToScripts } = useNavigateApp();
   const wineScriptApiClient = useWineScriptApiClient();
   const [loading, setLoading] = useState(false);
-  const { fields } = useFieldArray<FormSchema>({
+  const { fields, append, prepend, insert } = useFieldArray<FormSchema>({
     name: 'pipelineScripts',
     control: form.control
   });
   const WINE_DOWNLOADS_PATH = `$HOME${getRelativeWinePath(ENV.WINE_DOWNLOADS_PATH)}`;
   const DRIVE_C_PATH = `$WINE_APP_PREFIX_PATH/${RELATIVE_DRIVE_C_PATH}`;
+
+  const addStep = () => append(DEFAULT_PIPELINE_SCRIPT);
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -97,77 +99,92 @@ export const PipelineScript: React.FC = () => {
       </Grid>
     </CardItem>,
     <CardItem icon={PlayCircleIcon} label="Installation Script">
-      <Stack>
+      <Stack spacing={2}>
         {fields.map((_, index) => {
           const operation = form.watch(`pipelineScripts.${index}.operation`);
 
           return (
-            <Stack key={index} spacing={2}>
-              <Select
-                label="Operation"
-                control={form.control}
-                name={`pipelineScripts.${index}.operation`}
-                options={[
-                  { value: ScriptOperation.DOWNLOAD, label: 'Download File' },
-                  { value: ScriptOperation.COPY, label: 'Copy' },
-                  { value: ScriptOperation.REMOVE, label: 'Remove' },
-                  { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' }
-                ]}
-              />
-              {operation === ScriptOperation.DOWNLOAD ? (
-                <TextField
+            <Box
+              position="relative"
+              key={index}
+              bgcolor="secondary.dark"
+              p={2}
+              borderRadius={2}
+              pt={5}
+            >
+              <Box position="absolute" top={-10} left={10}>
+                <Chip sx={{ opacity: 1 }} label={`Step ${index + 1}`} />
+              </Box>
+              <Stack spacing={2}>
+                <Select
+                  label="Operation"
                   control={form.control}
-                  name={`pipelineScripts.${index}.url`}
-                  label="File URL"
+                  name={`pipelineScripts.${index}.operation`}
+                  options={[
+                    { value: ScriptOperation.DOWNLOAD, label: 'Download File' },
+                    { value: ScriptOperation.COPY, label: 'Copy' },
+                    { value: ScriptOperation.REMOVE, label: 'Remove' },
+                    { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' }
+                  ]}
                 />
-              ) : (
-                <></>
-              )}
-              {operation === ScriptOperation.COPY ? (
-                <>
+                {operation === ScriptOperation.DOWNLOAD ? (
+                  <TextField
+                    control={form.control}
+                    name={`pipelineScripts.${index}.url`}
+                    label="File URL"
+                  />
+                ) : (
+                  <></>
+                )}
+                {operation === ScriptOperation.COPY ? (
+                  <>
+                    <TextField
+                      InputProps={{
+                        startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
+                      }}
+                      label="From Path"
+                      placeholder="/your/relative/path"
+                    />
+                    <TextField
+                      InputProps={{
+                        startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
+                      }}
+                      label="To Path"
+                      placeholder="/your/relative/app/target/path"
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
+                {operation === ScriptOperation.REMOVE ? <TextField label="Target Path" /> : <></>}
+                {operation === ScriptOperation.RUN_WINDOWS_EXE ? (
                   <TextField
                     InputProps={{
-                      startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
+                      startAdornment: (
+                        <Box mr={2}>
+                          <Select
+                            sx={{ height: 34 }}
+                            options={[
+                              { value: WINE_DOWNLOADS_PATH, label: WINE_DOWNLOADS_PATH },
+                              { value: DRIVE_C_PATH, label: DRIVE_C_PATH }
+                            ]}
+                            value={WINE_DOWNLOADS_PATH}
+                          />
+                        </Box>
+                      )
                     }}
-                    label="From Path"
-                    placeholder="/your/relative/downloaded/folder/path"
+                    label="Executable Path"
                   />
-                  <TextField
-                    InputProps={{
-                      startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
-                    }}
-                    label="To Path"
-                    placeholder="/your/relative/app/target/folder/path"
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-              {operation === ScriptOperation.REMOVE ? <TextField label="Target Path" /> : <></>}
-              {operation === ScriptOperation.RUN_WINDOWS_EXE ? (
-                <TextField
-                  InputProps={{
-                    startAdornment: (
-                      <Box mr={2}>
-                        <Select
-                          sx={{ height: 34 }}
-                          options={[
-                            { value: WINE_DOWNLOADS_PATH, label: WINE_DOWNLOADS_PATH },
-                            { value: DRIVE_C_PATH, label: DRIVE_C_PATH }
-                          ]}
-                          value={WINE_DOWNLOADS_PATH}
-                        />
-                      </Box>
-                    )
-                  }}
-                  label="Executable Path"
-                />
-              ) : (
-                <></>
-              )}
-            </Stack>
+                ) : (
+                  <></>
+                )}
+              </Stack>
+            </Box>
           );
         })}
+        <Stack direction="row" justifyContent="flex-end">
+          <Button onClick={addStep}>Add Step</Button>
+        </Stack>
       </Stack>
     </CardItem>
   ];
@@ -203,13 +220,7 @@ export const PipelineScript: React.FC = () => {
               <H6 color="text.secondary" fontWeight={500}>
                 Create Script
               </H6>
-              <Button
-                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-                color="secondary"
-                onClick={navigateToScripts}
-              >
-                Back
-              </Button>
+              <Button onClick={navigateToScripts}>Back</Button>
             </Box>
             <Box
               sx={{
@@ -257,12 +268,7 @@ export const PipelineScript: React.FC = () => {
                 spacing={1}
                 justifyContent="flex-end"
               >
-                <Button
-                  sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-                  color="secondary"
-                  disabled={loading || form.isInvalid()}
-                  type="submit"
-                >
+                <Button disabled={loading || form.isInvalid()} type="submit">
                   Create
                 </Button>
               </Stack>
