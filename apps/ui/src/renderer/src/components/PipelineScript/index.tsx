@@ -6,6 +6,7 @@ import {
   ContentsClass,
   Grid,
   H6,
+  Icon,
   Stack,
   TableOfContents
 } from 'reactjs-ui-core';
@@ -16,6 +17,7 @@ import { useFieldArray } from 'react-hook-form';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import {
+  ChevronRightIcon,
   CpuChipIcon,
   PencilSquareIcon,
   PlayCircleIcon,
@@ -40,14 +42,14 @@ export const PipelineScript: React.FC = () => {
   const { navigateToScripts } = useNavigateApp();
   const wineScriptApiClient = useWineScriptApiClient();
   const [loading, setLoading] = useState(false);
-  const { fields, append, prepend, insert } = useFieldArray<FormSchema>({
+  const { fields, insert } = useFieldArray<FormSchema>({
     name: 'pipelineScripts',
     control: form.control
   });
   const WINE_DOWNLOADS_PATH = `$HOME${getRelativeWinePath(ENV.WINE_DOWNLOADS_PATH)}`;
   const DRIVE_C_PATH = `$WINE_APP_PREFIX_PATH/${RELATIVE_DRIVE_C_PATH}`;
 
-  const addStep = () => append(DEFAULT_PIPELINE_SCRIPT);
+  const insertStep = (index: number) => insert(index + 1, DEFAULT_PIPELINE_SCRIPT);
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -100,21 +102,41 @@ export const PipelineScript: React.FC = () => {
     </CardItem>,
     <CardItem icon={PlayCircleIcon} label="Installation Script">
       <Stack spacing={2}>
-        {fields.map((_, index) => {
+        {fields.map((field, index) => {
           const operation = form.watch(`pipelineScripts.${index}.operation`);
 
           return (
             <Box
               position="relative"
-              key={index}
+              key={field.id}
               bgcolor="secondary.dark"
               p={2}
               borderRadius={2}
               pt={5}
+              sx={{ '&:hover .step-actions': { display: 'flex' } }}
             >
               <Box position="absolute" top={-10} left={10}>
                 <Chip sx={{ opacity: 1 }} label={`Step ${index + 1}`} />
               </Box>
+              <Stack
+                direction="row"
+                spacing={1}
+                className="step-actions"
+                position="absolute"
+                top={0}
+                right={0}
+                sx={{ display: 'none' }}
+              >
+                <Button
+                  variant="contained"
+                  sx={{ borderRadius: 10 }}
+                  equalSize={32}
+                  onClick={() => insertStep(index)}
+                  title="Add Next Step"
+                >
+                  <Icon strokeWidth={3} render={ChevronRightIcon} />
+                </Button>
+              </Stack>
               <Stack spacing={2}>
                 <Select
                   label="Operation"
@@ -182,9 +204,6 @@ export const PipelineScript: React.FC = () => {
             </Box>
           );
         })}
-        <Stack direction="row" justifyContent="flex-end">
-          <Button onClick={addStep}>Add Step</Button>
-        </Stack>
       </Stack>
     </CardItem>
   ];
