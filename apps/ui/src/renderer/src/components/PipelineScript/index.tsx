@@ -251,6 +251,7 @@ export const PipelineScript: React.FC = () => {
     setLoading(true);
     await wineScriptApiClient.create({ ...data, pipelineScripts });
     setLoading(false);
+    navigateToScripts();
   };
 
   return (
