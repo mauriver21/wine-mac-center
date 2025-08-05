@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SearchField } from '@components/SearchField';
 import { SortDirectionSelect } from '@components/SortDirectionSelect';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { Box, Button, Icon, Stack } from 'reactjs-ui-core';
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { useWineScriptModel } from '@models/useWineScriptModel';
 
 export const Scripts: React.FC = () => {
   const { navigateToCreateScript } = useNavigateApp();
+  const wineScriptModel = useWineScriptModel();
   const [filters, setFilters] = useState({ criteria: '', order: 'asc' });
+
+  useEffect(() => {
+    wineScriptModel.listAll();
+  }, []);
 
   return (
     <Box display="grid" gridTemplateRows="auto 1fr">

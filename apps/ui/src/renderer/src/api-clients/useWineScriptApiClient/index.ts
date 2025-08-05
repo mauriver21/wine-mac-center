@@ -5,6 +5,7 @@ import { createDirectory } from '@utils/createDirectory';
 import { dirExists } from '@utils/dirExists';
 import { fileExists } from '@utils/fileExists';
 import { parseJson } from '@utils/parseJson';
+import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
 import { useEnv } from '@utils/useEnv';
 import { writeFile } from '@utils/writeFile';
@@ -50,13 +51,35 @@ export const useWineScriptApiClient = () => {
       executables: [{ main: true, path: '', flags: '' }],
       pipelineScripts: data.pipelineScripts
     };
-    const VERSIONS_PATH = `${SCRIPT_PATH}/versions/${data.version}`;
 
-    if ((await dirExists(VERSIONS_PATH)) === false) {
-      await createDirectory(VERSIONS_PATH, { recursive: true });
+    writeFile(`${SCRIPT_PATH}/index.json`, JSON.stringify(config));
+  };
+
+  const listAll = async () => {
+    const directories = await readDirectory(WINE_SCRIPTS_PATH);
+    const promises: Array<Promise<WineScriptConfig | undefined>> = [];
+    let scripts: WineScriptConfig[] = [];
+
+    for (const dir of directories) {
+      const SCRIPT_FILE = `${WINE_SCRIPTS_PATH}/${dir}/index.json`;
+      const promise = new Promise<WineScriptConfig | undefined>(async (resolve) => {
+        let script = '';
+        const hasScriptFile = await fileExists(SCRIPT_FILE);
+        if (hasScriptFile) {
+          script = await readFileAsString(SCRIPT_FILE);
+          resolve(parseJson<WineScriptConfig>(script));
+        } else {
+          resolve(undefined);
+        }
+      });
+      promises.push(promise);
     }
 
-    writeFile(`${VERSIONS_PATH}/index.json`, JSON.stringify(config));
+    scripts = (await Promise.all(promises)).filter(
+      (item) => item !== undefined
+    ) as WineScriptConfig[];
+
+    return scripts;
   };
 
   const create = async (data: WineScriptConfig) => {
@@ -82,6 +105,7 @@ export const useWineScriptApiClient = () => {
   };
 
   return {
-    create
+    create,
+    listAll
   };
 };
