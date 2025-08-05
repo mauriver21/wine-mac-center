@@ -22,7 +22,8 @@ import {
   CpuChipIcon,
   PencilSquareIcon,
   PlayCircleIcon,
-  SparklesIcon
+  SparklesIcon,
+  TrashIcon
 } from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
@@ -43,7 +44,7 @@ export const PipelineScript: React.FC = () => {
   const { navigateToScripts } = useNavigateApp();
   const wineScriptApiClient = useWineScriptApiClient();
   const [loading, setLoading] = useState(false);
-  const { fields, insert } = useFieldArray<FormSchema>({
+  const { fields, insert, remove } = useFieldArray<FormSchema>({
     name: 'pipelineScripts',
     control: form.control
   });
@@ -117,16 +118,37 @@ export const PipelineScript: React.FC = () => {
               pt={5}
               sx={{ '&:hover .step-actions': { display: 'flex' } }}
             >
-              <Box position="absolute" top={-10} left={10}>
+              <Box position="absolute" top={-7} left={20}>
                 <Chip sx={{ opacity: 1 }} label={`Step ${index + 1}`} />
+              </Box>
+              <Box
+                className="step-actions"
+                sx={{ display: 'none' }}
+                position="absolute"
+                top={-7}
+                left={-15}
+              >
+                {index > 0 ? (
+                  <Button
+                    variant="contained"
+                    sx={{ borderRadius: 10 }}
+                    equalSize={32}
+                    onClick={() => remove(index)}
+                    title="Remove Step"
+                  >
+                    <Icon strokeWidth={3} render={TrashIcon} />
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </Box>
               <Stack
                 direction="row"
                 spacing={1}
-                className="step-actions"
                 position="absolute"
                 top={0}
                 right={0}
+                className="step-actions"
                 sx={{ display: 'none' }}
               >
                 {index > 0 ? (
