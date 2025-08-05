@@ -31,7 +31,7 @@ export const useWineScriptApiClient = () => {
     let number = 1;
     let newKeyname = keyName;
 
-    while (index.some((item) => item.keyName == keyName)) {
+    while (index.some((item) => item.keyName == newKeyname)) {
       newKeyname = `${keyName}-${number}`;
       number++;
     }
@@ -47,7 +47,8 @@ export const useWineScriptApiClient = () => {
       setupExecutableURL: '',
       engineVersion: data.engineVersion,
       winetricks: { verbs: [] },
-      executables: [{ main: true, path: '', flags: '' }]
+      executables: [{ main: true, path: '', flags: '' }],
+      pipelineScripts: data.pipelineScripts
     };
     const VERSIONS_PATH = `${SCRIPT_PATH}/versions/${data.version}`;
 
@@ -62,7 +63,7 @@ export const useWineScriptApiClient = () => {
     await initIndex();
     let index = (await getIndex()) || [];
     const keyName = generateUniqueKeyName(index, data.keyName);
-    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.keyName}`;
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${keyName}`;
     index = [
       ...index,
       {

@@ -1,3 +1,5 @@
+import { PipelineScript } from '@interfaces/PipelineScript';
+
 export type WineScriptConfig = {
   appConfigId: string;
   keyName: string;
@@ -6,4 +8,5 @@ export type WineScriptConfig = {
   engineVersion: string;
   version: string;
   winetricksVerbs?: Array<string | undefined>;
+  pipelineScripts?: Array<PipelineScript>;
 };

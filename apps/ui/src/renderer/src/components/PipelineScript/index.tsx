@@ -34,6 +34,7 @@ import { ENV } from '@constants/envs';
 import { getRelativeWinePath } from '@utils/getRelativeWinePath';
 import { DRIVE_C_PATH as RELATIVE_DRIVE_C_PATH } from '@constants/paths';
 import { Button } from '@components/Button';
+import { PipelineScript as PipelineScriptType } from '@interfaces/PipelineScript';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -246,8 +247,9 @@ export const PipelineScript: React.FC = () => {
   ];
 
   const submit = async (data: FormSchema) => {
+    const pipelineScripts = data.pipelineScripts as PipelineScriptType[];
     setLoading(true);
-    await wineScriptApiClient.create(data);
+    await wineScriptApiClient.create({ ...data, pipelineScripts });
     setLoading(false);
   };
 
