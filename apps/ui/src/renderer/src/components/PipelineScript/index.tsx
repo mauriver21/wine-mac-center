@@ -17,6 +17,7 @@ import { useFieldArray } from 'react-hook-form';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import {
+  ChevronLeftIcon,
   ChevronRightIcon,
   CpuChipIcon,
   PencilSquareIcon,
@@ -49,7 +50,8 @@ export const PipelineScript: React.FC = () => {
   const WINE_DOWNLOADS_PATH = `$HOME${getRelativeWinePath(ENV.WINE_DOWNLOADS_PATH)}`;
   const DRIVE_C_PATH = `$WINE_APP_PREFIX_PATH/${RELATIVE_DRIVE_C_PATH}`;
 
-  const insertStep = (index: number) => insert(index + 1, DEFAULT_PIPELINE_SCRIPT);
+  const insertAfter = (index: number) => insert(index + 1, DEFAULT_PIPELINE_SCRIPT);
+  const insertBefore = (index: number) => insert(index, DEFAULT_PIPELINE_SCRIPT);
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -127,11 +129,24 @@ export const PipelineScript: React.FC = () => {
                 right={0}
                 sx={{ display: 'none' }}
               >
+                {index > 0 ? (
+                  <Button
+                    variant="contained"
+                    sx={{ borderRadius: 10 }}
+                    equalSize={32}
+                    onClick={() => insertBefore(index)}
+                    title="Add Prev Step"
+                  >
+                    <Icon strokeWidth={3} render={ChevronLeftIcon} />
+                  </Button>
+                ) : (
+                  <></>
+                )}
                 <Button
                   variant="contained"
                   sx={{ borderRadius: 10 }}
                   equalSize={32}
-                  onClick={() => insertStep(index)}
+                  onClick={() => insertAfter(index)}
                   title="Add Next Step"
                 >
                   <Icon strokeWidth={3} render={ChevronRightIcon} />
