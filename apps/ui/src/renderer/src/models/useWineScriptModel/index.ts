@@ -22,7 +22,6 @@ export const useWineScriptModel = () => {
   const listAll = async () => {
     try {
       const wineScripts = selectWineScripts(store.getState());
-      console.log(await wineScriptApiClient.listAll());
       !wineScripts?.length && dispatchLoader({ listingAll: true });
       dispatchListAll(await wineScriptApiClient.listAll());
     } catch (error) {
