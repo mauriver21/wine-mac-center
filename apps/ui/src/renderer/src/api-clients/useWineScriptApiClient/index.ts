@@ -44,6 +44,8 @@ export const useWineScriptApiClient = () => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.keyName}`;
     const config: WineScriptAppConfig = {
       id: data.appConfigId,
+      appName: data.appName,
+      keyName: data.keyName,
       dxvkEnabled: data.dxvkEnabled || false,
       setupExecutableURL: '',
       engineVersion: data.engineVersion,
@@ -92,8 +94,7 @@ export const useWineScriptApiClient = () => {
       {
         appConfigId: data.appConfigId,
         keyName,
-        name: data.appName,
-        version: data.version
+        name: data.appName
       }
     ];
     await writeIndex(index);

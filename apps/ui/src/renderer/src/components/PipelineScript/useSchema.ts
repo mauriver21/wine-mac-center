@@ -14,7 +14,6 @@ const schemaObject = schema.object({
   appConfigId: schema.string().required().default(uuid()),
   keyName: schema.string().required(),
   appName: schema.string().required(),
-  version: schema.string().required().default('steam'),
   engineVersion: schema.string().required().default(''),
   dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
   winetricksVerbs: schema.array().of(schema.string()).default([]),

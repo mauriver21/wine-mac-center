@@ -6,7 +6,6 @@ export type WineScriptConfig = {
   dxvkEnabled: boolean;
   appName: string;
   engineVersion: string;
-  version: string;
   winetricksVerbs?: Array<string | undefined>;
   pipelineScripts?: Array<PipelineScript>;
 };

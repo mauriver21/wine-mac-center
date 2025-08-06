@@ -64,16 +64,6 @@ export const PipelineScript: React.FC = () => {
           name="appName"
           label="Application Name"
         />
-        <Select
-          label="Version"
-          name="version"
-          control={form.control}
-          options={[
-            { value: 'steam', label: 'Steam' },
-            { value: 'gog', label: 'GOG' },
-            { value: 'standalone', label: 'Standalone' }
-          ]}
-        />
         <TextField
           InputProps={{ disabled: true }}
           autoComplete="off"
