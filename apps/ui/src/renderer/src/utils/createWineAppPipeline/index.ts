@@ -17,6 +17,7 @@ import { downloadFile } from '@utils/downloadFile';
 import { fileExists } from '@utils/fileExists';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
+import { spawnProcess } from '@utils/spawnProcess';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { writeFile } from '@utils/writeFile';
 import { v4 as uuid } from 'uuid';
@@ -192,7 +193,9 @@ export const createWineAppPipeline = async (options: {
     switch (operation) {
       case ScriptOperation.DOWNLOAD: {
         const file = await downloadFile(args.url);
-        await writeBinaryFile(`${WINE_DOWNLOADS_PATH}/${args.downloadName}`, file);
+        const fileName = args.downloadName || args.url.split('/').pop();
+        await writeBinaryFile(`${WINE_DOWNLOADS_PATH}/${fileName}`, file);
+        await spawnProcess(`echo "Download complete"`, spawnProcessArgs);
         break;
       }
       case ScriptOperation.COPY: {
@@ -247,6 +250,11 @@ export const createWineAppPipeline = async (options: {
           updateProcess?.('exit');
           step.status = ProcessStatus.Cancelled;
           savePipelineConfigJobStep(jobName, step);
+          this.onUpdate?.({
+            pipelineId: id,
+            jobs: pipeline.jobs,
+            status: ProcessStatus.Cancelled
+          });
           return;
         }
 
@@ -255,6 +263,11 @@ export const createWineAppPipeline = async (options: {
 
         if (data === ExitCode.SuccessfulExecution) {
           step.status = ProcessStatus.Success;
+          this.onUpdate?.({
+            pipelineId: id,
+            jobs: pipeline.jobs,
+            status: ProcessStatus.Success
+          });
         }
 
         if (data === ExitCode.Error) {

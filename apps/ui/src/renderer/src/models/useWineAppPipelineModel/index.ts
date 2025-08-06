@@ -15,6 +15,7 @@ import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { WineAppMode } from '@constants/enums';
 import { sleep } from 'reactjs-ui-core';
 import { useWineScriptModel } from '@models/useWineScriptModel';
+import { PipelineScript } from '@interfaces/PipelineScript';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
@@ -96,6 +97,7 @@ export const useWineAppPipelineModel = () => {
   const loadWineAppPipelineByAppConfig = async (
     appConfig: Omit<WineAppConfig, 'engineURLs'> & {
       engineURLs?: string[];
+      pipelineScripts?: Array<PipelineScript>;
       name: string;
     },
     options: { mode: WineAppMode }
@@ -113,12 +115,14 @@ export const useWineAppPipelineModel = () => {
     }
 
     const iconFile = config.iconFile;
+    const { pipelineScripts, ...restConfig } = config;
 
     const pipeline = await createWineAppPipeline({
-      appConfig: { ...config, iconFile },
+      appConfig: { ...restConfig, iconFile },
       debug: true,
       outputEveryMs: 1000,
-      mode: options.mode
+      mode: options.mode,
+      pipelineScripts
     });
 
     dispatchPatch({
