@@ -14,11 +14,13 @@ import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes'
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { WineAppMode } from '@constants/enums';
 import { sleep } from 'reactjs-ui-core';
+import { useWineScriptModel } from '@models/useWineScriptModel';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
   const wineAppModel = useWineAppModel();
   const wineInstalledAppModel = useWineInstalledAppModel();
+  const wineScriptModel = useWineScriptModel();
   const wineAppConfigModel = useWineAppConfigModel();
   const wineEngineModel = useWineEngineModel();
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
@@ -61,6 +63,26 @@ export const useWineAppPipelineModel = () => {
       if (appConfig === undefined) throw Error('Wine application config not found.');
       return await loadWineAppPipelineByAppConfig(
         { ...appConfig, name: appName },
+        {
+          mode: options.mode
+        }
+      );
+    } catch (error) {
+      appModel.dispatchError(error);
+      return;
+    }
+  };
+
+  const loadWineAppPipelineByScriptKeyName = async (
+    keyName: string,
+    options: { mode: WineAppMode }
+  ) => {
+    const script = wineScriptModel.selectWineScriptByKeyName(store.getState(), keyName);
+
+    try {
+      if (script === undefined) throw Error('Wine application config not found.');
+      return await loadWineAppPipelineByAppConfig(
+        { ...script, id: '', name: script?.appName },
         {
           mode: options.mode
         }
@@ -114,6 +136,21 @@ export const useWineAppPipelineModel = () => {
   const runWineAppPipelineByAppName = async (appName: string, options: { mode: WineAppMode }) => {
     try {
       const pipeline = await loadWineAppPipelineByAppName(appName, { mode: options.mode });
+      const promise = pipeline?.run();
+      await sleep(200);
+      wineInstalledAppModel.listAll();
+      await promise;
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
+
+  const runWineAppPipelineByScriptKeyName = async (
+    keyName: string,
+    options: { mode: WineAppMode }
+  ) => {
+    try {
+      const pipeline = await loadWineAppPipelineByScriptKeyName(keyName, { mode: options.mode });
       const promise = pipeline?.run();
       await sleep(200);
       wineInstalledAppModel.listAll();
@@ -180,6 +217,7 @@ export const useWineAppPipelineModel = () => {
     runWineAppPipelineByAppConfig,
     runWineAppPipelineByAppConfigId,
     runWineAppPipelineByAppName,
+    runWineAppPipelineByScriptKeyName,
     killWineAppPipeline,
     clearWineAppPipeline,
     dispatchPatch,

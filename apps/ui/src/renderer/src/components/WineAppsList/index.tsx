@@ -83,7 +83,7 @@ export const WineAppsList: React.FC = () => {
     setLoading(true);
     setShowDialog(false);
     await sleep(200);
-    navigate.navigateToAppPipeline(appConfigId);
+    navigate.navigateToAppPipelineByAppConfigId(appConfigId);
     setLoading(false);
   };
 

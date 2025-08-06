@@ -3,18 +3,26 @@ import { WineScriptConfig } from '@interfaces/WineScriptConfig';
 import { Body1, Card, CardContent, Icon, Stack } from 'reactjs-ui-core';
 import { PencilSquareIcon, PlayCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { Button } from '@components/Button';
+import { useNavigateApp } from '@hooks/useNavigateApp';
 
 export interface ScriptItemProps {
   wineScript: WineScriptConfig | undefined;
 }
 
 export const ScriptItem: React.FC<ScriptItemProps> = ({ wineScript }) => {
+  const { navigateToAppPipelineByScriptKeyName } = useNavigateApp();
+
   return (
     <Card>
       <CardContent>
         <Stack alignItems="center" direction="row" pt="5px" justifyContent="space-between">
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Button title="Run Script" equalSize={34} sx={{ borderRadius: '100%' }}>
+            <Button
+              title="Run Script"
+              onClick={() => navigateToAppPipelineByScriptKeyName(wineScript?.keyName)}
+              equalSize={34}
+              sx={{ borderRadius: '100%' }}
+            >
               <Icon size={24} render={PlayCircleIcon} />
             </Button>
             <Body1>{wineScript?.appName}</Body1>

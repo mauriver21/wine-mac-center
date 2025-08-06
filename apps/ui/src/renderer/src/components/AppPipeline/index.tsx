@@ -25,6 +25,7 @@ export const AppPipeline: React.FC = () => {
   const queryParam = useQueryParam();
   const appConfigId = queryParam.get('appConfigId');
   const realAppName = queryParam.get('realAppName');
+  const scriptKeyName = queryParam.get('scriptKeyName');
   const { realAppName: realAppNameParam } = useParams();
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
@@ -40,14 +41,14 @@ export const AppPipeline: React.FC = () => {
   const pipelineStatus = installedApp?.pipeline?.status;
 
   const runPipeline = async () => {
+    setStopping(false);
+    setResuming(true);
     if (realAppName) {
-      setStopping(false);
-      setResuming(true);
       await wineAppPipelineModel.runWineAppPipelineByAppName(realAppName, {
         mode: WineAppMode.Update
       });
-      setResuming(false);
     }
+    setResuming(false);
   };
 
   const killPipeline = async () => {
@@ -56,16 +57,29 @@ export const AppPipeline: React.FC = () => {
   };
 
   useEffect(() => {
-    appConfigId &&
-      wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId, {
+    const runFromAppConfigId = Boolean(appConfigId);
+    if (runFromAppConfigId) {
+      wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId!, {
         mode: WineAppMode.Create
       });
+    }
   }, [appConfigId]);
 
   useEffect(() => {
-    realAppName &&
-      wineAppPipelineModel.loadWineAppPipelineByAppName(realAppName, { mode: WineAppMode.Update });
+    const loadFromRealAppName = Boolean(realAppName);
+    if (loadFromRealAppName) {
+      wineAppPipelineModel.loadWineAppPipelineByAppName(realAppName!, { mode: WineAppMode.Update });
+    }
   }, [realAppName]);
+
+  useEffect(() => {
+    const runFromScriptName = Boolean(realAppName === null && scriptKeyName);
+    if (runFromScriptName) {
+      wineAppPipelineModel.runWineAppPipelineByScriptKeyName(scriptKeyName!, {
+        mode: WineAppMode.Create
+      });
+    }
+  }, [scriptKeyName]);
 
   useEffect(() => {
     installedAppModel.listAll();
