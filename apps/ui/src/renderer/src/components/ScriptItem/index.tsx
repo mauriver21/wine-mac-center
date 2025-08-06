@@ -1,8 +1,8 @@
 import React from 'react';
 import { WineScriptConfig } from '@interfaces/WineScriptConfig';
 import { Body1, Card, CardContent, Icon, Stack } from 'reactjs-ui-core';
-import { PlayCircleIcon } from '@heroicons/react/24/solid';
-import { IconButton } from '@mui/material';
+import { PencilSquareIcon, PlayCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { Button } from '@components/Button';
 
 export interface ScriptItemProps {
   wineScript: WineScriptConfig | undefined;
@@ -13,11 +13,19 @@ export const ScriptItem: React.FC<ScriptItemProps> = ({ wineScript }) => {
     <Card>
       <CardContent>
         <Stack alignItems="center" direction="row" pt="5px" justifyContent="space-between">
-          <Body1>{wineScript?.appName}</Body1>
-          <Stack direction="row" alignItems="center">
-            <IconButton>
-              <Icon size={28} render={PlayCircleIcon} />
-            </IconButton>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Button title="Run Script" equalSize={34} sx={{ borderRadius: '100%' }}>
+              <Icon size={24} render={PlayCircleIcon} />
+            </Button>
+            <Body1>{wineScript?.appName}</Body1>
+          </Stack>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Button title="Edit Script" equalSize={34} sx={{ borderRadius: '100%' }}>
+              <Icon size={24} render={PencilSquareIcon} />
+            </Button>
+            <Button title="Remove Script" equalSize={34} sx={{ borderRadius: '100%' }}>
+              <Icon size={24} render={TrashIcon} />
+            </Button>
           </Stack>
         </Stack>
       </CardContent>
