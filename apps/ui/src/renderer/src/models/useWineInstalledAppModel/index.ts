@@ -96,7 +96,6 @@ export const useWineInstalledAppModel = () => {
     ],
     (wineInstalledAppState, filters) => {
       let wineInstalledApps = wineInstalledAppState.wineInstalledApps;
-
       const { criteria, order } = filters || {};
 
       if (criteria) {

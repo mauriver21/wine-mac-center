@@ -83,7 +83,7 @@ export const useWineAppPipelineModel = () => {
     try {
       if (script === undefined) throw Error('Wine application config not found.');
       return await loadWineAppPipelineByAppConfig(
-        { ...script, id: '', name: script?.appName },
+        { ...script, id: script.appConfigId, name: script?.appName },
         {
           mode: options.mode
         }

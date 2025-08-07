@@ -17,7 +17,6 @@ import { downloadFile } from '@utils/downloadFile';
 import { fileExists } from '@utils/fileExists';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
-import { spawnProcess } from '@utils/spawnProcess';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { writeFile } from '@utils/writeFile';
 import { v4 as uuid } from 'uuid';
@@ -192,10 +191,19 @@ export const createWineAppPipeline = async (options: {
 
     switch (operation) {
       case ScriptOperation.DOWNLOAD: {
-        const file = await downloadFile(args.url);
+        spawnProcessArgs.onStdOut?.('-----');
+        spawnProcessArgs.onStdOut?.('Download Started:');
+        let percent: number | undefined = undefined;
+        const file = await downloadFile(args.url, (args) => {
+          if (percent !== args.percent) {
+            percent = args.percent;
+            spawnProcessArgs.onStdOut?.(`${percent}%`);
+          }
+        });
         const fileName = args.downloadName || args.url.split('/').pop();
         await writeBinaryFile(`${WINE_DOWNLOADS_PATH}/${fileName}`, file);
-        await spawnProcess(`echo "Download complete"`, spawnProcessArgs);
+        spawnProcessArgs.onStdOut?.('Download Finished.');
+        spawnProcessArgs.onExit?.(0);
         break;
       }
       case ScriptOperation.COPY: {
@@ -244,8 +252,6 @@ export const createWineAppPipeline = async (options: {
   const pipeline: WineAppPipeline = {
     _: {
       async std(jobName, action, step, data, updateProcess) {
-        options.debug && console.log(action, step.name);
-
         if (store.killAllProcesses) {
           updateProcess?.('exit');
           step.status = ProcessStatus.Cancelled;
@@ -277,7 +283,7 @@ export const createWineAppPipeline = async (options: {
         savePipelineConfigJobStep(jobName, step);
 
         handleOutput(() => {
-          options.debug && console.log(action, data);
+          options.debug && console.log(action, data, step.name);
           this.onUpdate?.({
             pipelineId: id,
             jobs: pipeline.jobs,

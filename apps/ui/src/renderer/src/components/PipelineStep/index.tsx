@@ -50,7 +50,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step }) => {
         <Code
           sx={{
             '& > pre': { maxHeight: 200, overflowY: 'auto', overflowX: 'hidden !important' },
-            '& span': { display: 'none' }
+            '& code > span': { display: 'none' }
           }}
           type="content"
           language="bash"
