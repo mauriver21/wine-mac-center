@@ -214,7 +214,7 @@ export const createWineAppPipeline = async (options: {
         return wineApp.spawnScript('remove', `"${args.target}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
-        return wineApp.runExe(`"${args.exePath}"`, spawnProcessArgs);
+        return wineApp.runExe(`"${WINE_DOWNLOADS_PATH}/${args.exePath}"`, spawnProcessArgs);
       }
       default:
         return;
@@ -400,8 +400,9 @@ export const createWineAppPipeline = async (options: {
             name: 'Configuring app executable',
             script: async (args) => {
               let executables = options.appConfig.executables || [];
+              const mainExecutablePath = executables.find((item) => item.main)?.path || '';
 
-              if (!options.appConfig.executables?.length) {
+              if (!mainExecutablePath) {
                 let exePath = '';
 
                 if (options.promptMainExeCallback) {
