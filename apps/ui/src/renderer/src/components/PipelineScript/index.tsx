@@ -209,6 +209,8 @@ export const PipelineScript: React.FC = () => {
                 {operation === ScriptOperation.REMOVE ? <TextField label="Target Path" /> : <></>}
                 {operation === ScriptOperation.RUN_WINDOWS_EXE ? (
                   <TextField
+                    control={form.control}
+                    name={`pipelineScripts.${index}.exePath`}
                     InputProps={{
                       startAdornment: (
                         <Box mr={2}>
@@ -236,10 +238,44 @@ export const PipelineScript: React.FC = () => {
     </CardItem>
   ];
 
+  const mapPipelineScripts = (data: FormSchema['pipelineScripts']): PipelineScriptType[] => {
+    let result: PipelineScriptType[] = [];
+    for (const item of data) {
+      switch (item.operation) {
+        case ScriptOperation.RUN_WINDOWS_EXE:
+          result = [
+            ...result,
+            {
+              exePath: item.exePath || '',
+              operation: item.operation,
+              name: 'Run Windows Exe'
+            }
+          ];
+          break;
+        case ScriptOperation.DOWNLOAD:
+          result = [
+            ...result,
+            {
+              url: item.url || '',
+              downloadName: '',
+              operation: item.operation,
+              name: 'Download setup executable'
+            }
+          ];
+          break;
+        default:
+          break;
+      }
+    }
+    return result;
+  };
+
   const submit = async (data: FormSchema) => {
-    const pipelineScripts = data.pipelineScripts as PipelineScriptType[];
     setLoading(true);
-    await wineScriptApiClient.create({ ...data, pipelineScripts });
+    await wineScriptApiClient.create({
+      ...data,
+      pipelineScripts: mapPipelineScripts(data.pipelineScripts)
+    });
     setLoading(false);
     navigateToScripts();
   };

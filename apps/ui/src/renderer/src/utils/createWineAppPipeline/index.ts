@@ -395,6 +395,7 @@ export const createWineAppPipeline = async (options: {
                 }
               ]
             : []),
+          ...buildPipelineStepsFromScripts(),
           {
             name: 'Configuring app executable',
             script: async (args) => {
@@ -420,8 +421,7 @@ export const createWineAppPipeline = async (options: {
             },
             status: ProcessStatus.Pending,
             output: ''
-          },
-          ...buildPipelineStepsFromScripts()
+          }
         ]
       }
     ],
