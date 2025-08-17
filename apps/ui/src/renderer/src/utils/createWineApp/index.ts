@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { BashScript } from '@interfaces/BashScript';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
@@ -9,7 +8,7 @@ import { dirExists } from '@utils/dirExists';
 import { downloadFile } from '@utils/downloadFile';
 import { fileExists } from '@utils/fileExists';
 import { createEnv } from '@utils/createEnv';
-import { FileName, WineAppMode } from '@constants/enums';
+import { FileName } from '@constants/enums';
 import { spawnProcess as baseSpawnProcess } from '@utils/spawnProcess';
 import { writeFile } from '@utils/writeFile';
 import { createWineEngineApiClient } from '@api-clients/createWineEngineApiClient';
@@ -21,14 +20,12 @@ import { isURL } from '@utils/isURL';
 import { AppExecutable } from '@interfaces/AppExecutable';
 import { buildPlist } from '@utils/buildPlist';
 
-export const createWineApp = async (appName: string, options: { mode: WineAppMode }) => {
+export const createWineApp = async (appName: string) => {
   const env = createEnv();
   const wineEngineApiClient = createWineEngineApiClient();
   const SCRIPTS_PATH = env.get().SCRIPTS_PATH;
 
   let appConfig: WineAppConfig = {
-    id: '',
-    appId: uuid(),
     name: appName,
     engineVersion: '',
     engineURLs: [],
@@ -97,19 +94,6 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
     get WINE_APP_PROGRAM_FILES_X86() {
       return `${WINE_ENV.WINE_APP_DRIVE_C_PATH}/Program Files (x86)`;
     }
-  };
-
-  /**
-   * Setup unique app name
-   */
-  const setupUniqueAppName = async () => {
-    const { stdOut, stdErr } = await execScript('buildUniqueAppName');
-    if (stdErr) throw new Error(stdErr);
-    if (appName != stdOut) {
-      appName = stdOut.trim();
-    }
-
-    updateAppConfig({ name: appName }, { writeAppConfig: false });
   };
 
   /**
@@ -348,13 +332,12 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
    * Run executable with wine
    */
   const bundleApp = async (
-    params: { executables: WineAppExecutable[]; configId: string },
+    params: { executables: WineAppExecutable[] },
     args?: SpawnProcessArgs
   ) => {
-    const { executables, configId } = params;
+    const { executables } = params;
     await updateAppConfig({
-      executables,
-      id: configId
+      executables
     });
 
     const mainExecutable = executables.find((item) => item.main === true);
@@ -452,13 +435,6 @@ export const createWineApp = async (appName: string, options: { mode: WineAppMod
    * Initialize wine env exports.
    */
   buildWineEnvExports();
-
-  /**
-   * Setup unique app name.
-   */
-  if (options.mode === WineAppMode.Create) {
-    await setupUniqueAppName();
-  }
 
   /**
    * Initialize app config.

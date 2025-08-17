@@ -5,11 +5,11 @@ export const patch = (
   wineAppConfig: Flatten<WineAppConfigState['wineAppsConfigs']>,
   state: WineAppConfigState
 ): WineAppConfigState => {
-  if (state?.wineAppsConfigs?.some((item) => item.appId == wineAppConfig.appId)) {
+  if (state?.wineAppsConfigs?.some((item) => item.name == wineAppConfig.name)) {
     return {
       ...state,
       wineAppsConfigs: state.wineAppsConfigs.map((item) => {
-        if (item.appId == wineAppConfig.appId) {
+        if (item.name == wineAppConfig.name) {
           return {
             ...item,
             ...wineAppConfig

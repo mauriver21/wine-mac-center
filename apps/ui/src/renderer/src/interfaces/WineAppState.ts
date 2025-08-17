@@ -1,5 +1,5 @@
-import { WineAppItem } from '@interfaces/WineAppItem';
+import { WineApp } from '@interfaces/WineApp';
 
 export type WineAppState = {
-  wineApps?: Array<WineAppItem>;
+  wineApps?: Array<WineApp>;
 };

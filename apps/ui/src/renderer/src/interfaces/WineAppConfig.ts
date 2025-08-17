@@ -1,19 +1,21 @@
+import { PipelineScript } from '@interfaces/PipelineScript';
 import { WineAppExecutable } from '@interfaces/WineAppExecutable';
 import { WinetricksOptions } from '@interfaces/WinetricksOptions';
 
 export type WineAppConfig = {
-  id: string;
-  appId?: string;
+  name: string; //<--- Unique identifier
   iconURL?: string;
+  artworkURL?: string;
+  scriptURL?: string;
   iconFile?: ArrayBuffer;
   artworkFile?: ArrayBuffer;
-  name: string;
   engineVersion: string;
-  engineURLs: string[];
+  engineURLs?: string[];
   setupExecutableURL?: string;
   setupExecutablePath?: string;
   appFolderPath?: string;
   winetricks?: { verbs: string[]; options?: WinetricksOptions };
   dxvkEnabled: boolean;
   executables?: Array<WineAppExecutable>;
+  pipelineScripts?: Array<PipelineScript>;
 };

@@ -1,4 +1,4 @@
-import { ProcessStatus, ExitCode, WineAppMode, ScriptOperation } from '@constants/enums';
+import { ProcessStatus, ExitCode, ScriptOperation } from '@constants/enums';
 import { FilePath } from '@interfaces/FilePath';
 import { PipelineScript } from '@interfaces/PipelineScript';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
@@ -30,7 +30,6 @@ export const createWineAppPipeline = async (options: {
     appExecutables: Array<FilePath>;
     driveCPath: string;
   }) => Promise<string>;
-  mode: WineAppMode;
 }) => {
   const id = uuid();
   const store = { outputEnabled: true, killAllProcesses: false, currentProcess: { pid: 0 } };
@@ -41,7 +40,7 @@ export const createWineAppPipeline = async (options: {
     artworkFile,
     name,
     engineVersion,
-    engineURLs,
+    engineURLs = [],
     dxvkEnabled,
     winetricks,
     setupExecutableURL,
@@ -49,7 +48,7 @@ export const createWineAppPipeline = async (options: {
     appFolderPath
   } = options.appConfig;
   const { pipelineScripts = [] } = options;
-  const wineApp = await createWineApp(name, { mode: options.mode });
+  const wineApp = await createWineApp(name);
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
 
@@ -418,7 +417,7 @@ export const createWineAppPipeline = async (options: {
                 executables = [{ path: exePath, main: true }];
               }
 
-              return wineApp.bundleApp({ executables, configId: options.appConfig.id }, args);
+              return wineApp.bundleApp({ executables }, args);
             },
             status: ProcessStatus.Pending,
             output: ''

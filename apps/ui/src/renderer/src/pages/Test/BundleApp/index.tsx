@@ -14,7 +14,7 @@ export const BundleApp: React.FC = () => {
   const bundleApp = async () => {
     setLoading(true);
     await wineApp.bundleApp(
-      { executables: [{ path: exePath, main: true, flags }], configId: '' },
+      { executables: [{ path: exePath, main: true, flags }] },
       {
         onStdOut: (data) => {
           setData(data);

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useWineAppContext } from '..';
 import { createWineApp } from '@utils/createWineApp';
 import { TextField } from 'reactjs-shared-ui/forms';
-import { WineAppMode } from '@constants/enums';
 
 export const InitApp: React.FC = () => {
   const { setWineApp } = useWineAppContext();
@@ -11,7 +10,7 @@ export const InitApp: React.FC = () => {
 
   const start = async () => {
     setLoading(true);
-    const wineApp = await createWineApp(appName, { mode: WineAppMode.Update });
+    const wineApp = await createWineApp(appName);
     setWineApp(wineApp);
     setLoading(false);
   };

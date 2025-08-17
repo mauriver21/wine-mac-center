@@ -22,11 +22,6 @@ export const FileFilter = {
   WindowsExecutables: [{ extensions: ['exe', 'msi', 'bat', 'cmd'], name: 'executables' }]
 };
 
-export enum WineAppMode {
-  Create = 'Create',
-  Update = 'Update'
-}
-
 export enum ScriptOperation {
   DOWNLOAD = 'DOWNLOAD',
   DECOMPRESS = 'DECOMPRESS',

@@ -1,5 +1,5 @@
-import { WineAppPipelineStatusItem } from '@interfaces/WineAppPipelineStatusItem';
+import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 
 export type WineAppPipelineState = {
-  pipelineStatus?: WineAppPipelineStatusItem;
+  pipelineStatus?: WineAppPipelineStatus;
 };
