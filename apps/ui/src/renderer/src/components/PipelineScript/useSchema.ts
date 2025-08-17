@@ -1,4 +1,5 @@
 import { ScriptOperation } from '@constants/enums';
+import { isAlphanumeric } from '@utils/isAlphanumeric';
 import { isDownloadableURL } from '@utils/isDownloadableURL';
 import { isURL } from '@utils/isURL';
 import { scriptExists } from '@utils/scriptExists';
@@ -14,6 +15,11 @@ const schemaObject = schema.object({
     .string()
     .required()
     .test({
+      name: 'isAlphanumeric',
+      message: 'Invalid characters',
+      test: (appName) => isAlphanumeric(appName)
+    })
+    .test({
       name: 'appExists',
       message: 'App name is already taken',
       test: async (appName) => {
@@ -21,7 +27,8 @@ const schemaObject = schema.object({
         const isValid = exists === false;
         return isValid;
       }
-    }),
+    })
+    .transform((value) => value.trim()),
   engineVersion: schema.string().required().default(''),
   dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
   winetricksVerbs: schema.array().of(schema.string()).default([]),
