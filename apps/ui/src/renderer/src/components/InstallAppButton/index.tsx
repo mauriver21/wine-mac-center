@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, ButtonProps, CircularProgress, Icon } from 'reactjs-shared-ui';
 import { InstallIcon } from '@assets/icons';
-import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+// import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useWineAppsListContext } from '@hooks/useWineAppsListContext';
 import { RootState } from '@interfaces/RootState';
 import { useSelector } from 'react-redux';
@@ -17,13 +17,13 @@ export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
 }) => {
   const wineAppModel = {} as any;
   const wineApp = useSelector((state: RootState) => wineAppModel.selectWineApp(state, appConfigId));
-  const wineAppConfigModel = useWineAppConfigModel();
+  // const wineAppConfigModel = useWineAppConfigModel();
   const [loading, setLoading] = useState(false);
   const { setShowDialog, setAppName, setAppConfigId } = useWineAppsListContext() || {};
 
   const onClick: InstallAppButtonProps['onClick'] = async (event) => {
     setLoading(true);
-    await wineAppConfigModel.read('');
+    // await wineAppConfigModel.read('');
     onClickProp?.(event);
     setLoading(false);
     setShowDialog?.(true);

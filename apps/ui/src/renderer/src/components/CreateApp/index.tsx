@@ -136,24 +136,15 @@ export const CreateApp: React.FC = () => {
 
   const submit = async (data: FormSchema) => {
     const {
-      name,
-      dxvkEnabled,
-      engineVersion,
-      setupExecutablePath,
-      appFolderPath,
-      useWinetricks,
-      winetricksVerbs
+      name
+      // dxvkEnabled,
+      // engineVersion,
+      // setupExecutablePath,
+      // appFolderPath,
+      // useWinetricks,
+      // winetricksVerbs
     } = data;
-    wineAppPipelineModel.runWineAppPipelineByAppConfig({
-      name,
-      dxvkEnabled,
-      engineVersion,
-      setupExecutablePath,
-      appFolderPath,
-      iconFile: await data.iconFile?.arrayBuffer(),
-      artworkFile: await data.artworkFile?.arrayBuffer(),
-      winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
-    });
+    wineAppPipelineModel.runWineAppPipeline(name);
     reset();
     navigate(`/app-pipeline/${name}`);
   };

@@ -1,15 +1,15 @@
 import React from 'react';
-import { WineScriptConfig } from '@interfaces/WineScriptConfig';
 import { Body1, Card, CardContent, Icon, Stack } from 'reactjs-shared-ui';
 import { PencilSquareIcon, PlayCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { Button } from '@components/Button';
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { WineAppConfig } from '@interfaces/WineAppConfig';
 
 export interface ScriptItemProps {
-  wineScript: WineScriptConfig | undefined;
+  appConfig: WineAppConfig | undefined;
 }
 
-export const ScriptItem: React.FC<ScriptItemProps> = ({ wineScript }) => {
+export const ScriptItem: React.FC<ScriptItemProps> = ({ appConfig }) => {
   const { navigateToAppPipelineByScriptKeyName } = useNavigateApp();
 
   return (
@@ -19,13 +19,13 @@ export const ScriptItem: React.FC<ScriptItemProps> = ({ wineScript }) => {
           <Stack direction="row" alignItems="center" spacing={1}>
             <Button
               title="Run Script"
-              onClick={() => navigateToAppPipelineByScriptKeyName(wineScript?.keyName)}
+              onClick={() => navigateToAppPipelineByScriptKeyName(appConfig?.name)}
               equalSize={34}
               sx={{ borderRadius: '100%' }}
             >
               <Icon size={24} render={PlayCircleIcon} />
             </Button>
-            <Body1>{wineScript?.appName}</Body1>
+            <Body1>{appConfig?.name}</Body1>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={1}>
             <Button title="Edit Script" equalSize={34} sx={{ borderRadius: '100%' }}>

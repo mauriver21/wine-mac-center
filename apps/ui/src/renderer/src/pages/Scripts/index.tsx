@@ -4,7 +4,7 @@ import { SortDirectionSelect } from '@components/SortDirectionSelect';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { Box, Button, Icon, SkeletonLoader, Stack } from 'reactjs-shared-ui';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { useWineScriptModel } from '@models/useWineAppConfigModel';
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useSelector } from 'react-redux';
 import { RootState } from '@interfaces/RootState';
 import { SortDirection } from '@interfaces/SortDirection';
@@ -45,15 +45,15 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 
 export const Scripts: React.FC = () => {
   const { navigateToCreateScript } = useNavigateApp();
-  const wineScriptModel = useWineScriptModel();
-  const { loaders } = wineScriptModel;
+  const appConfigModel = useWineAppConfigModel();
+  const { loaders } = appConfigModel;
   const [filters, setFilters] = useState({ criteria: '', order: 'asc' as SortDirection });
-  const wineScripts = useSelector((state: RootState) =>
-    wineScriptModel.selectWineScripts(state, filters)
+  const appConfigs = useSelector((state: RootState) =>
+    appConfigModel.selectWineAppConfigs(state, filters)
   );
 
   useEffect(() => {
-    wineScriptModel.listAll();
+    appConfigModel.listAll();
   }, []);
 
   return (
@@ -98,9 +98,9 @@ export const Scripts: React.FC = () => {
       <SkeletonLoader loading={loaders.listingAll}>
         <VirtuosoGrid
           style={{ height: '100%' }}
-          data={wineScripts}
+          data={appConfigs}
           components={{ List, Item }}
-          itemContent={(index, wineScript) => <ScriptItem key={index} wineScript={wineScript} />}
+          itemContent={(index, appConfig) => <ScriptItem key={index} appConfig={appConfig} />}
         />
       </SkeletonLoader>
     </Box>
