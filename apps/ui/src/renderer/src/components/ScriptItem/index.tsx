@@ -1,6 +1,6 @@
 import React from 'react';
 import { WineScriptConfig } from '@interfaces/WineScriptConfig';
-import { Body1, Card, CardContent, Icon, Stack } from 'reactjs-ui-core';
+import { Body1, Card, CardContent, Icon, Stack } from 'reactjs-shared-ui';
 import { PencilSquareIcon, PlayCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { Button } from '@components/Button';
 import { useNavigateApp } from '@hooks/useNavigateApp';

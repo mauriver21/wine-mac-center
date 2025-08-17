@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getTime } from 'reactjs-ui-core';
+import { getTime } from 'reactjs-shared-ui';
 
 export const useRefresh = () => {
   const [signal, setSignal] = useState(0);

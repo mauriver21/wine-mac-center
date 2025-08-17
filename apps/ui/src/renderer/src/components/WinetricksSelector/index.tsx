@@ -4,8 +4,8 @@ import { RootState } from '@interfaces/RootState';
 import { useWinetrickModel } from '@models/useWinetrickModel';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Accordion, Box, Grid, SkeletonLoader, Stack } from 'reactjs-ui-core';
-import { Checkbox, Field, FieldProps } from 'reactjs-ui-form-fields';
+import { Accordion, Box, Grid, SkeletonLoader, Stack } from 'reactjs-shared-ui';
+import { Checkbox, Field, FieldProps } from 'reactjs-shared-ui/forms';
 import { Winetricks } from '@interfaces/Winetricks';
 
 export interface WinetricksSelectorProps extends FieldProps {

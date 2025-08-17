@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useWineAppContext } from '..';
 import { Code } from '@components/Code';
-import { TextField } from 'reactjs-ui-core';
+import { TextField } from 'reactjs-shared-ui/forms';
 
 export const RunExe: React.FC = () => {
   const { wineApp } = useWineAppContext();

@@ -11,7 +11,7 @@ import { InitApp } from './InitApp';
 import { WineCfg } from './WineCfg';
 import { SetSetupExe } from './SetSetupExe';
 import { DownloadEngine } from './DownloadEngine';
-import { Stack } from 'reactjs-ui-core';
+import { Stack } from 'reactjs-shared-ui';
 
 export const WineAppContext = createContext<{
   wineApp: WineApp;

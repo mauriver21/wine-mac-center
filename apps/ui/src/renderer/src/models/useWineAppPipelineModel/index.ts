@@ -13,7 +13,7 @@ import { useWineEngineModel } from '@models/useWineEngineModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { WineAppMode } from '@constants/enums';
-import { sleep } from 'reactjs-ui-core';
+import { sleep } from 'reactjs-shared-ui';
 import { useWineScriptModel } from '@models/useWineScriptModel';
 import { PipelineScript } from '@interfaces/PipelineScript';
 

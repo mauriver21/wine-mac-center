@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { schema, Schema } from 'reactjs-ui-form-fields';
+import { schema, Schema } from 'reactjs-shared-ui/forms';
 
 export type FormSchema = { winetricksVerbs?: Array<string> };
 

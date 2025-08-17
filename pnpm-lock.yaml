@@ -79,12 +79,9 @@ importers:
       react-virtuoso:
         specifier: ^4.12.6
         version: 4.12.6(react-dom@18.3.1)(react@18.3.1)
-      reactjs-ui-core:
-        specifier: ^0.0.24
-        version: 0.0.24(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/icons-material@5.14.0)(@mui/material@5.13.6)(i18next@23.15.1)(notistack@3.0.2)(react-i18next@15.0.2)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1)
-      reactjs-ui-form-fields:
-        specifier: ^0.0.5
-        version: 0.0.5(react@18.3.1)(reactjs-ui-core@0.0.24)
+      reactjs-shared-ui:
+        specifier: ^0.0.3
+        version: 0.0.3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@hookform/resolvers@5.2.1)(@mui/icons-material@5.14.0)(@mui/material@5.13.6)(@types/react-syntax-highlighter@15.5.13)(i18next@23.15.1)(notistack@3.0.2)(react-i18next@15.0.2)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1)(yup@1.7.0)
       uuid:
         specifier: ^11.1.0
         version: 11.1.0
@@ -1241,11 +1238,12 @@ packages:
       react: 18.3.1
     dev: false
 
-  /@hookform/resolvers@3.10.0(react-hook-form@7.49.0):
-    resolution: {integrity: sha512-79Dv+3mDF7i+2ajj7SkypSKHhl1cbln1OGavqrsF7p6mbUv11xpqpacPsGDCTRvCSjEEIez2ef1NveSVL3b0Ag==}
+  /@hookform/resolvers@5.2.1(react-hook-form@7.49.0):
+    resolution: {integrity: sha512-u0+6X58gkjMcxur1wRWokA7XsiiBJ6aK17aPZxhkoYiK5J+HcTx0Vhu9ovXe6H+dVpO6cjrn2FkJTryXEMlryQ==}
     peerDependencies:
-      react-hook-form: ^7.0.0
+      react-hook-form: ^7.55.0
     dependencies:
+      '@standard-schema/utils': 0.3.0
       react-hook-form: 7.49.0(react@18.3.1)
     dev: false
 
@@ -1748,6 +1746,10 @@ packages:
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
 
+  /@standard-schema/utils@0.3.0:
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+    dev: false
+
   /@szmarczak/http-timer@4.0.6:
     resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
     engines: {node: '>=10'}
@@ -1883,7 +1885,6 @@ packages:
     resolution: {integrity: sha512-uLGJ87j6Sz8UaBAooU0T6lWJ0dBmjZgN1PZTrj05TNql2/XpC6+4HhMT5syIdFUUt+FASfCeLLv4kBygNU+8qA==}
     dependencies:
       '@types/react': 18.3.18
-    dev: true
 
   /@types/react-transition-group@4.4.12(@types/react@18.3.18):
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
@@ -5768,42 +5769,35 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /reactjs-ui-core@0.0.24(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/icons-material@5.14.0)(@mui/material@5.13.6)(i18next@23.15.1)(notistack@3.0.2)(react-i18next@15.0.2)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1):
-    resolution: {integrity: sha512-Jz1Gl+wX8x9NhbuIjS+b+Z8IFBxt0lTXzjBM2M4R7sHkOgOTTPh7e4Y8PDKb5TrR5Mpq9py3bNh4L9LIYAEUDw==}
+  /reactjs-shared-ui@0.0.3(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@hookform/resolvers@5.2.1)(@mui/icons-material@5.14.0)(@mui/material@5.13.6)(@types/react-syntax-highlighter@15.5.13)(i18next@23.15.1)(notistack@3.0.2)(react-i18next@15.0.2)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1)(yup@1.7.0):
+    resolution: {integrity: sha512-jH5/0VD11MZN3UreFqVjp0th/INjWQcbXmwtHaUaeevVfRPK8h6IIU3QQh0Qn90UMCHWV+Zd5wJRc0Zj0xZC5Q==}
     peerDependencies:
       '@emotion/react': ^11.11.1
       '@emotion/styled': ^11.11.0
-      '@mui/icons-material': ^5.14.0
-      '@mui/material': ^5.13.6
+      '@hookform/resolvers': ^5.2.1
+      '@mui/icons-material': ^7.3.1
+      '@mui/material': ^7.3.1
+      '@types/react-syntax-highlighter': ^15.5.13
       i18next: ^23.15.1
       notistack: ^3.0.1
       react-i18next: ^15.0.2
       react-router-dom: ^6.15.0
       react-syntax-highlighter: ^15.6.1
+      yup: ^1.7.0
     dependencies:
       '@emotion/react': 11.11.1(@types/react@18.3.18)(react@18.3.1)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.3.18)(react@18.3.1)
+      '@hookform/resolvers': 5.2.1(react-hook-form@7.49.0)
       '@mui/icons-material': 5.14.0(@mui/material@5.13.6)(@types/react@18.3.18)(react@18.3.1)
       '@mui/material': 5.13.6(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1)
+      '@types/react-syntax-highlighter': 15.5.13
       i18next: 23.15.1
       notistack: 3.0.2(csstype@3.1.3)(react-dom@18.3.1)(react@18.3.1)
       react-i18next: 15.0.2(i18next@23.15.1)(react-dom@18.3.1)(react@18.3.1)
       react-router-dom: 6.15.0(react-dom@18.3.1)(react@18.3.1)
       react-syntax-highlighter: 15.6.1(react@18.3.1)
       uuid: 9.0.1
-    dev: false
-
-  /reactjs-ui-form-fields@0.0.5(react@18.3.1)(reactjs-ui-core@0.0.24):
-    resolution: {integrity: sha512-reDnHauBNugwljJIHVjkgdqOYrnAnx7H77kGqc/9GaFBqaO90Z/7/w88kKCxPVBiene4wdw+PaobVooxIQXOsg==}
-    peerDependencies:
-      reactjs-ui-core: '*'
-    dependencies:
-      '@hookform/resolvers': 3.10.0(react-hook-form@7.49.0)
-      react-hook-form: 7.49.0(react@18.3.1)
-      reactjs-ui-core: 0.0.24(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/icons-material@5.14.0)(@mui/material@5.13.6)(i18next@23.15.1)(notistack@3.0.2)(react-i18next@15.0.2)(react-router-dom@6.15.0)(react-syntax-highlighter@15.6.1)
       yup: 1.7.0
-    transitivePeerDependencies:
-      - react
     dev: false
 
   /read-binary-file-arch@1.0.6:

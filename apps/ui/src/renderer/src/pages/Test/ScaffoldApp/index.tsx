@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Button, Stack, TextField } from 'reactjs-ui-core';
+import { Button, Stack } from 'reactjs-shared-ui';
 import { useWineAppContext } from '@pages/Test';
 import { Code } from '@components/Code';
 import { findOutputPID } from '@utils/findOutputPID';
+import { TextField } from 'reactjs-shared-ui/forms';
 
 export const ScaffoldApp: React.FC = () => {
   const { wineApp } = useWineAppContext();

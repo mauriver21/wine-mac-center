@@ -1,4 +1,4 @@
-import { Box } from 'reactjs-ui-core';
+import { Box } from 'reactjs-shared-ui';
 import { Outlet } from 'react-router-dom';
 
 export const SimpleLayout: React.FC = () => {

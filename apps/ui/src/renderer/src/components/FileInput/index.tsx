@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Box, Button, TextField } from 'reactjs-ui-core';
-import { Field, TextFieldProps } from 'reactjs-ui-form-fields';
+import { Box, Button } from 'reactjs-shared-ui';
+import { Field, TextField, TextFieldProps } from 'reactjs-shared-ui/forms';
 import { InputAdornment } from '@mui/material';
 import { openFile } from '@utils/openFile';
 

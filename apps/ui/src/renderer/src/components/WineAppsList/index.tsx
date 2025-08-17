@@ -9,7 +9,7 @@ import {
   SkeletonLoader,
   sleep,
   Stack
-} from 'reactjs-ui-core';
+} from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { useWineAppModel } from '@models/useWineAppModel';

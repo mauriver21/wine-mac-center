@@ -1,7 +1,7 @@
 import { ScriptOperation } from '@constants/enums';
 import { isDownloadableURL } from '@utils/isDownloadableURL';
 import { isURL } from '@utils/isURL';
-import { schema, InferType } from 'reactjs-ui-form-fields';
+import { schema, InferType } from 'reactjs-shared-ui/forms';
 import { v4 as uuid } from 'uuid';
 
 export const DEFAULT_PIPELINE_SCRIPT = {

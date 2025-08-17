@@ -1,6 +1,6 @@
 import { createContext, useContext, useRef, useState } from 'react';
 import { createWineAppPipeline as baseCreateWineAppPipeline } from '@utils/createWineAppPipeline';
-import { Body1, Dialog, Stack } from 'reactjs-ui-core';
+import { Body1, Dialog, Stack } from 'reactjs-shared-ui';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
 import { FilePathInput } from '@components/FilePathInput';
 import { FileFilter } from '@constants/enums';

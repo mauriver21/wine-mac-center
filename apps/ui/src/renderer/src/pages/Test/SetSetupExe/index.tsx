@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useWineAppContext } from '..';
-import { TextField } from 'reactjs-ui-core';
+import { TextField } from 'reactjs-shared-ui/forms';
 
 /**
  * Examples:

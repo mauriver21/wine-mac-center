@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWineAppContext } from '..';
 import { Code } from '@components/Code';
-import { Select, TextField } from 'reactjs-ui-core';
+import { Select, TextField } from 'reactjs-shared-ui/forms';
 
 export const BundleApp: React.FC = () => {
   const { wineApp } = useWineAppContext();

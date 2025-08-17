@@ -10,7 +10,7 @@ import {
   H6,
   Button,
   Body1
-} from 'reactjs-ui-core';
+} from 'reactjs-shared-ui';
 
 export interface BaseModuleProps {
   icon: React.FC;

@@ -17,7 +17,7 @@ import {
   H6,
   Stack,
   TableOfContents
-} from 'reactjs-ui-core';
+} from 'reactjs-shared-ui';
 
 export const AppPipeline: React.FC = () => {
   const [resuming, setResuming] = useState(false);

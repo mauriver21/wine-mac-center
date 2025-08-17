@@ -3,7 +3,16 @@ import { ExitCode } from '@constants/enums';
 import { CpuChipIcon } from '@heroicons/react/24/solid';
 import { useAppConfigContext } from '@hooks/useAppConfigContext';
 import { useEffect, useState } from 'react';
-import { Stack, Icon, H6, ContentsClass, Button, Body1, CardContent, Card } from 'reactjs-ui-core';
+import {
+  Stack,
+  Icon,
+  H6,
+  ContentsClass,
+  Button,
+  Body1,
+  CardContent,
+  Card
+} from 'reactjs-shared-ui';
 
 export const ChangeEngineModule: React.FC = () => {
   const { wineApp, loading, setLoading } = useAppConfigContext() || {};

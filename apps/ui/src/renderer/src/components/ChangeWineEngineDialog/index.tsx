@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Body1, Body2, Button, Dialog, DialogProps, Stack } from 'reactjs-ui-core';
-import { useForm } from 'reactjs-ui-form-fields';
+import { Body1, Body2, Button, Dialog, DialogProps, Stack } from 'reactjs-shared-ui';
+import { useForm } from 'reactjs-shared-ui/forms';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { ExitCode } from '@constants/enums';
 import { WineApp } from '@interfaces/WineApp';

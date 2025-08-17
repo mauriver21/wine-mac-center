@@ -12,6 +12,7 @@
     "composite": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
+    "moduleResolution": "bundler",
     "paths": {
       "@api-clients/*": ["src/renderer/src/api-clients/*"],
       "@assets/*": ["src/renderer/src/assets/*"],

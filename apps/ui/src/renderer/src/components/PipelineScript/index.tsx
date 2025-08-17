@@ -9,10 +9,10 @@ import {
   Icon,
   Stack,
   TableOfContents
-} from 'reactjs-ui-core';
+} from 'reactjs-shared-ui';
 import { alpha, Chip } from '@mui/material';
 import { DEFAULT_PIPELINE_SCRIPT, FormSchema, useSchema } from './useSchema';
-import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
+import { TextField, Checkbox, useForm, Select } from 'reactjs-shared-ui/forms';
 import { useFieldArray } from 'react-hook-form';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';

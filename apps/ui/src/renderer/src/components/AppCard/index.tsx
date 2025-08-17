@@ -1,4 +1,4 @@
-import { Box, Card, CardProps, Image } from 'reactjs-ui-core';
+import { Box, Card, CardProps, Image } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
 import { InstallAppButton } from '@components/InstallAppButton';
 import { RootState } from '@interfaces/RootState';

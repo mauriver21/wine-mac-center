@@ -8,7 +8,7 @@ import {
   H6,
   Stack,
   TableOfContents
-} from 'reactjs-ui-core';
+} from 'reactjs-shared-ui';
 import { WineApp } from '@interfaces/WineApp';
 import { useParams } from 'react-router-dom';
 import { createWineApp } from '@utils/createWineApp';

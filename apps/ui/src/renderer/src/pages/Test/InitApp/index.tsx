@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useWineAppContext } from '..';
 import { createWineApp } from '@utils/createWineApp';
-import { TextField } from 'reactjs-ui-core';
+import { TextField } from 'reactjs-shared-ui/forms';
 import { WineAppMode } from '@constants/enums';
 
 export const InitApp: React.FC = () => {

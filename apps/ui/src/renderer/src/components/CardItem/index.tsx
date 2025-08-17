@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Stack, Icon, H6, ContentsClass } from 'reactjs-ui-core';
+import { Card, CardContent, Stack, Icon, H6, ContentsClass } from 'reactjs-shared-ui';
 
 export interface CardItemProps {
   children?: React.ReactElement;

@@ -1,4 +1,4 @@
-import { Body1, Button, Card, Dialog, DialogProps, H6, Stack } from 'reactjs-ui-core';
+import { Body1, Button, Card, Dialog, DialogProps, H6, Stack } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
 import { StatusBox } from '@components/StatusBox';
 import { RootState } from '@interfaces/RootState';

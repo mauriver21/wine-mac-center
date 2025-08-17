@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import { ThemeProvider } from 'reactjs-ui-core';
+import { ThemeProvider } from 'reactjs-shared-ui';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '@store';
@@ -8,8 +8,9 @@ import { AppSetup } from '@components/AppSetup';
 import { EnvProvider } from '@components/EnvProvider';
 import { NotificationsProvider } from '@components/NotificationsProvider';
 import { WineAppPipelineProvider } from '@components/WineAppPipelineProvider';
-import './main.css';
 import { DirsWatcherProvider } from '@components/DirsWatcherProvider';
+import 'reactjs-shared-ui/styles.css';
+import './main.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ThemeProvider>

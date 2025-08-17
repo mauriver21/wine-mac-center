@@ -1,4 +1,4 @@
-import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-ui-core';
+import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';

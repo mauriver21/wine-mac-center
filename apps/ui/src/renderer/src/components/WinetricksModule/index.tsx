@@ -1,10 +1,19 @@
 import React from 'react';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import { SparklesIcon } from '@heroicons/react/24/solid';
-import { Stack, Icon, H6, ContentsClass, Button, Body1, Card, CardContent } from 'reactjs-ui-core';
+import {
+  Stack,
+  Icon,
+  H6,
+  ContentsClass,
+  Button,
+  Body1,
+  Card,
+  CardContent
+} from 'reactjs-shared-ui';
 import { useAppConfigContext } from '@hooks/useAppConfigContext';
 import { useSchema, FormSchema } from './useSchema';
-import { useForm } from 'reactjs-ui-form-fields';
+import { useForm } from 'reactjs-shared-ui/forms';
 
 export const WinetricksModule: React.FC = () => {
   const schema = useSchema();

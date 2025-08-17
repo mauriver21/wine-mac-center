@@ -1,5 +1,5 @@
 import { SortDirection } from '@interfaces/SortDirection';
-import { Select, SelectProps } from 'reactjs-ui-core';
+import { Select, SelectProps } from 'reactjs-shared-ui/forms';
 
 export interface SortDirectionSelectProps extends Omit<SelectProps, 'onChange' | 'options'> {
   onChange?: (direction: SortDirection) => void;

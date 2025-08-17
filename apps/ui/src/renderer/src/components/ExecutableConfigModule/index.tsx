@@ -1,22 +1,13 @@
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { IconInput } from '@components/IconInput';
 import { useEffect, useState } from 'react';
-import {
-  Grid,
-  Stack,
-  Icon,
-  H6,
-  ContentsClass,
-  TextField,
-  CardContent,
-  Card,
-  Body1
-} from 'reactjs-ui-core';
+import { Grid, Stack, Icon, H6, ContentsClass, CardContent, Card, Body1 } from 'reactjs-shared-ui';
 import { useAppConfigContext } from '@hooks/useAppConfigContext';
 import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
 import { FilePathInput } from '@components/FilePathInput';
 import { Button } from '@components/Button';
 import { FileFilter } from '@constants/enums';
+import { TextField } from 'reactjs-shared-ui/forms';
 
 export interface ExecutableConfigModuleProps {
   realAppName: string | undefined;

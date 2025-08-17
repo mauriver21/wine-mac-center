@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, ButtonProps, CircularProgress, Icon } from 'reactjs-ui-core';
+import { Button, ButtonProps, CircularProgress, Icon } from 'reactjs-shared-ui';
 import { InstallIcon } from '@assets/icons';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useWineAppsListContext } from '@hooks/useWineAppsListContext';

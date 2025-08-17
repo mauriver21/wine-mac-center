@@ -1,7 +1,7 @@
 import React from 'react';
 import { BaseModule } from '@components/BaseModule';
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/solid';
-import { Body1 } from 'reactjs-ui-core';
+import { Body1 } from 'reactjs-shared-ui';
 import { useAppConfigContext } from '@hooks/useAppConfigContext';
 
 export const ControlPanelModule: React.FC = () => {

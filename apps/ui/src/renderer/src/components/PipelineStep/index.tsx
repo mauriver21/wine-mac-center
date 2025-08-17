@@ -3,8 +3,8 @@ import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { WineAppStep } from '@interfaces/WineAppStep';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
-import { Card, Stack, Body1, ContentsClass, Box, Icon } from 'reactjs-ui-core';
-import { Code } from 'reactjs-ui-core/syntax-highlighter';
+import { Card, Stack, Body1, ContentsClass, Box, Icon } from 'reactjs-shared-ui';
+import { Code } from 'reactjs-shared-ui/syntax-highlighter';
 
 export interface PipelineStepProps {
   step: WineAppStep;

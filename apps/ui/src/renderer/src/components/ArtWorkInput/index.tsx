@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Body1, Box, Image, TextField } from 'reactjs-ui-core';
-import { Field, TextFieldProps } from 'reactjs-ui-form-fields';
+import { Body1, Box, Image } from 'reactjs-shared-ui';
+import { Field, TextField, TextFieldProps } from 'reactjs-shared-ui/forms';
 import { openFile } from '@utils/openFile';
 import { FileFilter } from '@constants/enums';
 import { getAppArtwork as baseGetAppArtwork } from '@utils/getAppArtwork';
