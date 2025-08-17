@@ -27,7 +27,6 @@ import {
 } from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { getHiphenatedString } from '@utils/getHiphenatedString';
 import { useWineScriptApiClient } from '@api-clients/useWineScriptApiClient';
 import { ScriptOperation } from '@constants/enums';
 import { ENV } from '@constants/envs';
@@ -63,21 +62,6 @@ export const PipelineScript: React.FC = () => {
           control={form.control}
           name="appName"
           label="Application Name"
-        />
-        <TextField
-          InputProps={{ disabled: true }}
-          autoComplete="off"
-          control={form.control}
-          name="appConfigId"
-          label="App Config Id"
-        />
-        <TextField
-          InputProps={{ disabled: true }}
-          autoComplete="off"
-          control={form.control}
-          name="keyName"
-          label="Key Name"
-          value={getHiphenatedString(form.watch('appName')).toLowerCase()}
         />
       </Stack>
     </CardItem>,
@@ -274,6 +258,7 @@ export const PipelineScript: React.FC = () => {
     setLoading(true);
     await wineScriptApiClient.create({
       ...data,
+      name: data.appName,
       pipelineScripts: mapPipelineScripts(data.pipelineScripts)
     });
     setLoading(false);

@@ -2,7 +2,6 @@ import { ScriptOperation } from '@constants/enums';
 import { isDownloadableURL } from '@utils/isDownloadableURL';
 import { isURL } from '@utils/isURL';
 import { schema, InferType } from 'reactjs-shared-ui/forms';
-import { v4 as uuid } from 'uuid';
 
 export const DEFAULT_PIPELINE_SCRIPT = {
   operation: ScriptOperation.DOWNLOAD,
@@ -10,8 +9,6 @@ export const DEFAULT_PIPELINE_SCRIPT = {
 } as const;
 
 const schemaObject = schema.object({
-  appConfigId: schema.string().required().default(uuid()),
-  keyName: schema.string().required(),
   appName: schema.string().required(),
   engineVersion: schema.string().required().default(''),
   dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),

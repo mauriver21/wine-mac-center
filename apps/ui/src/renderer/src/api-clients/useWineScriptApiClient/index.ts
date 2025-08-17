@@ -1,5 +1,4 @@
-import { WineScriptAppConfig } from '@interfaces/WineScriptAppConfig';
-import { WineScriptConfig } from '@interfaces/WineScriptConfig';
+import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineScriptIndexConfig } from '@interfaces/WineScriptIndexConfig';
 import { createDirectory } from '@utils/createDirectory';
 import { dirExists } from '@utils/dirExists';
@@ -28,24 +27,10 @@ export const useWineScriptApiClient = () => {
     return parseJson<Array<WineScriptIndexConfig>>(await readFileAsString(INDEX_PATH));
   };
 
-  const generateUniqueKeyName = (index: Array<WineScriptIndexConfig>, keyName: string) => {
-    let number = 1;
-    let newKeyname = keyName;
-
-    while (index.some((item) => item.keyName == newKeyname)) {
-      newKeyname = `${keyName}-${number}`;
-      number++;
-    }
-
-    return newKeyname;
-  };
-
-  const writeScript = async (data: WineScriptConfig) => {
-    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.keyName}`;
-    const config: WineScriptAppConfig = {
-      id: data.appConfigId,
-      appName: data.appName,
-      keyName: data.keyName,
+  const writeScript = async (data: WineAppConfig) => {
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
+    const config: WineAppConfig = {
+      name: data.name,
       dxvkEnabled: data.dxvkEnabled || false,
       setupExecutableURL: '',
       engineVersion: data.engineVersion,
@@ -59,17 +44,17 @@ export const useWineScriptApiClient = () => {
 
   const listAll = async () => {
     const directories = await readDirectory(WINE_SCRIPTS_PATH);
-    const promises: Array<Promise<WineScriptConfig | undefined>> = [];
-    let scripts: WineScriptConfig[] = [];
+    const promises: Array<Promise<WineAppConfig | undefined>> = [];
+    let scripts: WineAppConfig[] = [];
 
     for (const dir of directories) {
       const SCRIPT_FILE = `${WINE_SCRIPTS_PATH}/${dir}/index.json`;
-      const promise = new Promise<WineScriptConfig | undefined>(async (resolve) => {
+      const promise = new Promise<WineAppConfig | undefined>(async (resolve) => {
         let script = '';
         const hasScriptFile = await fileExists(SCRIPT_FILE);
         if (hasScriptFile) {
           script = await readFileAsString(SCRIPT_FILE);
-          resolve(parseJson<WineScriptConfig>(script));
+          resolve(parseJson<WineAppConfig>(script));
         } else {
           resolve(undefined);
         }
@@ -77,31 +62,26 @@ export const useWineScriptApiClient = () => {
       promises.push(promise);
     }
 
-    scripts = (await Promise.all(promises)).filter(
-      (item) => item !== undefined
-    ) as WineScriptConfig[];
+    scripts = (await Promise.all(promises)).filter((item) => item !== undefined) as WineAppConfig[];
 
     return scripts;
   };
 
-  const create = async (data: WineScriptConfig) => {
+  const create = async (data: WineAppConfig) => {
     await initIndex();
     let index = (await getIndex()) || [];
-    const keyName = generateUniqueKeyName(index, data.keyName);
-    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${keyName}`;
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
     index = [
       ...index,
       {
-        appConfigId: data.appConfigId,
-        keyName,
-        name: data.appName
+        name: data.name
       }
     ];
     await writeIndex(index);
 
     if ((await dirExists(SCRIPT_PATH)) === false) {
       await createDirectory(SCRIPT_PATH);
-      await writeScript({ ...data, keyName });
+      await writeScript(data);
     }
   };
 
