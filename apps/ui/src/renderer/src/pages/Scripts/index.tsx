@@ -4,7 +4,7 @@ import { SortDirectionSelect } from '@components/SortDirectionSelect';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import { Box, Button, Icon, SkeletonLoader, Stack } from 'reactjs-shared-ui';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { useWineScriptModel } from '@models/useWineScriptModel';
+import { useWineScriptModel } from '@models/useWineAppConfigModel';
 import { useSelector } from 'react-redux';
 import { RootState } from '@interfaces/RootState';
 import { SortDirection } from '@interfaces/SortDirection';

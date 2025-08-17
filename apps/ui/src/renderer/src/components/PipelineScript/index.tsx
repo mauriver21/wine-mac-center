@@ -27,7 +27,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { useWineScriptApiClient } from '@api-clients/useWineScriptApiClient';
+import { useWineAppConfigApiClient } from '@api-clients/useWineAppConfigApiClient';
 import { ScriptOperation } from '@constants/enums';
 import { ENV } from '@constants/envs';
 import { getRelativeWinePath } from '@utils/getRelativeWinePath';
@@ -42,7 +42,7 @@ export const PipelineScript: React.FC = () => {
   const form = useForm(schema);
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const { navigateToScripts } = useNavigateApp();
-  const wineScriptApiClient = useWineScriptApiClient();
+  const wineAppConfigApiClient = useWineAppConfigApiClient();
   const [loading, setLoading] = useState(false);
   const { fields, insert, remove } = useFieldArray<FormSchema>({
     name: 'pipelineScripts',
@@ -256,7 +256,7 @@ export const PipelineScript: React.FC = () => {
 
   const submit = async (data: FormSchema) => {
     setLoading(true);
-    await wineScriptApiClient.create({
+    await wineAppConfigApiClient.create({
       ...data,
       name: data.appName,
       pipelineScripts: mapPipelineScripts(data.pipelineScripts)

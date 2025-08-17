@@ -1,7 +1,7 @@
 import { WineAppConfigActionType as ActionType } from '@constants/actionTypes';
 import { WineAppConfigAction } from '@interfaces/WineAppConfigAction';
 import { WineAppConfigState } from '@interfaces/WineAppConfigState';
-import { patch } from './handlers';
+import { listAll, patch } from './handlers';
 
 const initialState: WineAppConfigState = {
   wineAppsConfigs: []
@@ -9,8 +9,10 @@ const initialState: WineAppConfigState = {
 
 export const wineAppConfigState = (state = initialState, action: WineAppConfigAction) => {
   switch (action.type) {
+    case ActionType.LIST_ALL:
+      return listAll(action.wineAppsConfigs, state);
     case ActionType.PATCH:
-      return patch(action.wineAppConfig, state);
+      return patch(action.name, action.wineAppConfig, state);
     default:
       return state;
   }

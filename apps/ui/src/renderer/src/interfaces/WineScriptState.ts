@@ -1,5 +1,5 @@
-import { WineScript } from '@interfaces/WineScript';
+import { WineAppConfig } from '@interfaces/WineAppConfig';
 
-export type WineScriptState = {
-  wineScripts?: Array<WineScript>;
+export type WineAppConfigState = {
+  wineAppConfigs?: Array<WineAppConfig>;
 };

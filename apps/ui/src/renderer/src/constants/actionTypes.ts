@@ -9,11 +9,8 @@ export enum WineEngineActionType {
   LOADING = 'WINE_ENGINE:LOADING'
 }
 
-export enum WineAppActionType {
-  LIST_ALL = 'WINE_APP:LIST_ALL'
-}
-
 export enum WineAppConfigActionType {
+  LIST_ALL = 'WINE_APP_CONFIG:LIST_ALL',
   PATCH = 'WINE_APP_CONFIG:PATCH'
 }
 
@@ -29,9 +26,4 @@ export enum AppActionType {
 export enum WineInstalledAppActionType {
   LIST_ALL = 'WINE_INSTALLED_APP:LIST_ALL',
   PATCH = 'WINE_INSTALLED_APP:PATCH'
-}
-
-export enum WineScriptActionType {
-  LIST_ALL = 'WINE_SCRIPT:LIST_ALL',
-  PATCH = 'WINE_SCRIPT:PATCH'
 }

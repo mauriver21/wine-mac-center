@@ -2,7 +2,13 @@ import { WineAppConfigActionType as ActionType } from '@constants/actionTypes';
 import { Flatten } from '@interfaces/Flatten';
 import { WineAppConfigState } from '@interfaces/WineAppConfigState';
 
-export type WineAppConfigAction = {
-  type: ActionType.PATCH;
-  wineAppConfig: Flatten<WineAppConfigState['wineAppsConfigs']>;
-};
+export type WineAppConfigAction =
+  | {
+      type: ActionType.LIST_ALL;
+      wineAppsConfigs: WineAppConfigState['wineAppsConfigs'];
+    }
+  | {
+      type: ActionType.PATCH;
+      name: string;
+      wineAppConfig: Partial<Flatten<WineAppConfigState['wineAppsConfigs']>>;
+    };
