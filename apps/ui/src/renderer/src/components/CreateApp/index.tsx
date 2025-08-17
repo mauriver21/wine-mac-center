@@ -10,7 +10,6 @@ import {
   Stack,
   TableOfContents
 } from 'reactjs-shared-ui';
-import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
@@ -19,7 +18,7 @@ import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
-import { FileFilter, WineAppMode } from '@constants/enums';
+import { FileFilter } from '@constants/enums';
 import {
   CpuChipIcon,
   PencilSquareIcon,
@@ -145,20 +144,16 @@ export const CreateApp: React.FC = () => {
       useWinetricks,
       winetricksVerbs
     } = data;
-    wineAppPipelineModel.runWineAppPipelineByAppConfig(
-      {
-        id: uuid(),
-        name,
-        dxvkEnabled,
-        engineVersion,
-        setupExecutablePath,
-        appFolderPath,
-        iconFile: await data.iconFile?.arrayBuffer(),
-        artworkFile: await data.artworkFile?.arrayBuffer(),
-        winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
-      },
-      { mode: WineAppMode.Create }
-    );
+    wineAppPipelineModel.runWineAppPipelineByAppConfig({
+      name,
+      dxvkEnabled,
+      engineVersion,
+      setupExecutablePath,
+      appFolderPath,
+      iconFile: await data.iconFile?.arrayBuffer(),
+      artworkFile: await data.artworkFile?.arrayBuffer(),
+      winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
+    });
     reset();
     navigate(`/app-pipeline/${name}`);
   };

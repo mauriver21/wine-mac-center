@@ -43,10 +43,8 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
   }, [appConfig?.name]);
 
   useEffect(() => {
-    (async () => {
-      wineApp && setDriveCPath(wineApp.getWineEnv().WINE_APP_DRIVE_C_PATH);
-    })();
-  }, [appConfig?.id]);
+    wineApp && setDriveCPath(wineApp.getWineEnv().WINE_APP_DRIVE_C_PATH);
+  }, [appConfig?.name]);
 
   return (
     <Card>

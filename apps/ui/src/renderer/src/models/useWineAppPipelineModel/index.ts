@@ -8,7 +8,6 @@ import { WineAppPipelineAction } from '@interfaces/WineAppPipelineAction';
 import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { useAppModel } from '@models/useAppModel';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
-import { useWineAppModel } from '@models/useWineAppModel';
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
@@ -17,7 +16,6 @@ import { useWineScriptModel } from '@models/useWineScriptModel';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
-  const wineAppModel = useWineAppModel();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const wineScriptModel = useWineScriptModel();
   const wineAppConfigModel = useWineAppConfigModel();
@@ -160,22 +158,6 @@ export const useWineAppPipelineModel = () => {
     [selectWineAppPipelineState],
     (wineAppPipelineState) => wineAppPipelineState.pipelineStatus
   );
-  const selectWineAppPipelineMeta = createSelector(
-    [selectWineAppPipelineStatus],
-    (wineAppPipeline) => {
-      return {
-        wineApp: wineAppModel.selectWineApp(store.getState(), wineAppPipeline?.appConfigId),
-        wineAppConfig: wineAppConfigModel.selectWineAppConfig(
-          store.getState(),
-          wineAppPipeline?.appConfigId
-        )
-      };
-    }
-  );
-  const selectWineAppPipelineWithMeta = createSelector(
-    [selectWineAppPipelineStatus, selectWineAppPipelineMeta],
-    (wineAppsPipeline, meta) => ({ ...wineAppsPipeline, meta })
-  );
 
   return {
     loadWineAppPipelineByAppName,
@@ -186,8 +168,6 @@ export const useWineAppPipelineModel = () => {
     killWineAppPipeline,
     clearWineAppPipeline,
     dispatchPatch,
-    selectWineAppPipelineStatus,
-    selectWineAppPipelineMeta,
-    selectWineAppPipelineWithMeta
+    selectWineAppPipelineStatus
   };
 };
