@@ -7,7 +7,6 @@ import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppPipelineAction } from '@interfaces/WineAppPipelineAction';
 import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { useAppModel } from '@models/useAppModel';
-import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
@@ -18,29 +17,9 @@ export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const wineScriptModel = useWineScriptModel();
-  const wineAppConfigModel = useWineAppConfigModel();
   const wineEngineModel = useWineEngineModel();
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
   const dispatch = useDispatch<Dispatch<WineAppPipelineAction>>();
-
-  const runWineAppPipelineByAppConfigId = async (appConfigId: string | undefined) => {
-    try {
-      const wineApp = wineAppModel.selectWineApp(store.getState(), appConfigId);
-      const wineAppConfig = wineAppConfigModel.selectWineAppConfig(store.getState(), appConfigId);
-
-      if (wineApp === undefined || wineAppConfig === undefined) {
-        throw Error('Wine application config not found.');
-      }
-
-      await runWineAppPipelineByAppConfig({
-        ...wineAppConfig,
-        name: wineApp.name,
-        iconURL: wineApp.iconURL
-      });
-    } catch (error) {
-      appModel.dispatchError(error);
-    }
-  };
 
   const loadWineAppPipelineByAppName = async (appName: string) => {
     const installedWineApp = wineInstalledAppModel.selectWineInstalledAppByRealName(
@@ -162,7 +141,6 @@ export const useWineAppPipelineModel = () => {
   return {
     loadWineAppPipelineByAppName,
     runWineAppPipelineByAppConfig,
-    runWineAppPipelineByAppConfigId,
     runWineAppPipelineByAppName,
     runWineAppPipelineByScriptKeyName,
     killWineAppPipeline,

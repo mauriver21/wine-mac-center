@@ -12,7 +12,6 @@ import {
 } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
 import { VirtuosoGrid } from 'react-virtuoso';
-import { useWineAppModel } from '@models/useWineAppModel';
 import { RootState } from '@interfaces/RootState';
 import { AppCard } from '@components/AppCard';
 import { SearchField } from '@components/SearchField';
@@ -58,12 +57,12 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 );
 
 export const WineAppsList: React.FC = () => {
-  const wineAppModel = useWineAppModel();
+  const wineAppModel = {} as any;
   const [showDialog, setShowDialog] = useState(false);
   const [appName, setAppName] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [appConfigId, setAppConfigId] = useState<string>();
-  const [filters, setFilters] = useState<Parameters<typeof wineAppModel.selectWineApps>[1]>({
+  const [filters, setFilters] = useState<any>({
     criteria: '',
     order: 'asc'
   });

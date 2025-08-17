@@ -58,8 +58,6 @@ export const useWineInstalledAppApiClient = () => {
       }))
       .map((item) => ({
         ...item.config,
-        configId: item.config?.id,
-        id: item.config?.appId,
         appPath: item.appPath,
         pipeline: item.pipeline
       })) as WineInstalledApp[];

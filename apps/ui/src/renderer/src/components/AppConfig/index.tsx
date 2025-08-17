@@ -23,7 +23,6 @@ import { RegistryEditorModule } from '@components/RegistryEditorModule';
 import { TaskManagerModule } from '@components/TaskManagerModule';
 import { CommandLineModule } from '@components/CommandLineModule';
 import { ControlPanelModule } from '@components/ControlPanelModule';
-import { WineAppMode } from '@constants/enums';
 import { useDirsWatcherContext } from '@hooks/useDirsWatcherContext';
 import { extractAppName } from '@utils/extractAppName';
 import { useNavigateApp } from '@hooks/useNavigateApp';
@@ -54,7 +53,7 @@ export const AppConfig: React.FC = () => {
   );
 
   const initWineApp = async () => {
-    realAppName && setWineApp(await createWineApp(realAppName, { mode: WineAppMode.Update }));
+    realAppName && setWineApp(await createWineApp(realAppName));
   };
 
   useEffect(() => {

@@ -1,13 +1,24 @@
-import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
+import {
+  Body1,
+  Box,
+  Button,
+  Card,
+  CardProps,
+  Icon
+  // Image
+} from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import {
+  // useEffect,
+  useState
+} from 'react';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { RootState } from '@interfaces/RootState';
-import { useWineAppModel } from '@models/useWineAppModel';
+// import { useWineAppModel } from '@models/useWineAppModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-import { getAppArtwork } from '@utils/getAppArtwork';
-import defaultArtwork from '@assets/imgs/header.jpg';
+// import { getAppArtwork } from '@utils/getAppArtwork';
+// import defaultArtwork from '@assets/imgs/header.jpg';
 import { useNavigate } from 'react-router-dom';
 import { ProcessStatus } from '@constants/enums';
 
@@ -17,15 +28,18 @@ export interface InstalledAppCardProps extends CardProps {
 
 export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName, ...rest }) => {
   const wineInstalledAppModel = useWineInstalledAppModel();
-  const wineAppModel = useWineAppModel();
+  // const wineAppModel = useWineAppModel();
   const installedWineApp = useSelector((state: RootState) =>
     wineInstalledAppModel.selectWineInstalledAppByRealName(state, realAppName)
   );
-  const wineApp = useSelector((state: RootState) =>
-    wineAppModel.selectWineApp(state, installedWineApp?.configId)
-  );
-  const [artWorkSrc, setArtWorkSrc] = useState(wineApp?.imgSrc);
-  const [noArtWork, setNoArtWork] = useState(false);
+  // const wineApp = useSelector((state: RootState) =>
+  //   wineAppModel.selectWineApp(state, installedWineApp?.configId)
+  // );
+  // const [artWorkSrc, setArtWorkSrc] = useState(wineApp?.imgSrc);
+  const [
+    noArtWork
+    // setNoArtWork
+  ] = useState(false);
   const navigate = useNavigate();
 
   const navigateToAppConfig = () => {
@@ -36,15 +50,15 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName,
     navigate(`/app-pipeline?realAppName=${installedWineApp?.realAppName}`);
   };
 
-  useEffect(() => {
-    (async () => {
-      if (wineApp?.imgSrc === undefined) {
-        const artWork = await getAppArtwork(installedWineApp?.appPath);
-        setNoArtWork(!artWork);
-        setArtWorkSrc(artWork || defaultArtwork);
-      }
-    })();
-  }, [installedWineApp?.appPath]);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (wineApp?.imgSrc === undefined) {
+  //       const artWork = await getAppArtwork(installedWineApp?.appPath);
+  //       setNoArtWork(!artWork);
+  //       setArtWorkSrc(artWork || defaultArtwork);
+  //     }
+  //   })();
+  // }, [installedWineApp?.appPath]);
 
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
@@ -57,7 +71,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName,
         rowGap={'10px'}
       >
         <Box position="relative">
-          <Image
+          {/* <Image
             src={artWorkSrc}
             height="100%"
             width="100%"
@@ -66,7 +80,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName,
               maxWidth: '100%',
               borderRadius: 12
             }}
-          />
+          /> */}
           <Box
             position="absolute"
             top={0}

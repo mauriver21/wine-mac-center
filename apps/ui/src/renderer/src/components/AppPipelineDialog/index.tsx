@@ -1,24 +1,30 @@
-import { Body1, Button, Card, Dialog, DialogProps, H6, Stack } from 'reactjs-shared-ui';
-import { useSelector } from 'react-redux';
-import { StatusBox } from '@components/StatusBox';
-import { RootState } from '@interfaces/RootState';
-import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
+import {
+  // Body1, Button, Card,
+  Dialog,
+  DialogProps,
+  // H6,
+  Stack
+} from 'reactjs-shared-ui';
+// import { useSelector } from 'react-redux';
+// import { StatusBox } from '@components/StatusBox';
+// import { RootState } from '@interfaces/RootState';
+// import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 
 export interface AppPipelineProps extends DialogProps {}
 
 export const AppPipelineDialog: React.FC<AppPipelineProps> = (props) => {
-  const wineAppPipelineModel = useWineAppPipelineModel();
-  const wineAppPipeline = useSelector((state: RootState) =>
-    wineAppPipelineModel.selectWineAppPipelineWithMeta(state)
-  );
-  const close = () => {
-    wineAppPipelineModel.clearWineAppPipeline();
-  };
+  // const wineAppPipelineModel = useWineAppPipelineModel();
+  // const wineAppPipeline = useSelector((state: RootState) =>
+  //   wineAppPipelineModel.selectWineAppPipelineWithMeta(state)
+  // );
+  // const close = () => {
+  //   wineAppPipelineModel.clearWineAppPipeline();
+  // };
 
   return (
     <Dialog disableBackdropClick disableEscapeKeyDown fullWidth maxWidth="lg" {...props}>
       <Stack p={2} spacing={2}>
-        <H6>{wineAppPipeline.meta.wineApp?.name}</H6>
+        {/* <H6>{wineAppPipeline.meta.wineApp?.name}</H6>
         {wineAppPipeline.jobs?.map?.((item) => (
           <Stack key={item.name}>
             <Stack spacing={2}>
@@ -47,7 +53,7 @@ export const AppPipelineDialog: React.FC<AppPipelineProps> = (props) => {
           <Button color="info" onClick={close}>
             Close
           </Button>
-        </Stack>
+        </Stack> */}
       </Stack>
     </Dialog>
   );

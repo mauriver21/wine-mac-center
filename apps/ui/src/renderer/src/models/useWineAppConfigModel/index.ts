@@ -23,7 +23,7 @@ export const useWineAppConfigModel = () => {
       appName;
       dispatchLoader({ reading: true });
 
-      const wineAppConfig = await wineAppConfigApiClient.read(wineApp.scriptUrl);
+      const wineAppConfig = await wineAppConfigApiClient.read('');
 
       const engineURLs = wineEngineModel.findEngineURLs(wineAppConfig.engineVersion);
 
