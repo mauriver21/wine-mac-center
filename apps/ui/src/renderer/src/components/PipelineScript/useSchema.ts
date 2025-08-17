@@ -1,6 +1,7 @@
 import { ScriptOperation } from '@constants/enums';
 import { isDownloadableURL } from '@utils/isDownloadableURL';
 import { isURL } from '@utils/isURL';
+import { scriptExists } from '@utils/scriptExists';
 import { schema, InferType } from 'reactjs-shared-ui/forms';
 
 export const DEFAULT_PIPELINE_SCRIPT = {
@@ -9,7 +10,18 @@ export const DEFAULT_PIPELINE_SCRIPT = {
 } as const;
 
 const schemaObject = schema.object({
-  appName: schema.string().required(),
+  appName: schema
+    .string()
+    .required()
+    .test({
+      name: 'appExists',
+      message: 'App name is already taken',
+      test: async (appName) => {
+        const exists = await scriptExists(appName);
+        const isValid = exists === false;
+        return isValid;
+      }
+    }),
   engineVersion: schema.string().required().default(''),
   dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
   winetricksVerbs: schema.array().of(schema.string()).default([]),
