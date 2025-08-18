@@ -51,7 +51,7 @@ export const useWineAppConfigApiClient = () => {
   const readCloudFile = async (appName: string) => {
     const urls = buildAppUrls(appName);
     const { data: appConfig } = await axios.get<WineAppConfig>(urls.scriptURL);
-    return appConfig;
+    return { ...appConfig, iconURL: urls.iconURL, artworkURL: urls.artworkURL };
   };
 
   const readScriptFile = (appName: string) => {
@@ -69,6 +69,7 @@ export const useWineAppConfigApiClient = () => {
   };
 
   const read = async (args: WineAppArgs) => {
+    console.log(args);
     switch (args.origin) {
       case ConfigOrigin.CLOUD:
         return readCloudFile(args.appName);

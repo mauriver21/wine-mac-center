@@ -7,7 +7,6 @@ import {
   DialogContent,
   H6,
   SkeletonLoader,
-  sleep,
   Stack
 } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
@@ -20,8 +19,7 @@ import { WineAppsListContext } from '@contexts/WineAppsListContext';
 import { Button } from '@components/Button';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
-import { useAppModel } from '@models/useAppModel';
-import { ConfigOrigin } from '@constants/enums';
+import { ConfigOrigin, PipelineAction } from '@constants/enums';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -60,11 +58,9 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 );
 
 export const WineAppsList: React.FC = () => {
-  const appModel = useAppModel();
   const wineAppConfigModel = useWineAppConfigModel();
   const [showDialog, setShowDialog] = useState(false);
   const [appName, setAppName] = useState<string>();
-  const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<
     Parameters<typeof wineAppConfigModel.selectWineAppsConfigs>[1]
   >({
@@ -84,21 +80,6 @@ export const WineAppsList: React.FC = () => {
 
   const closeDialog = () => {
     setShowDialog(false);
-  };
-
-  const navigateToAppPipeline = async () => {
-    try {
-      setLoading(true);
-      setShowDialog(false);
-      await sleep(200);
-      if (appName === undefined) {
-        throw new Error('Application not found');
-      }
-      navigate.navigateToAppPipeline(appName);
-      setLoading(false);
-    } catch (error) {
-      appModel.dispatchError(error);
-    }
   };
 
   return (
@@ -149,9 +130,11 @@ export const WineAppsList: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button
-            disabled={loading}
-            onClick={async () => {
-              navigateToAppPipeline();
+            onClick={() => {
+              navigate.navigateToAppPipeline(appName, {
+                origin: ConfigOrigin.CLOUD,
+                action: PipelineAction.RUN
+              });
             }}
           >
             Automatic

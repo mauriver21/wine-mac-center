@@ -252,8 +252,10 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   /**
    * Search provided executable.
    */
-  const setSetupExe = async (exePath: string) => {
+  const setSetupExe = async (exePath: string, processArgs?: SpawnProcessArgs) => {
     const fileName = exePath.split('/').pop();
+
+    console.log(exePath, processArgs);
 
     if (fileName === undefined) throw new Error('Invalid filename');
 
@@ -262,7 +264,14 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
       exePath = `${WINE_ENV.WINE_TMP_PATH}/${fileName}`;
       if ((await fileExists(exePath)) === false) {
         try {
-          writeBinaryFile(exePath, await downloadFile(fileURL));
+          let percent: number | undefined = undefined;
+          const file = await downloadFile(fileURL, (args) => {
+            if (percent !== args.percent) {
+              percent = args.percent;
+              processArgs?.onStdOut?.(`${percent}%`);
+            }
+          });
+          writeBinaryFile(exePath, file);
         } catch (error) {
           console.error(error);
         }

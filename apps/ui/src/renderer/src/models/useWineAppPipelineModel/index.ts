@@ -25,15 +25,7 @@ export const useWineAppPipelineModel = () => {
   const resolveWineAppConfig = async (args: WineAppArgs) => {
     switch (args.origin) {
       case ConfigOrigin.CLOUD: {
-        let appConfig = wineAppConfigModel.selectWineAppConfig(
-          store.getState(),
-          args.appName,
-          args.origin
-        );
-        if (appConfig === undefined) {
-          appConfig = await wineAppConfigModel.read(args);
-        }
-        return;
+        return wineAppConfigModel.read(args);
       }
       case ConfigOrigin.SCRIPTS:
       default: {
@@ -83,6 +75,7 @@ export const useWineAppPipelineModel = () => {
   const runWineAppPipeline = async (args: WineAppArgs) => {
     try {
       const appName = args.appName;
+      if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
       if ((await appExists(appName)) === false) {
         await scaffoldWineApp(args);
         // Required delay for config.json be ready when loading wine pipeline.

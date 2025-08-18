@@ -1,5 +1,6 @@
 import { PipelineStep } from '@components/PipelineStep';
-import { ProcessStatus } from '@constants/enums';
+import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
+import { useQueryParam } from '@hooks/useQueryParam';
 import { RootState } from '@interfaces/RootState';
 import { useAppModel } from '@models/useAppModel';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
@@ -23,7 +24,10 @@ export const AppPipeline: React.FC = () => {
   const [resuming, setResuming] = useState(false);
   const [stopping, setStopping] = useState(false);
   const { appName } = useParams();
+  const queryParam = useQueryParam();
   const appModel = useAppModel();
+  const origin = queryParam.get('origin') as ConfigOrigin;
+  const action = queryParam.get('action') as PipelineAction;
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
@@ -34,15 +38,15 @@ export const AppPipeline: React.FC = () => {
   const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
   const pipelineStatus = installedApp?.pipeline?.status;
 
-  const runPipeline = async () => {
+  const resumePipeline = async () => {
     try {
-      setStopping(false);
-      setResuming(true);
-      if (appName === undefined) throw new Error(`Invalid application name`);
-      await wineAppPipelineModel.runWineAppPipeline(appName);
-      setResuming(false);
+      // setStopping(false);
+      // setResuming(true);
+      // if (appName === undefined) throw new Error(`Invalid application name`);
+      // await wineAppPipelineModel.runWineAppPipeline(appName);
+      // setResuming(false);
     } catch (error) {
-      appModel.dispatchError(error);
+      // appModel.dispatchError(error);
     }
   };
 
@@ -53,7 +57,7 @@ export const AppPipeline: React.FC = () => {
 
   useEffect(() => {
     if (appName) {
-      wineAppPipelineModel.runWineAppPipeline(appName);
+      wineAppPipelineModel.runWineAppPipeline({ appName, origin });
     }
   }, [appName]);
 
@@ -150,7 +154,7 @@ export const AppPipeline: React.FC = () => {
                     disabled={resuming}
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                     color="secondary"
-                    onClick={runPipeline}
+                    onClick={resumePipeline}
                   >
                     Resume
                   </Button>

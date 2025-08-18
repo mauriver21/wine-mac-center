@@ -35,3 +35,8 @@ export enum ConfigOrigin {
   SCRIPTS = 'SCRIPTS',
   INSTALLED_APP = 'INSTALLED_APP'
 }
+
+export enum PipelineAction {
+  RUN = 'RUN',
+  RESUME = 'RESUME'
+}

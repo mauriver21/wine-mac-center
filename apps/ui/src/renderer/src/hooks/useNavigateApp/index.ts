@@ -1,3 +1,4 @@
+import { ConfigOrigin, PipelineAction } from '@constants/enums';
 import { useNavigate } from 'react-router-dom';
 
 export const useNavigateApp = () => {
@@ -23,8 +24,11 @@ export const useNavigateApp = () => {
     navigate(`/create-script`);
   };
 
-  const navigateToAppPipeline = (appName: string) => {
-    navigate(`/app-pipeline/${appName}`);
+  const navigateToAppPipeline = (
+    appName: string | undefined,
+    params: { origin: ConfigOrigin; action: PipelineAction }
+  ) => {
+    navigate(`/app-pipeline/${appName}?origin=${params.origin}&action=${params.action}`);
   };
 
   return {

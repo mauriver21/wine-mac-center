@@ -1,3 +1,4 @@
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { useEffect, useState } from 'react';
@@ -7,7 +8,7 @@ export interface AppSetupProps {
 }
 
 export const AppSetup: React.FC<AppSetupProps> = ({ children }) => {
-  // const wineAppModel = useWineAppModel();
+  const wineAppConfigModel = useWineAppConfigModel();
   const wineEngineModel = useWineEngineModel();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const [starting, setStarting] = useState(true);
@@ -15,6 +16,7 @@ export const AppSetup: React.FC<AppSetupProps> = ({ children }) => {
   const asyncSetup = async () => {
     setStarting(true);
     await Promise.allSettled([
+      wineAppConfigModel.listAll(),
       wineInstalledAppModel.listAll(),
       wineEngineModel.list(),
       wineEngineModel.listDownloadables()

@@ -344,7 +344,8 @@ export const createWineAppPipeline = async (options: {
             ? [
                 {
                   name: 'Downloading setup executable',
-                  script: () => wineApp.setSetupExe(setupExecutableURL),
+                  script: (args?: SpawnProcessArgs) =>
+                    wineApp.setSetupExe(setupExecutableURL, args),
                   status: ProcessStatus.Pending,
                   output: ''
                 }
