@@ -23,14 +23,14 @@ import { useNavigate } from 'react-router-dom';
 import { ProcessStatus } from '@constants/enums';
 
 export interface InstalledAppCardProps extends CardProps {
-  realAppName?: string;
+  appName?: string;
 }
 
-export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName, ...rest }) => {
+export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...rest }) => {
   const wineInstalledAppModel = useWineInstalledAppModel();
   // const wineAppModel = useWineAppModel();
   const installedWineApp = useSelector((state: RootState) =>
-    wineInstalledAppModel.selectWineInstalledAppByRealName(state, realAppName)
+    wineInstalledAppModel.selectWineInstalledApp(state, appName)
   );
   // const wineApp = useSelector((state: RootState) =>
   //   wineAppModel.selectWineApp(state, installedWineApp?.configId)

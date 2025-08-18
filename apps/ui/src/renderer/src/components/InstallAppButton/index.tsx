@@ -5,21 +5,26 @@ import { InstallIcon } from '@assets/icons';
 import { useWineAppsListContext } from '@hooks/useWineAppsListContext';
 import { RootState } from '@interfaces/RootState';
 import { useSelector } from 'react-redux';
+import { ConfigOrigin } from '@constants/enums';
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 
 export interface InstallAppButtonProps extends ButtonProps {
-  appConfigId?: string;
+  appName?: string;
+  origin?: ConfigOrigin;
 }
 
 export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
-  appConfigId,
+  appName,
   onClick: onClickProp,
   ...rest
 }) => {
-  const wineAppModel = {} as any;
-  const wineApp = useSelector((state: RootState) => wineAppModel.selectWineApp(state, appConfigId));
+  const wineAppConfigModel = useWineAppConfigModel();
+  const wineAppConfig = useSelector((state: RootState) =>
+    wineAppConfigModel.selectWineAppConfig(state, appName)
+  );
   // const wineAppConfigModel = useWineAppConfigModel();
   const [loading, setLoading] = useState(false);
-  const { setShowDialog, setAppName, setAppConfigId } = useWineAppsListContext() || {};
+  const { setShowDialog, setAppName } = useWineAppsListContext() || {};
 
   const onClick: InstallAppButtonProps['onClick'] = async (event) => {
     setLoading(true);
@@ -27,8 +32,7 @@ export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
     onClickProp?.(event);
     setLoading(false);
     setShowDialog?.(true);
-    setAppName?.(wineApp?.name);
-    setAppConfigId?.(appConfigId);
+    setAppName?.(wineAppConfig?.name);
   };
 
   return (

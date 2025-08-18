@@ -29,22 +29,26 @@ export const ChangeWineEngineDialog: React.FC<ChangeWineEngineDialogProps> = ({
       setRunning(true);
       setError('');
 
-      setMessage(`Extracting Wine Engine ${data.engineVersion}`);
+      const engineVersion = data.engineVersion;
+
+      if (engineVersion === undefined) throw new Error('No engine version provided.');
+
+      setMessage(`Extracting Wine Engine ${engineVersion}`);
 
       await new Promise((resolve, reject) => {
-        wineApp?.extractEngine(data.engineVersion, {
+        wineApp?.extractEngine(engineVersion, {
           onStdOut: console.log,
           onStdErr: console.log,
           onExit: (output) => {
             if (output === ExitCode.Error) {
-              reject(`Failed to Extract the Wine Engine ${data.engineVersion}`);
+              reject(`Failed to Extract the Wine Engine ${engineVersion}`);
             }
             resolve(undefined);
           }
         });
       });
 
-      setMessage(`Initializing Wine Engine ${data.engineVersion}`);
+      setMessage(`Initializing Wine Engine ${engineVersion}`);
 
       await new Promise((resolve, reject) => {
         wineApp?.wineboot('', {
@@ -52,7 +56,7 @@ export const ChangeWineEngineDialog: React.FC<ChangeWineEngineDialogProps> = ({
           onStdErr: console.log,
           onExit: (output) => {
             if (output === ExitCode.Error) {
-              reject(`Failed to initialize the Wine Engine ${data.engineVersion}`);
+              reject(`Failed to initialize the Wine Engine ${engineVersion}`);
             }
             resolve(undefined);
           }

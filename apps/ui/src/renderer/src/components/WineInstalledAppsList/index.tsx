@@ -107,7 +107,7 @@ export const WineInstalledAppsList: React.FC = () => {
           itemContent={(_, installedWineApp) => (
             <InstalledAppCard
               key={installedWineApp.realAppName}
-              realAppName={installedWineApp.realAppName}
+              appName={installedWineApp.realAppName}
             />
           )}
         />

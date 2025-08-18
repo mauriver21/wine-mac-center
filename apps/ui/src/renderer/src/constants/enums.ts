@@ -32,5 +32,6 @@ export enum ScriptOperation {
 
 export enum ConfigOrigin {
   CLOUD = 'CLOUD',
-  SCRIPTS = 'SCRIPTS'
+  SCRIPTS = 'SCRIPTS',
+  INSTALLED_APP = 'INSTALLED_APP'
 }

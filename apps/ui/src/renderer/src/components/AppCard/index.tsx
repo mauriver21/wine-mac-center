@@ -5,6 +5,7 @@ import { RootState } from '@interfaces/RootState';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useMemo } from 'react';
 import { buildAppUrls } from '@utils/buildAppUrls';
+import { ConfigOrigin } from '@constants/enums';
 
 export interface AppCardProps extends CardProps {
   appName?: string;
@@ -17,8 +18,6 @@ export const AppCard: React.FC<AppCardProps> = ({ appName, ...rest }) => {
   );
   const appURLs = useMemo(() => buildAppUrls(appName), []);
 
-  console.log(appURLs);
-
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
       <Box
@@ -30,6 +29,7 @@ export const AppCard: React.FC<AppCardProps> = ({ appName, ...rest }) => {
         rowGap={'10px'}
       >
         <Image
+          src={appURLs.artworkURL}
           height="100%"
           width="100%"
           style={{
@@ -39,7 +39,7 @@ export const AppCard: React.FC<AppCardProps> = ({ appName, ...rest }) => {
           }}
         />
         <Box display="flex" justifyContent="end">
-          {/* <InstallAppButton appConfigId={wineApp?.appConfigId} /> */}
+          <InstallAppButton appName={wineAppConfig?.name} origin={ConfigOrigin.CLOUD} />
         </Box>
       </Box>
     </Card>

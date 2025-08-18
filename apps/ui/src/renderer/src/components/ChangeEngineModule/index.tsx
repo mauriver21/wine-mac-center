@@ -52,10 +52,10 @@ export const ChangeEngineModule: React.FC = () => {
   };
 
   useEffect(() => {
-    if (appConfig?.name) {
+    if (appConfig?.engineVersion) {
       setEngineVersion(appConfig?.engineVersion);
     }
-  }, [appConfig?.name]);
+  }, [appConfig?.engineVersion]);
 
   return (
     <Card>

@@ -8,6 +8,6 @@ export const buildAppUrls = (appName: string | undefined) => {
   return {
     artworkURL: encodeURL(`${ASSETS_URL}/header.jpeg`),
     iconURL: encodeURL(`${ASSETS_URL}/winemacapp.icns?cache=${uuid()}`),
-    scriptUrl: encodeURL(`${URL}/index.json`)
+    scriptURL: encodeURL(`${URL}/index.json`)
   };
 };
