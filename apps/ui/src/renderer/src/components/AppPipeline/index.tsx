@@ -28,7 +28,6 @@ export const AppPipeline: React.FC = () => {
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  contentsAreaRef.current?.refreshTableOfContents();
   const installedApp = useSelector((state: RootState) =>
     installedAppModel.selectWineInstalledApp(state, appName)
   );
@@ -61,6 +60,10 @@ export const AppPipeline: React.FC = () => {
   useEffect(() => {
     installedAppModel.listAll();
   }, [wineAppPipelineStatus?.status]);
+
+  useEffect(() => {
+    contentsAreaRef.current?.refreshTableOfContents();
+  });
 
   return (
     <Box display="grid" overflow="auto">
