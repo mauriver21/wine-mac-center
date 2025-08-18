@@ -4,11 +4,11 @@ import { CreateApp } from '@components/CreateApp';
 import { NotFoundApp } from '@components/NotFoundApp';
 import { MainLayout } from '@layouts/MainLayout';
 import { SimpleLayout } from '@layouts/SimpleLayout';
-// import { Apps } from '@pages/Apps';
-// import { Home } from '@pages/Home';
-// import { Settings } from '@pages/Settings';
+import { Apps } from '@pages/Apps';
+import { Home } from '@pages/Home';
+import { Settings } from '@pages/Settings';
 import { Scripts } from '@pages/Scripts';
-// import { Test } from '@pages/Test';
+import { Test } from '@pages/Test';
 import { RouteObject } from 'react-router-dom';
 import { PipelineScript } from '@components/PipelineScript';
 
@@ -18,17 +18,17 @@ export const routes: RouteObject[] = [
     element: <MainLayout />,
     children: [
       { index: true, element: <Scripts /> },
-      // { path: 'home', element: <Home /> },
-      // { path: 'apps', element: <Apps /> },
-      // { path: 'settings', element: <Settings /> },
-      { path: 'scripts', element: <Scripts /> }
-      // { path: 'test', element: <Test /> }
+      { path: 'home', element: <Home /> },
+      { path: 'apps', element: <Apps /> },
+      { path: 'settings', element: <Settings /> },
+      { path: 'scripts', element: <Scripts /> },
+      { path: 'test', element: <Test /> }
     ]
   },
   {
     path: '/app-config',
     element: <SimpleLayout />,
-    children: [{ path: ':realAppName', element: <AppConfig /> }]
+    children: [{ path: ':appName', element: <AppConfig /> }]
   },
   {
     path: '/app-pipeline',
@@ -46,7 +46,7 @@ export const routes: RouteObject[] = [
   {
     path: '/app-not-found',
     element: <SimpleLayout />,
-    children: [{ path: ':realAppName', element: <NotFoundApp /> }]
+    children: [{ path: ':appName', element: <NotFoundApp /> }]
   },
   {
     path: '/create-script',
