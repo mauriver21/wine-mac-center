@@ -63,7 +63,7 @@ export const useWineAppPipelineModel = () => {
     }
   };
 
-  const killWineAppPipeline = (id: string | undefined) => context.killWineAppPipeline(id);
+  const killWineAppPipeline = () => context.killWineAppPipeline();
 
   const clearWineAppPipeline = () => {
     dispatch({

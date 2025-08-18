@@ -1,90 +1,70 @@
-// import { PipelineStep } from '@components/PipelineStep';
-// import { ProcessStatus } from '@constants/enums';
-// import { useQueryParam } from '@hooks/useQueryParam';
-// import { RootState } from '@interfaces/RootState';
-// import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
-// import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-// import { alpha } from '@mui/material';
-// import { useEffect, useRef, useState } from 'react';
-// import { useSelector } from 'react-redux';
-// import { useNavigate, useParams } from 'react-router-dom';
+import { PipelineStep } from '@components/PipelineStep';
+import { ProcessStatus } from '@constants/enums';
+import { RootState } from '@interfaces/RootState';
+import { useAppModel } from '@models/useAppModel';
+import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
+import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
+import { alpha } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Box
-  // Button,
-  // ContentsArea,
-  // ContentsAreaHandle,
-  // ContentsClass,
-  // H6,
-  // Stack,
-  // TableOfContents
+  Box,
+  Button,
+  ContentsArea,
+  ContentsAreaHandle,
+  ContentsClass,
+  H6,
+  Stack,
+  TableOfContents
 } from 'reactjs-shared-ui';
 
 export const AppPipeline: React.FC = () => {
-  // const [resuming, setResuming] = useState(false);
-  // const [stopping, setStopping] = useState(false);
-  // const queryParam = useQueryParam();
-  // const appConfigId = queryParam.get('appConfigId');
-  // const realAppName = queryParam.get('realAppName');
-  // const scriptKeyName = queryParam.get('scriptKeyName');
-  // const { realAppName: realAppNameParam } = useParams();
-  // const wineAppPipelineModel = useWineAppPipelineModel();
-  // const installedAppModel = useWineInstalledAppModel();
-  // const navigate = useNavigate();
-  // const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  // contentsAreaRef.current?.refreshTableOfContents();
-  // const installedApp = useSelector((state: RootState) =>
-  //   installedAppModel.selectWineInstalledAppByRealName(state, realAppName)
-  // );
-  // const pipelineStatus = installedApp?.pipeline?.status;
+  const [resuming, setResuming] = useState(false);
+  const [stopping, setStopping] = useState(false);
+  const { appName } = useParams();
+  const appModel = useAppModel();
+  const wineAppPipelineModel = useWineAppPipelineModel();
+  const installedAppModel = useWineInstalledAppModel();
+  const navigate = useNavigate();
+  const contentsAreaRef = useRef<ContentsAreaHandle>(null);
+  contentsAreaRef.current?.refreshTableOfContents();
+  const installedApp = useSelector((state: RootState) =>
+    installedAppModel.selectWineInstalledApp(state, appName)
+  );
+  const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
+  const pipelineStatus = installedApp?.pipeline?.status;
 
-  // const runPipeline = async () => {
-  //   setStopping(false);
-  //   setResuming(true);
-  //   if (realAppName) {
-  //     await wineAppPipelineModel.runWineAppPipelineByAppName(realAppName, {
-  //       mode: WineAppMode.Update
-  //     });
-  //   }
-  //   setResuming(false);
-  // };
+  const runPipeline = async () => {
+    try {
+      setStopping(false);
+      setResuming(true);
+      if (appName === undefined) throw new Error(`Invalid application name`);
+      await wineAppPipelineModel.runWineAppPipeline(appName);
+      setResuming(false);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
 
-  // const killPipeline = async () => {
-  //   setStopping(true);
-  //   await wineAppPipelineModel.killWineAppPipeline(wineAppPipeline.pipelineId);
-  // };
+  const killPipeline = async () => {
+    setStopping(true);
+    await wineAppPipelineModel.killWineAppPipeline();
+  };
 
-  // useEffect(() => {
-  //   const runFromAppConfigId = Boolean(appConfigId);
-  //   if (runFromAppConfigId) {
-  //     wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId!, {
-  //       mode: WineAppMode.Create
-  //     });
-  //   }
-  // }, [appConfigId]);
+  useEffect(() => {
+    if (appName) {
+      wineAppPipelineModel.runWineAppPipeline(appName);
+    }
+  }, [appName]);
 
-  // useEffect(() => {
-  //   const loadFromRealAppName = Boolean(realAppName);
-  //   if (loadFromRealAppName) {
-  //     wineAppPipelineModel.loadWineAppPipelineByAppName(realAppName!, { mode: WineAppMode.Update });
-  //   }
-  // }, [realAppName]);
-
-  // useEffect(() => {
-  //   const runFromScriptName = Boolean(realAppName === null && scriptKeyName);
-  //   if (runFromScriptName) {
-  //     wineAppPipelineModel.runWineAppPipelineByScriptKeyName(scriptKeyName!, {
-  //       mode: WineAppMode.Create
-  //     });
-  //   }
-  // }, [scriptKeyName]);
-
-  // useEffect(() => {
-  //   installedAppModel.listAll();
-  // }, [wineAppPipeline.status]);
+  useEffect(() => {
+    installedAppModel.listAll();
+  }, [wineAppPipelineStatus?.status]);
 
   return (
     <Box display="grid" overflow="auto">
-      {/* <ContentsArea
+      <ContentsArea
         ref={contentsAreaRef}
         style={{
           height: '100%',
@@ -104,7 +84,7 @@ export const AppPipeline: React.FC = () => {
             }}
           >
             <H6 color="text.secondary" fontWeight={500}>
-              {realAppNameParam || realAppName || wineAppPipeline.meta.wineApp?.name}
+              {appName}
             </H6>
           </Box>
           <Box
@@ -127,7 +107,7 @@ export const AppPipeline: React.FC = () => {
               }}
             >
               <Box p={2} overflow="auto">
-                {wineAppPipeline.jobs?.map?.((item) => (
+                {wineAppPipelineStatus?.jobs?.map?.((item) => (
                   <Stack alignItems="center" key={item.name} spacing={2}>
                     {item?.steps?.map((step, index) => (
                       <Box key={index} width="100%" maxWidth={800} className={ContentsClass.Item}>
@@ -144,7 +124,7 @@ export const AppPipeline: React.FC = () => {
                 spacing={1}
                 justifyContent="flex-end"
               >
-                {wineAppPipeline.status === ProcessStatus.InProgress ? (
+                {wineAppPipelineStatus?.status === ProcessStatus.InProgress ? (
                   <Button
                     disabled={stopping}
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
@@ -181,7 +161,7 @@ export const AppPipeline: React.FC = () => {
             </Box>
           </Box>
         </Box>
-      </ContentsArea> */}
+      </ContentsArea>
     </Box>
   );
 };

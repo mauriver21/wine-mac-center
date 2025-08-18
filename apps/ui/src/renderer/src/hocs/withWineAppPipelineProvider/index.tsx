@@ -7,8 +7,8 @@ import { FileFilter } from '@constants/enums';
 
 export type WineAppPipelineContextType = {
   createWineAppPipeline: typeof baseCreateWineAppPipeline;
-  findWineAppPipeline: (id: string | undefined) => WineAppPipeline | undefined;
-  killWineAppPipeline: (id: string | undefined) => Promise<void>;
+  getWineAppPipeline: () => WineAppPipeline | undefined;
+  killWineAppPipeline: () => Promise<void | undefined>;
 };
 
 export const WineAppPipelineContext = createContext<WineAppPipelineContextType>({} as any);
@@ -19,11 +19,11 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
     const [openSelectExecutableDialog, setOpenSelectExecutableDialog] = useState(false);
 
     const store = useRef<{
-      pipelines: Array<WineAppPipeline>;
+      pipeline: WineAppPipeline | undefined;
       mainExePath: string;
       intervalId?: NodeJS.Timeout;
       driveCPath: string;
-    }>({ pipelines: [], mainExePath: '', driveCPath: '' });
+    }>({ pipeline: undefined, mainExePath: '', driveCPath: '' });
 
     const mainExecutableSelection = () => {
       return new Promise<string>((resolve) => {
@@ -56,23 +56,17 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
         }
       });
 
-      store.current.pipelines.push(pipeline);
       return pipeline;
     };
 
-    const findWineAppPipeline = (id: string | undefined) =>
-      store.current.pipelines.find((item) => item.id === id);
-
-    const killWineAppPipeline = async (id: string | undefined) => {
-      const foundPipeline = findWineAppPipeline(id);
-      await foundPipeline?.kill();
-    };
+    const getWineAppPipeline = () => store.current.pipeline;
+    const killWineAppPipeline = async () => getWineAppPipeline()?.kill();
 
     return (
       <WineAppPipelineContext.Provider
         value={{
           createWineAppPipeline,
-          findWineAppPipeline,
+          getWineAppPipeline,
           killWineAppPipeline
         }}
       >

@@ -23,12 +23,12 @@ export const useNavigateApp = () => {
     navigate(`/create-script`);
   };
 
-  const navigateToAppPipelineByAppName = (appName: string) => {
+  const navigateToAppPipeline = (appName: string) => {
     navigate(`/app-pipeline/${appName}`);
   };
 
   return {
-    navigateToAppPipelineByAppName,
+    navigateToAppPipeline,
     navigateToApps,
     navigateToAppNotFound,
     navigateToHome,

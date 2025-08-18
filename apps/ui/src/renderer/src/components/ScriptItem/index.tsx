@@ -9,18 +9,19 @@ export interface ScriptItemProps {
 }
 
 export const ScriptItem: React.FC<ScriptItemProps> = ({ appName }) => {
-  const { navigateToAppPipelineByAppName } = useNavigateApp();
-
-  const navigateToPipeline = () => {
-    navigateToAppPipelineByAppName(appName);
-  };
+  const { navigateToAppPipeline } = useNavigateApp();
 
   return (
     <Card>
       <CardContent>
         <Stack alignItems="center" direction="row" pt="5px" justifyContent="space-between">
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Button title="Run Script" equalSize={34} sx={{ borderRadius: '100%' }}>
+            <Button
+              title="Run Script"
+              onClick={() => navigateToAppPipeline(appName)}
+              equalSize={34}
+              sx={{ borderRadius: '100%' }}
+            >
               <Icon size={24} render={PlayCircleIcon} />
             </Button>
             <Body1>{appName}</Body1>
