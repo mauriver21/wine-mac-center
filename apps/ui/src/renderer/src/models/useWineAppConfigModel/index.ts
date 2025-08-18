@@ -24,6 +24,8 @@ export const useWineAppConfigModel = () => {
   const read = async (args: WineAppArgs, options?: { throwError?: boolean }) => {
     try {
       const config = await wineAppConfigApiClient.read(args);
+      if (config === undefined) throw new Error('App config not found.');
+      dispatchSave(config);
       return config;
     } catch (error) {
       if (options?.throwError) {
@@ -53,10 +55,9 @@ export const useWineAppConfigModel = () => {
       wineAppsConfigs
     });
   };
-  const dispatchPatch = (name: string, wineAppConfig: Partial<WineAppConfig>) => {
+  const dispatchSave = (wineAppConfig: WineAppConfig) => {
     dispatch({
-      type: ActionType.PATCH,
-      name,
+      type: ActionType.SAVE,
       wineAppConfig
     });
   };
@@ -109,8 +110,9 @@ export const useWineAppConfigModel = () => {
       (_: RootState, name: string | undefined) => name,
       (_: RootState, _name: string | undefined, origin: ConfigOrigin | undefined) => origin
     ],
-    (wineAppConfigs, name, origin) =>
-      wineAppConfigs?.find((item) => item.name == name && item.origin == origin)
+    (wineAppConfigs, name, origin) => {
+      return wineAppConfigs?.find((item) => item.name == name && item.origin == origin);
+    }
   );
 
   return {
@@ -118,7 +120,6 @@ export const useWineAppConfigModel = () => {
     listAll,
     read,
     dispatchListAll,
-    dispatchPatch,
     selectWineAppConfigState,
     selectWineAppsConfigs,
     selectWineAppConfig

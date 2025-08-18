@@ -8,13 +8,14 @@ import { buildAppUrls } from '@utils/buildAppUrls';
 import { ConfigOrigin } from '@constants/enums';
 
 export interface AppCardProps extends CardProps {
-  appName?: string;
+  appName: string | undefined;
+  origin: ConfigOrigin | undefined;
 }
 
-export const AppCard: React.FC<AppCardProps> = ({ appName, ...rest }) => {
+export const AppCard: React.FC<AppCardProps> = ({ appName, origin, ...rest }) => {
   const wineAppModel = useWineAppConfigModel();
   const wineAppConfig = useSelector((state: RootState) =>
-    wineAppModel.selectWineAppConfig(state, appName)
+    wineAppModel.selectWineAppConfig(state, appName, origin)
   );
   const appURLs = useMemo(() => buildAppUrls(appName), []);
 

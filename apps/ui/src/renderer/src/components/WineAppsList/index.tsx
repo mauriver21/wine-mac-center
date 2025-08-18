@@ -131,7 +131,7 @@ export const WineAppsList: React.FC = () => {
             data={wineAppsConfigs}
             components={{ List, Item }}
             itemContent={(index, wineAppConfig) => (
-              <AppCard key={index} appName={wineAppConfig.name} />
+              <AppCard key={index} appName={wineAppConfig.name} origin={ConfigOrigin.CLOUD} />
             )}
           />
         </SkeletonLoader>
