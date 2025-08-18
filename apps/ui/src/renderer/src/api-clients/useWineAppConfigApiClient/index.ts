@@ -1,7 +1,9 @@
 import { ConfigOrigin } from '@constants/enums';
 import { WINE_APPS_CONFIGS_URL } from '@constants/urls';
+import { WineAppArgs } from '@interfaces/WineAppArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppConfigIndex } from '@interfaces/WineAppConfigIndex';
+import { buildAppUrls } from '@utils/buildAppUrls';
 import { createDirectory } from '@utils/createDirectory';
 import { dirExists } from '@utils/dirExists';
 import { fileExists } from '@utils/fileExists';
@@ -46,24 +48,43 @@ export const useWineAppConfigApiClient = () => {
     writeFile(`${SCRIPT_PATH}/index.json`, JSON.stringify(config));
   };
 
+  const readCloudFile = async (appName: string) => {
+    const urls = buildAppUrls(appName);
+    const { data: appConfig } = await axios.get<WineAppConfig>(urls.scriptURL);
+    return appConfig;
+  };
+
+  const readScriptFile = (appName: string) => {
+    const SCRIPT_FILE = `${WINE_SCRIPTS_PATH}/${appName}/index.json`;
+    return new Promise<WineAppConfig | undefined>(async (resolve) => {
+      let script = '';
+      const hasScriptFile = await fileExists(SCRIPT_FILE);
+      if (hasScriptFile) {
+        script = await readFileAsString(SCRIPT_FILE);
+        resolve(parseJson<WineAppConfig>(script));
+      } else {
+        resolve(undefined);
+      }
+    });
+  };
+
+  const read = async (args: WineAppArgs) => {
+    switch (args.origin) {
+      case ConfigOrigin.CLOUD:
+        return readCloudFile(args.appName);
+      case ConfigOrigin.SCRIPTS:
+      default:
+        return readScriptFile(args.appName);
+    }
+  };
+
   const listAll = async () => {
     const directories = await readDirectory(WINE_SCRIPTS_PATH);
     const promises: Array<Promise<WineAppConfig | undefined>> = [];
     let configs: WineAppConfig[] = [];
 
     for (const dir of directories) {
-      const SCRIPT_FILE = `${WINE_SCRIPTS_PATH}/${dir}/index.json`;
-      const promise = new Promise<WineAppConfig | undefined>(async (resolve) => {
-        let script = '';
-        const hasScriptFile = await fileExists(SCRIPT_FILE);
-        if (hasScriptFile) {
-          script = await readFileAsString(SCRIPT_FILE);
-          resolve(parseJson<WineAppConfig>(script));
-        } else {
-          resolve(undefined);
-        }
-      });
-      promises.push(promise);
+      promises.push(readScriptFile(dir));
     }
 
     configs = (await Promise.all(promises)).filter((item) => item !== undefined) as WineAppConfig[];
@@ -96,6 +117,7 @@ export const useWineAppConfigApiClient = () => {
 
   return {
     create,
+    read,
     listAll
   };
 };

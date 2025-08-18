@@ -12,6 +12,8 @@ import { sleep } from 'reactjs-shared-ui';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { createWineApp } from '@utils/createWineApp';
 import { appExists } from '@utils/appExists';
+import { WineAppArgs } from '@interfaces/WineAppArgs';
+import { ConfigOrigin } from '@constants/enums';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
@@ -20,8 +22,29 @@ export const useWineAppPipelineModel = () => {
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
   const dispatch = useDispatch<Dispatch<WineAppPipelineAction>>();
 
-  const scaffoldWineApp = async (appName: string) => {
-    const config = wineAppConfigModel.selectWineAppConfig(store.getState(), appName);
+  const resolveWineAppConfig = async (args: WineAppArgs) => {
+    switch (args.origin) {
+      case ConfigOrigin.CLOUD: {
+        let appConfig = wineAppConfigModel.selectWineAppConfig(
+          store.getState(),
+          args.appName,
+          args.origin
+        );
+        if (appConfig === undefined) {
+          appConfig = await wineAppConfigModel.read(args);
+        }
+        return;
+      }
+      case ConfigOrigin.SCRIPTS:
+      default: {
+        return wineAppConfigModel.selectWineAppConfig(store.getState(), args.appName, args.origin);
+      }
+    }
+  };
+
+  const scaffoldWineApp = async (args: WineAppArgs) => {
+    const { appName } = args;
+    const config = await resolveWineAppConfig(args);
     if (config === undefined) throw new Error(`App config for ${appName} not found.`);
     const wineApp = await createWineApp(appName, config);
     return new Promise<void>((resolve) =>
@@ -57,10 +80,11 @@ export const useWineAppPipelineModel = () => {
     }
   };
 
-  const runWineAppPipeline = async (appName: string) => {
+  const runWineAppPipeline = async (args: WineAppArgs) => {
     try {
+      const appName = args.appName;
       if ((await appExists(appName)) === false) {
-        await scaffoldWineApp(appName);
+        await scaffoldWineApp(args);
         // Required delay for config.json be ready when loading wine pipeline.
         await sleep(200);
       }

@@ -9,20 +9,20 @@ import { ConfigOrigin } from '@constants/enums';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 
 export interface InstallAppButtonProps extends ButtonProps {
-  appName?: string;
-  origin?: ConfigOrigin;
+  appName: string | undefined;
+  origin: ConfigOrigin | undefined;
 }
 
 export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
   appName,
+  origin,
   onClick: onClickProp,
   ...rest
 }) => {
   const wineAppConfigModel = useWineAppConfigModel();
   const wineAppConfig = useSelector((state: RootState) =>
-    wineAppConfigModel.selectWineAppConfig(state, appName)
+    wineAppConfigModel.selectWineAppConfig(state, appName, origin)
   );
-  // const wineAppConfigModel = useWineAppConfigModel();
   const [loading, setLoading] = useState(false);
   const { setShowDialog, setAppName } = useWineAppsListContext() || {};
 

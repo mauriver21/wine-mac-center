@@ -11,6 +11,7 @@ import { useAppModel } from '@models/useAppModel';
 import { objectMatchCriteria } from '@utils/objectMatchCriteria';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { ConfigOrigin } from '@constants/enums';
+import { WineAppArgs } from '@interfaces/WineAppArgs';
 
 export const useWineAppConfigModel = () => {
   const [state, setState] = useState({
@@ -19,6 +20,20 @@ export const useWineAppConfigModel = () => {
   const appModel = useAppModel();
   const wineAppConfigApiClient = useWineAppConfigApiClient();
   const dispatch = useDispatch<Dispatch<WineAppConfigAction>>();
+
+  const read = async (args: WineAppArgs, options?: { throwError?: boolean }) => {
+    try {
+      const config = await wineAppConfigApiClient.read(args);
+      return config;
+    } catch (error) {
+      if (options?.throwError) {
+        throw error;
+      } else {
+        appModel.dispatchError(error);
+      }
+      return;
+    }
+  };
 
   const listAll = async () => {
     try {
@@ -89,13 +104,19 @@ export const useWineAppConfigModel = () => {
     }
   );
   const selectWineAppConfig = createSelector(
-    [(state: RootState) => selectWineAppsConfigs(state), (_: RootState, name?: string) => name],
-    (wineAppConfigs, name) => wineAppConfigs?.find((item) => item.name == name)
+    [
+      (state: RootState) => selectWineAppsConfigs(state),
+      (_: RootState, name: string | undefined) => name,
+      (_: RootState, _name: string | undefined, origin: ConfigOrigin | undefined) => origin
+    ],
+    (wineAppConfigs, name, origin) =>
+      wineAppConfigs?.find((item) => item.name == name && item.origin == origin)
   );
 
   return {
     loaders: state.loaders,
     listAll,
+    read,
     dispatchListAll,
     dispatchPatch,
     selectWineAppConfigState,

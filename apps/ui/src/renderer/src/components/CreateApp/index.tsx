@@ -144,7 +144,7 @@ export const CreateApp: React.FC = () => {
       // useWinetricks,
       // winetricksVerbs
     } = data;
-    wineAppPipelineModel.runWineAppPipeline(name);
+    // wineAppPipelineModel.runWineAppPipeline(name);
     reset();
     navigate(`/app-pipeline/${name}`);
   };
