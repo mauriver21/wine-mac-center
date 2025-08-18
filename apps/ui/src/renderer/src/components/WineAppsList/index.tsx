@@ -19,6 +19,9 @@ import { SortDirectionSelect } from '@components/SortDirectionSelect';
 import { WineAppsListContext } from '@contexts/WineAppsListContext';
 import { Button } from '@components/Button';
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { useAppModel } from '@models/useAppModel';
+import { ConfigOrigin } from '@constants/enums';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -57,21 +60,26 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 );
 
 export const WineAppsList: React.FC = () => {
-  const wineAppModel = {} as any;
+  const appModel = useAppModel();
+  const wineAppConfigModel = useWineAppConfigModel();
   const [showDialog, setShowDialog] = useState(false);
   const [appName, setAppName] = useState<string>();
   const [loading, setLoading] = useState(false);
-  const [appConfigId, setAppConfigId] = useState<string>();
-  const [filters, setFilters] = useState<any>({
+  const [filters, setFilters] = useState<
+    Parameters<typeof wineAppConfigModel.selectWineAppsConfigs>[1]
+  >({
     criteria: '',
-    order: 'asc'
+    order: 'asc',
+    origin: ConfigOrigin.CLOUD
   });
-  const { loaders } = wineAppModel;
-  const wineApps = useSelector((state: RootState) => wineAppModel.selectWineApps(state, filters));
+  const { loaders } = wineAppConfigModel;
+  const wineAppsConfigs = useSelector((state: RootState) =>
+    wineAppConfigModel.selectWineAppsConfigs(state, filters)
+  );
   const navigate = useNavigateApp();
 
   useEffect(() => {
-    wineAppModel.listAll();
+    wineAppConfigModel.listAll();
   }, []);
 
   const closeDialog = () => {
@@ -79,17 +87,22 @@ export const WineAppsList: React.FC = () => {
   };
 
   const navigateToAppPipeline = async () => {
-    setLoading(true);
-    setShowDialog(false);
-    await sleep(200);
-    navigate.navigateToAppPipelineByAppConfigId(appConfigId);
-    setLoading(false);
+    try {
+      setLoading(true);
+      setShowDialog(false);
+      await sleep(200);
+      if (appName === undefined) {
+        throw new Error('Application not found');
+      }
+      navigate.navigateToAppPipeline(appName);
+      setLoading(false);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
   };
 
   return (
-    <WineAppsListContext.Provider
-      value={{ showDialog, setShowDialog, appName, setAppName, appConfigId, setAppConfigId }}
-    >
+    <WineAppsListContext.Provider value={{ showDialog, setShowDialog, appName, setAppName }}>
       <Box display="grid" gridTemplateRows="auto 1fr">
         <Stack direction="row" spacing={1} pt={2} px={3}>
           <Stack spacing={1} direction="row" width="100%" maxWidth={450}>
@@ -115,10 +128,10 @@ export const WineAppsList: React.FC = () => {
         <SkeletonLoader loading={loaders.listingAll}>
           <VirtuosoGrid
             style={{ height: '100%' }}
-            data={wineApps}
+            data={wineAppsConfigs}
             components={{ List, Item }}
-            itemContent={(_, wineApp) => (
-              <AppCard key={wineApp.appConfigId} appConfigId={wineApp.appConfigId} />
+            itemContent={(index, wineAppConfig) => (
+              <AppCard key={index} appName={wineAppConfig.name} />
             )}
           />
         </SkeletonLoader>

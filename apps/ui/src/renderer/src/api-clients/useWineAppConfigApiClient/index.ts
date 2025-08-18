@@ -1,3 +1,5 @@
+import { ConfigOrigin } from '@constants/enums';
+import { WINE_APPS_CONFIGS_URL } from '@constants/urls';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppConfigIndex } from '@interfaces/WineAppConfigIndex';
 import { createDirectory } from '@utils/createDirectory';
@@ -8,6 +10,7 @@ import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
 import { useEnv } from '@utils/useEnv';
 import { writeFile } from '@utils/writeFile';
+import axios from 'axios';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
@@ -31,6 +34,7 @@ export const useWineAppConfigApiClient = () => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
     const config: WineAppConfig = {
       name: data.name,
+      origin: data.origin,
       dxvkEnabled: data.dxvkEnabled || false,
       setupExecutableURL: '',
       engineVersion: data.engineVersion,
@@ -45,7 +49,7 @@ export const useWineAppConfigApiClient = () => {
   const listAll = async () => {
     const directories = await readDirectory(WINE_SCRIPTS_PATH);
     const promises: Array<Promise<WineAppConfig | undefined>> = [];
-    let scripts: WineAppConfig[] = [];
+    let configs: WineAppConfig[] = [];
 
     for (const dir of directories) {
       const SCRIPT_FILE = `${WINE_SCRIPTS_PATH}/${dir}/index.json`;
@@ -62,9 +66,13 @@ export const useWineAppConfigApiClient = () => {
       promises.push(promise);
     }
 
-    scripts = (await Promise.all(promises)).filter((item) => item !== undefined) as WineAppConfig[];
+    configs = (await Promise.all(promises)).filter((item) => item !== undefined) as WineAppConfig[];
 
-    return scripts;
+    const { data: cloudConfigs } = await axios.get<WineAppConfigIndex[]>(
+      `${WINE_APPS_CONFIGS_URL}/index.json`
+    );
+
+    return [...configs, ...cloudConfigs];
   };
 
   const create = async (data: WineAppConfig) => {
@@ -74,7 +82,8 @@ export const useWineAppConfigApiClient = () => {
     index = [
       ...index,
       {
-        name: data.name
+        name: data.name,
+        origin: ConfigOrigin.SCRIPTS
       }
     ];
     await writeIndex(index);

@@ -49,7 +49,7 @@ export const Scripts: React.FC = () => {
   const { loaders } = appConfigModel;
   const [filters, setFilters] = useState({ criteria: '', order: 'asc' as SortDirection });
   const appConfigs = useSelector((state: RootState) =>
-    appConfigModel.selectWineAppConfigs(state, filters)
+    appConfigModel.selectWineAppsConfigs(state, filters)
   );
 
   useEffect(() => {

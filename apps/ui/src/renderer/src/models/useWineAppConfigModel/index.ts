@@ -10,6 +10,7 @@ import { WineAppConfigAction } from '@interfaces/WineAppConfigAction';
 import { useAppModel } from '@models/useAppModel';
 import { objectMatchCriteria } from '@utils/objectMatchCriteria';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
+import { ConfigOrigin } from '@constants/enums';
 
 export const useWineAppConfigModel = () => {
   const [state, setState] = useState({
@@ -21,7 +22,7 @@ export const useWineAppConfigModel = () => {
 
   const listAll = async () => {
     try {
-      const wineAppConfigs = selectWineAppConfigs(store.getState());
+      const wineAppConfigs = selectWineAppsConfigs(store.getState());
       !wineAppConfigs?.length && dispatchLoader({ listingAll: true });
       dispatchListAll(await wineAppConfigApiClient.listAll());
     } catch (error) {
@@ -49,15 +50,22 @@ export const useWineAppConfigModel = () => {
   };
 
   const selectWineAppConfigState = (state: RootState) => state.wineAppConfigState;
-  const selectWineAppConfigs = createSelector(
+  const selectWineAppsConfigs = createSelector(
     [
       selectWineAppConfigState,
-      (_: RootState, filters?: { criteria?: string; order?: SortDirection }) => filters
+      (
+        _: RootState,
+        filters?: { criteria?: string; order?: SortDirection; origin?: ConfigOrigin }
+      ) => filters
     ],
     (wineAppConfigState, filters) => {
       let wineAppsConfigs = wineAppConfigState.wineAppsConfigs;
 
-      const { criteria, order } = filters || {};
+      const { criteria, order, origin } = filters || {};
+
+      if (origin) {
+        wineAppsConfigs = wineAppsConfigs?.filter((item) => item.origin == origin);
+      }
 
       if (criteria) {
         wineAppsConfigs = wineAppsConfigs?.filter((item) =>
@@ -81,7 +89,7 @@ export const useWineAppConfigModel = () => {
     }
   );
   const selectWineAppConfig = createSelector(
-    [(state: RootState) => selectWineAppConfigs(state), (_: RootState, name?: string) => name],
+    [(state: RootState) => selectWineAppsConfigs(state), (_: RootState, name?: string) => name],
     (wineAppConfigs, name) => wineAppConfigs?.find((item) => item.name == name)
   );
 
@@ -91,7 +99,7 @@ export const useWineAppConfigModel = () => {
     dispatchListAll,
     dispatchPatch,
     selectWineAppConfigState,
-    selectWineAppConfigs,
+    selectWineAppsConfigs,
     selectWineAppConfig
   };
 };

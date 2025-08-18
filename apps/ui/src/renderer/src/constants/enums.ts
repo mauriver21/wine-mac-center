@@ -29,3 +29,8 @@ export enum ScriptOperation {
   REMOVE = 'REMOVE',
   RUN_WINDOWS_EXE = 'RUN_WINDOWS_EXE'
 }
+
+export enum ConfigOrigin {
+  CLOUD = 'CLOUD',
+  SCRIPTS = 'SCRIPTS'
+}

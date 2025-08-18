@@ -8,7 +8,7 @@ import { dirExists } from '@utils/dirExists';
 import { downloadFile } from '@utils/downloadFile';
 import { fileExists } from '@utils/fileExists';
 import { createEnv } from '@utils/createEnv';
-import { FileName } from '@constants/enums';
+import { ConfigOrigin, FileName } from '@constants/enums';
 import { spawnProcess as baseSpawnProcess } from '@utils/spawnProcess';
 import { writeFile } from '@utils/writeFile';
 import { createWineEngineApiClient } from '@api-clients/createWineEngineApiClient';
@@ -27,6 +27,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
 
   let appConfig: WineAppConfig = {
     name: appName,
+    origin: ConfigOrigin.SCRIPTS,
     engineVersion: '',
     engineURLs: [],
     setupExecutablePath: '',

@@ -28,7 +28,7 @@ import {
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { useWineAppConfigApiClient } from '@api-clients/useWineAppConfigApiClient';
-import { ScriptOperation } from '@constants/enums';
+import { ConfigOrigin, ScriptOperation } from '@constants/enums';
 import { ENV } from '@constants/envs';
 import { getRelativeWinePath } from '@utils/getRelativeWinePath';
 import { DRIVE_C_PATH as RELATIVE_DRIVE_C_PATH } from '@constants/paths';
@@ -259,6 +259,7 @@ export const PipelineScript: React.FC = () => {
     await wineAppConfigApiClient.create({
       ...data,
       name: data.appName,
+      origin: ConfigOrigin.SCRIPTS,
       pipelineScripts: mapPipelineScripts(data.pipelineScripts)
     });
     setLoading(false);

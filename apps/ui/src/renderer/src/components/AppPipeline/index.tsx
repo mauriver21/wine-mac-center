@@ -140,7 +140,7 @@ export const AppPipeline: React.FC = () => {
                   <Button
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                     color="secondary"
-                    onClick={() => navigate('/scripts')}
+                    onClick={() => navigate('/apps')}
                   >
                     Close
                   </Button>

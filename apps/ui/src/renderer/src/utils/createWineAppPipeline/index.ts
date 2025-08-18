@@ -35,7 +35,7 @@ export const createWineAppPipeline = async (options: {
   const wineApp = await createWineApp(options.appName);
   const appConfig = wineApp.getAppConfig();
   const {
-    engineVersion,
+    engineVersion = '',
     engineURLs = [],
     dxvkEnabled,
     winetricks,
