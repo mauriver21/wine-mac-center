@@ -4,9 +4,9 @@ import { WinetricksOptions } from '@interfaces/WinetricksOptions';
 
 export type WineAppConfig = {
   name: string; //<--- Unique identifier
+  scriptURL?: string;
   iconURL?: string;
   artworkURL?: string;
-  scriptURL?: string;
   iconFile?: ArrayBuffer;
   artworkFile?: ArrayBuffer;
   engineVersion: string;

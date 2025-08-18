@@ -100,7 +100,7 @@ export const Scripts: React.FC = () => {
           style={{ height: '100%' }}
           data={appConfigs}
           components={{ List, Item }}
-          itemContent={(index, appConfig) => <ScriptItem key={index} appConfig={appConfig} />}
+          itemContent={(index, appConfig) => <ScriptItem key={index} appName={appConfig.name} />}
         />
       </SkeletonLoader>
     </Box>

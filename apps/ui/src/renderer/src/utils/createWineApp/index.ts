@@ -20,7 +20,7 @@ import { isURL } from '@utils/isURL';
 import { AppExecutable } from '@interfaces/AppExecutable';
 import { buildPlist } from '@utils/buildPlist';
 
-export const createWineApp = async (appName: string) => {
+export const createWineApp = async (appName: string, config?: WineAppConfig) => {
   const env = createEnv();
   const wineEngineApiClient = createWineEngineApiClient();
   const SCRIPTS_PATH = env.get().SCRIPTS_PATH;
@@ -31,7 +31,8 @@ export const createWineApp = async (appName: string) => {
     engineURLs: [],
     setupExecutablePath: '',
     iconURL: '',
-    dxvkEnabled: false
+    dxvkEnabled: false,
+    ...config
   };
   let WINE_EXPORTS = '';
   const ENV_EXPORTS = env.getEnvExports();
@@ -135,6 +136,7 @@ export const createWineApp = async (appName: string) => {
   const scaffold = async (
     params: {
       appIconURL?: string;
+      appArtWorkURL?: string;
       appIconFile?: ArrayBuffer;
       appArtWorkFile?: ArrayBuffer;
     },
@@ -167,9 +169,17 @@ export const createWineApp = async (appName: string) => {
     }
   };
 
-  const setupAppArtwork = async (params: { appArtWorkFile?: ArrayBuffer }) => {
+  const setupAppArtwork = async (params: {
+    appArtWorkURL?: string;
+    appArtWorkFile?: ArrayBuffer;
+  }) => {
     try {
-      const file = params.appArtWorkFile;
+      let file = params.appArtWorkFile;
+
+      if (params?.appArtWorkURL) {
+        file = await downloadFile(params?.appArtWorkURL);
+      }
+
       if (file === undefined) return;
       writeBinaryFile(`${WINE_ENV.WINE_APP_RESOURCES_PATH}/header.jpeg`, file);
     } catch (error) {

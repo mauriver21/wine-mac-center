@@ -3,10 +3,6 @@ import { useNavigate } from 'react-router-dom';
 export const useNavigateApp = () => {
   const navigate = useNavigate();
 
-  const navigateToAppPipelineByAppConfigId = (appConfigId: string | undefined) => {
-    navigate(`/app-pipeline?appConfigId=${appConfigId}`);
-  };
-
   const navigateToHome = () => {
     navigate('/home');
   };
@@ -27,13 +23,12 @@ export const useNavigateApp = () => {
     navigate(`/create-script`);
   };
 
-  const navigateToAppPipelineByScriptKeyName = (scriptKeyName: string | undefined) => {
-    navigate(`/app-pipeline?scriptKeyName=${scriptKeyName}`);
+  const navigateToAppPipelineByAppName = (appName: string) => {
+    navigate(`/app-pipeline/${appName}`);
   };
 
   return {
-    navigateToAppPipelineByAppConfigId,
-    navigateToAppPipelineByScriptKeyName,
+    navigateToAppPipelineByAppName,
     navigateToApps,
     navigateToAppNotFound,
     navigateToHome,

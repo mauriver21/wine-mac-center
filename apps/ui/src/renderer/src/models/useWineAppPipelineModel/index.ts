@@ -6,45 +6,33 @@ import { RootState } from '@interfaces/RootState';
 import { WineAppPipelineAction } from '@interfaces/WineAppPipelineAction';
 import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { useAppModel } from '@models/useAppModel';
-import { useWineEngineModel } from '@models/useWineEngineModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { sleep } from 'reactjs-shared-ui';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { createWineApp } from '@utils/createWineApp';
+import { appExists } from '@utils/appExists';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const wineAppConfigModel = useWineAppConfigModel();
-  const wineEngineModel = useWineEngineModel();
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
   const dispatch = useDispatch<Dispatch<WineAppPipelineAction>>();
 
+  const scaffoldWineApp = async (appName: string) => {
+    const config = wineAppConfigModel.selectWineAppConfig(store.getState(), appName);
+    if (config === undefined) throw new Error(`App config for ${appName} not found.`);
+    const wineApp = await createWineApp(appName, config);
+    return wineApp.scaffold({ appIconURL: config.iconURL, appArtWorkURL: config.artworkURL });
+  };
+
   const loadWineAppPipeline = async (appName: string) => {
-    const appConfig = wineAppConfigModel.selectWineAppConfig(store.getState(), appName);
-
     try {
-      if (appConfig === undefined) throw Error('Wine application config not found.');
-      let config = {
-        ...appConfig,
-        engineURLs: [...(appConfig.engineURLs || [])]
-      };
-
-      if (!config.engineURLs.length) {
-        config = {
-          ...appConfig,
-          engineURLs: wineEngineModel.findEngineURLs(appConfig.engineVersion)
-        };
-      }
-
-      const iconFile = config.iconFile;
-      const { pipelineScripts, ...restConfig } = config;
-
       const pipeline = await createWineAppPipeline({
-        appConfig: { ...restConfig, iconFile },
+        appName,
         debug: true,
-        outputEveryMs: 1000,
-        pipelineScripts
+        outputEveryMs: 1000
       });
 
       dispatchPatch(pipeline.getInitialStatus());
@@ -62,6 +50,9 @@ export const useWineAppPipelineModel = () => {
 
   const runWineAppPipeline = async (appName: string) => {
     try {
+      if ((await appExists(appName)) === false) {
+        await scaffoldWineApp(appName);
+      }
       const pipeline = await loadWineAppPipeline(appName);
       const promise = pipeline?.run();
       await sleep(200);

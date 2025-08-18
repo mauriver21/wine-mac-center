@@ -2,7 +2,6 @@ import { ProcessStatus, ExitCode, ScriptOperation } from '@constants/enums';
 import { FilePath } from '@interfaces/FilePath';
 import { PipelineScript } from '@interfaces/PipelineScript';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
-import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppJob } from '@interfaces/WineAppJob';
 import { WineAppJobWithScript } from '@interfaces/WineAppJobWithScript';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
@@ -22,8 +21,7 @@ import { writeFile } from '@utils/writeFile';
 import { v4 as uuid } from 'uuid';
 
 export const createWineAppPipeline = async (options: {
-  appConfig: WineAppConfig;
-  pipelineScripts?: Array<PipelineScript>;
+  appName: string;
   debug?: boolean;
   outputEveryMs?: number;
   promptMainExeCallback?: (args: {
@@ -34,26 +32,26 @@ export const createWineAppPipeline = async (options: {
   const id = uuid();
   const store = { outputEnabled: true, killAllProcesses: false, currentProcess: { pid: 0 } };
   const env = createEnv();
+  const wineApp = await createWineApp(options.appName);
+  const appConfig = wineApp.getAppConfig();
   const {
     iconURL,
     iconFile,
     artworkFile,
-    name,
     engineVersion,
     engineURLs = [],
     dxvkEnabled,
     winetricks,
     setupExecutableURL,
     setupExecutablePath,
-    appFolderPath
-  } = options.appConfig;
-  const { pipelineScripts = [] } = options;
-  const wineApp = await createWineApp(name);
+    appFolderPath,
+    pipelineScripts = []
+  } = appConfig;
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
 
   let pipelineConfig: WineAppPipelineConfig = {
-    appConfig: options.appConfig,
+    appConfig,
     jobs: [],
     status: ProcessStatus.Pending
   };
@@ -398,7 +396,7 @@ export const createWineAppPipeline = async (options: {
           {
             name: 'Configuring app executable',
             script: async (args) => {
-              let executables = options.appConfig.executables || [];
+              let executables = appConfig.executables || [];
               const mainExecutablePath = executables.find((item) => item.main)?.path || '';
 
               if (!mainExecutablePath) {
