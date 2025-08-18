@@ -12,7 +12,7 @@ export const downloadFile = async (
   const total = contentLength ? parseInt(contentLength, 10) : undefined;
 
   const reader = response.body.getReader();
-  const chunks: Uint8Array[] = [];
+  const chunks: BlobPart[] = [];
   let received = 0;
   let percent = 0;
 
@@ -30,6 +30,7 @@ export const downloadFile = async (
 
       if (total && onProgress) {
         percent = Math.floor((received / total) * 100);
+        percent = percent >= 100 ? 100 : percent;
         onProgress({ done: false, percent });
       }
     }

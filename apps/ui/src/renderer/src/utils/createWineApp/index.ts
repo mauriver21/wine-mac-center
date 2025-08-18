@@ -24,6 +24,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   const env = createEnv();
   const wineEngineApiClient = createWineEngineApiClient();
   const SCRIPTS_PATH = env.get().SCRIPTS_PATH;
+  const WINE_DOWNLOADS_PATH = env.get().WINE_DOWNLOADS_PATH;
 
   let appConfig: WineAppConfig = {
     name: appName,
@@ -255,15 +256,14 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   const setSetupExe = async (exePath: string, processArgs?: SpawnProcessArgs) => {
     const fileName = exePath.split('/').pop();
 
-    console.log(exePath, processArgs);
-
     if (fileName === undefined) throw new Error('Invalid filename');
 
     if (isURL(exePath)) {
       const fileURL = exePath;
-      exePath = `${WINE_ENV.WINE_TMP_PATH}/${fileName}`;
+      exePath = `${WINE_DOWNLOADS_PATH}/${fileName}`;
       if ((await fileExists(exePath)) === false) {
         try {
+          processArgs?.onStdOut?.('------');
           let percent: number | undefined = undefined;
           const file = await downloadFile(fileURL, (args) => {
             if (percent !== args.percent) {
@@ -271,10 +271,16 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
               processArgs?.onStdOut?.(`${percent}%`);
             }
           });
-          writeBinaryFile(exePath, file);
+          await writeBinaryFile(exePath, file);
+          processArgs?.onStdOut?.('Download Finished.');
+          processArgs?.onExit?.(0);
         } catch (error) {
           console.error(error);
         }
+      } else {
+        processArgs?.onStdOut?.('------');
+        processArgs?.onStdOut?.(`${fileName} has already been downloaded. Download skipped.`);
+        processArgs?.onExit?.(0);
       }
     }
 

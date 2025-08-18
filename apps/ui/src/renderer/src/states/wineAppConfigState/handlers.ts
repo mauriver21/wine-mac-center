@@ -38,8 +38,6 @@ export const save = (
     (item) => item.name == wineAppConfig.name && item.origin == wineAppConfig.origin
   );
 
-  console.log('--->', wineAppConfig);
-
   if (configExists) {
     return update(wineAppConfig, state);
   } else {

@@ -1,5 +1,6 @@
 import { ConfigOrigin } from '@constants/enums';
-import { WINE_APPS_CONFIGS_URL } from '@constants/urls';
+import { EXECUTABLES_PATHS } from '@constants/paths';
+import { DOWNLOADABLES_URLS, WINE_APPS_CONFIGS_URL } from '@constants/urls';
 import { WineAppArgs } from '@interfaces/WineAppArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppConfigIndex } from '@interfaces/WineAppConfigIndex';
@@ -51,7 +52,17 @@ export const useWineAppConfigApiClient = () => {
   const readCloudFile = async (appName: string) => {
     const urls = buildAppUrls(appName);
     const { data: appConfig } = await axios.get<WineAppConfig>(urls.scriptURL);
-    return { ...appConfig, iconURL: urls.iconURL, artworkURL: urls.artworkURL };
+    let setupExecutableURL = appConfig.setupExecutableURL || '';
+    let setupExecutablePath = appConfig.setupExecutablePath || '';
+    setupExecutableURL = DOWNLOADABLES_URLS[setupExecutableURL] || setupExecutableURL;
+    setupExecutablePath = EXECUTABLES_PATHS[setupExecutablePath] || setupExecutablePath;
+    return {
+      ...appConfig,
+      iconURL: urls.iconURL,
+      artworkURL: urls.artworkURL,
+      setupExecutableURL,
+      setupExecutablePath
+    };
   };
 
   const readScriptFile = (appName: string) => {
@@ -69,7 +80,6 @@ export const useWineAppConfigApiClient = () => {
   };
 
   const read = async (args: WineAppArgs) => {
-    console.log(args);
     switch (args.origin) {
       case ConfigOrigin.CLOUD:
         return readCloudFile(args.appName);
