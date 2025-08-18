@@ -24,7 +24,16 @@ export const useWineAppPipelineModel = () => {
     const config = wineAppConfigModel.selectWineAppConfig(store.getState(), appName);
     if (config === undefined) throw new Error(`App config for ${appName} not found.`);
     const wineApp = await createWineApp(appName, config);
-    return wineApp.scaffold({ appIconURL: config.iconURL, appArtWorkURL: config.artworkURL });
+    return new Promise<void>((resolve) =>
+      wineApp.scaffold(
+        { appIconURL: config.iconURL, appArtWorkURL: config.artworkURL },
+        {
+          onExit: () => {
+            resolve(undefined);
+          }
+        }
+      )
+    );
   };
 
   const loadWineAppPipeline = async (appName: string) => {
@@ -52,6 +61,8 @@ export const useWineAppPipelineModel = () => {
     try {
       if ((await appExists(appName)) === false) {
         await scaffoldWineApp(appName);
+        // Required delay for config.json be ready when loading wine pipeline.
+        await sleep(200);
       }
       const pipeline = await loadWineAppPipeline(appName);
       const promise = pipeline?.run();

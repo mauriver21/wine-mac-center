@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 
-export const readFileAsString = async (
+export const readFileAsString = (
   _: Electron.IpcMainInvokeEvent,
   filePath: string
 ): Promise<string> => {

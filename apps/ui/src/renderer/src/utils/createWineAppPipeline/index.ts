@@ -35,9 +35,6 @@ export const createWineAppPipeline = async (options: {
   const wineApp = await createWineApp(options.appName);
   const appConfig = wineApp.getAppConfig();
   const {
-    iconURL,
-    iconFile,
-    artworkFile,
     engineVersion,
     engineURLs = [],
     dxvkEnabled,
@@ -309,20 +306,6 @@ export const createWineAppPipeline = async (options: {
       {
         name: 'Create wine app',
         steps: [
-          {
-            name: 'Creating wine app',
-            script: (args) =>
-              wineApp.scaffold(
-                {
-                  appIconURL: iconURL,
-                  appIconFile: iconFile,
-                  appArtWorkFile: artworkFile
-                },
-                args
-              ),
-            status: ProcessStatus.Pending,
-            output: ''
-          },
           ...(ENGINE_EXISTS
             ? []
             : [
