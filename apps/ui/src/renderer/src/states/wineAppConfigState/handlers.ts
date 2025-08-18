@@ -44,19 +44,3 @@ export const save = (
     return create(wineAppConfig, state);
   }
 };
-
-export const patch = (
-  name: string,
-  wineAppConfig: Partial<Flatten<WineAppConfigState['wineAppsConfigs']>>,
-  state: WineAppConfigState
-): WineAppConfigState => {
-  return {
-    ...state,
-    wineAppsConfigs: state.wineAppsConfigs?.map((item) => {
-      if (item.name === name) {
-        return { ...item, ...wineAppConfig };
-      }
-      return item;
-    })
-  };
-};

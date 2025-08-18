@@ -8,7 +8,6 @@ export type WineAppConfigAction =
       wineAppsConfigs: WineAppConfigState['wineAppsConfigs'];
     }
   | {
-      type: ActionType.PATCH;
-      name: string;
-      wineAppConfig: Partial<Flatten<WineAppConfigState['wineAppsConfigs']>>;
+      type: ActionType.SAVE;
+      wineAppConfig: Flatten<WineAppConfigState['wineAppsConfigs']>;
     };
