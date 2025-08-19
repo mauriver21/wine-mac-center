@@ -25,6 +25,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   const wineEngineApiClient = createWineEngineApiClient();
   const SCRIPTS_PATH = env.get().SCRIPTS_PATH;
   const WINE_DOWNLOADS_PATH = env.get().WINE_DOWNLOADS_PATH;
+  const { name: _, ...restConfig } = config || {};
 
   let appConfig: WineAppConfig = {
     name: appName,
@@ -34,7 +35,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     setupExecutablePath: '',
     iconURL: '',
     dxvkEnabled: false,
-    ...config
+    ...restConfig
   };
   let WINE_EXPORTS = '';
   const ENV_EXPORTS = env.getEnvExports();
@@ -146,7 +147,9 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     return spawnScript('scaffoldApp', '', {
       ...args,
       onExit: async (data) => {
+        console.log(data);
         await args?.onExit?.(data);
+        console.log(1, appName);
         await updateAppConfig({ name: appName });
         await setupAppIcon(params);
         await setupAppArtwork(params);

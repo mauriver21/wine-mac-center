@@ -34,9 +34,9 @@ export const useWineAppPipelineModel = () => {
     }
   };
 
-  const scaffoldWineApp = async (args: WineAppArgs) => {
-    const { appName } = args;
-    const config = await resolveWineAppConfig(args);
+  const scaffoldWineApp = async (args: WineAppArgs & { originalAppName: string }) => {
+    const { appName, originalAppName } = args;
+    const config = await resolveWineAppConfig({ ...args, appName: originalAppName });
     if (config === undefined) throw new Error(`App config for ${appName} not found.`);
     const wineApp = await createWineApp(appName, config);
     return new Promise<void>((resolve) =>
@@ -72,15 +72,30 @@ export const useWineAppPipelineModel = () => {
     }
   };
 
+  const buildUniqueAppName = async (appName: string) => {
+    let count = 1;
+    let newAppName = appName;
+
+    while (true) {
+      if ((await appExists(newAppName)) === false) {
+        break;
+      }
+      newAppName = `${appName} ${count}`;
+      count++;
+    }
+
+    return newAppName;
+  };
+
   const runWineAppPipeline = async (args: WineAppArgs) => {
     try {
-      const appName = args.appName;
+      const originalAppName = args.appName;
+      let appName = args.appName;
       if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
-      if ((await appExists(appName)) === false) {
-        await scaffoldWineApp(args);
-        // Required delay for config.json be ready when loading wine pipeline.
-        await sleep(200);
-      }
+      appName = await buildUniqueAppName(args.appName);
+      await scaffoldWineApp({ ...args, originalAppName, appName });
+      // Required delay for config.json be ready when loading wine pipeline.
+      await sleep(200);
       const pipeline = await loadWineAppPipeline(appName);
       const promise = pipeline?.run();
       await sleep(200);
