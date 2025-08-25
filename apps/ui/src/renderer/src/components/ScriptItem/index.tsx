@@ -3,6 +3,7 @@ import { Body1, Card, CardContent, Icon, Stack } from 'reactjs-shared-ui';
 import { PencilSquareIcon, PlayCircleIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { Button } from '@components/Button';
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { ConfigOrigin, PipelineAction } from '@constants/enums';
 
 export interface ScriptItemProps {
   appName: string;
@@ -18,7 +19,12 @@ export const ScriptItem: React.FC<ScriptItemProps> = ({ appName }) => {
           <Stack direction="row" alignItems="center" spacing={1}>
             <Button
               title="Run Script"
-              onClick={() => navigateToAppPipeline(appName)}
+              onClick={() =>
+                navigateToAppPipeline(appName, {
+                  origin: ConfigOrigin.SCRIPTS,
+                  action: PipelineAction.RUN
+                })
+              }
               equalSize={34}
               sx={{ borderRadius: '100%' }}
             >

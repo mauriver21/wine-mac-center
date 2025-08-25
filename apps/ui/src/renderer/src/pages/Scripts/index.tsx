@@ -10,6 +10,7 @@ import { RootState } from '@interfaces/RootState';
 import { SortDirection } from '@interfaces/SortDirection';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { ScriptItem } from '@components/ScriptItem';
+import { ConfigOrigin } from '@constants/enums';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -47,7 +48,11 @@ export const Scripts: React.FC = () => {
   const { navigateToCreateScript } = useNavigateApp();
   const appConfigModel = useWineAppConfigModel();
   const { loaders } = appConfigModel;
-  const [filters, setFilters] = useState({ criteria: '', order: 'asc' as SortDirection });
+  const [filters, setFilters] = useState({
+    criteria: '',
+    order: 'asc' as SortDirection,
+    origin: ConfigOrigin.SCRIPTS
+  });
   const appConfigs = useSelector((state: RootState) =>
     appConfigModel.selectWineAppsConfigs(state, filters)
   );
