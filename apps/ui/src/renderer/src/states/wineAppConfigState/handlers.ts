@@ -30,6 +30,13 @@ export const update = (
   };
 };
 
+export const remove = (appName: string, state: WineAppConfigState) => {
+  return {
+    ...state,
+    wineAppsConfigs: state?.wineAppsConfigs?.filter((item) => item.name != appName)
+  };
+};
+
 export const save = (
   wineAppConfig: Flatten<WineAppConfigState['wineAppsConfigs']>,
   state: WineAppConfigState

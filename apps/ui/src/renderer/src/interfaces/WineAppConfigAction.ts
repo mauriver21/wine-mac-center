@@ -4,6 +4,10 @@ import { WineAppConfigState } from '@interfaces/WineAppConfigState';
 
 export type WineAppConfigAction =
   | {
+      type: ActionType.REMOVE;
+      appName: string;
+    }
+  | {
       type: ActionType.LIST_ALL;
       wineAppsConfigs: WineAppConfigState['wineAppsConfigs'];
     }

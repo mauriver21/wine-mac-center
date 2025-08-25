@@ -50,7 +50,12 @@ export const useWineAppConfigModel = () => {
   };
 
   const remove = async (appName: string) => {
-    console.log(appName);
+    try {
+      await wineAppConfigApiClient.remove(appName);
+      dispatchRemove(appName);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
   };
 
   const dispatchListAll = (wineAppsConfigs: WineAppConfig[]) => {
@@ -63,6 +68,12 @@ export const useWineAppConfigModel = () => {
     dispatch({
       type: ActionType.SAVE,
       wineAppConfig
+    });
+  };
+  const dispatchRemove = (appName: string) => {
+    dispatch({
+      type: ActionType.REMOVE,
+      appName
     });
   };
   const dispatchLoader = (loaders: Partial<(typeof state)['loaders']>) => {

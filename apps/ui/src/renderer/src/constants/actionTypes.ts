@@ -12,7 +12,8 @@ export enum WineEngineActionType {
 export enum WineAppConfigActionType {
   LIST_ALL = 'WINE_APP_CONFIG:LIST_ALL',
   PATCH = 'WINE_APP_CONFIG:PATCH',
-  SAVE = 'WINE_APP_CONFIG:SAVE'
+  SAVE = 'WINE_APP_CONFIG:SAVE',
+  REMOVE = 'WINE_APP_CONFIG:REMOVE'
 }
 
 export enum WineAppPipelineActionType {

@@ -105,7 +105,7 @@ export const useWineAppConfigApiClient = () => {
 
   const remove = async (appName: string) => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${appName}`;
-    await removeDirectory(SCRIPT_PATH);
+    await removeDirectory(SCRIPT_PATH, { recursive: true });
   };
 
   return {
