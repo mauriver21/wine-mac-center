@@ -49,6 +49,10 @@ export const useWineAppConfigModel = () => {
     }
   };
 
+  const remove = async (appName: string) => {
+    console.log(appName);
+  };
+
   const dispatchListAll = (wineAppsConfigs: WineAppConfig[]) => {
     dispatch({
       type: ActionType.LIST_ALL,
@@ -119,6 +123,7 @@ export const useWineAppConfigModel = () => {
     loaders: state.loaders,
     listAll,
     read,
+    remove,
     dispatchListAll,
     selectWineAppConfigState,
     selectWineAppsConfigs,

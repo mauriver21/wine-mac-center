@@ -1,12 +1,12 @@
-import { promises as fs, MakeDirectoryOptions } from 'fs';
+import { promises as fs, RmDirOptions } from 'fs';
 
-export const createDirectory = async (
+export const removeDirectory = async (
   _: Electron.IpcMainInvokeEvent,
   dirPath: string,
-  options: MakeDirectoryOptions
+  options: RmDirOptions
 ) => {
   try {
-    await fs.mkdir(dirPath, options);
+    await fs.rmdir(dirPath, options);
   } catch (error) {
     console.error(`Error reading directory at ${dirPath}:`, error);
     throw error;

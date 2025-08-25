@@ -11,6 +11,7 @@ import { fileExists } from '@utils/fileExists';
 import { parseJson } from '@utils/parseJson';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
+import { removeDirectory } from '@utils/removeDirectory';
 import { useEnv } from '@utils/useEnv';
 import { writeFile } from '@utils/writeFile';
 import axios from 'axios';
@@ -18,20 +19,6 @@ import axios from 'axios';
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
   const WINE_SCRIPTS_PATH = env.get().WINE_SCRIPTS_PATH;
-  const INDEX_PATH = `${WINE_SCRIPTS_PATH}/index.json`;
-
-  const writeIndex = async (data: Array<WineAppConfigIndex>) =>
-    writeFile(INDEX_PATH, JSON.stringify(data));
-
-  const initIndex = async () => {
-    if ((await fileExists(INDEX_PATH)) === false) {
-      await writeIndex([]);
-    }
-  };
-
-  const getIndex = async () => {
-    return parseJson<Array<WineAppConfigIndex>>(await readFileAsString(INDEX_PATH));
-  };
 
   const writeScript = async (data: WineAppConfig) => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
@@ -108,17 +95,7 @@ export const useWineAppConfigApiClient = () => {
   };
 
   const create = async (data: WineAppConfig) => {
-    await initIndex();
-    let index = (await getIndex()) || [];
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
-    index = [
-      ...index,
-      {
-        name: data.name,
-        origin: ConfigOrigin.SCRIPTS
-      }
-    ];
-    await writeIndex(index);
 
     if ((await dirExists(SCRIPT_PATH)) === false) {
       await createDirectory(SCRIPT_PATH);
@@ -126,9 +103,15 @@ export const useWineAppConfigApiClient = () => {
     }
   };
 
+  const remove = async (appName: string) => {
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${appName}`;
+    await removeDirectory(SCRIPT_PATH);
+  };
+
   return {
     create,
     read,
+    remove,
     listAll
   };
 };

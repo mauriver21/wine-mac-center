@@ -8,6 +8,7 @@ export * from './pathJoin';
 export * from './readBinaryFile';
 export * from './readDirectory';
 export * from './readFileAsString';
+export * from './removeDirectory';
 export * from './showOpenDialog';
 export * from './spawn';
 export * from './unwatchDirs';

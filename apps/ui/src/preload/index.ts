@@ -55,6 +55,7 @@ const api: RendererApi = {
   dirExists: (...args) => ipcRenderer.invoke(ElectronApi.DirExists, ...args),
   readBinaryFile: (...args) => ipcRenderer.invoke(ElectronApi.ReadBinaryFile, ...args),
   createDirectory: (...args) => ipcRenderer.invoke(ElectronApi.CreateDirectory, ...args),
+  removeDirectory: (...args) => ipcRenderer.invoke(ElectronApi.RemoveDirectory, ...args),
   readFileAsString: (...args) => ipcRenderer.invoke(ElectronApi.ReadFileAsString, ...args),
   writeBinaryFile: (...args) => ipcRenderer.invoke(ElectronApi.WriteBinaryFile, ...args),
   showOpenDialog: (...args) => ipcRenderer.invoke(ElectronApi.ShowOpenDialog, ...args),

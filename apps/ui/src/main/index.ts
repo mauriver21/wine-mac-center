@@ -13,6 +13,7 @@ import {
   pathJoin,
   readBinaryFile,
   readDirectory,
+  removeDirectory,
   readFileAsString,
   showOpenDialog,
   spawn,
@@ -39,6 +40,7 @@ ipcMain.handle(ElectronApi.ShowOpenDialog, showOpenDialog);
 ipcMain.handle(ElectronApi.WatchDirs, watchDirs);
 ipcMain.handle(ElectronApi.UnwatchDirs, unwatchDirs);
 ipcMain.handle(ElectronApi.BuildPlist, buildPlist);
+ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
 
 let isQuitting = false;
 
