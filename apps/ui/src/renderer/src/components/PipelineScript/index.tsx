@@ -41,10 +41,10 @@ import { RootState } from '@interfaces/RootState';
 const ITEM_STYLE = { px: '20px !important' };
 
 export const PipelineScript: React.FC = () => {
+  const { appName } = useParams();
   const schema = useSchema();
   const form = useForm(schema);
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  const { appName } = useParams();
   const { navigateToScripts } = useNavigateApp();
   const wineAppConfigModel = useWineAppConfigModel();
   const appConfig = useSelector((state: RootState) =>
@@ -262,15 +262,22 @@ export const PipelineScript: React.FC = () => {
   };
 
   const submit = async (data: FormSchema) => {
+    const { originalAppName, ...rest } = data;
     setLoading(true);
     if (appConfig?.name) {
-      console.log(data);
+      await wineAppConfigModel.update({
+        ...rest,
+        originalAppName,
+        name: rest.appName,
+        origin: ConfigOrigin.SCRIPTS,
+        pipelineScripts: mapPipelineScripts(rest.pipelineScripts)
+      });
     } else {
       await wineAppConfigModel.create({
-        ...data,
-        name: data.appName,
+        ...rest,
+        name: rest.appName,
         origin: ConfigOrigin.SCRIPTS,
-        pipelineScripts: mapPipelineScripts(data.pipelineScripts)
+        pipelineScripts: mapPipelineScripts(rest.pipelineScripts)
       });
     }
     setLoading(false);
@@ -280,7 +287,7 @@ export const PipelineScript: React.FC = () => {
   useEffect(() => {
     if (appConfig) {
       const {
-        name: appName,
+        name,
         pipelineScripts = [],
         winetricks,
         engineVersion = '',
@@ -288,7 +295,8 @@ export const PipelineScript: React.FC = () => {
         ...rest
       } = appConfig;
       form.fill({
-        appName,
+        appName: name,
+        originalAppName: appName || '',
         pipelineScripts: pipelineScripts as FormSchema['pipelineScripts'],
         winetricksVerbs: winetricks?.verbs || [],
         dxvkEnabled,

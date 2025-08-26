@@ -10,62 +10,69 @@ export const DEFAULT_PIPELINE_SCRIPT = {
   url: ''
 } as const;
 
-const schemaObject = schema.object({
-  appName: schema
-    .string()
-    .required()
-    .test({
-      name: 'isAlphanumeric',
-      message: 'Invalid characters',
-      test: (appName) => isAlphanumeric(appName)
-    })
-    .test({
-      name: 'appExists',
-      message: 'App name is already taken',
-      test: async (appName) => {
-        const exists = await scriptExists(appName);
-        const isValid = exists === false;
-        return isValid;
-      }
-    })
-    .transform((value) => value.trim()),
-  engineVersion: schema.string().required().default(''),
-  dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
-  winetricksVerbs: schema.array().of(schema.string()).default([]),
-  pipelineScripts: schema
-    .array(
-      schema.object({
-        operation: schema
-          .string()
-          .oneOf([ScriptOperation.DOWNLOAD, ScriptOperation.COPY, ScriptOperation.RUN_WINDOWS_EXE])
-          .required(),
-        url: schema.string().when('operation', {
-          is: ScriptOperation.DOWNLOAD,
-          then: (schema) =>
-            schema
-              .required()
-              .test({
-                name: 'isURL',
-                message: 'Invalid URL',
-                test: (url) => isURL(url || '')
-              })
-              .test({
-                name: 'isDownloadableURL',
-                message: 'URL not downloadable',
-                test: async (url) => await isDownloadableURL(url || '')
-              })
-        }),
-        exePath: schema.string().when('operation', {
-          is: ScriptOperation.RUN_WINDOWS_EXE,
-          then: (schema) => schema.required()
-        })
-      })
-    )
-    .default([DEFAULT_PIPELINE_SCRIPT])
-});
-
-export type FormSchema = InferType<typeof schemaObject>;
-
 export const useSchema = () => {
-  return schemaObject;
+  return schema.object({
+    originalAppName: schema.string().optional().default(''),
+    appName: schema
+      .string()
+      .required()
+      .test({
+        name: 'isAlphanumeric',
+        message: 'Invalid characters',
+        test: (appName) => isAlphanumeric(appName)
+      })
+      .test({
+        name: 'appExists',
+        message: 'App name is already taken',
+        test: async (appName, context) => {
+          // Skips validation on update operation.
+          if (context.parent.originalAppName === appName) {
+            return true;
+          }
+          const exists = await scriptExists(appName);
+          const isValid = exists === false;
+          return isValid;
+        }
+      })
+      .transform((value) => value.trim()),
+    engineVersion: schema.string().required().default(''),
+    dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
+    winetricksVerbs: schema.array().of(schema.string()).default([]),
+    pipelineScripts: schema
+      .array(
+        schema.object({
+          operation: schema
+            .string()
+            .oneOf([
+              ScriptOperation.DOWNLOAD,
+              ScriptOperation.COPY,
+              ScriptOperation.RUN_WINDOWS_EXE
+            ])
+            .required(),
+          url: schema.string().when('operation', {
+            is: ScriptOperation.DOWNLOAD,
+            then: (schema) =>
+              schema
+                .required()
+                .test({
+                  name: 'isURL',
+                  message: 'Invalid URL',
+                  test: (url) => isURL(url || '')
+                })
+                .test({
+                  name: 'isDownloadableURL',
+                  message: 'URL not downloadable',
+                  test: async (url) => await isDownloadableURL(url || '')
+                })
+          }),
+          exePath: schema.string().when('operation', {
+            is: ScriptOperation.RUN_WINDOWS_EXE,
+            then: (schema) => schema.required()
+          })
+        })
+      )
+      .default([DEFAULT_PIPELINE_SCRIPT])
+  });
 };
+
+export type FormSchema = InferType<ReturnType<typeof useSchema>>;

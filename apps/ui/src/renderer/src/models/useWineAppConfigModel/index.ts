@@ -31,6 +31,16 @@ export const useWineAppConfigModel = () => {
     }
   };
 
+  const update = async (data: WineAppConfig & { originalAppName: string }) => {
+    try {
+      const config = await wineAppConfigApiClient.update(data);
+      if (config === undefined) throw new Error('App config not found.');
+      dispatchSave(config);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
+
   const read = async (args: WineAppArgs, options?: { throwError?: boolean }) => {
     try {
       const config = await wineAppConfigApiClient.read(args);
@@ -143,6 +153,7 @@ export const useWineAppConfigModel = () => {
   return {
     loaders: state.loaders,
     create,
+    update,
     listAll,
     read,
     remove,

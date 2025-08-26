@@ -106,6 +106,28 @@ export const useWineAppConfigApiClient = () => {
     return;
   };
 
+  const update = async (data: WineAppConfig & { originalAppName: string }) => {
+    const { originalAppName, name, ...rest } = data;
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${originalAppName}`;
+    const NEW_SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${name}`;
+    const changedScriptName = name !== originalAppName;
+    let config: WineAppConfig | undefined;
+
+    if (await dirExists(SCRIPT_PATH)) {
+      if (changedScriptName) {
+        if ((await dirExists(NEW_SCRIPT_PATH)) === false) {
+          await createDirectory(NEW_SCRIPT_PATH);
+          config = await writeScript({ ...rest, name });
+          await removeDirectory(SCRIPT_PATH, { recursive: true });
+        }
+      } else {
+        config = await writeScript({ ...rest, name });
+      }
+    }
+
+    return config;
+  };
+
   const remove = async (appName: string) => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${appName}`;
     await removeDirectory(SCRIPT_PATH, { recursive: true });
@@ -113,6 +135,7 @@ export const useWineAppConfigApiClient = () => {
 
   return {
     create,
+    update,
     read,
     remove,
     listAll
