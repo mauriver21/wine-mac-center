@@ -33,7 +33,8 @@ export const useWineAppConfigApiClient = () => {
       pipelineScripts: data.pipelineScripts
     };
 
-    writeFile(`${SCRIPT_PATH}/index.json`, JSON.stringify(config));
+    await writeFile(`${SCRIPT_PATH}/index.json`, JSON.stringify(config));
+    return config;
   };
 
   const readCloudFile = async (appName: string) => {
@@ -99,8 +100,10 @@ export const useWineAppConfigApiClient = () => {
 
     if ((await dirExists(SCRIPT_PATH)) === false) {
       await createDirectory(SCRIPT_PATH);
-      await writeScript(data);
+      return await writeScript(data);
     }
+
+    return;
   };
 
   const remove = async (appName: string) => {

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   ContentsArea,
@@ -27,13 +27,16 @@ import {
 } from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { useWineAppConfigApiClient } from '@api-clients/useWineAppConfigApiClient';
 import { ConfigOrigin, ScriptOperation } from '@constants/enums';
 import { ENV } from '@constants/envs';
 import { getRelativeWinePath } from '@utils/getRelativeWinePath';
 import { DRIVE_C_PATH as RELATIVE_DRIVE_C_PATH } from '@constants/paths';
 import { Button } from '@components/Button';
 import { PipelineScript as PipelineScriptType } from '@interfaces/PipelineScript';
+import { useParams } from 'react-router-dom';
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { useSelector } from 'react-redux';
+import { RootState } from '@interfaces/RootState';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -41,8 +44,12 @@ export const PipelineScript: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
+  const { appName } = useParams();
   const { navigateToScripts } = useNavigateApp();
-  const wineAppConfigApiClient = useWineAppConfigApiClient();
+  const wineAppConfigModel = useWineAppConfigModel();
+  const appConfig = useSelector((state: RootState) =>
+    wineAppConfigModel.selectWineAppConfig(state, appName, ConfigOrigin.SCRIPTS)
+  );
   const [loading, setLoading] = useState(false);
   const { fields, insert, remove } = useFieldArray<FormSchema>({
     name: 'pipelineScripts',
@@ -256,15 +263,41 @@ export const PipelineScript: React.FC = () => {
 
   const submit = async (data: FormSchema) => {
     setLoading(true);
-    await wineAppConfigApiClient.create({
-      ...data,
-      name: data.appName,
-      origin: ConfigOrigin.SCRIPTS,
-      pipelineScripts: mapPipelineScripts(data.pipelineScripts)
-    });
+    if (appConfig?.name) {
+      console.log(data);
+    } else {
+      await wineAppConfigModel.create({
+        ...data,
+        name: data.appName,
+        origin: ConfigOrigin.SCRIPTS,
+        pipelineScripts: mapPipelineScripts(data.pipelineScripts)
+      });
+    }
     setLoading(false);
     navigateToScripts();
   };
+
+  useEffect(() => {
+    if (appConfig) {
+      const {
+        name: appName,
+        pipelineScripts = [],
+        winetricks,
+        engineVersion = '',
+        dxvkEnabled = false,
+        ...rest
+      } = appConfig;
+      form.fill({
+        appName,
+        pipelineScripts: pipelineScripts as FormSchema['pipelineScripts'],
+        winetricksVerbs: winetricks?.verbs || [],
+        dxvkEnabled,
+        engineVersion,
+        ...rest
+      });
+      form.trigger();
+    }
+  }, [appConfig?.name]);
 
   return (
     <form onSubmit={form.handleSubmit(submit as any)} style={{ display: 'contents' }}>
@@ -339,9 +372,15 @@ export const PipelineScript: React.FC = () => {
                 spacing={1}
                 justifyContent="flex-end"
               >
-                <Button disabled={loading || form.isInvalid()} type="submit">
-                  Create
-                </Button>
+                {appConfig?.name ? (
+                  <Button disabled={loading || form.isInvalid()} type="submit">
+                    Update
+                  </Button>
+                ) : (
+                  <Button disabled={loading || form.isInvalid()} type="submit">
+                    Create
+                  </Button>
+                )}
               </Stack>
             </Box>
             <Box borderLeft={(theme) => `1px solid ${theme.palette.secondary.light}`}>

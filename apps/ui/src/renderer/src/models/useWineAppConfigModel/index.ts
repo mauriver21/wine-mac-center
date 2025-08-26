@@ -21,6 +21,16 @@ export const useWineAppConfigModel = () => {
   const wineAppConfigApiClient = useWineAppConfigApiClient();
   const dispatch = useDispatch<Dispatch<WineAppConfigAction>>();
 
+  const create = async (data: WineAppConfig) => {
+    try {
+      const config = await wineAppConfigApiClient.create(data);
+      if (config === undefined) throw new Error('App config already exists.');
+      dispatchSave(config);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
+
   const read = async (args: WineAppArgs, options?: { throwError?: boolean }) => {
     try {
       const config = await wineAppConfigApiClient.read(args);
@@ -132,6 +142,7 @@ export const useWineAppConfigModel = () => {
 
   return {
     loaders: state.loaders,
+    create,
     listAll,
     read,
     remove,

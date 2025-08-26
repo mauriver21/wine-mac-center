@@ -49,8 +49,11 @@ export const routes: RouteObject[] = [
     children: [{ path: ':appName', element: <NotFoundApp /> }]
   },
   {
-    path: '/create-script',
+    path: '/script',
     element: <SimpleLayout />,
-    children: [{ index: true, element: <PipelineScript /> }]
+    children: [
+      { index: true, element: <PipelineScript /> },
+      { path: ':appName', element: <PipelineScript /> }
+    ]
   }
 ];

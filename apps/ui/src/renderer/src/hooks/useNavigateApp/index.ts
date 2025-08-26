@@ -20,8 +20,12 @@ export const useNavigateApp = () => {
     navigate(`/scripts`);
   };
 
-  const navigateToCreateScript = () => {
-    navigate(`/create-script`);
+  const navigateToScript = (appName?: string) => {
+    if (appName) {
+      navigate(`/script/${appName}`);
+    } else {
+      navigate(`/script`);
+    }
   };
 
   const navigateToAppPipeline = (
@@ -37,6 +41,6 @@ export const useNavigateApp = () => {
     navigateToAppNotFound,
     navigateToHome,
     navigateToScripts,
-    navigateToCreateScript
+    navigateToScript
   };
 };

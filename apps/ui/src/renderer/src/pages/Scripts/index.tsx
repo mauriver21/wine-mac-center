@@ -45,7 +45,7 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 );
 
 export const Scripts: React.FC = () => {
-  const { navigateToCreateScript } = useNavigateApp();
+  const { navigateToScript } = useNavigateApp();
   const appConfigModel = useWineAppConfigModel();
   const { loaders } = appConfigModel;
   const [filters, setFilters] = useState({
@@ -93,7 +93,7 @@ export const Scripts: React.FC = () => {
               border: (theme) => `1px solid ${theme.palette.primary.main}`
             }}
             color="secondary"
-            onClick={navigateToCreateScript}
+            onClick={() => navigateToScript()}
           >
             <Icon pr={1} strokeWidth={3} color="primary.main" render={PlusIcon} />
             Create Script
