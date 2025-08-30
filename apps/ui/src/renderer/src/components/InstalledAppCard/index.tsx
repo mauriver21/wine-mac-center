@@ -1,26 +1,15 @@
-import {
-  Body1,
-  Box,
-  Button,
-  Card,
-  CardProps,
-  Icon
-  // Image
-} from 'reactjs-shared-ui';
+import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
-import {
-  // useEffect,
-  useState
-} from 'react';
+import { useEffect, useState } from 'react';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { RootState } from '@interfaces/RootState';
-// import { useWineAppModel } from '@models/useWineAppModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-// import { getAppArtwork } from '@utils/getAppArtwork';
-// import defaultArtwork from '@assets/imgs/header.jpg';
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { getAppArtwork } from '@utils/getAppArtwork';
+import defaultArtwork from '@assets/imgs/header.jpg';
 import { useNavigate } from 'react-router-dom';
-import { ProcessStatus } from '@constants/enums';
+import { ConfigOrigin, ProcessStatus } from '@constants/enums';
 
 export interface InstalledAppCardProps extends CardProps {
   appName?: string;
@@ -28,37 +17,36 @@ export interface InstalledAppCardProps extends CardProps {
 
 export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...rest }) => {
   const wineInstalledAppModel = useWineInstalledAppModel();
-  // const wineAppModel = useWineAppModel();
+  const wineAppModel = useWineAppConfigModel();
   const installedWineApp = useSelector((state: RootState) =>
     wineInstalledAppModel.selectWineInstalledApp(state, appName)
   );
-  // const wineApp = useSelector((state: RootState) =>
-  //   wineAppModel.selectWineApp(state, installedWineApp?.configId)
-  // );
-  // const [artWorkSrc, setArtWorkSrc] = useState(wineApp?.imgSrc);
-  const [
-    noArtWork
-    // setNoArtWork
-  ] = useState(false);
+  const wineAppConfig = useSelector((state: RootState) =>
+    wineAppModel.selectWineAppConfig(state, appName, ConfigOrigin.INSTALLED_APP)
+  );
+  const [artWorkSrc, setArtWorkSrc] = useState(wineAppConfig?.artworkURL);
+  const [noArtWork, setNoArtWork] = useState(false);
   const navigate = useNavigate();
 
   const navigateToAppConfig = () => {
-    navigate(`/app-config/${installedWineApp?.realAppName}`);
+    navigate(`/app-config/${appName}`);
   };
 
   const navigateToAppPipeline = () => {
-    navigate(`/app-pipeline?realAppName=${installedWineApp?.realAppName}`);
+    navigate(`/app-pipeline?realAppName=${appName}`);
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (wineApp?.imgSrc === undefined) {
-  //       const artWork = await getAppArtwork(installedWineApp?.appPath);
-  //       setNoArtWork(!artWork);
-  //       setArtWorkSrc(artWork || defaultArtwork);
-  //     }
-  //   })();
-  // }, [installedWineApp?.appPath]);
+  useEffect(() => {
+    (async () => {
+      if (wineAppConfig?.iconURL === undefined) {
+        const artWork = await getAppArtwork(installedWineApp?.appPath);
+        setNoArtWork(!artWork);
+        setArtWorkSrc(artWork || defaultArtwork);
+      }
+    })();
+  }, [installedWineApp?.appPath]);
+
+  console.log(appName);
 
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
@@ -71,7 +59,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
         rowGap={'10px'}
       >
         <Box position="relative">
-          {/* <Image
+          <Image
             src={artWorkSrc}
             height="100%"
             width="100%"
@@ -80,7 +68,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
               maxWidth: '100%',
               borderRadius: 12
             }}
-          /> */}
+          />
           <Box
             position="absolute"
             top={0}
@@ -93,7 +81,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
           >
             {noArtWork ? (
               <Body1 textAlign="center" p={1} fontWeight={500}>
-                {installedWineApp?.realAppName}
+                {appName}
               </Body1>
             ) : (
               <></>

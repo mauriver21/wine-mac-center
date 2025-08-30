@@ -116,10 +116,7 @@ export const useWineInstalledAppModel = () => {
         );
       }
 
-      return wineInstalledApps?.map((item) => ({
-        ...item,
-        realAppName: item.appPath.split('/').pop()?.replace(/\.app/, '')
-      }));
+      return wineInstalledApps;
     }
   );
 
