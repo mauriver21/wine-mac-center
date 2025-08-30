@@ -5,6 +5,7 @@ import { Button } from '@components/Button';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { ConfigOrigin, PipelineAction } from '@constants/enums';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 
 export interface ScriptItemProps {
   appName: string;
@@ -13,11 +14,21 @@ export interface ScriptItemProps {
 export const ScriptItem: React.FC<ScriptItemProps> = ({ appName }) => {
   const { navigateToAppPipeline, navigateToScript } = useNavigateApp();
   const [removing, setRemoving] = useState(false);
-  const scriptModel = useWineAppConfigModel();
+  const wineAppConfigModel = useWineAppConfigModel();
+  const wineAppPipelineModel = useWineAppPipelineModel();
+
+  const runPipeline = async () => {
+    const origin = ConfigOrigin.SCRIPTS;
+    const config = await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
+    navigateToAppPipeline(config.name, {
+      origin: ConfigOrigin.SCRIPTS,
+      action: PipelineAction.RUN
+    });
+  };
 
   const removeScript = async (appName: string) => {
     setRemoving(true);
-    await scriptModel.remove(appName);
+    await wineAppConfigModel.remove(appName);
     setRemoving(false);
   };
 
@@ -28,12 +39,7 @@ export const ScriptItem: React.FC<ScriptItemProps> = ({ appName }) => {
           <Stack direction="row" alignItems="center" spacing={1}>
             <Button
               title="Run Script"
-              onClick={() =>
-                navigateToAppPipeline(appName, {
-                  origin: ConfigOrigin.SCRIPTS,
-                  action: PipelineAction.RUN
-                })
-              }
+              onClick={runPipeline}
               equalSize={34}
               sx={{ borderRadius: '100%' }}
             >
