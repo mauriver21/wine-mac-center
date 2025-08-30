@@ -50,21 +50,24 @@ export const useWineAppPipelineModel = () => {
   const scaffoldWineApp = async (args: WineAppArgs) => {
     let { appName, config } = args;
     const originalAppName = appName;
+
     if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
     appName = await buildUniqueAppName(appName);
 
     if (args.origin !== ConfigOrigin.INSTALLED_APP) {
       config = await resolveWineAppConfig({ ...args, appName: originalAppName });
-      if (config === undefined) throw new Error(`App config for ${appName} not found.`);
     }
 
+    if (config === undefined) throw new Error(`App config for ${appName} not found.`);
+    config = { ...config, name: appName };
+
     const wineApp = await createWineApp(appName, config);
-    return new Promise<void>((resolve) =>
+    return new Promise<WineAppConfig>((resolve) =>
       wineApp.scaffold(
         { appIconURL: config?.iconURL, appArtWorkURL: config?.artworkURL },
         {
           onExit: () => {
-            resolve(undefined);
+            resolve(config);
           }
         }
       )
@@ -109,7 +112,6 @@ export const useWineAppPipelineModel = () => {
 
   const runWineAppPipeline = async (args: WineAppArgs) => {
     try {
-      await scaffoldWineApp(args);
       // Required delay for config.json be ready when loading wine pipeline.
       await sleep(200);
       const pipeline = await loadWineAppPipeline(args.appName);

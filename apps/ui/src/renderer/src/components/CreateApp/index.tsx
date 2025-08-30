@@ -137,7 +137,7 @@ export const CreateApp: React.FC = () => {
   const submit = async (data: FormSchema) => {
     const origin = ConfigOrigin.INSTALLED_APP;
     const { name, appFolderPath, artworkFile, iconFile, useWinetricks: _, ...rest } = data;
-    wineAppPipelineModel.scaffoldWineApp({
+    const config = await wineAppPipelineModel.scaffoldWineApp({
       appName: data.name,
       config: {
         name,
@@ -150,7 +150,7 @@ export const CreateApp: React.FC = () => {
       origin
     });
     reset();
-    navigateToAppPipeline(name, { origin, action: PipelineAction.RUN });
+    navigateToAppPipeline(config.name, { origin, action: PipelineAction.RUN });
   };
 
   return (
