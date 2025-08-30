@@ -20,6 +20,7 @@ import { Button } from '@components/Button';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { ConfigOrigin, PipelineAction } from '@constants/enums';
+import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -59,6 +60,8 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 
 export const WineAppsList: React.FC = () => {
   const wineAppConfigModel = useWineAppConfigModel();
+  const wineAppPipelineModel = useWineAppPipelineModel();
+
   const [showDialog, setShowDialog] = useState(false);
   const [appName, setAppName] = useState<string>();
   const [filters, setFilters] = useState<
@@ -74,13 +77,22 @@ export const WineAppsList: React.FC = () => {
   );
   const navigate = useNavigateApp();
 
-  useEffect(() => {
-    wineAppConfigModel.listAll();
-  }, []);
-
   const closeDialog = () => {
     setShowDialog(false);
   };
+
+  const runPipeline = async () => {
+    const origin = ConfigOrigin.CLOUD;
+    await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
+    navigate.navigateToAppPipeline(appName, {
+      origin,
+      action: PipelineAction.RUN
+    });
+  };
+
+  useEffect(() => {
+    wineAppConfigModel.listAll();
+  }, []);
 
   return (
     <WineAppsListContext.Provider value={{ showDialog, setShowDialog, appName, setAppName }}>
@@ -129,16 +141,7 @@ export const WineAppsList: React.FC = () => {
           <Body1>Select the type of installation:</Body1>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => {
-              navigate.navigateToAppPipeline(appName, {
-                origin: ConfigOrigin.CLOUD,
-                action: PipelineAction.RUN
-              });
-            }}
-          >
-            Automatic
-          </Button>
+          <Button onClick={runPipeline}>Automatic</Button>
         </DialogActions>
       </Dialog>
     </WineAppsListContext.Provider>
