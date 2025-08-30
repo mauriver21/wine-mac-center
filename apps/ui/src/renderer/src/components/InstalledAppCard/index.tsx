@@ -46,8 +46,6 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
     })();
   }, [installedWineApp?.appPath]);
 
-  console.log(appName);
-
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
       <Box

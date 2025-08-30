@@ -8,6 +8,7 @@ import { useEnv } from '@utils/useEnv';
 import { readFileAsString } from '@utils/readFileAsString';
 import { spawnProcess } from '@utils/spawnProcess';
 import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
+import { extractAppName } from '@utils/extractAppName';
 
 export const useWineInstalledAppApiClient = () => {
   const env = useEnv();
@@ -16,7 +17,7 @@ export const useWineInstalledAppApiClient = () => {
   const listAll = async () => {
     const directories = await readDirectory(WINE_APPS_PATH);
     const promises: Array<
-      Promise<{ appPath: string; config: string; pipeline: string } | undefined>
+      Promise<{ appPath: string; appName: string; config: string; pipeline: string } | undefined>
     > = [];
     let configs: Array<WineInstalledApp> = [];
 
@@ -25,7 +26,7 @@ export const useWineInstalledAppApiClient = () => {
       const CONFIG_FILE = `${APP_PATH}/${WINE_APP_CONFIG_JSON_PATH}`;
       const PIPELINE_FILE = `${APP_PATH}/${WINE_APP_PIPELINE_JSON_PATH}`;
       const promise = new Promise<
-        { appPath: string; config: string; pipeline: string } | undefined
+        { appPath: string; appName: string; config: string; pipeline: string } | undefined
       >(async (resolve) => {
         let config = '';
         let pipeline = '';
@@ -44,16 +45,17 @@ export const useWineInstalledAppApiClient = () => {
           resolve(undefined);
         }
 
-        resolve({ appPath: APP_PATH, config, pipeline });
+        resolve({ appPath: APP_PATH, appName: extractAppName(APP_PATH) || '', config, pipeline });
       });
       promises.push(promise);
     }
 
     configs = (await Promise.all(promises))
       .filter((item) => item !== undefined)
+      .filter((item) => item.appName !== '')
       .map((item) => ({
         ...item,
-        config: parseJson<WineAppConfig>(item?.config),
+        config: { ...parseJson<WineAppConfig>(item?.config), name: item.appName },
         pipeline: parseJson<WineAppPipelineConfig>(item?.pipeline)
       }))
       .map((item) => ({
