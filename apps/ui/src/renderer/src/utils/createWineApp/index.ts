@@ -147,9 +147,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     return spawnScript('scaffoldApp', '', {
       ...args,
       onExit: async (data) => {
-        console.log(data);
         await args?.onExit?.(data);
-        console.log(1, appName);
         await updateAppConfig({ name: appName });
         await setupAppIcon(params);
         await setupAppArtwork(params);
@@ -497,6 +495,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     listAppExecutables,
     getAppConfig,
     updateMainExecutablePath,
-    updateMainExecutableFlags
+    updateMainExecutableFlags,
+    writeAppConfig
   };
 };

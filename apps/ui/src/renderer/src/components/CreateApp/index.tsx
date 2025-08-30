@@ -10,7 +10,6 @@ import {
   Stack,
   TableOfContents
 } from 'reactjs-shared-ui';
-import { useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-shared-ui/forms';
@@ -18,7 +17,7 @@ import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
-import { FileFilter } from '@constants/enums';
+import { ConfigOrigin, FileFilter, PipelineAction } from '@constants/enums';
 import {
   CpuChipIcon,
   PencilSquareIcon,
@@ -29,6 +28,7 @@ import { CardItem } from '@components/CardItem';
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { blobToURL } from '@utils/blobToURL';
 import { IconInput } from '@components/IconInput';
+import { useNavigateApp } from '@hooks/useNavigateApp';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -37,7 +37,7 @@ export const CreateApp: React.FC = () => {
   const form = useForm(schema);
   const wineAppPipelineModel = useWineAppPipelineModel();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  const navigate = useNavigate();
+  const { navigateToAppPipeline, navigateToApps } = useNavigateApp();
   const [artworkSrc, setArtWorkSrc] = useState('');
   const [iconSrc, setIconSrc] = useState('');
 
@@ -106,7 +106,7 @@ export const CreateApp: React.FC = () => {
             name="artworkFile"
             type="image"
             imgSrc={artworkSrc}
-            realAppName={'No Artwork'}
+            appName={'No Artwork'}
             onInput={async (file) => {
               file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
             }}
@@ -135,18 +135,22 @@ export const CreateApp: React.FC = () => {
   ];
 
   const submit = async (data: FormSchema) => {
-    const {
-      name
-      // dxvkEnabled,
-      // engineVersion,
-      // setupExecutablePath,
-      // appFolderPath,
-      // useWinetricks,
-      // winetricksVerbs
-    } = data;
-    // wineAppPipelineModel.runWineAppPipeline(name);
+    const origin = ConfigOrigin.INSTALLED_APP;
+    const { name, appFolderPath, artworkFile, iconFile, useWinetricks: _, ...rest } = data;
+    wineAppPipelineModel.scaffoldWineApp({
+      appName: data.name,
+      config: {
+        name,
+        appFolderPath,
+        artworkFile: await artworkFile?.arrayBuffer(),
+        iconFile: await iconFile?.arrayBuffer(),
+        origin,
+        ...rest
+      },
+      origin
+    });
     reset();
-    navigate(`/app-pipeline/${name}`);
+    navigateToAppPipeline(name, { origin, action: PipelineAction.RUN });
   };
 
   return (
@@ -177,7 +181,7 @@ export const CreateApp: React.FC = () => {
               <Button
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
-                onClick={() => navigate('/apps')}
+                onClick={navigateToApps}
               >
                 Back
               </Button>

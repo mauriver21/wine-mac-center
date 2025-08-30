@@ -33,7 +33,7 @@ export const AppConfig: React.FC = () => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const [loading, setLoading] = useState(false);
   const [wineApp, setWineApp] = useState<WineApp>();
-  const { realAppName } = useParams();
+  const { appName } = useParams();
   const { signal, refresh } = useRefresh();
   const { watchDirEvent } = useDirsWatcherContext() || {};
   const { navigateToApps, navigateToAppNotFound } = useNavigateApp();
@@ -46,24 +46,24 @@ export const AppConfig: React.FC = () => {
       <CommandLineModule />,
       <ControlPanelModule />,
       <WinetricksModule />,
-      <ExecutableConfigModule realAppName={realAppName} />,
+      <ExecutableConfigModule appName={appName} />,
       <ChangeEngineModule />
     ],
     []
   );
 
   const initWineApp = async () => {
-    realAppName && setWineApp(await createWineApp(realAppName));
+    appName && setWineApp(await createWineApp(appName));
   };
 
   useEffect(() => {
     initWineApp();
-  }, [realAppName]);
+  }, [appName]);
 
   useEffect(() => {
-    if (watchDirEvent === undefined || realAppName === undefined) return;
-    const comingRealAppName = extractAppName(watchDirEvent.path);
-    if (comingRealAppName !== realAppName) navigateToAppNotFound(realAppName);
+    if (watchDirEvent === undefined || appName === undefined) return;
+    const comingAppName = extractAppName(watchDirEvent.path);
+    if (comingAppName !== appName) navigateToAppNotFound(appName);
   }, [watchDirEvent?.id]);
 
   return (
@@ -89,7 +89,7 @@ export const AppConfig: React.FC = () => {
               }}
             >
               <H6 color="text.secondary" fontWeight={500}>
-                {realAppName}
+                {appName}
               </H6>
               <Button
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}

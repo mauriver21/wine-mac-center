@@ -10,10 +10,10 @@ import { FileFilter } from '@constants/enums';
 import { TextField } from 'reactjs-shared-ui/forms';
 
 export interface ExecutableConfigModuleProps {
-  realAppName: string | undefined;
+  appName: string | undefined;
 }
 
-export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ realAppName }) => {
+export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ appName }) => {
   const { wineApp, loading, setLoading, refresh, signal } = useAppConfigContext() || {};
   const [driveCPath, setDriveCPath] = useState<string>('');
   const [mainExecutablePath, setMainExecutablePath] = useState<string>('');
@@ -108,7 +108,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                     refresh?.();
                   }}
                   appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
-                  realAppName={realAppName}
+                  appName={appName}
                 />
               </Grid>
               <Grid item xs={12}>
