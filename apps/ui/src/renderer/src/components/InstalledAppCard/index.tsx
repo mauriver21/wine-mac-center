@@ -7,9 +7,9 @@ import { RootState } from '@interfaces/RootState';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { getAppArtwork } from '@utils/getAppArtwork';
+import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
+import { useNavigateApp } from '@hooks/useNavigateApp';
 import defaultArtwork from '@assets/imgs/header.jpg';
-import { useNavigate } from 'react-router-dom';
-import { ConfigOrigin, ProcessStatus } from '@constants/enums';
 
 export interface InstalledAppCardProps extends CardProps {
   appName?: string;
@@ -24,17 +24,9 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
   const wineAppConfig = useSelector((state: RootState) =>
     wineAppModel.selectWineAppConfig(state, appName, ConfigOrigin.INSTALLED_APP)
   );
+  const { navigateToAppConfig, navigateToAppPipeline } = useNavigateApp();
   const [artWorkSrc, setArtWorkSrc] = useState(wineAppConfig?.artworkURL);
   const [noArtWork, setNoArtWork] = useState(false);
-  const navigate = useNavigate();
-
-  const navigateToAppConfig = () => {
-    navigate(`/app-config/${appName}`);
-  };
-
-  const navigateToAppPipeline = () => {
-    navigate(`/app-pipeline?realAppName=${appName}`);
-  };
 
   useEffect(() => {
     (async () => {
@@ -93,7 +85,12 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
               equalSize={40}
               color="secondary"
               title="Installation pending"
-              onClick={navigateToAppPipeline}
+              onClick={() =>
+                navigateToAppPipeline(appName, {
+                  origin: ConfigOrigin.INSTALLED_APP,
+                  action: PipelineAction.RESUME
+                })
+              }
             >
               <Icon color="warning.main" strokeWidth={2} render={ExclamationTriangleIcon} />
             </Button>
@@ -103,7 +100,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
               equalSize={40}
               color="secondary"
               title="Configure App"
-              onClick={navigateToAppConfig}
+              onClick={() => navigateToAppConfig(appName)}
             >
               <Icon render={Cog6ToothIcon} />
             </Button>

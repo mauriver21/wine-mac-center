@@ -246,6 +246,7 @@ export const createWineAppPipeline = async (options: {
   const pipeline: WineAppPipeline = {
     _: {
       async std(jobName, action, step, data, updateProcess) {
+        console.log('---->', store.killAllProcesses);
         if (store.killAllProcesses) {
           updateProcess?.('exit');
           step.status = ProcessStatus.Cancelled;

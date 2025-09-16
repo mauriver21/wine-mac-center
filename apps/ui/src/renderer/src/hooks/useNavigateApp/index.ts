@@ -35,12 +35,17 @@ export const useNavigateApp = () => {
     navigate(`/app-pipeline/${appName}?origin=${params.origin}&action=${params.action}`);
   };
 
+  const navigateToAppConfig = (appName: string | undefined) => {
+    navigate(`/app-config/${appName}`);
+  };
+
   return {
     navigateToAppPipeline,
     navigateToApps,
     navigateToAppNotFound,
     navigateToHome,
     navigateToScripts,
-    navigateToScript
+    navigateToScript,
+    navigateToAppConfig
   };
 };

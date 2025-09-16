@@ -1,5 +1,5 @@
 import { PipelineStep } from '@components/PipelineStep';
-import { ConfigOrigin, ProcessStatus } from '@constants/enums';
+import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { RootState } from '@interfaces/RootState';
 import { useAppModel } from '@models/useAppModel';
@@ -16,6 +16,7 @@ import {
   ContentsAreaHandle,
   ContentsClass,
   H6,
+  sleep,
   Stack,
   TableOfContents
 } from 'reactjs-shared-ui';
@@ -27,6 +28,7 @@ export const AppPipeline: React.FC = () => {
   const queryParam = useQueryParam();
   const appModel = useAppModel();
   const origin = queryParam.get('origin') as ConfigOrigin;
+  const action = queryParam.get('action') as PipelineAction;
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
@@ -55,11 +57,23 @@ export const AppPipeline: React.FC = () => {
   const killPipeline = async () => {
     setStopping(true);
     await wineAppPipelineModel.killWineAppPipeline();
+    await sleep(200);
+    await wineAppPipelineModel.loadWineAppPipeline(appName);
+    setStopping(false);
   };
 
   useEffect(() => {
     if (appName) {
-      wineAppPipelineModel.runWineAppPipeline({ appName, origin });
+      switch (action) {
+        case PipelineAction.RUN:
+          wineAppPipelineModel.runWineAppPipeline({ appName, origin });
+          break;
+        case PipelineAction.RESUME:
+          wineAppPipelineModel.loadWineAppPipeline(appName);
+          break;
+        default:
+          break;
+      }
     }
   }, [appName]);
 

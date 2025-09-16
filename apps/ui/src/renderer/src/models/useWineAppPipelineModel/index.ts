@@ -74,8 +74,10 @@ export const useWineAppPipelineModel = () => {
     );
   };
 
-  const loadWineAppPipeline = async (appName: string) => {
+  const loadWineAppPipeline = async (appName: string | undefined) => {
     try {
+      if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
+
       const pipeline = await createWineAppPipeline({
         appName,
         debug: true,
@@ -85,6 +87,7 @@ export const useWineAppPipelineModel = () => {
       dispatchPatch(pipeline.getInitialStatus());
 
       pipeline.onUpdate((pipelineStatus) => {
+        console.log('onUpdate', pipelineStatus.jobs);
         dispatchPatch({ ...pipelineStatus });
       });
 
@@ -135,6 +138,7 @@ export const useWineAppPipelineModel = () => {
   };
 
   const dispatchPatch = (pipelineStatus: WineAppPipelineStatus) => {
+    console.log({ pipelineStatus });
     dispatch({
       type: ActionType.PATCH,
       pipelineStatus
@@ -154,6 +158,7 @@ export const useWineAppPipelineModel = () => {
     dispatchPatch,
     updateAppConfig,
     scaffoldWineApp,
+    loadWineAppPipeline,
     selectWineAppPipelineStatus
   };
 };
