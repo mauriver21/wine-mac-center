@@ -48,9 +48,10 @@ export const AppPipeline: React.FC = () => {
         appName,
         origin: ConfigOrigin.INSTALLED_APP
       });
-      setResuming(false);
     } catch (error) {
       appModel.dispatchError(error);
+    } finally {
+      setResuming(false);
     }
   };
 
@@ -158,6 +159,7 @@ export const AppPipeline: React.FC = () => {
                   </Button>
                 ) : (
                   <Button
+                    disabled={resuming}
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                     color="secondary"
                     onClick={() => navigate('/apps')}
