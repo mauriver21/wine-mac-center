@@ -18,6 +18,7 @@ import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { writeFile } from '@utils/writeFile';
+import { findOutputPID } from '@utils/findOutputPID';
 import { v4 as uuid } from 'uuid';
 
 export const createWineAppPipeline = async (options: {
@@ -179,6 +180,14 @@ export const createWineAppPipeline = async (options: {
     });
   };
 
+  const updateCurrentProcess = (output: string) => {
+    const pid = findOutputPID(output);
+
+    if (pid && pid !== store.currentProcess.pid) {
+      store.currentProcess.pid = pid;
+    }
+  };
+
   const runPipelineScript = async (args: PipelineScript, spawnProcessArgs: SpawnProcessArgs) => {
     const { operation } = args;
     const WINE_DOWNLOADS_PATH = `${env.get().WINE_DOWNLOADS_PATH}`;
@@ -246,7 +255,6 @@ export const createWineAppPipeline = async (options: {
   const pipeline: WineAppPipeline = {
     _: {
       async std(jobName, action, step, data, updateProcess) {
-        console.log('---->', store.killAllProcesses);
         if (store.killAllProcesses) {
           updateProcess?.('exit');
           step.status = ProcessStatus.Cancelled;
@@ -261,6 +269,7 @@ export const createWineAppPipeline = async (options: {
 
         step.status = ProcessStatus.InProgress;
         step.output = concatDataToOutput(data, step.output);
+        updateCurrentProcess(String(data));
 
         if (data === ExitCode.SuccessfulExecution) {
           step.status = ProcessStatus.Success;
@@ -433,7 +442,7 @@ export const createWineAppPipeline = async (options: {
             continue;
           }
 
-          store.currentProcess = await step.script({
+          await step.script({
             onStdOut: (data, updateProcess) =>
               this._.std(job.name, 'stdOut', step, data, updateProcess),
             onStdErr: (data, updateProcess) =>

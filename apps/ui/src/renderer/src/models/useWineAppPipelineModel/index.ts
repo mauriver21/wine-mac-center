@@ -87,7 +87,6 @@ export const useWineAppPipelineModel = () => {
       dispatchPatch(pipeline.getInitialStatus());
 
       pipeline.onUpdate((pipelineStatus) => {
-        console.log('onUpdate', pipelineStatus.jobs);
         dispatchPatch({ ...pipelineStatus });
       });
 
@@ -138,7 +137,6 @@ export const useWineAppPipelineModel = () => {
   };
 
   const dispatchPatch = (pipelineStatus: WineAppPipelineStatus) => {
-    console.log({ pipelineStatus });
     dispatch({
       type: ActionType.PATCH,
       pipelineStatus
