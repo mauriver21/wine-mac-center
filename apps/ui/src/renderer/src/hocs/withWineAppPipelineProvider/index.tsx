@@ -56,6 +56,7 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
         }
       });
 
+      store.current.pipeline = pipeline;
       return pipeline;
     };
 

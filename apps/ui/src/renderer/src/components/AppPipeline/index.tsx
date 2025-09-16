@@ -1,5 +1,5 @@
 import { PipelineStep } from '@components/PipelineStep';
-import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
+import { ConfigOrigin, ProcessStatus } from '@constants/enums';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { RootState } from '@interfaces/RootState';
 import { useAppModel } from '@models/useAppModel';
@@ -27,7 +27,6 @@ export const AppPipeline: React.FC = () => {
   const queryParam = useQueryParam();
   const appModel = useAppModel();
   const origin = queryParam.get('origin') as ConfigOrigin;
-  const action = queryParam.get('action') as PipelineAction;
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
@@ -40,13 +39,16 @@ export const AppPipeline: React.FC = () => {
 
   const resumePipeline = async () => {
     try {
-      // setStopping(false);
-      // setResuming(true);
-      // if (appName === undefined) throw new Error(`Invalid application name`);
-      // await wineAppPipelineModel.runWineAppPipeline(appName);
-      // setResuming(false);
+      setStopping(false);
+      setResuming(true);
+      if (appName === undefined) throw new Error(`Invalid application name`);
+      await wineAppPipelineModel.runWineAppPipeline({
+        appName,
+        origin: ConfigOrigin.INSTALLED_APP
+      });
+      setResuming(false);
     } catch (error) {
-      // appModel.dispatchError(error);
+      appModel.dispatchError(error);
     }
   };
 
@@ -67,7 +69,7 @@ export const AppPipeline: React.FC = () => {
 
   useEffect(() => {
     contentsAreaRef.current?.refreshTableOfContents();
-  });
+  }, []);
 
   return (
     <Box display="grid" overflow="auto">

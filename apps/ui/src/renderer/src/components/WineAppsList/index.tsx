@@ -83,8 +83,8 @@ export const WineAppsList: React.FC = () => {
 
   const runPipeline = async () => {
     const origin = ConfigOrigin.CLOUD;
-    await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
-    navigate.navigateToAppPipeline(appName, {
+    const config = await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
+    navigate.navigateToAppPipeline(config.name, {
       origin,
       action: PipelineAction.RUN
     });

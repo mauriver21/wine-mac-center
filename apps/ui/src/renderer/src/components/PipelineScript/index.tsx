@@ -164,7 +164,7 @@ export const PipelineScript: React.FC = () => {
                   options={[
                     { value: ScriptOperation.DOWNLOAD, label: 'Download File' },
                     { value: ScriptOperation.COPY, label: 'Copy' },
-                    { value: ScriptOperation.REMOVE, label: 'Remove' },
+                    // { value: ScriptOperation.REMOVE, label: 'Remove' },
                     { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' }
                   ]}
                 />
