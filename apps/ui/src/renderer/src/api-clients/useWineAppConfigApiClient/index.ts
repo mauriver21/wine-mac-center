@@ -68,6 +68,10 @@ export const useWineAppConfigApiClient = () => {
   };
 
   const read = async (args: WineAppArgs) => {
+    if (args.appName === undefined) {
+      throw new Error('Unable to read app config, application name is not defined');
+    }
+
     switch (args.origin) {
       case ConfigOrigin.CLOUD:
         return readCloudFile(args.appName);
