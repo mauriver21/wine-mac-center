@@ -46,7 +46,8 @@ export const useSchema = () => {
             .oneOf([
               ScriptOperation.DOWNLOAD,
               ScriptOperation.COPY,
-              ScriptOperation.RUN_WINDOWS_EXE
+              ScriptOperation.RUN_WINDOWS_EXE,
+              ScriptOperation.DECOMPRESS
             ])
             .required(),
           url: schema.string().when('operation', {
@@ -67,6 +68,10 @@ export const useSchema = () => {
           }),
           exePath: schema.string().when('operation', {
             is: ScriptOperation.RUN_WINDOWS_EXE,
+            then: (schema) => schema.required()
+          }),
+          path: schema.string().when('operation', {
+            is: ScriptOperation.DECOMPRESS,
             then: (schema) => schema.required()
           })
         })

@@ -164,20 +164,19 @@ export const PipelineScript: React.FC = () => {
                   options={[
                     { value: ScriptOperation.DOWNLOAD, label: 'Download File' },
                     { value: ScriptOperation.COPY, label: 'Copy' },
-                    // { value: ScriptOperation.REMOVE, label: 'Remove' },
+                    { value: ScriptOperation.DECOMPRESS, label: 'Extract' },
+                    { value: ScriptOperation.REMOVE, label: 'Remove' },
                     { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' }
                   ]}
                 />
-                {operation === ScriptOperation.DOWNLOAD ? (
+                {operation === ScriptOperation.DOWNLOAD && (
                   <TextField
                     control={form.control}
                     name={`pipelineScripts.${index}.url`}
                     label="File URL"
                   />
-                ) : (
-                  <></>
                 )}
-                {operation === ScriptOperation.COPY ? (
+                {operation === ScriptOperation.COPY && (
                   <>
                     <TextField
                       InputProps={{
@@ -194,11 +193,20 @@ export const PipelineScript: React.FC = () => {
                       placeholder="/your/relative/app/target/path"
                     />
                   </>
-                ) : (
-                  <></>
                 )}
-                {operation === ScriptOperation.REMOVE ? <TextField label="Target Path" /> : <></>}
-                {operation === ScriptOperation.RUN_WINDOWS_EXE ? (
+                {operation === ScriptOperation.REMOVE && <TextField label="Target Path" />}
+                {operation === ScriptOperation.DECOMPRESS && (
+                  <TextField
+                    control={form.control}
+                    name={`pipelineScripts.${index}.path`}
+                    InputProps={{
+                      startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
+                    }}
+                    label="From Path"
+                    placeholder="/your/relative/path"
+                  />
+                )}
+                {operation === ScriptOperation.RUN_WINDOWS_EXE && (
                   <TextField
                     control={form.control}
                     name={`pipelineScripts.${index}.exePath`}
@@ -218,8 +226,6 @@ export const PipelineScript: React.FC = () => {
                     }}
                     label="Executable Path"
                   />
-                ) : (
-                  <></>
                 )}
               </Stack>
             </Box>
@@ -233,6 +239,16 @@ export const PipelineScript: React.FC = () => {
     let result: PipelineScriptType[] = [];
     for (const item of data) {
       switch (item.operation) {
+        case ScriptOperation.DECOMPRESS:
+          result = [
+            ...result,
+            {
+              path: item.path || '',
+              operation: item.operation,
+              name: 'Extract File'
+            }
+          ];
+          break;
         case ScriptOperation.RUN_WINDOWS_EXE:
           result = [
             ...result,
@@ -264,22 +280,26 @@ export const PipelineScript: React.FC = () => {
   const submit = async (data: FormSchema) => {
     const { originalAppName, ...rest } = data;
     setLoading(true);
+
+    const pipelineScripts = mapPipelineScripts(rest.pipelineScripts);
+
     if (appConfig?.name) {
       await wineAppConfigModel.update({
         ...rest,
         originalAppName,
         name: rest.appName,
         origin: ConfigOrigin.SCRIPTS,
-        pipelineScripts: mapPipelineScripts(rest.pipelineScripts)
+        pipelineScripts
       });
     } else {
       await wineAppConfigModel.create({
         ...rest,
         name: rest.appName,
         origin: ConfigOrigin.SCRIPTS,
-        pipelineScripts: mapPipelineScripts(rest.pipelineScripts)
+        pipelineScripts
       });
     }
+
     setLoading(false);
     navigateToScripts();
   };

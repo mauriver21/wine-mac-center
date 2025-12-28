@@ -7,6 +7,7 @@ export type BashScript =
   | 'killPid'
   | 'copyWindowsApplication'
   | 'scaffoldApp'
+  | 'extract'
   | 'extractWineEngine'
   | 'listAppExecutables'
   | 'loadDylibs'

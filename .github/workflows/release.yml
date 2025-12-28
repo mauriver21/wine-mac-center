@@ -32,6 +32,8 @@ jobs:
           version: '10.9.0'
       - name: Install dependencies
         run: pnpm install
+      - name: Build
+        run: pnpm ui:build:mac
       - name: Bump patch version
         if: github.ref_name == 'master' && github.event_name == 'push'
         run: pnpm ui:bump-patch-version
@@ -40,8 +42,6 @@ jobs:
           GIT_AUTHOR_EMAIL: actions@github.com
           GIT_COMMITTER_NAME: github-actions
           GIT_COMMITTER_EMAIL: actions@github.com
-      - name: Build
-        run: pnpm ui:build:mac
       - name: Get package version
         if: github.ref_name == 'master' && github.event_name == 'push'
         run: |

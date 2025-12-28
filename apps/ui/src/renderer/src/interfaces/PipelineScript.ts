@@ -4,7 +4,13 @@ export type PipelineScript =
   | {
       name: string;
       operation: ScriptOperation.REMOVE;
-      target: string;
+      path: string;
+      verbs?: string;
+    }
+  | {
+      name: string;
+      operation: ScriptOperation.DECOMPRESS;
+      path: string;
       verbs?: string;
     }
   | {

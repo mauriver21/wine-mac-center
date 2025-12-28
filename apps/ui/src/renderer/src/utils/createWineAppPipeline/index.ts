@@ -196,25 +196,37 @@ export const createWineAppPipeline = async (options: {
       case ScriptOperation.DOWNLOAD: {
         spawnProcessArgs.onStdOut?.('-----');
         spawnProcessArgs.onStdOut?.('Download Started:');
-        let percent: number | undefined = undefined;
-        const file = await downloadFile(args.url, (args) => {
-          if (percent !== args.percent) {
-            percent = args.percent;
-            spawnProcessArgs.onStdOut?.(`${percent}%`);
-          }
-        });
         const fileName = args.downloadName || args.url.split('/').pop();
-        await writeBinaryFile(`${WINE_DOWNLOADS_PATH}/${fileName}`, file);
-        spawnProcessArgs.onStdOut?.('Download Finished.');
+        const target = `${WINE_DOWNLOADS_PATH}/${fileName}`;
+
+        if (await fileExists(target)) {
+          spawnProcessArgs.onStdOut?.('File already exists, skipping download.');
+        } else {
+          let percent: number | undefined = undefined;
+          const file = await downloadFile(args.url, (args) => {
+            if (percent !== args.percent) {
+              percent = args.percent;
+              spawnProcessArgs.onStdOut?.(`${percent}%`);
+            }
+          });
+          await writeBinaryFile(target, file);
+          spawnProcessArgs.onStdOut?.('Download Finished.');
+        }
+
         spawnProcessArgs.onExit?.(0);
         break;
+      }
+      case ScriptOperation.DECOMPRESS: {
+        const from = `${WINE_DOWNLOADS_PATH}/${args.path.replace(/^\//, '')}`;
+        const target = args.path.replace(/\.[^.]+$/, '');
+        return wineApp.spawnScript('extract', `"${from}" "${target}"`, spawnProcessArgs);
       }
       case ScriptOperation.COPY: {
         const from = `${WINE_DOWNLOADS_PATH}/${args.from.replace(/^\//, '')}`;
         return wineApp.spawnScript('copy', `"${from}" "${args.target}"`, spawnProcessArgs);
       }
       case ScriptOperation.REMOVE: {
-        return wineApp.spawnScript('remove', `"${args.target}"`, spawnProcessArgs);
+        return wineApp.spawnScript('remove', `"${args.path}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
         return wineApp.runExe(`"${WINE_DOWNLOADS_PATH}/${args.exePath}"`, spawnProcessArgs);
