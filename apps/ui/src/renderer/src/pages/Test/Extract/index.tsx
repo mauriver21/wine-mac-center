@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { useWineAppContext } from '..';
 import { Code } from '@components/Code';
-import { TextField } from 'reactjs-shared-ui/forms';
+import { useEnv } from '@utils/useEnv';
 
-export const RunExe: React.FC = () => {
+export const Extract: React.FC = () => {
   const { wineApp } = useWineAppContext();
+  const env = useEnv();
   const [loading, setLoading] = useState(false);
-  const [exePath, setExePath] = useState('');
   const [data, setData] = useState<any>();
 
-  const runExe = async () => {
+  const extract = async () => {
     setLoading(true);
-    await wineApp.runExe(exePath, {
+    const WINE_DOWNLOADS_PATH = env.get().WINE_DOWNLOADS_PATH;
+    const from = `${WINE_DOWNLOADS_PATH}/Ricochet%20games.zip`;
+    const target = from.replace(/\.[^.]+$/, '');
+    await wineApp.spawnScript('extract', `"${from}" "${target}"`, {
       onStdOut: (data) => {
         console.log(data);
         setData(data);
@@ -27,17 +30,11 @@ export const RunExe: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: 10 }}>
-        <h3>RunExe</h3>
+        <h3>Extract</h3>
         <hr />
       </div>
-      <TextField
-        disabled={loading}
-        label="Exe Path"
-        value={exePath}
-        onChange={(event) => setExePath(event.currentTarget.value)}
-      />
-      <button disabled={loading || !Boolean(exePath)} onClick={runExe}>
-        RunExe
+      <button disabled={loading} onClick={extract}>
+        {loading ? 'Extracting' : 'Extract'}
       </button>
       <Code label="Output" content={JSON.stringify(data, null, 2)} />
     </div>

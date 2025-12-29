@@ -12,6 +12,7 @@ import { WineCfg } from './WineCfg';
 import { SetSetupExe } from './SetSetupExe';
 import { DownloadEngine } from './DownloadEngine';
 import { Stack } from 'reactjs-shared-ui';
+import { Extract } from './Extract';
 
 export const WineAppContext = createContext<{
   wineApp: WineApp;
@@ -38,6 +39,7 @@ export const Test: React.FC = () => {
             <RunExe />
             <BundleApp />
             <WineCfg />
+            <Extract />
           </Stack>
         ) : (
           <InitApp />

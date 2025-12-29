@@ -9,6 +9,7 @@ export enum ProcessStatus {
 export enum ExitCode {
   SuccessfulExecution = 0,
   Error = 1,
+  PermissionsError = 126,
   ImproperCommand = 2
 }
 

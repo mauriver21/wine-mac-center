@@ -196,8 +196,8 @@ export const createWineAppPipeline = async (options: {
       case ScriptOperation.DOWNLOAD: {
         spawnProcessArgs.onStdOut?.('-----');
         spawnProcessArgs.onStdOut?.('Download Started:');
-        const fileName = args.downloadName || args.url.split('/').pop();
-        const target = `${WINE_DOWNLOADS_PATH}/${fileName}`;
+        const fileName = args.downloadName || args.url.split('/').pop() || '';
+        const target = `${WINE_DOWNLOADS_PATH}/${decodeURIComponent(fileName)}`;
 
         if (await fileExists(target)) {
           spawnProcessArgs.onStdOut?.('File already exists, skipping download.');
@@ -217,19 +217,23 @@ export const createWineAppPipeline = async (options: {
         break;
       }
       case ScriptOperation.DECOMPRESS: {
-        const from = `${WINE_DOWNLOADS_PATH}/${args.path.replace(/^\//, '')}`;
-        const target = args.path.replace(/\.[^.]+$/, '');
+        const path = decodeURIComponent(args.path.replace(/^\//, ''));
+        const from = `${WINE_DOWNLOADS_PATH}/${path}`;
+        const target = from.replace(/\.[^.]+$/, '');
         return wineApp.spawnScript('extract', `"${from}" "${target}"`, spawnProcessArgs);
       }
       case ScriptOperation.COPY: {
-        const from = `${WINE_DOWNLOADS_PATH}/${args.from.replace(/^\//, '')}`;
+        const path = decodeURIComponent(args.from.replace(/^\//, ''));
+        const from = `${WINE_DOWNLOADS_PATH}/${path}`;
         return wineApp.spawnScript('copy', `"${from}" "${args.target}"`, spawnProcessArgs);
       }
       case ScriptOperation.REMOVE: {
-        return wineApp.spawnScript('remove', `"${args.path}"`, spawnProcessArgs);
+        const path = decodeURIComponent(args.path.replace(/^\//, ''));
+        return wineApp.spawnScript('remove', `"${path}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
-        return wineApp.runExe(`"${WINE_DOWNLOADS_PATH}/${args.exePath}"`, spawnProcessArgs);
+        const exePath = decodeURIComponent(args.exePath.replace(/^\//, ''));
+        return wineApp.runExe(`"${WINE_DOWNLOADS_PATH}/${exePath}"`, spawnProcessArgs);
       }
       default:
         return;
@@ -292,7 +296,7 @@ export const createWineAppPipeline = async (options: {
           });
         }
 
-        if (data === ExitCode.Error) {
+        if (data === ExitCode.Error || data === ExitCode.PermissionsError) {
           step.status = ProcessStatus.Error;
         }
 
