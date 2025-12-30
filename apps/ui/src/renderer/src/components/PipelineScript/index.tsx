@@ -179,6 +179,8 @@ export const PipelineScript: React.FC = () => {
                 {operation === ScriptOperation.COPY && (
                   <>
                     <TextField
+                      control={form.control}
+                      name={`pipelineScripts.${index}.from`}
                       InputProps={{
                         startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
                       }}
@@ -186,6 +188,8 @@ export const PipelineScript: React.FC = () => {
                       placeholder="/your/relative/path"
                     />
                     <TextField
+                      control={form.control}
+                      name={`pipelineScripts.${index}.target`}
                       InputProps={{
                         startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
                       }}
@@ -267,6 +271,17 @@ export const PipelineScript: React.FC = () => {
               downloadName: '',
               operation: item.operation,
               name: 'Download setup executable'
+            }
+          ];
+          break;
+        case ScriptOperation.COPY:
+          result = [
+            ...result,
+            {
+              from: item.from || '',
+              target: item.target || '',
+              operation: item.operation,
+              name: 'Copy file'
             }
           ];
           break;

@@ -73,6 +73,14 @@ export const useSchema = () => {
           path: schema.string().when('operation', {
             is: ScriptOperation.DECOMPRESS,
             then: (schema) => schema.required()
+          }),
+          from: schema.string().when('operation', {
+            is: ScriptOperation.COPY,
+            then: (schema) => schema.required()
+          }),
+          target: schema.string().when('operation', {
+            is: ScriptOperation.COPY,
+            then: (schema) => schema.required()
           })
         })
       )

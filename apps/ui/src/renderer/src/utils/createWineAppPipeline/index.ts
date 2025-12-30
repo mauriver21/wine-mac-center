@@ -20,6 +20,7 @@ import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { writeFile } from '@utils/writeFile';
 import { findOutputPID } from '@utils/findOutputPID';
 import { v4 as uuid } from 'uuid';
+import { parsePath } from '@utils/parsePath';
 
 export const createWineAppPipeline = async (options: {
   appName: string;
@@ -217,22 +218,22 @@ export const createWineAppPipeline = async (options: {
         break;
       }
       case ScriptOperation.DECOMPRESS: {
-        const path = decodeURIComponent(args.path.replace(/^\//, ''));
+        const path = parsePath(args.path);
         const from = `${WINE_DOWNLOADS_PATH}/${path}`;
         const target = from.replace(/\.[^.]+$/, '');
         return wineApp.spawnScript('extract', `"${from}" "${target}"`, spawnProcessArgs);
       }
       case ScriptOperation.COPY: {
-        const path = decodeURIComponent(args.from.replace(/^\//, ''));
-        const from = `${WINE_DOWNLOADS_PATH}/${path}`;
-        return wineApp.spawnScript('copy', `"${from}" "${args.target}"`, spawnProcessArgs);
+        const from = `${WINE_DOWNLOADS_PATH}/${parsePath(args.from)}`;
+        const target = `${appEnv.WINE_APP_DRIVE_C_PATH}/${parsePath(args.target)}`;
+        return wineApp.spawnScript('copy', `"${from}" "${target}"`, spawnProcessArgs);
       }
       case ScriptOperation.REMOVE: {
-        const path = decodeURIComponent(args.path.replace(/^\//, ''));
+        const path = parsePath(args.path);
         return wineApp.spawnScript('remove', `"${path}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
-        const exePath = decodeURIComponent(args.exePath.replace(/^\//, ''));
+        const exePath = parsePath(args.exePath);
         return wineApp.runExe(`"${WINE_DOWNLOADS_PATH}/${exePath}"`, spawnProcessArgs);
       }
       default:
