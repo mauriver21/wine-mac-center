@@ -28,7 +28,7 @@ export const useWineAppConfigApiClient = () => {
       dxvkEnabled: data.dxvkEnabled || false,
       setupExecutableURL: '',
       engineVersion: data.engineVersion,
-      winetricks: { verbs: [] },
+      winetricks: { verbs: data.winetricks?.verbs || [] },
       executables: [{ main: true, path: '', flags: '' }],
       pipelineScripts: data.pipelineScripts
     };

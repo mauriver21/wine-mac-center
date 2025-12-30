@@ -293,7 +293,7 @@ export const PipelineScript: React.FC = () => {
   };
 
   const submit = async (data: FormSchema) => {
-    const { originalAppName, ...rest } = data;
+    const { originalAppName, winetricksVerbs = [], ...rest } = data;
     setLoading(true);
 
     const pipelineScripts = mapPipelineScripts(rest.pipelineScripts);
@@ -304,14 +304,16 @@ export const PipelineScript: React.FC = () => {
         originalAppName,
         name: rest.appName,
         origin: ConfigOrigin.SCRIPTS,
-        pipelineScripts
+        pipelineScripts,
+        winetricks: { verbs: winetricksVerbs }
       });
     } else {
       await wineAppConfigModel.create({
         ...rest,
         name: rest.appName,
         origin: ConfigOrigin.SCRIPTS,
-        pipelineScripts
+        pipelineScripts,
+        winetricks: { verbs: winetricksVerbs }
       });
     }
 

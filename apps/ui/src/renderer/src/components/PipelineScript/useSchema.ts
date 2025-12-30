@@ -37,7 +37,7 @@ export const useSchema = () => {
       .transform((value) => value.trim()),
     engineVersion: schema.string().required().default(''),
     dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
-    winetricksVerbs: schema.array().of(schema.string()).default([]),
+    winetricksVerbs: schema.array().of(schema.string().required()).default([]),
     pipelineScripts: schema
       .array(
         schema.object({
