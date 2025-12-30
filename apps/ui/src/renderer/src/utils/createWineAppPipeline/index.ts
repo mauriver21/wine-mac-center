@@ -21,6 +21,7 @@ import { writeFile } from '@utils/writeFile';
 import { findOutputPID } from '@utils/findOutputPID';
 import { v4 as uuid } from 'uuid';
 import { parsePath } from '@utils/parsePath';
+import { getRelativeDriveCPath } from '@utils/getRelativeDriveCPath';
 
 export const createWineAppPipeline = async (options: {
   appName: string;
@@ -236,6 +237,14 @@ export const createWineAppPipeline = async (options: {
         const exePath = parsePath(args.exePath);
         return wineApp.runExe(`"${WINE_DOWNLOADS_PATH}/${exePath}"`, spawnProcessArgs);
       }
+      case ScriptOperation.SET_MAIN_EXE: {
+        const mainExePath = getRelativeDriveCPath(
+          `${appEnv.WINE_APP_DRIVE_C_PATH}/${parsePath(args.mainExePath)}`
+        );
+        await wineApp.saveMainExecutablePath(mainExePath);
+        spawnProcessArgs.onExit?.(0);
+        break;
+      }
       default:
         return;
     }
@@ -407,6 +416,7 @@ export const createWineAppPipeline = async (options: {
           {
             name: 'Configuring app executable',
             script: async (args) => {
+              const appConfig = wineApp.getAppConfig();
               let executables = appConfig.executables || [];
               const mainExecutablePath = executables.find((item) => item.main)?.path || '';
 

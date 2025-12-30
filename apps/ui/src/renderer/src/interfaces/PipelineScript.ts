@@ -28,6 +28,11 @@ export type PipelineScript =
     }
   | {
       name: string;
+      operation: ScriptOperation.SET_MAIN_EXE;
+      mainExePath: string;
+    }
+  | {
+      name: string;
       operation: ScriptOperation.RUN_WINDOWS_EXE;
       exePath: string;
     };

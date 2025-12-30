@@ -166,7 +166,8 @@ export const PipelineScript: React.FC = () => {
                     { value: ScriptOperation.COPY, label: 'Copy' },
                     { value: ScriptOperation.DECOMPRESS, label: 'Extract' },
                     { value: ScriptOperation.REMOVE, label: 'Remove' },
-                    { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' }
+                    { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' },
+                    { value: ScriptOperation.SET_MAIN_EXE, label: 'Set Main EXE' }
                   ]}
                 />
                 {operation === ScriptOperation.DOWNLOAD && (
@@ -207,6 +208,17 @@ export const PipelineScript: React.FC = () => {
                       startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
                     }}
                     label="From Path"
+                    placeholder="/your/relative/path"
+                  />
+                )}
+                {operation === ScriptOperation.SET_MAIN_EXE && (
+                  <TextField
+                    control={form.control}
+                    name={`pipelineScripts.${index}.mainExePath`}
+                    InputProps={{
+                      startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
+                    }}
+                    label="Set Main Exe"
                     placeholder="/your/relative/path"
                   />
                 )}
@@ -282,6 +294,16 @@ export const PipelineScript: React.FC = () => {
               target: item.target || '',
               operation: item.operation,
               name: 'Copy file'
+            }
+          ];
+          break;
+        case ScriptOperation.SET_MAIN_EXE:
+          result = [
+            ...result,
+            {
+              mainExePath: item.mainExePath || '',
+              operation: item.operation,
+              name: 'Set main exe'
             }
           ];
           break;

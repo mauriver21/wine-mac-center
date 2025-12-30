@@ -402,14 +402,27 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   /**
    * Updates main executable path.
    */
-  const updateMainExecutablePath = async (path: string) => {
+  const saveMainExecutablePath = async (path: string) => {
     const config = getAppConfig();
-    const executables = config.executables?.map((item) => {
-      if (item.main) {
-        return { ...item, path };
-      }
-      return item;
-    });
+    let executables = config.executables || [];
+
+    if (config.executables?.some((item) => item.main)) {
+      executables = config.executables?.map((item) => {
+        if (item.main) {
+          return { ...item, path };
+        }
+        return item;
+      });
+    } else {
+      executables = [
+        ...executables,
+        {
+          path,
+          main: true
+        }
+      ];
+    }
+
     await updateAppConfig({ executables });
   };
 
@@ -494,7 +507,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     setupAppIcon,
     listAppExecutables,
     getAppConfig,
-    updateMainExecutablePath,
+    saveMainExecutablePath,
     updateMainExecutableFlags,
     writeAppConfig
   };

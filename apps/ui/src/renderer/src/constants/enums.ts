@@ -28,7 +28,8 @@ export enum ScriptOperation {
   DECOMPRESS = 'DECOMPRESS',
   COPY = 'COPY',
   REMOVE = 'REMOVE',
-  RUN_WINDOWS_EXE = 'RUN_WINDOWS_EXE'
+  RUN_WINDOWS_EXE = 'RUN_WINDOWS_EXE',
+  SET_MAIN_EXE = 'SET_MAIN_EXE'
 }
 
 export enum ConfigOrigin {

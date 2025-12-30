@@ -47,7 +47,8 @@ export const useSchema = () => {
               ScriptOperation.DOWNLOAD,
               ScriptOperation.COPY,
               ScriptOperation.RUN_WINDOWS_EXE,
-              ScriptOperation.DECOMPRESS
+              ScriptOperation.DECOMPRESS,
+              ScriptOperation.SET_MAIN_EXE
             ])
             .required(),
           url: schema.string().when('operation', {
@@ -80,6 +81,10 @@ export const useSchema = () => {
           }),
           target: schema.string().when('operation', {
             is: ScriptOperation.COPY,
+            then: (schema) => schema.required()
+          }),
+          mainExePath: schema.string().when('operation', {
+            is: ScriptOperation.SET_MAIN_EXE,
             then: (schema) => schema.required()
           })
         })
