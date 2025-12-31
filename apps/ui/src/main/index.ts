@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { app, shell, BrowserWindow, ipcMain } from 'electron';
+import { app, shell, BrowserWindow, ipcMain, globalShortcut } from 'electron';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { ElectronApi } from '../types/ElectronApi';
 import { singleton } from './singleton';
@@ -100,8 +100,16 @@ app.whenReady().then(() => {
 
   createWindow();
 
+  app.on('did-become-active', () => {
+    mainWindow?.webContents.closeDevTools();
+  });
+
   app.on('activate', function () {
     mainWindow?.show();
+  });
+
+  globalShortcut.register('Cmd+Alt+I', () => {
+    mainWindow?.webContents?.toggleDevTools();
   });
 
   const { mainWindow } = singleton;
