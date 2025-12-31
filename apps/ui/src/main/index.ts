@@ -101,7 +101,10 @@ app.whenReady().then(() => {
   createWindow();
 
   app.on('did-become-active', () => {
-    mainWindow?.webContents.closeDevTools();
+    if (!singleton.becameActive) {
+      mainWindow?.webContents.closeDevTools();
+      singleton.becameActive = true;
+    }
   });
 
   app.on('activate', function () {
