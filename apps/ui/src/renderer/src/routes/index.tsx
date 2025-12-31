@@ -4,8 +4,7 @@ import { CreateApp } from '@components/CreateApp';
 import { NotFoundApp } from '@components/NotFoundApp';
 import { MainLayout } from '@layouts/MainLayout';
 import { SimpleLayout } from '@layouts/SimpleLayout';
-import { Apps } from '@pages/Apps';
-import { Home } from '@pages/Home';
+import { InstalledApps } from '@pages/InstalledApps';
 import { Settings } from '@pages/Settings';
 import { Scripts } from '@pages/Scripts';
 import { Test } from '@pages/Test';
@@ -17,9 +16,8 @@ export const routes: RouteObject[] = [
     path: '/',
     element: <MainLayout />,
     children: [
-      { index: true, element: <Home /> },
-      { path: 'home', element: <Home /> },
-      { path: 'apps', element: <Apps /> },
+      { index: true, element: <InstalledApps /> },
+      { path: 'apps', element: <InstalledApps /> },
       { path: 'settings', element: <Settings /> },
       { path: 'scripts', element: <Scripts /> },
       { path: 'test', element: <Test /> }

@@ -15,7 +15,6 @@ export * from './SortDirectionSelect';
 export * from './StatusBox';
 export * from './AppConfig';
 export * from './WineAppPipelineProvider';
-export * from './WineAppsList';
 export * from './WineEnginesSelect';
 export * from './WineInstalledAppsList';
 export * from './WinetricksSelector';

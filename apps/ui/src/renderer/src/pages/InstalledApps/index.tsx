@@ -1,5 +1,5 @@
 import { WineInstalledAppsList } from '@components/WineInstalledAppsList';
 
-export const Apps: React.FC = () => {
+export const InstalledApps: React.FC = () => {
   return <WineInstalledAppsList />;
 };
