@@ -1,10 +1,8 @@
 import { Button, ButtonProps, Icon } from 'reactjs-shared-ui';
 import { InstallIcon } from '@assets/icons';
-import { useWineAppsListContext } from '@hooks/useWineAppsListContext';
-import { RootState } from '@interfaces/RootState';
-import { useSelector } from 'react-redux';
-import { ConfigOrigin } from '@constants/enums';
-import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { ConfigOrigin, PipelineAction } from '@constants/enums';
+import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
+import { useNavigateApp } from '@hooks/useNavigateApp';
 
 export interface InstallAppButtonProps extends ButtonProps {
   appName: string | undefined;
@@ -17,16 +15,21 @@ export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
   onClick: onClickProp,
   ...rest
 }) => {
-  const wineAppConfigModel = useWineAppConfigModel();
-  const wineAppConfig = useSelector((state: RootState) =>
-    wineAppConfigModel.selectWineAppConfig(state, appName, origin)
-  );
-  const { setShowDialog, setAppName } = useWineAppsListContext() || {};
+  const navigate = useNavigateApp();
+  const wineAppPipelineModel = useWineAppPipelineModel();
 
-  const onClick: InstallAppButtonProps['onClick'] = async (event) => {
+  const runPipeline = async () => {
+    const origin = ConfigOrigin.CLOUD;
+    const config = await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
+    navigate.navigateToAppPipeline(config.name, {
+      origin,
+      action: PipelineAction.RUN
+    });
+  };
+
+  const onClick: ButtonProps['onClick'] = (event) => {
+    runPipeline();
     onClickProp?.(event);
-    setShowDialog?.(true);
-    setAppName?.(wineAppConfig?.name);
   };
 
   return (
