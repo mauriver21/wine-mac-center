@@ -92,16 +92,18 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
         </Box>
         <Box display="flex" justifyContent="start" gap={1}>
           <RunScriptButton appName={wineAppConfig?.name} origin={origin} />
-          <Button
-            sx={{ borderRadius: 2 }}
-            equalSize={40}
-            color="secondary"
-            title="Configure Script"
-            disableElevation={false}
-            onClick={() => navigateToScript(appName)}
-          >
-            <Icon size={24} color="text.primary" strokeWidth={2} render={Cog6ToothIcon} />
-          </Button>
+          {origin === ConfigOrigin.SCRIPTS && (
+            <Button
+              sx={{ borderRadius: 2 }}
+              equalSize={40}
+              color="secondary"
+              title="Configure Script"
+              disableElevation={false}
+              onClick={() => navigateToScript(appName)}
+            >
+              <Icon size={24} color="text.primary" strokeWidth={2} render={Cog6ToothIcon} />
+            </Button>
+          )}
           <Button
             style={{ display: 'none' }}
             disabled={removing}
