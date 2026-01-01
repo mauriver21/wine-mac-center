@@ -1,23 +1,34 @@
-import { Box, Card, CardProps, Image } from 'reactjs-shared-ui';
+import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
-import { InstallAppButton } from '@components/InstallAppButton';
+import { RunScriptButton } from '@components/RunScriptButton';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
-import { useMemo } from 'react';
-import { buildAppUrls } from '@utils/buildAppUrls';
+import { useState } from 'react';
 import { ConfigOrigin } from '@constants/enums';
+import { useNavigateApp } from '@hooks/useNavigateApp';
+import { Cog6ToothIcon, TrashIcon } from '@heroicons/react/24/solid';
+import defaultArtwork from '@assets/imgs/header.jpg';
 
 export interface AppCardProps extends CardProps {
   appName: string | undefined;
   origin: ConfigOrigin | undefined;
 }
 
-export const AppCard: React.FC<AppCardProps> = ({ appName, origin, ...rest }) => {
-  const wineAppModel = useWineAppConfigModel();
+export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest }) => {
+  const { navigateToScript } = useNavigateApp();
+  const [removing, setRemoving] = useState(false);
+  const wineAppConfigModel = useWineAppConfigModel();
   const wineAppConfig = useSelector((state: RootState) =>
-    wineAppModel.selectWineAppConfig(state, appName, origin)
+    wineAppConfigModel.selectWineAppConfig(state, appName, origin)
   );
-  const appURLs = useMemo(() => buildAppUrls(appName), []);
+  const [artWorkSrc] = useState(defaultArtwork);
+  const [noArtWork] = useState(true);
+
+  const removeScript = async () => {
+    setRemoving(true);
+    await wineAppConfigModel.remove(appName);
+    setRemoving(false);
+  };
 
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
@@ -29,18 +40,59 @@ export const AppCard: React.FC<AppCardProps> = ({ appName, origin, ...rest }) =>
         gridTemplateRows="230px 40px"
         rowGap={'10px'}
       >
-        <Image
-          src={appURLs.artworkURL}
-          height="100%"
-          width="100%"
-          style={{
-            objectFit: 'cover',
-            maxWidth: '100%',
-            borderRadius: 12
-          }}
-        />
-        <Box display="flex" justifyContent="end">
-          <InstallAppButton appName={wineAppConfig?.name} origin={ConfigOrigin.CLOUD} />
+        <Box position="relative">
+          <Image
+            src={artWorkSrc}
+            height="100%"
+            width="100%"
+            style={{
+              objectFit: 'cover',
+              maxWidth: '100%',
+              borderRadius: 12
+            }}
+          />
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            width="100%"
+            height="100%"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {noArtWork ? (
+              <Body1 textAlign="center" p={1} fontWeight={500}>
+                {appName}
+              </Body1>
+            ) : (
+              <></>
+            )}
+          </Box>
+        </Box>
+        <Box display="flex" justifyContent="start" gap={1}>
+          <RunScriptButton appName={wineAppConfig?.name} origin={origin} />
+          <Button
+            sx={{ borderRadius: 2 }}
+            equalSize={40}
+            color="secondary"
+            title="Configure Script"
+            disableElevation={false}
+            onClick={() => navigateToScript(appName)}
+          >
+            <Icon size={24} color="text.primary" strokeWidth={2} render={Cog6ToothIcon} />
+          </Button>
+          <Button
+            style={{ display: 'none' }}
+            disabled={removing}
+            equalSize={40}
+            title="Remove Script"
+            color="secondary"
+            disableElevation={false}
+            onClick={() => removeScript()}
+          >
+            <Icon size={24} color="text.primary" strokeWidth={2} render={TrashIcon} />
+          </Button>
         </Box>
       </Box>
     </Card>

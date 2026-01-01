@@ -30,6 +30,7 @@ export type PipelineScript =
       name: string;
       operation: ScriptOperation.SET_MAIN_EXE;
       mainExePath: string;
+      exeFlags?: string;
     }
   | {
       name: string;

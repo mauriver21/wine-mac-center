@@ -70,7 +70,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                     onInput={async (path) => {
                       setMainExecutablePath(path);
                       setLoading?.(true);
-                      await wineApp?.saveMainExecutablePath?.(path);
+                      await wineApp?.saveMainExecutablePath?.({ path });
                       setLoading?.(false);
                     }}
                     disabled={!Boolean(mainExecutablePath)}

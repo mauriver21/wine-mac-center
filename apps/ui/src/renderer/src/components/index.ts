@@ -5,7 +5,7 @@ export * from './CircularProgress';
 export * from './EnvProvider';
 export * from './FileInput';
 export * from './FilePathInput';
-export * from './InstallAppButton';
+export * from './RunScriptButton';
 export * from './InstalledAppCard';
 export * from './NotificationsProvider';
 export * from './SearchField';

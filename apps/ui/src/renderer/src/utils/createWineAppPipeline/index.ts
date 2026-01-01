@@ -241,7 +241,7 @@ export const createWineAppPipeline = async (options: {
         const mainExePath = getRelativeDriveCPath(
           `${appEnv.WINE_APP_DRIVE_C_PATH}/${parsePath(args.mainExePath)}`
         );
-        await wineApp.saveMainExecutablePath(mainExePath);
+        await wineApp.saveMainExecutablePath({ path: mainExePath, flags: args.exeFlags });
         spawnProcessArgs.onExit?.(0);
         break;
       }

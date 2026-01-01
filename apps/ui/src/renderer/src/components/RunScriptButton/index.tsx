@@ -1,17 +1,17 @@
 import { Button, ButtonProps, Icon } from 'reactjs-shared-ui';
-import { InstallIcon } from '@assets/icons';
 import { ConfigOrigin, PipelineAction } from '@constants/enums';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { PlayCircleIcon } from '@heroicons/react/24/solid';
 
-export interface InstallAppButtonProps extends ButtonProps {
+export interface RunScriptButtonProps extends ButtonProps {
   appName: string | undefined;
   origin: ConfigOrigin | undefined;
 }
 
-export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
+export const RunScriptButton: React.FC<RunScriptButtonProps> = ({
   appName,
-  origin,
+  origin = ConfigOrigin.SCRIPTS,
   onClick: onClickProp,
   ...rest
 }) => {
@@ -19,7 +19,6 @@ export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
   const wineAppPipelineModel = useWineAppPipelineModel();
 
   const runPipeline = async () => {
-    const origin = ConfigOrigin.CLOUD;
     const config = await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
     navigate.navigateToAppPipeline(config.name, {
       origin,
@@ -36,13 +35,13 @@ export const InstallAppButton: React.FC<InstallAppButtonProps> = ({
     <Button
       disableElevation={false}
       sx={{ borderRadius: 2 }}
-      title="Install App"
+      title="Run Script"
       equalSize={40}
       color="secondary"
       onClick={onClick}
       {...rest}
     >
-      <Icon size={24} color="text.primary" strokeWidth={2} render={InstallIcon} />
+      <Icon size={24} color="text.primary" strokeWidth={2} render={PlayCircleIcon} />
     </Button>
   );
 };

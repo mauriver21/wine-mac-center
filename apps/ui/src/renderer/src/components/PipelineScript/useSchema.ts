@@ -86,6 +86,10 @@ export const useSchema = () => {
           mainExePath: schema.string().when('operation', {
             is: ScriptOperation.SET_MAIN_EXE,
             then: (schema) => schema.required()
+          }),
+          exeFlags: schema.string().when('operation', {
+            is: ScriptOperation.SET_MAIN_EXE,
+            then: (schema) => schema.optional()
           })
         })
       )

@@ -9,8 +9,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@interfaces/RootState';
 import { SortDirection } from '@interfaces/SortDirection';
 import { VirtuosoGrid } from 'react-virtuoso';
-import { ScriptItem } from '@components/ScriptItem';
 import { ConfigOrigin } from '@constants/enums';
+import { AppCard } from '@components/AppCard';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -21,7 +21,9 @@ const List = forwardRef<HTMLDivElement, ListProps>(({ style, children, ...rest }
     {...rest}
     style={{
       display: 'grid',
-      gridGap: '12px',
+      gridAutoColumns: 'minmax(200px, auto)',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+      gridGap: '10px',
       padding: '10px',
       ...style
     }}
@@ -107,7 +109,9 @@ export const Scripts: React.FC = () => {
           style={{ height: '100%' }}
           data={appConfigs}
           components={{ List, Item }}
-          itemContent={(index, appConfig) => <ScriptItem key={index} appName={appConfig.name} />}
+          itemContent={(index, appConfig) => (
+            <AppCard key={index} appName={appConfig.name} origin={ConfigOrigin.SCRIPTS} />
+          )}
         />
       </SkeletonLoader>
     </Box>

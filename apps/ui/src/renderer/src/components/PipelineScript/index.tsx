@@ -110,7 +110,7 @@ export const PipelineScript: React.FC = () => {
                 top={-7}
                 left={-15}
               >
-                {index > 0 ? (
+                {fields.length > 1 ? (
                   <Button
                     variant="contained"
                     sx={{ borderRadius: 10 }}
@@ -212,15 +212,22 @@ export const PipelineScript: React.FC = () => {
                   />
                 )}
                 {operation === ScriptOperation.SET_MAIN_EXE && (
-                  <TextField
-                    control={form.control}
-                    name={`pipelineScripts.${index}.mainExePath`}
-                    InputProps={{
-                      startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
-                    }}
-                    label="Set Main Exe"
-                    placeholder="/your/relative/path"
-                  />
+                  <>
+                    <TextField
+                      control={form.control}
+                      name={`pipelineScripts.${index}.mainExePath`}
+                      InputProps={{
+                        startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
+                      }}
+                      label="Set Main Exe"
+                      placeholder="/your/relative/path"
+                    />
+                    <TextField
+                      control={form.control}
+                      name={`pipelineScripts.${index}.exeFlags`}
+                      label="Exe Flags"
+                    />
+                  </>
                 )}
                 {operation === ScriptOperation.RUN_WINDOWS_EXE && (
                   <TextField
@@ -303,6 +310,7 @@ export const PipelineScript: React.FC = () => {
             {
               mainExePath: item.mainExePath || '',
               operation: item.operation,
+              exeFlags: item.exeFlags,
               name: 'Set main exe'
             }
           ];
@@ -362,7 +370,10 @@ export const PipelineScript: React.FC = () => {
         engineVersion,
         ...rest
       });
-      form.trigger();
+
+      setTimeout(() => {
+        form.trigger();
+      }, 200);
     }
   }, [appConfig?.name]);
 
