@@ -6,8 +6,9 @@ import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useState } from 'react';
 import { ConfigOrigin } from '@constants/enums';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { Cog6ToothIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { Cog6ToothIcon, ComputerDesktopIcon, TrashIcon } from '@heroicons/react/24/solid';
 import defaultArtwork from '@assets/imgs/header.jpg';
+import { Cloud } from '@mui/icons-material';
 
 export interface AppCardProps extends CardProps {
   appName: string | undefined;
@@ -41,6 +42,25 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
         rowGap={'10px'}
       >
         <Box position="relative">
+          <Box
+            position="absolute"
+            top={-9}
+            right={-9}
+            width={30}
+            height={30}
+            borderRadius={2}
+            bgcolor="secondary.main"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {origin === ConfigOrigin.CLOUD && (
+              <Icon size={20} color="text.secondary" strokeWidth={2} render={Cloud} />
+            )}
+            {origin === ConfigOrigin.SCRIPTS && (
+              <Icon size={20} color="text.secondary" strokeWidth={2} render={ComputerDesktopIcon} />
+            )}
+          </Box>
           <Image
             src={artWorkSrc}
             height="100%"
