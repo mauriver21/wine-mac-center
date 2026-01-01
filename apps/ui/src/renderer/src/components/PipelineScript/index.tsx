@@ -400,7 +400,7 @@ export const PipelineScript: React.FC = () => {
               }}
             >
               <H6 color="text.secondary" fontWeight={500}>
-                Create Script
+                {appConfig?.name ? `${appConfig?.name} Script` : `Create Script`}
               </H6>
               <Button onClick={navigateToScripts}>Back</Button>
             </Box>

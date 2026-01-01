@@ -3,12 +3,13 @@ import { useSelector } from 'react-redux';
 import { RunScriptButton } from '@components/RunScriptButton';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ConfigOrigin } from '@constants/enums';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { Cog6ToothIcon, ComputerDesktopIcon, TrashIcon } from '@heroicons/react/24/solid';
 import defaultArtwork from '@assets/imgs/header.jpg';
 import { Cloud } from '@mui/icons-material';
+import { buildAppUrls } from '@utils/buildAppUrls';
 
 export interface AppCardProps extends CardProps {
   appName: string | undefined;
@@ -22,14 +23,27 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
   const wineAppConfig = useSelector((state: RootState) =>
     wineAppConfigModel.selectWineAppConfig(state, appName, origin)
   );
-  const [artWorkSrc] = useState(defaultArtwork);
-  const [noArtWork] = useState(true);
+  const [artWorkSrc, setArtWorkSrc] = useState(defaultArtwork);
+  const [noArtWork, setNoArtWork] = useState(true);
+  const appURLs = useMemo(
+    () => buildAppUrls({ appName: wineAppConfig?.name, origin: wineAppConfig?.origin }),
+    [wineAppConfig?.name]
+  );
 
   const removeScript = async () => {
     setRemoving(true);
+
     await wineAppConfigModel.remove(appName);
     setRemoving(false);
   };
+
+  useEffect(() => {
+    if (wineAppConfig) {
+      const artWorkSrc = appURLs?.artworkURL || '';
+      setArtWorkSrc(artWorkSrc || defaultArtwork);
+      setNoArtWork(!Boolean(artWorkSrc));
+    }
+  }, [wineAppConfig?.name]);
 
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
@@ -93,28 +107,31 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
         <Box display="flex" justifyContent="start" gap={1}>
           <RunScriptButton appName={wineAppConfig?.name} origin={origin} />
           {origin === ConfigOrigin.SCRIPTS && (
-            <Button
-              sx={{ borderRadius: 2 }}
-              equalSize={40}
-              color="secondary"
-              title="Configure Script"
-              disableElevation={false}
-              onClick={() => navigateToScript(appName)}
-            >
-              <Icon size={24} color="text.primary" strokeWidth={2} render={Cog6ToothIcon} />
-            </Button>
+            <>
+              <Button
+                sx={{ borderRadius: 2 }}
+                equalSize={40}
+                color="secondary"
+                title="Configure Script"
+                disableElevation={false}
+                onClick={() => navigateToScript(appName)}
+              >
+                <Icon size={24} color="text.primary" strokeWidth={2} render={Cog6ToothIcon} />
+              </Button>
+
+              <Button
+                style={{ display: 'none' }}
+                disabled={removing}
+                equalSize={40}
+                title="Remove Script"
+                color="secondary"
+                disableElevation={false}
+                onClick={() => removeScript()}
+              >
+                <Icon size={24} color="text.primary" strokeWidth={2} render={TrashIcon} />
+              </Button>
+            </>
           )}
-          <Button
-            style={{ display: 'none' }}
-            disabled={removing}
-            equalSize={40}
-            title="Remove Script"
-            color="secondary"
-            disableElevation={false}
-            onClick={() => removeScript()}
-          >
-            <Icon size={24} color="text.primary" strokeWidth={2} render={TrashIcon} />
-          </Button>
         </Box>
       </Box>
     </Card>
