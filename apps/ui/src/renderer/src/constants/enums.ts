@@ -35,7 +35,8 @@ export enum ScriptOperation {
 export enum ConfigOrigin {
   CLOUD = 'CLOUD',
   SCRIPTS = 'SCRIPTS',
-  INSTALLED_APP = 'INSTALLED_APP'
+  INSTALLED_APP = 'INSTALLED_APP',
+  ALL_EXCEPT_INSTALLED_APP = 'ALL_EXCEPT_INSTALLED_APP'
 }
 
 export enum PipelineAction {

@@ -11,6 +11,7 @@ import { SortDirection } from '@interfaces/SortDirection';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { ConfigOrigin } from '@constants/enums';
 import { AppCard } from '@components/AppCard';
+import { ConfigOriginSelect } from '@components/ConfigOriginSelect';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -55,7 +56,7 @@ export const Scripts: React.FC = () => {
   const [filters, setFilters] = useState({
     criteria: '',
     order: 'asc' as SortDirection,
-    origin: ConfigOrigin.SCRIPTS
+    origin: ConfigOrigin.ALL_EXCEPT_INSTALLED_APP
   });
   const appConfigs = useSelector((state: RootState) =>
     appConfigModel.selectWineAppsConfigs(state, filters)
@@ -70,6 +71,7 @@ export const Scripts: React.FC = () => {
       <Stack direction="row" spacing={1} pt={2} px={3} justifyContent="space-between" pb={2}>
         <Stack spacing={1} direction="row" width="100%" maxWidth={450}>
           <SearchField
+            sx={{ minWidth: 400 }}
             onChange={(event) =>
               setFilters((prev) => ({
                 ...prev,
@@ -83,6 +85,16 @@ export const Scripts: React.FC = () => {
               setFilters((prev) => ({
                 ...prev,
                 order
+              }))
+            }
+          />
+          <ConfigOriginSelect
+            sx={{ minWidth: 200 }}
+            value={filters?.origin}
+            onChange={(origin) =>
+              setFilters((prev) => ({
+                ...prev,
+                origin
               }))
             }
           />
@@ -110,7 +122,7 @@ export const Scripts: React.FC = () => {
           data={appConfigs}
           components={{ List, Item }}
           itemContent={(index, appConfig) => (
-            <AppCard key={index} appName={appConfig.name} origin={ConfigOrigin.SCRIPTS} />
+            <AppCard key={index} appName={appConfig.name} origin={appConfig.origin} />
           )}
         />
       </SkeletonLoader>

@@ -114,7 +114,7 @@ export const useWineAppConfigModel = () => {
 
       const { criteria, order, origin } = filters || {};
 
-      if (origin) {
+      if (origin && origin !== ConfigOrigin.ALL_EXCEPT_INSTALLED_APP) {
         wineAppsConfigs = wineAppsConfigs?.filter((item) => item.origin == origin);
       }
 
