@@ -64,7 +64,12 @@ export const useWineAppPipelineModel = () => {
     const wineApp = await createWineApp(appName, config);
     return new Promise<WineAppConfig>((resolve) =>
       wineApp.scaffold(
-        { appIconURL: config?.iconURL, appArtWorkURL: config?.artworkURL },
+        {
+          appIconURL: config?.iconURL,
+          appArtWorkURL: config?.artworkURL,
+          appIconFile: config?.iconFile,
+          appArtWorkFile: config?.artworkFile
+        },
         {
           onExit: () => {
             resolve(config);
