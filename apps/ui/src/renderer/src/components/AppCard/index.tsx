@@ -38,7 +38,7 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
       setArtWorkSrc(artWorkSrc || defaultArtwork);
       setNoArtWork(!Boolean(artWorkSrc));
     }
-  }, [wineAppConfig?.name]);
+  }, [wineAppConfig?.artworkURL]);
 
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
