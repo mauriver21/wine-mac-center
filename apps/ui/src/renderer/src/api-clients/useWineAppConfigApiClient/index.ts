@@ -1,4 +1,4 @@
-import { ConfigOrigin } from '@constants/enums';
+import { ConfigOrigin, FileName } from '@constants/enums';
 import { EXECUTABLES_PATHS } from '@constants/paths';
 import { DOWNLOADABLES_URLS, WINE_APPS_CONFIGS_URL } from '@constants/urls';
 import { WineAppArgs } from '@interfaces/WineAppArgs';
@@ -17,6 +17,7 @@ import { writeFile } from '@utils/writeFile';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { createObjectURL } from '@utils/createObjectURL';
+import { writeBinaryFile } from '@utils/writeBinaryFile';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
@@ -178,8 +179,18 @@ export const useWineAppConfigApiClient = () => {
     return;
   };
 
+  const saveScriptIconFile = (appName: string, file: ArrayBuffer) => {
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${appName}`;
+    return writeBinaryFile(`${SCRIPT_PATH}/${FileName.CFBundleIconFile}`, file);
+  };
+
+  const saveScriptArtworkFile = (appName: string, file: ArrayBuffer) => {
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${appName}`;
+    return writeBinaryFile(`${SCRIPT_PATH}/header.jpeg`, file);
+  };
+
   const update = async (data: WineAppConfig & { originalAppName: string }) => {
-    const { originalAppName, name, ...rest } = data;
+    const { originalAppName, name, iconFile, artworkFile, ...rest } = data;
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${originalAppName}`;
     const NEW_SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${name}`;
     const changedScriptName = name !== originalAppName;
@@ -195,6 +206,9 @@ export const useWineAppConfigApiClient = () => {
       } else {
         config = await writeScript({ ...rest, name });
       }
+
+      iconFile && (await saveScriptIconFile(name, iconFile));
+      artworkFile && (await saveScriptArtworkFile(name, artworkFile));
     }
 
     return config;
