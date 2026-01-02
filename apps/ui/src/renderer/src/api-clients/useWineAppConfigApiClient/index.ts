@@ -4,9 +4,9 @@ import { DOWNLOADABLES_URLS, WINE_APPS_CONFIGS_URL } from '@constants/urls';
 import { WineAppArgs } from '@interfaces/WineAppArgs';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppConfigIndex } from '@interfaces/WineAppConfigIndex';
-import { buildAppUrls } from '@utils/buildAppUrls';
 import { createDirectory } from '@utils/createDirectory';
 import { dirExists } from '@utils/dirExists';
+import { encodeURL } from '@utils/encodeURL';
 import { fileExists } from '@utils/fileExists';
 import { parseJson } from '@utils/parseJson';
 import { readDirectory } from '@utils/readDirectory';
@@ -14,7 +14,9 @@ import { readFileAsString } from '@utils/readFileAsString';
 import { removeDirectory } from '@utils/removeDirectory';
 import { useEnv } from '@utils/useEnv';
 import { writeFile } from '@utils/writeFile';
+import { v4 as uuid } from 'uuid';
 import axios from 'axios';
+import { createObjectURL } from '@utils/createObjectURL';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
@@ -37,6 +39,35 @@ export const useWineAppConfigApiClient = () => {
     return config;
   };
 
+  const buildAppUrls = (args: {
+    appName: string | undefined;
+    origin: ConfigOrigin | undefined;
+  }) => {
+    const { appName, origin } = args;
+
+    switch (origin) {
+      case ConfigOrigin.CLOUD: {
+        const URL = `${WINE_APPS_CONFIGS_URL}/${appName}`;
+        const ASSETS_URL = `${URL}/assets`;
+        return {
+          artworkURL: encodeURL(`${ASSETS_URL}/header.jpeg`),
+          iconURL: encodeURL(`${ASSETS_URL}/winemacapp.icns?cache=${uuid()}`),
+          scriptURL: encodeURL(`${URL}/index.json`)
+        };
+      }
+      case ConfigOrigin.SCRIPTS: {
+        const ASSETS_PATH = `${env.get().WINE_SCRIPTS_PATH}/${appName}/assets`;
+        return {
+          artworkURL: encodeURL(`${ASSETS_PATH}/header.jpeg`),
+          iconURL: encodeURL(`${ASSETS_PATH}/winemacapp.icns?cache=${uuid()}`),
+          scriptURL: encodeURL(`${ASSETS_PATH}/index.json`)
+        };
+      }
+      default:
+        return;
+    }
+  };
+
   const readCloudFile = async (appName: string) => {
     const urls = buildAppUrls({ appName, origin: ConfigOrigin.CLOUD });
     if (urls === undefined) throw Error('Failed to build app urls');
@@ -56,12 +87,35 @@ export const useWineAppConfigApiClient = () => {
 
   const readScriptFile = (appName: string) => {
     const SCRIPT_FILE = `${WINE_SCRIPTS_PATH}/${appName}/index.json`;
+    const urls = buildAppUrls({ appName, origin: ConfigOrigin.SCRIPTS });
+
     return new Promise<WineAppConfig | undefined>(async (resolve) => {
       let script = '';
+      let hasIcon = false;
+      let hasArtwork = false;
       const hasScriptFile = await fileExists(SCRIPT_FILE);
+
+      if (urls?.iconURL) {
+        hasIcon = await fileExists(urls?.iconURL);
+      }
+
+      if (urls?.artworkURL) {
+        hasArtwork = await fileExists(urls?.artworkURL);
+      }
+
       if (hasScriptFile) {
         script = await readFileAsString(SCRIPT_FILE);
-        resolve(parseJson<WineAppConfig>(script));
+        const wineAppConfig = parseJson<WineAppConfig>(script);
+
+        resolve(
+          wineAppConfig
+            ? {
+                ...wineAppConfig,
+                artworkURL: hasArtwork ? await createObjectURL(urls?.artworkURL) : undefined,
+                iconURL: hasIcon ? await createObjectURL(urls?.iconURL) : undefined
+              }
+            : undefined
+        );
       } else {
         resolve(undefined);
       }
@@ -87,15 +141,28 @@ export const useWineAppConfigApiClient = () => {
     const promises: Array<Promise<WineAppConfig | undefined>> = [];
     let configs: WineAppConfig[] = [];
 
+    const { data: configsIndexes } = await axios.get<WineAppConfigIndex[]>(
+      `${WINE_APPS_CONFIGS_URL}/index.json`
+    );
+
     for (const dir of directories) {
+      if (dir == '.DS_Store') continue;
       promises.push(readScriptFile(dir));
     }
 
-    configs = (await Promise.all(promises)).filter((item) => item !== undefined) as WineAppConfig[];
+    let cloudConfigs: WineAppConfig[] = [];
 
-    const { data: cloudConfigs } = await axios.get<WineAppConfigIndex[]>(
-      `${WINE_APPS_CONFIGS_URL}/index.json`
-    );
+    for (const configIndex of configsIndexes) {
+      const urls = buildAppUrls({ appName: configIndex.name, origin: ConfigOrigin.CLOUD });
+      cloudConfigs = [
+        ...cloudConfigs,
+        { ...configIndex, artworkURL: urls?.artworkURL, iconURL: urls?.iconURL }
+      ];
+    }
+
+    configs = (await Promise.all(promises)).filter(
+      (item) => item !== undefined || item !== ''
+    ) as WineAppConfig[];
 
     return [...configs, ...cloudConfigs];
   };

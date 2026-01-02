@@ -1,14 +1,4 @@
-import { readBinaryFile } from '@utils/readBinaryFile';
+import { createObjectURL } from '@utils/createObjectURL';
 
-export const getAppArtwork = async (appPath = '') => {
-  let url = '';
-  try {
-    const data = await readBinaryFile(`${appPath}/Contents/Resources/header.jpeg`);
-    const blob = new Blob([data]);
-    url = URL.createObjectURL(blob);
-  } catch (_) {
-    _;
-  }
-
-  return url;
-};
+export const getAppArtwork = (appPath = '') =>
+  createObjectURL(`${appPath}/Contents/Resources/header.jpeg`);

@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux';
 import { RunScriptButton } from '@components/RunScriptButton';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ConfigOrigin } from '@constants/enums';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { Cog6ToothIcon, ComputerDesktopIcon, TrashIcon } from '@heroicons/react/24/solid';
 import defaultArtwork from '@assets/imgs/header.jpg';
 import { Cloud } from '@mui/icons-material';
-import { buildAppUrls } from '@utils/buildAppUrls';
 
 export interface AppCardProps extends CardProps {
   appName: string | undefined;
@@ -25,10 +24,6 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
   );
   const [artWorkSrc, setArtWorkSrc] = useState(defaultArtwork);
   const [noArtWork, setNoArtWork] = useState(true);
-  const appURLs = useMemo(
-    () => buildAppUrls({ appName: wineAppConfig?.name, origin: wineAppConfig?.origin }),
-    [wineAppConfig?.name]
-  );
 
   const removeScript = async () => {
     setRemoving(true);
@@ -39,7 +34,7 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
 
   useEffect(() => {
     if (wineAppConfig) {
-      const artWorkSrc = appURLs?.artworkURL || '';
+      const artWorkSrc = wineAppConfig?.artworkURL || '';
       setArtWorkSrc(artWorkSrc || defaultArtwork);
       setNoArtWork(!Boolean(artWorkSrc));
     }

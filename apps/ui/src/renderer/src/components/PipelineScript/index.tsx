@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   ContentsArea,
@@ -41,7 +41,6 @@ import { RootState } from '@interfaces/RootState';
 import { IconInput } from '@components/IconInput';
 import { blobToURL } from '@utils/blobToURL';
 import { ArtWorkInput } from '@components/ArtWorkInput';
-import { buildAppUrls } from '@utils/buildAppUrls';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -67,10 +66,6 @@ export const PipelineScript: React.FC = () => {
 
   const insertAfter = (index: number) => insert(index + 1, DEFAULT_PIPELINE_SCRIPT);
   const insertBefore = (index: number) => insert(index, DEFAULT_PIPELINE_SCRIPT);
-  const appURLs = useMemo(
-    () => buildAppUrls({ appName: appConfig?.name, origin: appConfig?.origin }),
-    [appConfig?.name]
-  );
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -422,8 +417,8 @@ export const PipelineScript: React.FC = () => {
   }, [appConfig?.name]);
 
   useEffect(() => {
-    setArtWorkSrc(appURLs?.artworkURL || '');
-    setIconSrc(appURLs?.iconURL || '');
+    setArtWorkSrc(appConfig?.artworkURL || '');
+    setIconSrc(appConfig?.iconURL || '');
   }, [appConfig?.name]);
 
   return (
