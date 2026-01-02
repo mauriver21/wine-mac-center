@@ -71,7 +71,7 @@ export const Scripts: React.FC = () => {
       <Stack direction="row" spacing={1} pt={2} px={3} justifyContent="space-between" pb={2}>
         <Stack spacing={1} direction="row" width="100%" maxWidth={450}>
           <SearchField
-            sx={{ minWidth: 400 }}
+            sx={{ minWidth: 300 }}
             onChange={(event) =>
               setFilters((prev) => ({
                 ...prev,
