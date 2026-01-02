@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   ContentsArea,
@@ -41,6 +41,7 @@ import { RootState } from '@interfaces/RootState';
 import { IconInput } from '@components/IconInput';
 import { blobToURL } from '@utils/blobToURL';
 import { ArtWorkInput } from '@components/ArtWorkInput';
+import { buildAppUrls } from '@utils/buildAppUrls';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -66,6 +67,10 @@ export const PipelineScript: React.FC = () => {
 
   const insertAfter = (index: number) => insert(index + 1, DEFAULT_PIPELINE_SCRIPT);
   const insertBefore = (index: number) => insert(index, DEFAULT_PIPELINE_SCRIPT);
+  const appURLs = useMemo(
+    () => buildAppUrls({ appName: appConfig?.name, origin: appConfig?.origin }),
+    [appConfig?.name]
+  );
 
   const modules = [
     <CardItem icon={PencilSquareIcon} label="Script Details">
@@ -355,27 +360,29 @@ export const PipelineScript: React.FC = () => {
   };
 
   const submit = async (data: FormSchema) => {
-    const { originalAppName, winetricksVerbs = [], ...rest } = data;
+    const { originalAppName, winetricksVerbs = [], iconFile, artworkFile, appName, ...rest } = data;
     setLoading(true);
 
     const pipelineScripts = mapPipelineScripts(rest.pipelineScripts);
+    const formattedData = {
+      name: appName,
+      origin: ConfigOrigin.SCRIPTS,
+      pipelineScripts,
+      winetricks: { verbs: winetricksVerbs },
+      iconFile: await iconFile?.arrayBuffer(),
+      artworkFile: await artworkFile?.arrayBuffer()
+    };
 
     if (appConfig?.name) {
       await wineAppConfigModel.update({
         ...rest,
         originalAppName,
-        name: rest.appName,
-        origin: ConfigOrigin.SCRIPTS,
-        pipelineScripts,
-        winetricks: { verbs: winetricksVerbs }
+        ...formattedData
       });
     } else {
       await wineAppConfigModel.create({
         ...rest,
-        name: rest.appName,
-        origin: ConfigOrigin.SCRIPTS,
-        pipelineScripts,
-        winetricks: { verbs: winetricksVerbs }
+        ...formattedData
       });
     }
 
@@ -391,8 +398,11 @@ export const PipelineScript: React.FC = () => {
         winetricks,
         engineVersion = '',
         dxvkEnabled = false,
+        artworkFile = undefined,
+        iconFile = undefined,
         ...rest
       } = appConfig;
+
       form.fill({
         appName: name,
         originalAppName: appName || '',
@@ -400,6 +410,8 @@ export const PipelineScript: React.FC = () => {
         winetricksVerbs: winetricks?.verbs || [],
         dxvkEnabled,
         engineVersion,
+        artworkFile: undefined,
+        iconFile: undefined,
         ...rest
       });
 
@@ -407,6 +419,11 @@ export const PipelineScript: React.FC = () => {
         form.trigger();
       }, 200);
     }
+  }, [appConfig?.name]);
+
+  useEffect(() => {
+    setArtWorkSrc(appURLs?.artworkURL || '');
+    setIconSrc(appURLs?.iconURL || '');
   }, [appConfig?.name]);
 
   return (

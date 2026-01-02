@@ -1,4 +1,5 @@
 import { ScriptOperation } from '@constants/enums';
+import { fileMaxSize } from '@utils/fileMaxSize';
 import { isAlphanumeric } from '@utils/isAlphanumeric';
 import { isDownloadableURL } from '@utils/isDownloadableURL';
 import { isURL } from '@utils/isURL';
@@ -38,6 +39,16 @@ export const useSchema = () => {
     engineVersion: schema.string().required().default(''),
     dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
     winetricksVerbs: schema.array().of(schema.string().required()).default([]),
+    iconFile: schema.mixed<File>().test({
+      name: 'fileSize',
+      message: 'File exceeds 200kb',
+      test: (file) => fileMaxSize(file, 200000)
+    }),
+    artworkFile: schema.mixed<File>().test({
+      name: 'fileSize',
+      message: 'File exceeds 1000kb',
+      test: (file) => fileMaxSize(file, 1000000)
+    }),
     pipelineScripts: schema
       .array(
         schema.object({
