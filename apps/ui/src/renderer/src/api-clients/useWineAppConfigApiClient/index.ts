@@ -56,11 +56,11 @@ export const useWineAppConfigApiClient = () => {
         };
       }
       case ConfigOrigin.SCRIPTS: {
-        const ASSETS_PATH = `${env.get().WINE_SCRIPTS_PATH}/${appName}/assets`;
+        const SCRIPT_PATH = `${env.get().WINE_SCRIPTS_PATH}/${appName}`;
         return {
-          artworkURL: encodeURL(`${ASSETS_PATH}/header.jpeg`),
-          iconURL: encodeURL(`${ASSETS_PATH}/winemacapp.icns?cache=${uuid()}`),
-          scriptURL: encodeURL(`${ASSETS_PATH}/index.json`)
+          artworkURL: encodeURL(`${SCRIPT_PATH}/header.jpeg`),
+          iconURL: encodeURL(`${SCRIPT_PATH}/winemacapp.icns`),
+          scriptURL: encodeURL(`${SCRIPT_PATH}/index.json`)
         };
       }
       default:
