@@ -10,7 +10,7 @@ import {
   Stack,
   TableOfContents
 } from 'reactjs-shared-ui';
-import { alpha, Chip } from '@mui/material';
+import { alpha, Chip, Divider } from '@mui/material';
 import { DEFAULT_PIPELINE_SCRIPT, FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-shared-ui/forms';
 import { useFieldArray } from 'react-hook-form';
@@ -20,6 +20,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CpuChipIcon,
+  PaintBrushIcon,
   PencilSquareIcon,
   PlayCircleIcon,
   SparklesIcon,
@@ -37,6 +38,9 @@ import { useParams } from 'react-router-dom';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useSelector } from 'react-redux';
 import { RootState } from '@interfaces/RootState';
+import { IconInput } from '@components/IconInput';
+import { blobToURL } from '@utils/blobToURL';
+import { ArtWorkInput } from '@components/ArtWorkInput';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -51,6 +55,8 @@ export const PipelineScript: React.FC = () => {
     wineAppConfigModel.selectWineAppConfig(state, appName, ConfigOrigin.SCRIPTS)
   );
   const [loading, setLoading] = useState(false);
+  const [iconSrc, setIconSrc] = useState('');
+  const [artworkSrc, setArtWorkSrc] = useState('');
   const { fields, insert, remove } = useFieldArray<FormSchema>({
     name: 'pipelineScripts',
     control: form.control
@@ -84,6 +90,32 @@ export const PipelineScript: React.FC = () => {
           <WinetricksSelector control={form.control} name="winetricksVerbs" />
         </Grid>
       </Grid>
+    </CardItem>,
+    <CardItem icon={PaintBrushIcon} label="Style">
+      <>
+        <Divider />
+        <Box pt={2} display="flex" gap={4} justifyContent="center">
+          <IconInput
+            type="image"
+            imgSrc={iconSrc}
+            name="iconFile"
+            control={form.control}
+            onInput={async (file) => {
+              file && setIconSrc(blobToURL(await file?.arrayBuffer()));
+            }}
+          />
+          <ArtWorkInput
+            control={form.control}
+            name="artworkFile"
+            type="image"
+            imgSrc={artworkSrc}
+            appName={'No Artwork'}
+            onInput={async (file) => {
+              file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
+            }}
+          />
+        </Box>
+      </>
     </CardItem>,
     <CardItem icon={PlayCircleIcon} label="Installation Script">
       <Stack spacing={2}>

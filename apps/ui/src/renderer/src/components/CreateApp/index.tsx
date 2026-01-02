@@ -136,7 +136,15 @@ export const CreateApp: React.FC = () => {
 
   const submit = async (data: FormSchema) => {
     const origin = ConfigOrigin.INSTALLED_APP;
-    const { name, appFolderPath, artworkFile, iconFile, useWinetricks: _, ...rest } = data;
+    const {
+      name,
+      appFolderPath,
+      artworkFile,
+      iconFile,
+      useWinetricks: _,
+      winetricksVerbs = [],
+      ...rest
+    } = data;
     const config = await wineAppPipelineModel.scaffoldWineApp({
       appName: data.name,
       config: {
@@ -145,6 +153,7 @@ export const CreateApp: React.FC = () => {
         artworkFile: await artworkFile?.arrayBuffer(),
         iconFile: await iconFile?.arrayBuffer(),
         origin,
+        winetricks: { verbs: winetricksVerbs },
         ...rest
       },
       origin

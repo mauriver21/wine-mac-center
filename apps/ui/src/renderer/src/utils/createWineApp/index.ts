@@ -149,13 +149,13 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
       onExit: async (data) => {
         await args?.onExit?.(data);
         await updateAppConfig({ name: appName });
-        await setupAppIcon(params);
-        await setupAppArtwork(params);
+        await saveAppIcon(params);
+        await saveAppArtwork(params);
       }
     });
   };
 
-  const setupAppIcon = async (params: { appIconURL?: string; appIconFile?: ArrayBuffer }) => {
+  const saveAppIcon = async (params: { appIconURL?: string; appIconFile?: ArrayBuffer }) => {
     try {
       let file = params.appIconFile;
 
@@ -171,7 +171,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     }
   };
 
-  const setupAppArtwork = async (params: {
+  const saveAppArtwork = async (params: {
     appArtWorkURL?: string;
     appArtWorkFile?: ArrayBuffer;
   }) => {
@@ -505,8 +505,8 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     copyWindowsApplication,
     setSetupExe,
     bundleApp,
-    setupAppArtwork,
-    setupAppIcon,
+    saveAppArtwork,
+    saveAppIcon,
     listAppExecutables,
     getAppConfig,
     saveMainExecutablePath,

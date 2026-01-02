@@ -84,7 +84,7 @@ export const AppPipeline: React.FC = () => {
 
   useEffect(() => {
     contentsAreaRef.current?.refreshTableOfContents();
-  }, []);
+  }, [pipelineStatus]);
 
   return (
     <Box display="grid" overflow="auto">

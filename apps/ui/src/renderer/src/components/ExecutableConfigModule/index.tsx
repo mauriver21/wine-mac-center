@@ -93,7 +93,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                     refreshImage={signal}
                     appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
                     onInput={async (file) => {
-                      file && wineApp?.setupAppIcon({ appIconFile: await file?.arrayBuffer() });
+                      file && wineApp?.saveAppIcon({ appIconFile: await file?.arrayBuffer() });
                       refresh?.();
                     }}
                   />
@@ -104,7 +104,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                   type="app"
                   refreshImage={signal}
                   onInput={async (file) => {
-                    file && wineApp?.setupAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
+                    file && wineApp?.saveAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
                     refresh?.();
                   }}
                   appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
