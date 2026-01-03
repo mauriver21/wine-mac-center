@@ -11,6 +11,8 @@ export type BashScript =
   | 'extractWineEngine'
   | 'listAppExecutables'
   | 'loadDylibs'
+  | 'mountDiskImage'
+  | 'unmountVolume'
   | 'regedit'
   | 'taskmgr'
   | 'uninstaller'

@@ -13,6 +13,7 @@ import { SetSetupExe } from './SetSetupExe';
 import { DownloadEngine } from './DownloadEngine';
 import { Stack } from 'reactjs-shared-ui';
 import { Extract } from './Extract';
+import { MountDiskImage } from './MountDiskImage';
 
 export const WineAppContext = createContext<{
   wineApp: WineApp;
@@ -40,6 +41,7 @@ export const Test: React.FC = () => {
             <BundleApp />
             <WineCfg />
             <Extract />
+            <MountDiskImage />
           </Stack>
         ) : (
           <InitApp />
