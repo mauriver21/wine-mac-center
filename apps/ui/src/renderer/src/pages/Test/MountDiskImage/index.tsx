@@ -12,7 +12,7 @@ export const MountDiskImage: React.FC = () => {
   const mountDiskImage = async () => {
     setLoading(true);
     const WINE_DOWNLOADS_PATH = env.get().WINE_DOWNLOADS_PATH;
-    const from = `${WINE_DOWNLOADS_PATH}/bfme2.iso`;
+    const from = `${WINE_DOWNLOADS_PATH}/RalphLupo/SDW.bin`;
     await wineApp.spawnScript('mountDiskImage', `"${from}"`, {
       onStdOut: (data) => {
         console.log(data);

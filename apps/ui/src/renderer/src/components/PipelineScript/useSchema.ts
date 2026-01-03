@@ -41,13 +41,13 @@ export const useSchema = () => {
     winetricksVerbs: schema.array().of(schema.string().required()).default([]),
     iconFile: schema.mixed<File>().test({
       name: 'fileSize',
-      message: 'File exceeds 200kb',
-      test: (file) => fileMaxSize(file, 200000)
+      message: 'File exceeds 600kb',
+      test: (file) => fileMaxSize(file, 600000)
     }),
     artworkFile: schema.mixed<File>().test({
       name: 'fileSize',
-      message: 'File exceeds 1000kb',
-      test: (file) => fileMaxSize(file, 1000000)
+      message: 'File exceeds 2000kb',
+      test: (file) => fileMaxSize(file, 2000000)
     }),
     pipelineScripts: schema
       .array(

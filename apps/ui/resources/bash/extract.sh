@@ -27,6 +27,13 @@ extract() {
         *.tar|*.zip|*.rar)
             tar -xf "$FROM" -C "$TARGET" &
             ;;
+        *.bin)
+            if ! command -v unar >/dev/null 2>&1; then
+                echo "Error: unar not found. Install with: brew install unar"
+                return 1
+            fi
+            unar -D -o "$TARGET" "$FROM" &
+            ;;
         *)
             echo "Unsupported archive format: $FROM"
             return 1

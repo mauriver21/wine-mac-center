@@ -457,7 +457,9 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   /**
    * Bash scripts source.
    */
-  const s = (cmd: string) => `${ENV_EXPORTS} ${WINE_EXPORTS} ${wineEnvSource()} ${cmd}`;
+  const s = (cmd: string) => {
+    return `${ENV_EXPORTS} ${WINE_EXPORTS} ${wineEnvSource()} ${cmd}`;
+  };
 
   const execScript = (name: BashScript, args: string = '') =>
     execCommand(s(`"${SCRIPTS_PATH}/${name}.sh" ${args}`));

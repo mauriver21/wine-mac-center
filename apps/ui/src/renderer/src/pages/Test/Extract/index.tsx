@@ -12,7 +12,7 @@ export const Extract: React.FC = () => {
   const extract = async () => {
     setLoading(true);
     const WINE_DOWNLOADS_PATH = env.get().WINE_DOWNLOADS_PATH;
-    const from = `${WINE_DOWNLOADS_PATH}/Ricochet%20games.zip`;
+    const from = `${WINE_DOWNLOADS_PATH}/SDW.bin`;
     const target = from.replace(/\.[^.]+$/, '');
     await wineApp.spawnScript('extract', `"${from}" "${target}"`, {
       onStdOut: (data) => {
