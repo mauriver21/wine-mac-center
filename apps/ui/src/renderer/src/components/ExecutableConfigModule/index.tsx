@@ -7,7 +7,7 @@ import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
 import { FilePathInput } from '@components/FilePathInput';
 import { Button } from '@components/Button';
 import { FileFilter } from '@constants/enums';
-import { TextField } from 'reactjs-shared-ui/forms';
+import { TextField } from '@mui/material';
 
 export interface ExecutableConfigModuleProps {
   appName: string | undefined;

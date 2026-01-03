@@ -169,11 +169,14 @@ export const useWineAppConfigApiClient = () => {
   };
 
   const create = async (data: WineAppConfig) => {
-    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
+    const { iconFile, artworkFile, name, ...restData } = data;
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${name}`;
 
     if ((await dirExists(SCRIPT_PATH)) === false) {
       await createDirectory(SCRIPT_PATH);
-      return await writeScript(data);
+      iconFile && (await saveScriptIconFile(name, iconFile));
+      artworkFile && (await saveScriptArtworkFile(name, artworkFile));
+      return await writeScript({ name, ...restData });
     }
 
     return;
