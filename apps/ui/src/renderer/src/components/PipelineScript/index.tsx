@@ -63,6 +63,7 @@ export const PipelineScript: React.FC = () => {
   });
   const WINE_DOWNLOADS_PATH = `$HOME${getRelativeWinePath(ENV.WINE_DOWNLOADS_PATH)}`;
   const DRIVE_C_PATH = `$WINE_APP_PREFIX_PATH/${RELATIVE_DRIVE_C_PATH}`;
+  const VOLUMES_PATH = `/Volumes`;
 
   const insertAfter = (index: number) => insert(index + 1, DEFAULT_PIPELINE_SCRIPT);
   const insertBefore = (index: number) => insert(index, DEFAULT_PIPELINE_SCRIPT);
@@ -199,7 +200,8 @@ export const PipelineScript: React.FC = () => {
                     { value: ScriptOperation.DECOMPRESS, label: 'Extract' },
                     { value: ScriptOperation.REMOVE, label: 'Remove' },
                     { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' },
-                    { value: ScriptOperation.SET_MAIN_EXE, label: 'Set Main EXE' }
+                    { value: ScriptOperation.SET_MAIN_EXE, label: 'Set Main EXE' },
+                    { value: ScriptOperation.MOUNT_DISK_IMAGE, label: 'Mount Disk Image' }
                   ]}
                 />
                 {operation === ScriptOperation.DOWNLOAD && (
@@ -265,21 +267,35 @@ export const PipelineScript: React.FC = () => {
                   <TextField
                     control={form.control}
                     name={`pipelineScripts.${index}.exePath`}
+                    label="Executable Path"
                     InputProps={{
                       startAdornment: (
                         <Box mr={2}>
                           <Select
+                            control={form.control}
+                            name={`pipelineScripts.${index}.baseExePath`}
                             sx={{ height: 34 }}
                             options={[
                               { value: WINE_DOWNLOADS_PATH, label: WINE_DOWNLOADS_PATH },
-                              { value: DRIVE_C_PATH, label: DRIVE_C_PATH }
+                              { value: DRIVE_C_PATH, label: DRIVE_C_PATH },
+                              { value: VOLUMES_PATH, label: VOLUMES_PATH }
                             ]}
                             value={WINE_DOWNLOADS_PATH}
                           />
                         </Box>
                       )
                     }}
-                    label="Executable Path"
+                  />
+                )}
+                {operation === ScriptOperation.MOUNT_DISK_IMAGE && (
+                  <TextField
+                    control={form.control}
+                    name={`pipelineScripts.${index}.diskImagePath`}
+                    InputProps={{
+                      startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
+                    }}
+                    label="Disk Image Path"
+                    placeholder="/your/relative/path"
                   />
                 )}
               </Stack>
@@ -309,6 +325,7 @@ export const PipelineScript: React.FC = () => {
             ...result,
             {
               exePath: item.exePath || '',
+              baseExePath: item.baseExePath || '',
               operation: item.operation,
               name: 'Run Windows Exe'
             }
@@ -344,6 +361,16 @@ export const PipelineScript: React.FC = () => {
               operation: item.operation,
               exeFlags: item.exeFlags,
               name: 'Set main exe'
+            }
+          ];
+          break;
+        case ScriptOperation.MOUNT_DISK_IMAGE:
+          result = [
+            ...result,
+            {
+              diskImagePath: item.diskImagePath || '',
+              operation: item.operation,
+              name: 'Mount disk image'
             }
           ];
           break;

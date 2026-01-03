@@ -29,7 +29,9 @@ export enum ScriptOperation {
   COPY = 'COPY',
   REMOVE = 'REMOVE',
   RUN_WINDOWS_EXE = 'RUN_WINDOWS_EXE',
-  SET_MAIN_EXE = 'SET_MAIN_EXE'
+  SET_MAIN_EXE = 'SET_MAIN_EXE',
+  MOUNT_DISK_IMAGE = 'MOUNT_DISK_IMAGE',
+  UNMOUNT_DISK_IMAGE = 'UNMOUNT_DISK_IMAGE'
 }
 
 export enum ConfigOrigin {

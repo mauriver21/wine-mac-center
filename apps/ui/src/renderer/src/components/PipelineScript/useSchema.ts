@@ -59,7 +59,8 @@ export const useSchema = () => {
               ScriptOperation.COPY,
               ScriptOperation.RUN_WINDOWS_EXE,
               ScriptOperation.DECOMPRESS,
-              ScriptOperation.SET_MAIN_EXE
+              ScriptOperation.SET_MAIN_EXE,
+              ScriptOperation.MOUNT_DISK_IMAGE
             ])
             .required(),
           url: schema.string().when('operation', {
@@ -77,6 +78,10 @@ export const useSchema = () => {
                   message: 'URL not downloadable',
                   test: async (url) => await isDownloadableURL(url || '')
                 })
+          }),
+          baseExePath: schema.string().when('operation', {
+            is: ScriptOperation.RUN_WINDOWS_EXE,
+            then: (schema) => schema.required()
           }),
           exePath: schema.string().when('operation', {
             is: ScriptOperation.RUN_WINDOWS_EXE,
@@ -101,6 +106,10 @@ export const useSchema = () => {
           exeFlags: schema.string().when('operation', {
             is: ScriptOperation.SET_MAIN_EXE,
             then: (schema) => schema.optional()
+          }),
+          diskImagePath: schema.string().when('operation', {
+            is: ScriptOperation.MOUNT_DISK_IMAGE,
+            then: (schema) => schema.required()
           })
         })
       )

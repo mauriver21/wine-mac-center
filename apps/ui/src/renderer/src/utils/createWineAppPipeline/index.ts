@@ -234,8 +234,8 @@ export const createWineAppPipeline = async (options: {
         return wineApp.spawnScript('remove', `"${path}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
-        const exePath = parsePath(args.exePath);
-        return wineApp.runExe(`"${WINE_DOWNLOADS_PATH}/${exePath}"`, spawnProcessArgs);
+        const exePath = parsePath(`${args.baseExePath}/${args.exePath}`);
+        return wineApp.runExe(`"${exePath}"`, spawnProcessArgs);
       }
       case ScriptOperation.SET_MAIN_EXE: {
         const mainExePath = getRelativeDriveCPath(
@@ -244,6 +244,10 @@ export const createWineAppPipeline = async (options: {
         await wineApp.saveMainExecutablePath({ path: mainExePath, flags: args.exeFlags });
         spawnProcessArgs.onExit?.(0);
         break;
+      }
+      case ScriptOperation.MOUNT_DISK_IMAGE: {
+        const diskImagePath = parsePath(args.diskImagePath);
+        return wineApp.spawnScript('mountDiskImage', `"${diskImagePath}"`);
       }
       default:
         return;

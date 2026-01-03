@@ -36,4 +36,10 @@ export type PipelineScript =
       name: string;
       operation: ScriptOperation.RUN_WINDOWS_EXE;
       exePath: string;
+      baseExePath: string;
+    }
+  | {
+      name: string;
+      operation: ScriptOperation.MOUNT_DISK_IMAGE;
+      diskImagePath: string;
     };
