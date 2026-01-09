@@ -78,7 +78,7 @@ export const createWineAppPipeline = async (options: {
     const foundJob = pipelineConfig.jobs.find((item) => item.name == jobName);
     if (foundJob?.steps) {
       foundJob.steps = foundJob.steps.map((item) => {
-        if (item.name == step.name) return { ...item, ...step };
+        if (item.id == step.id) return { ...item, ...step };
         return item;
       });
     }
@@ -153,6 +153,7 @@ export const createWineAppPipeline = async (options: {
 
     for (const verb of verbs) {
       steps.push({
+        id: uuid(),
         name: `Running winetrick ${verb}`,
         script: (args: SpawnProcessArgs) => wineApp.winetrick(verb, args, winetricks?.options),
         status: ProcessStatus.Pending,
@@ -230,7 +231,7 @@ export const createWineAppPipeline = async (options: {
         return wineApp.spawnScript('copy', `"${from}" "${target}"`, spawnProcessArgs);
       }
       case ScriptOperation.REMOVE: {
-        const path = parsePath(args.path);
+        const path = `${appEnv.WINE_APP_DRIVE_C_PATH}/${parsePath(args.removePath)}`;
         return wineApp.spawnScript('remove', `"${path}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
@@ -269,6 +270,7 @@ export const createWineAppPipeline = async (options: {
       steps = [
         ...steps,
         {
+          id: uuid(),
           name: script.name,
           output: '',
           status: ProcessStatus.Pending,
@@ -350,6 +352,7 @@ export const createWineAppPipeline = async (options: {
             ? []
             : [
                 {
+                  id: uuid(),
                   name: 'Downloading wine engine',
                   script: (args: SpawnProcessArgs) =>
                     wineApp.downloadWineEngine(engineURLs, engineVersion, args),
@@ -358,12 +361,14 @@ export const createWineAppPipeline = async (options: {
                 }
               ]),
           {
+            id: uuid(),
             name: 'Extracting wine engine',
             script: (args) => wineApp.extractEngine(engineVersion, args),
             status: ProcessStatus.Pending,
             output: ''
           },
           {
+            id: uuid(),
             name: 'Generating wine prefix',
             script: (args) => wineApp.wineboot('', args),
             status: ProcessStatus.Pending,
@@ -372,6 +377,7 @@ export const createWineAppPipeline = async (options: {
           ...(dxvkEnabled
             ? [
                 {
+                  id: uuid(),
                   name: 'Enabling DXVK',
                   script: (args: SpawnProcessArgs) => wineApp.winetrick('dxvk1102', args),
                   status: ProcessStatus.Pending,
@@ -383,6 +389,7 @@ export const createWineAppPipeline = async (options: {
           ...(setupExecutableURL
             ? [
                 {
+                  id: uuid(),
                   name: 'Downloading setup executable',
                   script: (args?: SpawnProcessArgs) =>
                     wineApp.setSetupExe(setupExecutableURL, args),
@@ -394,6 +401,7 @@ export const createWineAppPipeline = async (options: {
           ...(setupExecutablePath
             ? [
                 {
+                  id: uuid(),
                   name: 'Running setup executable',
                   script: (args?: SpawnProcessArgs) => {
                     const exePath = wineApp.getAppConfig().setupExecutablePath || '';
@@ -407,6 +415,7 @@ export const createWineAppPipeline = async (options: {
           ...(appFolderPath
             ? [
                 {
+                  id: uuid(),
                   name: 'Copying windows application',
                   script: (args?: SpawnProcessArgs) => {
                     return wineApp.copyWindowsApplication(appFolderPath || '', args);
@@ -418,6 +427,7 @@ export const createWineAppPipeline = async (options: {
             : []),
           ...buildPipelineStepsFromScripts(),
           {
+            id: uuid(),
             name: 'Configuring app executable',
             script: async (args) => {
               const appConfig = wineApp.getAppConfig();

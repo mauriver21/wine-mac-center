@@ -233,7 +233,17 @@ export const PipelineScript: React.FC = () => {
                     />
                   </>
                 )}
-                {operation === ScriptOperation.REMOVE && <TextField label="Target Path" />}
+                {operation === ScriptOperation.REMOVE && (
+                  <TextField
+                    control={form.control}
+                    name={`pipelineScripts.${index}.removePath`}
+                    InputProps={{
+                      startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
+                    }}
+                    label="To Path"
+                    placeholder="/your/relative/app/remove/path"
+                  />
+                )}
                 {operation === ScriptOperation.DECOMPRESS && (
                   <TextField
                     control={form.control}
@@ -371,6 +381,16 @@ export const PipelineScript: React.FC = () => {
               diskImagePath: item.diskImagePath || '',
               operation: item.operation,
               name: 'Mount disk image'
+            }
+          ];
+          break;
+        case ScriptOperation.REMOVE:
+          result = [
+            ...result,
+            {
+              removePath: item.removePath || '',
+              operation: item.operation,
+              name: 'Remove file or folder'
             }
           ];
           break;

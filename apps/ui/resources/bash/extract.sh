@@ -32,7 +32,7 @@ extract() {
                 echo "Error: unar not found. Install with: brew install unar"
                 return 1
             fi
-            unar -D -o "$TARGET" "$FROM" &
+            unar -f -D -o "$TARGET" "$FROM" &
             ;;
         *)
             echo "Unsupported archive format: $FROM"

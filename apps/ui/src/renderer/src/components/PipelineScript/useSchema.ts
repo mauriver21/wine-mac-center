@@ -60,7 +60,8 @@ export const useSchema = () => {
               ScriptOperation.RUN_WINDOWS_EXE,
               ScriptOperation.DECOMPRESS,
               ScriptOperation.SET_MAIN_EXE,
-              ScriptOperation.MOUNT_DISK_IMAGE
+              ScriptOperation.MOUNT_DISK_IMAGE,
+              ScriptOperation.REMOVE
             ])
             .required(),
           url: schema.string().when('operation', {
@@ -89,6 +90,10 @@ export const useSchema = () => {
           }),
           path: schema.string().when('operation', {
             is: ScriptOperation.DECOMPRESS,
+            then: (schema) => schema.required()
+          }),
+          removePath: schema.string().when('operation', {
+            is: ScriptOperation.REMOVE,
             then: (schema) => schema.required()
           }),
           from: schema.string().when('operation', {

@@ -4,7 +4,7 @@ export type PipelineScript =
   | {
       name: string;
       operation: ScriptOperation.REMOVE;
-      path: string;
+      removePath: string;
       verbs?: string;
     }
   | {
