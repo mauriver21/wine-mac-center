@@ -1,8 +1,10 @@
 export const handleError = (error: unknown) => {
   console.error(error);
-  if (error instanceof Error) {
+  if (typeof error === 'string') {
+    return error;
+  } else if (error instanceof Error) {
     return error.message;
   } else {
-    return 'An unknown error ocurred.';
+    return 'An unknown error occurred.';
   }
 };

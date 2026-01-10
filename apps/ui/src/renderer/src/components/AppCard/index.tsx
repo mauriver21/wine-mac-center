@@ -9,6 +9,7 @@ import { useNavigateApp } from '@hooks/useNavigateApp';
 import { Cog6ToothIcon, ComputerDesktopIcon, TrashIcon } from '@heroicons/react/24/solid';
 import defaultArtwork from '@assets/imgs/header.jpg';
 import { Cloud } from '@mui/icons-material';
+import { useScriptsContext } from '@hooks/useScriptsContext';
 
 export interface AppCardProps extends CardProps {
   appName: string | undefined;
@@ -16,21 +17,14 @@ export interface AppCardProps extends CardProps {
 }
 
 export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest }) => {
+  const scriptsContext = useScriptsContext();
   const { navigateToScript } = useNavigateApp();
-  const [removing, setRemoving] = useState(false);
   const wineAppConfigModel = useWineAppConfigModel();
   const wineAppConfig = useSelector((state: RootState) =>
     wineAppConfigModel.selectWineAppConfig(state, appName, origin)
   );
   const [artWorkSrc, setArtWorkSrc] = useState(defaultArtwork);
   const [noArtWork, setNoArtWork] = useState(true);
-
-  const removeScript = async () => {
-    setRemoving(true);
-
-    await wineAppConfigModel.remove(appName);
-    setRemoving(false);
-  };
 
   useEffect(() => {
     if (wineAppConfig) {
@@ -39,6 +33,10 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
       setNoArtWork(!Boolean(artWorkSrc));
     }
   }, [wineAppConfig?.artworkURL]);
+
+  useEffect(() => {
+    scriptsContext?.setAppName(appName);
+  }, [appName]);
 
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
@@ -113,18 +111,19 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
               >
                 <Icon size={24} color="text.primary" strokeWidth={2} render={Cog6ToothIcon} />
               </Button>
-
-              <Button
-                style={{ display: 'none' }}
-                disabled={removing}
-                equalSize={40}
-                title="Remove Script"
-                color="secondary"
-                disableElevation={false}
-                onClick={() => removeScript()}
-              >
-                <Icon size={24} color="text.primary" strokeWidth={2} render={TrashIcon} />
-              </Button>
+              {scriptsContext?.setOpenConfirmRemoveScript ? (
+                <Button
+                  equalSize={40}
+                  title="Remove Script"
+                  color="secondary"
+                  disableElevation={false}
+                  onClick={() => scriptsContext?.setOpenConfirmRemoveScript(true)}
+                >
+                  <Icon size={24} color="text.primary" strokeWidth={2} render={TrashIcon} />
+                </Button>
+              ) : (
+                <></>
+              )}
             </>
           )}
         </Box>
