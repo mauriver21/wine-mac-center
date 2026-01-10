@@ -2,8 +2,7 @@ import { AppCardButton } from '@components/AppCardButton';
 import { Body1, Box, Card, CardProps, Image } from 'reactjs-shared-ui';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { Folder } from '@mui/icons-material';
+import { Folder, Pending } from '@mui/icons-material';
 import { getAppArtwork } from '@utils/getAppArtwork';
 import { RootState } from '@interfaces/RootState';
 import { useEffect, useState } from 'react';
@@ -12,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import defaultArtwork from '@assets/imgs/header.jpg';
+import { showItemInFolder } from '@utils/showItemInFolder';
 
 export interface InstalledAppCardProps extends CardProps {
   appName?: string;
@@ -85,13 +85,13 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
             title="Reveal in Finder"
             icon={Folder}
             onClick={() => {
-              console.log('---->');
+              installedWineApp?.appPath && showItemInFolder(installedWineApp.appPath);
             }}
           />
           {installedWineApp?.pipeline?.status == ProcessStatus.Cancelled ? (
             <AppCardButton
               title="Installation pending"
-              icon={ExclamationTriangleIcon}
+              icon={Pending}
               onClick={() =>
                 navigateToAppPipeline(appName, {
                   origin: ConfigOrigin.INSTALLED_APP,

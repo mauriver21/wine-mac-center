@@ -20,5 +20,6 @@ export enum ElectronApi {
   SubscribeWatchDirs = 'subscribe-watch-dirs',
   UnsubscribeUnwatchDirs = 'unsubscribe-watch-dirs',
   BuildPlist = 'build-plist',
-  RemoveDirectory = 'remove-directory'
+  RemoveDirectory = 'remove-directory',
+  ShowItemInFolder = 'show-item-in-folder'
 }
