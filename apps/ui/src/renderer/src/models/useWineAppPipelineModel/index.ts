@@ -51,7 +51,8 @@ export const useWineAppPipelineModel = () => {
     let { appName, config } = args;
     const originalAppName = appName;
 
-    if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
+    if (args.origin === undefined) throw new Error(`Origin is not defined`);
+    if (appName === undefined || appName === '') throw new Error(`Invalid app name: ${appName}`);
     appName = await buildUniqueAppName(appName);
 
     if (args.origin !== ConfigOrigin.INSTALLED_APP) {

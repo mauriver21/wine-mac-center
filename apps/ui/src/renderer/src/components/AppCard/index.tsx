@@ -1,15 +1,22 @@
-import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
+import { Body1, Box, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
-import { RunScriptButton } from '@components/RunScriptButton';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useEffect, useState } from 'react';
-import { ConfigOrigin } from '@constants/enums';
+import { ConfigOrigin, PipelineAction } from '@constants/enums';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { Cog6ToothIcon, ComputerDesktopIcon, TrashIcon } from '@heroicons/react/24/solid';
+import {
+  Cog6ToothIcon,
+  ComputerDesktopIcon,
+  PlayCircleIcon,
+  TrashIcon
+} from '@heroicons/react/24/solid';
 import defaultArtwork from '@assets/imgs/header.jpg';
 import { Cloud } from '@mui/icons-material';
 import { useScriptsContext } from '@hooks/useScriptsContext';
+import { AppCardButton } from '@components/AppCardButton';
+import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
+import { useAppModel } from '@models/useAppModel';
 
 export interface AppCardProps extends CardProps {
   appName: string | undefined;
@@ -19,12 +26,27 @@ export interface AppCardProps extends CardProps {
 export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest }) => {
   const scriptsContext = useScriptsContext();
   const { navigateToScript } = useNavigateApp();
+  const appModel = useAppModel();
   const wineAppConfigModel = useWineAppConfigModel();
+  const wineAppPipelineModel = useWineAppPipelineModel();
   const wineAppConfig = useSelector((state: RootState) =>
     wineAppConfigModel.selectWineAppConfig(state, appName, origin)
   );
+  const navigate = useNavigateApp();
   const [artWorkSrc, setArtWorkSrc] = useState(defaultArtwork);
   const [noArtWork, setNoArtWork] = useState(true);
+
+  const runPipeline = async () => {
+    if (origin === undefined) {
+      appModel.dispatchError('Origin is not defined');
+    } else {
+      const config = await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
+      navigate.navigateToAppPipeline(config.name, {
+        origin,
+        action: PipelineAction.RUN
+      });
+    }
+  };
 
   useEffect(() => {
     if (wineAppConfig) {
@@ -98,29 +120,20 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
           </Box>
         </Box>
         <Box display="flex" justifyContent="start" gap={1}>
-          <RunScriptButton appName={wineAppConfig?.name} origin={origin} />
+          <AppCardButton title="Run Script" onClick={runPipeline} icon={PlayCircleIcon} />
           {origin === ConfigOrigin.SCRIPTS && (
             <>
-              <Button
-                sx={{ borderRadius: 2 }}
-                equalSize={40}
-                color="secondary"
+              <AppCardButton
                 title="Configure Script"
-                disableElevation={false}
                 onClick={() => navigateToScript(appName)}
-              >
-                <Icon size={24} color="text.primary" strokeWidth={2} render={Cog6ToothIcon} />
-              </Button>
+                icon={Cog6ToothIcon}
+              />
               {scriptsContext?.setOpenConfirmRemoveScript ? (
-                <Button
-                  equalSize={40}
+                <AppCardButton
                   title="Remove Script"
-                  color="secondary"
-                  disableElevation={false}
                   onClick={() => scriptsContext?.setOpenConfirmRemoveScript(true)}
-                >
-                  <Icon size={24} color="text.primary" strokeWidth={2} render={TrashIcon} />
-                </Button>
+                  icon={TrashIcon}
+                />
               ) : (
                 <></>
               )}

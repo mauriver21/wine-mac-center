@@ -1,14 +1,16 @@
-import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { AppCardButton } from '@components/AppCardButton';
+import { Body1, Box, Card, CardProps, Image } from 'reactjs-shared-ui';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { RootState } from '@interfaces/RootState';
-import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
-import { getAppArtwork } from '@utils/getAppArtwork';
 import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { Folder } from '@mui/icons-material';
+import { getAppArtwork } from '@utils/getAppArtwork';
+import { RootState } from '@interfaces/RootState';
+import { useEffect, useState } from 'react';
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { useSelector } from 'react-redux';
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import defaultArtwork from '@assets/imgs/header.jpg';
 
 export interface InstalledAppCardProps extends CardProps {
@@ -78,32 +80,31 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
             )}
           </Box>
         </Box>
-        <Box display="flex" justifyContent="end">
+        <Box display="flex" justifyContent="end" gap={1}>
+          <AppCardButton
+            title="Reveal in Finder"
+            icon={Folder}
+            onClick={() => {
+              console.log('---->');
+            }}
+          />
           {installedWineApp?.pipeline?.status == ProcessStatus.Cancelled ? (
-            <Button
-              sx={{ borderRadius: 2 }}
-              equalSize={40}
-              color="secondary"
+            <AppCardButton
               title="Installation pending"
+              icon={ExclamationTriangleIcon}
               onClick={() =>
                 navigateToAppPipeline(appName, {
                   origin: ConfigOrigin.INSTALLED_APP,
                   action: PipelineAction.RESUME
                 })
               }
-            >
-              <Icon color="warning.main" strokeWidth={2} render={ExclamationTriangleIcon} />
-            </Button>
+            />
           ) : (
-            <Button
-              sx={{ borderRadius: 2 }}
-              equalSize={40}
-              color="secondary"
+            <AppCardButton
               title="Configure App"
+              icon={Cog6ToothIcon}
               onClick={() => navigateToAppConfig(appName)}
-            >
-              <Icon render={Cog6ToothIcon} />
-            </Button>
+            />
           )}
         </Box>
       </Box>
