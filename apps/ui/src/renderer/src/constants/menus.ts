@@ -6,5 +6,5 @@ import { PlayCircleOutline } from '@mui/icons-material';
 export const SIDEBAR_MENU: MenuItem[] = [
   { text: 'Apps', route: 'apps', icon: AppIcon },
   { text: 'Scripts', route: 'scripts', icon: PlayCircleOutline },
-  { text: 'Test', route: 'test', icon: Cog8ToothIcon }
+  { text: 'Settings', route: 'settings', icon: Cog8ToothIcon }
 ];
