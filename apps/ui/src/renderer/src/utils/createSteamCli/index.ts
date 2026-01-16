@@ -20,7 +20,7 @@ export const createSteamCli = () => {
   };
 
   const runSteamCmd = (cmd: string, args?: SpawnProcessArgs) => {
-    return spawnProcess(`"${STEAM_CLI_PATH}/steamcmd.sh" ${cmd}`, args);
+    return spawnProcess(`"${STEAM_CLI_PATH}/runSteamCMD.sh" ${cmd}`, args);
   };
 
   const login = (credentials: { userName: string; password: string }, args?: SpawnProcessArgs) => {
