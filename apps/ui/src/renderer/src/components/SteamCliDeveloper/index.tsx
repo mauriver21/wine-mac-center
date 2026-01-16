@@ -1,12 +1,12 @@
 import { Button } from '@components/Button';
-import { useSteamCli } from '@hooks/useSteamCli';
 import { DeveloperMode } from '@mui/icons-material';
 import { Divider } from '@mui/material';
-import { useState } from 'react';
+import { createSteamCli } from '@utils/createSteamCli';
+import { useMemo, useState } from 'react';
 import { Stack, Icon, H6, ContentsClass } from 'reactjs-shared-ui';
 
 export const SteamCliDeveloper: React.FC = () => {
-  const steamCli = useSteamCli();
+  const steamCli = useMemo(() => createSteamCli(), []);
   const [installingSteamCli, setInstallingSteamCli] = useState(false);
 
   const installSteamCli = () => {

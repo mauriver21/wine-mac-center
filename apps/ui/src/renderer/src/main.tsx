@@ -9,7 +9,6 @@ import { EnvProvider } from '@components/EnvProvider';
 import { NotificationsProvider } from '@components/NotificationsProvider';
 import { WineAppPipelineProvider } from '@components/WineAppPipelineProvider';
 import { DirsWatcherProvider } from '@components/DirsWatcherProvider';
-import { SteamCliProvider } from '@components/SteamCliProvider';
 import 'reactjs-shared-ui/styles.css';
 import './main.css';
 
@@ -18,17 +17,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <NotificationsProvider>
         <EnvProvider>
-          <SteamCliProvider>
-            <DirsWatcherProvider>
-              <WineAppPipelineProvider>
-                <BrowserRouter>
-                  <AppSetup>
-                    <App />
-                  </AppSetup>
-                </BrowserRouter>
-              </WineAppPipelineProvider>
-            </DirsWatcherProvider>
-          </SteamCliProvider>
+          <DirsWatcherProvider>
+            <WineAppPipelineProvider>
+              <BrowserRouter>
+                <AppSetup>
+                  <App />
+                </AppSetup>
+              </BrowserRouter>
+            </WineAppPipelineProvider>
+          </DirsWatcherProvider>
         </EnvProvider>
       </NotificationsProvider>
     </Provider>

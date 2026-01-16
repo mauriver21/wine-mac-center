@@ -6,4 +6,4 @@ out
 *.log*
 tsconfig.web.tsbuildinfo
 resources/clients/steam/*
-!resources/clients/steam/steamcmd
+!resources/clients/steam/installSteamCMD.sh
