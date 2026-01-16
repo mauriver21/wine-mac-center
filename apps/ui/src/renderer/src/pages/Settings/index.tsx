@@ -1,6 +1,7 @@
 import { SteamIcon } from '@assets/icons/24/outline/SteamIcon';
 import { Button } from '@components/Button';
 import { CardItem } from '@components/CardItem';
+import { SteamCliDeveloper } from '@components/SteamCliDeveloper';
 import { alpha } from '@mui/material';
 import { useRef } from 'react';
 import {
@@ -29,6 +30,7 @@ export const Settings: React.FC = () => {
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button>Login</Button>
         </Stack>
+        <SteamCliDeveloper />
       </Stack>
     </CardItem>
   ];
