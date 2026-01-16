@@ -6,9 +6,6 @@ export const createSteamCli = () => {
   const env = createEnv();
   const STEAM_CLI_PATH = `${env.get().CLIENTS_PATH}/steam`;
 
-  /**
-   * Bash scripts source.
-   */
   const s = (cmd: string) => {
     return `${env.getEnvExports()} ${cmd}`;
   };
@@ -19,8 +16,17 @@ export const createSteamCli = () => {
   };
 
   const install = (args?: SpawnProcessArgs) => {
-    spawnProcess(`"${STEAM_CLI_PATH}/installSteamCMD.sh"`, args);
+    return spawnProcess(`"${STEAM_CLI_PATH}/installSteamCMD.sh"`, args);
   };
 
-  return { install };
+  const runSteamCmd = (cmd: string, args?: SpawnProcessArgs) => {
+    return spawnProcess(`"${STEAM_CLI_PATH}/steamcmd.sh" ${cmd}`, args);
+  };
+
+  const login = (credentials: { userName: string; password: string }, args?: SpawnProcessArgs) => {
+    const { userName, password } = credentials;
+    return runSteamCmd(`+login ${userName} ${password} +quit`, args);
+  };
+
+  return { install, login };
 };

@@ -5,7 +5,7 @@ import { SteamCliDeveloper } from '@components/SteamCliDeveloper';
 import { useLocalState } from '@hooks/useLocalState';
 import { useSteamCli } from '@hooks/useSteamCli';
 import { alpha, TextFieldProps } from '@mui/material';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Box,
   ContentsArea,
@@ -21,6 +21,7 @@ const ITEM_STYLE = { px: '20px !important' };
 
 export const Settings: React.FC = () => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
+  const [loggingIn, setLoggingIn] = useState(false);
   const { getState, setState } = useLocalState('steamCredentials');
   const steamCli = useSteamCli();
 
@@ -28,6 +29,26 @@ export const Settings: React.FC = () => {
     currentTarget: { name, value }
   }) => {
     setState({ ...getState(), [name]: value });
+  };
+
+  const steamLogin = () => {
+    setLoggingIn(true);
+    const { userName = '', password = '' } = getState() || {};
+    steamCli.login(
+      { userName, password },
+      {
+        onStdOut: (data) => {
+          console.log(data);
+        },
+        onStdErr: (data) => {
+          console.log(data);
+        },
+        onExit: (data) => {
+          console.log(data);
+          setLoggingIn(false);
+        }
+      }
+    );
   };
 
   useEffect(() => {
@@ -57,7 +78,9 @@ export const Settings: React.FC = () => {
           />
         </Stack>
         <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button>Login</Button>
+          <Button disabled={loggingIn} onClick={steamLogin}>
+            Login
+          </Button>
         </Stack>
         <SteamCliDeveloper />
       </Stack>
