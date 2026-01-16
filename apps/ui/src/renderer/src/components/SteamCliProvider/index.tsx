@@ -1,5 +1,7 @@
 import { SteamCliContext } from '@contexts/SteamCliContext';
+import { useLocalState } from '@hooks/useLocalState';
 import { createSteamCli } from '@utils/createSteamCli';
+import { useRefresh } from '@utils/useRefresh';
 import { useMemo } from 'react';
 
 export interface SteamCliProviderProps {
@@ -7,7 +9,15 @@ export interface SteamCliProviderProps {
 }
 
 export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) => {
-  const steamCli = useMemo(() => createSteamCli(), []);
+  const { refresh } = useRefresh();
+  const { getState } = useLocalState('steamCredentials');
+  const steamCredentials = getState();
+  const steamCli = useMemo(
+    () => createSteamCli(),
+    [steamCredentials?.userName, steamCredentials?.password]
+  );
 
-  return <SteamCliContext.Provider value={steamCli}>{children}</SteamCliContext.Provider>;
+  return (
+    <SteamCliContext.Provider value={{ ...steamCli, refresh }}>{children}</SteamCliContext.Provider>
+  );
 };

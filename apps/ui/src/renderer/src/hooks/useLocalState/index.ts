@@ -1,14 +1,20 @@
+import { LocalStorage } from '@interfaces/LocalStorage';
+import { parseJson } from '@utils/parseJson';
 import { useState } from 'react';
 
-export const useLocalState = (key: string) => {
-  const [_, setBaseState] = useState<string>('');
+export const useLocalState = <T extends LocalStorage['key']>(key: T) => {
+  const [_, setBaseState] =
+    useState<Partial<Extract<LocalStorage, { key: T }>['data'] | undefined>>();
 
-  const setState = (data: string) => {
-    localStorage.setItem(key, data);
+  const setState = (data: Partial<Extract<LocalStorage, { key: T }>['data']> | undefined) => {
+    localStorage.setItem(key, JSON.stringify(data));
     setBaseState(data);
   };
 
-  const state = localStorage.getItem(key);
+  const getState = () =>
+    (parseJson(localStorage.getItem(key)) || localStorage.getItem(key)) as
+      | Extract<LocalStorage, { key: T }>['data']
+      | undefined;
 
-  return [state, setState];
+  return { getState, setState };
 };
