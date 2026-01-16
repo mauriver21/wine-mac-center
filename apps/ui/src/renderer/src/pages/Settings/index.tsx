@@ -4,6 +4,7 @@ import { CardItem } from '@components/CardItem';
 import { SteamCliDeveloper } from '@components/SteamCliDeveloper';
 import { useLocalState } from '@hooks/useLocalState';
 import { useSteamCli } from '@hooks/useSteamCli';
+import { useAppModel } from '@models/useAppModel';
 import { alpha, TextFieldProps } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -24,6 +25,7 @@ export const Settings: React.FC = () => {
   const [loggingIn, setLoggingIn] = useState(false);
   const { getState, setState } = useLocalState('steamCredentials');
   const steamCli = useSteamCli();
+  const appModel = useAppModel();
 
   const onChangeSteamCredentials: TextFieldProps['onChange'] = ({
     currentTarget: { name, value }
@@ -31,24 +33,17 @@ export const Settings: React.FC = () => {
     setState({ ...getState(), [name]: value });
   };
 
-  const steamLogin = () => {
+  const steamLogin = async () => {
     setLoggingIn(true);
     const { userName = '', password = '' } = getState() || {};
-    steamCli.login(
-      { userName, password },
-      {
-        onStdOut: (data) => {
-          console.log(data);
-        },
-        onStdErr: (data) => {
-          console.log(data);
-        },
-        onExit: (data) => {
-          console.log(data);
-          setLoggingIn(false);
-        }
-      }
-    );
+    try {
+      await steamCli.login({ userName, password });
+      appModel.dispatchSuccessMessage('Login Success');
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      setLoggingIn(false);
+    }
   };
 
   useEffect(() => {

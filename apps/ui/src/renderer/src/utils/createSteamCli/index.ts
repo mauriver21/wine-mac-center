@@ -23,9 +23,31 @@ export const createSteamCli = () => {
     return spawnProcess(`"${STEAM_CLI_PATH}/runSteamCMD.sh" ${cmd}`, args);
   };
 
-  const login = (credentials: { userName: string; password: string }, args?: SpawnProcessArgs) => {
+  const login = async (
+    credentials: { userName: string; password: string },
+    args?: SpawnProcessArgs
+  ) => {
     const { userName, password } = credentials;
-    return runSteamCmd(`+login ${userName} ${password} +quit`, args);
+    return new Promise((resolve, reject) => {
+      runSteamCmd(`+login ${userName} ${password} +quit`, {
+        onStdOut: (data) => {
+          if (data.match(/ERROR/i)) {
+            reject('Login Failed');
+          }
+          args?.onStdOut?.(data);
+        },
+        onStdErr: (data) => {
+          if (data.match(/ERROR/i)) {
+            reject('Login Failed');
+          }
+          args?.onStdErr?.(data);
+        },
+        onExit: (data) => {
+          resolve(undefined);
+          args?.onExit?.(data);
+        }
+      });
+    });
   };
 
   return { install, login };
