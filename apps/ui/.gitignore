@@ -5,3 +5,5 @@ out
 .eslintcache
 *.log*
 tsconfig.web.tsbuildinfo
+resources/clients/steam/*
+!resources/clients/steam/steamcmd

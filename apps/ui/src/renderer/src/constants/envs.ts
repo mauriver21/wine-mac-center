@@ -2,6 +2,7 @@ export const ENV = {
   HOME: '',
   RESOURCES_PATH: '',
   SCRIPTS_PATH: '',
+  CLIENTS_PATH: '',
   COMPRESSED_PATH: '',
   DIRNAME: '',
   WINE_PATH: '',

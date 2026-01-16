@@ -38,6 +38,7 @@ export const createEnv = () => {
     ENV.WINE_LIBS_PATH = `${ENV.WINE_PATH}/libs`;
     ENV.SCRIPTS_PATH = `${ENV.RESOURCES_PATH}/bash`;
     ENV.COMPRESSED_PATH = `${ENV.RESOURCES_PATH}/compressed`;
+    ENV.CLIENTS_PATH = `${ENV.RESOURCES_PATH}/clients`;
 
     await createDirs();
   };

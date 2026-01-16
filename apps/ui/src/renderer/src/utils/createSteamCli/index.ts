@@ -1,0 +1,14 @@
+import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
+import { createEnv } from '@utils/createEnv';
+import { spawnProcess } from '@utils/spawnProcess';
+
+export const createSteamCli = (args?: SpawnProcessArgs) => {
+  const env = createEnv();
+  const STEAM_CLI_PATH = `${env.get().CLIENTS_PATH}/steam`;
+
+  const install = () => {
+    spawnProcess(`"${STEAM_CLI_PATH}/steamcmd"`, args);
+  };
+
+  return { install };
+};
