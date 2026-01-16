@@ -1,6 +1,6 @@
+import { EnvContext } from '@contexts/EnvContext';
 import { createEnv } from '@utils/createEnv';
-import { EnvContext } from '@utils/useEnv';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export interface EnvProviderProps {
   children?: React.ReactNode;
@@ -9,7 +9,7 @@ export interface EnvProviderProps {
 export const EnvProvider: React.FC<EnvProviderProps> = ({ children }) => {
   const [initializing, setInitializing] = useState(true);
 
-  const { init, ...env } = createEnv();
+  const { init, ...env } = useMemo(() => createEnv(), []);
 
   useEffect(() => {
     (async () => {

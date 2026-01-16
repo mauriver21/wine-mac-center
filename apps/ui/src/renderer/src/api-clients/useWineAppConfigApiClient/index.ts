@@ -12,7 +12,7 @@ import { parseJson } from '@utils/parseJson';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
 import { removeDirectory } from '@utils/removeDirectory';
-import { useEnv } from '@utils/useEnv';
+import { useEnv } from '@hooks/useEnv';
 import { writeFile } from '@utils/writeFile';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';

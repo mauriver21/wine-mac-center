@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useWineAppContext } from '..';
 import { Code } from '@components/Code';
-import { useEnv } from '@utils/useEnv';
+import { useEnv } from '@hooks/useEnv';
 
 export const MountDiskImage: React.FC = () => {
   const { wineApp } = useWineAppContext();

@@ -4,7 +4,7 @@ import { WineInstalledApp } from '@interfaces/WineInstalledApp';
 import { fileExists } from '@utils/fileExists';
 import { parseJson } from '@utils/parseJson';
 import { readDirectory } from '@utils/readDirectory';
-import { useEnv } from '@utils/useEnv';
+import { useEnv } from '@hooks/useEnv';
 import { readFileAsString } from '@utils/readFileAsString';
 import { spawnProcess } from '@utils/spawnProcess';
 import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
