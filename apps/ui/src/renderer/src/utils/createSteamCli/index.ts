@@ -53,13 +53,13 @@ export const createSteamCli = (options: {
   };
 
   const downloadSteamApp = (
-    args: { gameInstallDir: string; appId: string },
+    args: { gameInstallDir: string; appId: string; guardCode?: string },
     spawnArgs: SpawnProcessArgs
   ) => {
     const { userName, password } = options.credentials;
-    const { gameInstallDir, appId } = args;
+    const { gameInstallDir, appId, guardCode = '' } = args;
     return spawnProcess(
-      `"${STEAM_CLI_PATH}/downloadSteamApp.sh" "${gameInstallDir}" "${gameInstallDir.toLowerCase()}" "${userName}" "${password}" "${appId}"`,
+      `"${STEAM_CLI_PATH}/downloadSteamApp.sh" "${gameInstallDir}" "${gameInstallDir.toLowerCase()}" "${userName}" "${password}" "${appId}" "${guardCode}"`,
       spawnArgs
     );
   };
