@@ -82,8 +82,6 @@ export const AppPipeline: React.FC = () => {
     contentsAreaRef.current?.refreshTableOfContents();
   }, [status]);
 
-  console.log('--->', wineAppPipelineStatus?.jobs);
-
   return (
     <Box display="grid" overflow="auto">
       <ContentsArea

@@ -75,7 +75,7 @@ export const createWineAppPipeline = async (options: {
         })
       };
     } else {
-      pipelineConfig.jobs.push(job);
+      pipelineConfig = { ...pipelineConfig, jobs: [...pipelineConfig.jobs, job] };
     }
   };
 
