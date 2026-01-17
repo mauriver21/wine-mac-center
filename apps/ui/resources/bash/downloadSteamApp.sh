@@ -24,14 +24,14 @@ downloadSteamApp() {
     "+quit"
     )
 
-    source "$SCRIPTS_PATH/getPid.sh"
-    "${cmd[@]}" &
-    PID=$(getPid)
-    wait "$PID"
+    rm -rf "$GAME_INSTALL_DIR"
 
-    mkdir -p "$GAME_INSTALL_DIR"
-    mv "$GAME_INSTALL_DIR_LOWER"/. "$GAME_INSTALL_DIR"/
-    rmdir "$GAME_INSTALL_DIR_LOWER"
+    "${cmd[@]}" &
+    PID=$!
+    echo "[PID_START]$PID[PID_END]"
+    wait "$PID"
+    
+    mv "$GAME_INSTALL_DIR_LOWER" "$GAME_INSTALL_DIR"
 
     cd "$GAME_INSTALL_DIR"
     cp "$ACF_MANIFEST_FILE" "../../"
