@@ -22,6 +22,7 @@ import { findOutputPID } from '@utils/findOutputPID';
 import { v4 as uuid } from 'uuid';
 import { parsePath } from '@utils/parsePath';
 import { getRelativeDriveCPath } from '@utils/getRelativeDriveCPath';
+import { createSteamCli } from '@utils/createSteamCli';
 
 export const createWineAppPipeline = async (options: {
   appName: string;
@@ -31,6 +32,9 @@ export const createWineAppPipeline = async (options: {
     appExecutables: Array<FilePath>;
     driveCPath: string;
   }) => Promise<string>;
+  clients?: {
+    steamCli?: ReturnType<typeof createSteamCli>;
+  };
 }) => {
   const id = uuid();
   const store = { outputEnabled: true, killAllProcesses: false, currentProcess: { pid: 0 } };

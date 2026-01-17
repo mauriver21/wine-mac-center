@@ -201,7 +201,8 @@ export const PipelineScript: React.FC = () => {
                     { value: ScriptOperation.REMOVE, label: 'Remove' },
                     { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' },
                     { value: ScriptOperation.SET_MAIN_EXE, label: 'Set Main EXE' },
-                    { value: ScriptOperation.MOUNT_DISK_IMAGE, label: 'Mount Disk Image' }
+                    { value: ScriptOperation.MOUNT_DISK_IMAGE, label: 'Mount Disk Image' },
+                    { value: ScriptOperation.DOWNLOAD_STEAM_APP, label: 'Download Steam App' }
                   ]}
                 />
                 {operation === ScriptOperation.DOWNLOAD && (
@@ -308,6 +309,13 @@ export const PipelineScript: React.FC = () => {
                     placeholder="/your/relative/path"
                   />
                 )}
+                {operation === ScriptOperation.DOWNLOAD_STEAM_APP && (
+                  <TextField
+                    control={form.control}
+                    name={`pipelineScripts.${index}.steamAppId`}
+                    label="Application Id"
+                  />
+                )}
               </Stack>
             </Box>
           );
@@ -391,6 +399,16 @@ export const PipelineScript: React.FC = () => {
               removePath: item.removePath || '',
               operation: item.operation,
               name: 'Remove file or folder'
+            }
+          ];
+          break;
+        case ScriptOperation.DOWNLOAD_STEAM_APP:
+          result = [
+            ...result,
+            {
+              steamAppId: item.steamAppId || '',
+              operation: item.operation,
+              name: 'Download Steam App'
             }
           ];
           break;

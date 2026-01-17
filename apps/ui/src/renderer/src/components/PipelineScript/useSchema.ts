@@ -61,7 +61,8 @@ export const useSchema = () => {
               ScriptOperation.DECOMPRESS,
               ScriptOperation.SET_MAIN_EXE,
               ScriptOperation.MOUNT_DISK_IMAGE,
-              ScriptOperation.REMOVE
+              ScriptOperation.REMOVE,
+              ScriptOperation.DOWNLOAD_STEAM_APP
             ])
             .required(),
           url: schema.string().when('operation', {
@@ -114,6 +115,10 @@ export const useSchema = () => {
           }),
           diskImagePath: schema.string().when('operation', {
             is: ScriptOperation.MOUNT_DISK_IMAGE,
+            then: (schema) => schema.required()
+          }),
+          steamAppId: schema.string().when('operation', {
+            is: ScriptOperation.DOWNLOAD_STEAM_APP,
             then: (schema) => schema.required()
           })
         })

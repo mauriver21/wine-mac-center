@@ -4,6 +4,7 @@ import { Body1, Dialog, Stack } from 'reactjs-shared-ui';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
 import { FilePathInput } from '@components/FilePathInput';
 import { FileFilter } from '@constants/enums';
+import { useSteamCli } from '@hooks/useSteamCli';
 
 export type WineAppPipelineContextType = {
   createWineAppPipeline: typeof baseCreateWineAppPipeline;
@@ -17,6 +18,7 @@ export const useWineAppPipeline = () => useContext(WineAppPipelineContext);
 export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
   return (props: T & JSX.IntrinsicAttributes) => {
     const [openSelectExecutableDialog, setOpenSelectExecutableDialog] = useState(false);
+    const steamCli = useSteamCli();
 
     const store = useRef<{
       pipeline: WineAppPipeline | undefined;
@@ -53,7 +55,8 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
           resetMainExecutable();
           setOpenSelectExecutableDialog(false);
           return mainExe;
-        }
+        },
+        clients: { steamCli }
       });
 
       store.current.pipeline = pipeline;

@@ -42,4 +42,9 @@ export type PipelineScript =
       name: string;
       operation: ScriptOperation.MOUNT_DISK_IMAGE;
       diskImagePath: string;
+    }
+  | {
+      name: string;
+      operation: ScriptOperation.DOWNLOAD_STEAM_APP;
+      steamAppId: string;
     };
