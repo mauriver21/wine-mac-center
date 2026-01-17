@@ -90,7 +90,8 @@ export const useWineAppPipelineModel = () => {
         outputEveryMs: 1000
       });
 
-      dispatchPatch(pipeline.getInitialStatus());
+      const { jobs, status } = await pipeline.readPipelineConfig();
+      dispatchPatch({ jobs, status, pipelineId: pipeline.id });
 
       pipeline.onUpdate((pipelineStatus) => {
         dispatchPatch({ ...pipelineStatus });

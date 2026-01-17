@@ -2,6 +2,7 @@ import { SpawnProcessArgs, UpdateProcess } from '@interfaces/SpawnProcessArgs';
 import { WineAppJobWithScript } from '@interfaces/WineAppJobWithScript';
 import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { WineAppStep } from '@interfaces/WineAppStep';
+import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
 
 export type WineAppPipeline = {
   _: {
@@ -24,4 +25,5 @@ export type WineAppPipeline = {
   jobs: WineAppJobWithScript[];
   run: () => Promise<void>;
   kill: () => Promise<void>;
+  readPipelineConfig: () => Promise<WineAppPipelineConfig>;
 };

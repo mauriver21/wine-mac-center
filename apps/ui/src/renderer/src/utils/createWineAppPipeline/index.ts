@@ -320,7 +320,7 @@ export const createWineAppPipeline = async (options: {
           this.onUpdate?.({
             pipelineId: id,
             jobs: pipeline.jobs,
-            status: ProcessStatus.Success
+            status: ProcessStatus.InProgress
           });
         }
 
@@ -340,6 +340,7 @@ export const createWineAppPipeline = async (options: {
         });
       }
     },
+    readPipelineConfig,
     onUpdate(fn) {
       this._.onUpdate = (pipelineStatus) => fn(clone(pipelineStatus));
     },
@@ -355,6 +356,7 @@ export const createWineAppPipeline = async (options: {
       pid && (await wineApp.execScript('killPid', `${pid}`));
       store.killAllProcesses = true;
       savePipelineStatus(ProcessStatus.Cancelled);
+      await writePipelineConfig();
     },
     jobs: [
       {

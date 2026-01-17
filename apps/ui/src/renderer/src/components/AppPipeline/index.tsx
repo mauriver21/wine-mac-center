@@ -1,7 +1,6 @@
 import { PipelineStep } from '@components/PipelineStep';
 import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
 import { useQueryParam } from '@hooks/useQueryParam';
-import { RootState } from '@interfaces/RootState';
 import { useAppModel } from '@models/useAppModel';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
@@ -33,11 +32,8 @@ export const AppPipeline: React.FC = () => {
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  const installedApp = useSelector((state: RootState) =>
-    installedAppModel.selectWineInstalledApp(state, appName)
-  );
   const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
-  const pipelineStatus = installedApp?.pipeline?.status;
+  const status = wineAppPipelineStatus?.status;
 
   const resumePipeline = async () => {
     try {
@@ -80,11 +76,13 @@ export const AppPipeline: React.FC = () => {
 
   useEffect(() => {
     installedAppModel.listAll();
-  }, [wineAppPipelineStatus?.status]);
+  }, [status]);
 
   useEffect(() => {
     contentsAreaRef.current?.refreshTableOfContents();
-  }, [pipelineStatus]);
+  }, [status]);
+
+  console.log('--->', wineAppPipelineStatus?.jobs);
 
   return (
     <Box display="grid" overflow="auto">
@@ -148,7 +146,7 @@ export const AppPipeline: React.FC = () => {
                 spacing={1}
                 justifyContent="flex-end"
               >
-                {wineAppPipelineStatus?.status === ProcessStatus.InProgress ? (
+                {status === ProcessStatus.InProgress ? (
                   <Button
                     disabled={stopping}
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
@@ -167,7 +165,7 @@ export const AppPipeline: React.FC = () => {
                     Close
                   </Button>
                 )}
-                {pipelineStatus === ProcessStatus.Cancelled ? (
+                {status === ProcessStatus.Cancelled ? (
                   <Button
                     disabled={resuming}
                     sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
