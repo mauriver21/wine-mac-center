@@ -2,6 +2,7 @@ import { SteamGuardCodeDialog } from '@components/SteamGuardCodeDialog';
 import { SteamCliContext } from '@contexts/SteamCliContext';
 import { useLocalState } from '@hooks/useLocalState';
 import { createSteamCli } from '@utils/createSteamCli';
+import { findOutputPID } from '@utils/findOutputPID';
 import { useRefresh } from '@utils/useRefresh';
 import { waitValue } from '@utils/waitValue';
 import { useMemo, useRef, useState } from 'react';
@@ -40,8 +41,10 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   const downloadSteamApp: typeof steamCli.downloadSteamApp = (args, spawnArgs) => {
     return steamCli.downloadSteamApp(args, {
       onStdOut: (data) => {
+        const pid = findOutputPID(data);
         if (data.includes('Steam Guard')) {
           askSteamGuardCode(args, spawnArgs);
+          steamCli.killPid(pid);
         }
         spawnArgs?.onStdOut?.(data);
       },

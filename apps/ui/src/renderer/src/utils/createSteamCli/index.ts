@@ -6,7 +6,7 @@ export const createSteamCli = (options: {
   credentials: { userName: string; password: string };
 }) => {
   const env = createEnv();
-  const STEAM_CLI_PATH = `${env.get().CLIENTS_PATH}/steam`;
+  const SCRIPTS_PATH = `${env.get().SCRIPTS_PATH}`;
 
   const s = (cmd: string) => {
     return `${env.getEnvExports()} ${cmd}`;
@@ -18,11 +18,11 @@ export const createSteamCli = (options: {
   };
 
   const install = (args?: SpawnProcessArgs) => {
-    return spawnProcess(`"${STEAM_CLI_PATH}/installSteamCMD.sh"`, args);
+    return spawnProcess(`"${SCRIPTS_PATH}/installSteamCMD.sh"`, args);
   };
 
   const runSteamCmd = (cmd: string, args?: SpawnProcessArgs) => {
-    return spawnProcess(`"${STEAM_CLI_PATH}/runSteamCMD.sh" ${cmd}`, args);
+    return spawnProcess(`"${SCRIPTS_PATH}/runSteamCMD.sh" ${cmd}`, args);
   };
 
   const login = async (
@@ -54,15 +54,19 @@ export const createSteamCli = (options: {
 
   const downloadSteamApp = (
     args: { gameInstallDir: string; appId: string; guardCode?: string },
-    spawnArgs: SpawnProcessArgs
+    spawnArgs?: SpawnProcessArgs
   ) => {
     const { userName, password } = options.credentials;
     const { gameInstallDir, appId, guardCode = '' } = args;
     return spawnProcess(
-      `"${STEAM_CLI_PATH}/downloadSteamApp.sh" "${gameInstallDir}" "${gameInstallDir.toLowerCase()}" "${userName}" "${password}" "${appId}" "${guardCode}"`,
+      `"${SCRIPTS_PATH}/downloadSteamApp.sh" "${gameInstallDir}" "${gameInstallDir.toLowerCase()}" "${userName}" "${password}" "${appId}" "${guardCode}"`,
       spawnArgs
     );
   };
 
-  return { install, login, downloadSteamApp };
+  const killPid = (pid: number | null, args?: SpawnProcessArgs) => {
+    return spawnProcess(`"${SCRIPTS_PATH}/killPid.sh" "${pid}"`, args);
+  };
+
+  return { install, login, downloadSteamApp, killPid };
 };

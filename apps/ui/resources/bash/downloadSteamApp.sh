@@ -24,7 +24,10 @@ downloadSteamApp() {
     "+quit"
     )
 
-    "${cmd[@]}"
+    source "$SCRIPTS_PATH/getPid.sh"
+    "${cmd[@]}" &
+    PID=$(getPid)
+    wait "$PID"
 
     mkdir -p "$GAME_INSTALL_DIR"
     mv "$GAME_INSTALL_DIR_LOWER"/. "$GAME_INSTALL_DIR"/
