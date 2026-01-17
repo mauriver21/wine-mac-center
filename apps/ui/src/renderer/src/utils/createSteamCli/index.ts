@@ -58,8 +58,8 @@ export const createSteamCli = (options: {
   ) => {
     const { userName, password } = options.credentials;
     const { gameInstallDir, appId } = args;
-    return runSteamCmd(
-      `+@sSteamCmdForcePlatformType windows +force_install_dir "${gameInstallDir}" +login ${userName} ${password} +app_update ${appId} validate +quit`,
+    return spawnProcess(
+      `"${STEAM_CLI_PATH}/downloadSteamApp.sh" "${gameInstallDir}" "${userName}" "${password}" "${appId}"`,
       spawnArgs
     );
   };

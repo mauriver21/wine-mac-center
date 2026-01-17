@@ -47,4 +47,5 @@ export type PipelineScript =
       name: string;
       operation: ScriptOperation.DOWNLOAD_STEAM_APP;
       steamAppId: string;
+      installDirName: string;
     };

@@ -120,6 +120,10 @@ export const useSchema = () => {
           steamAppId: schema.string().when('operation', {
             is: ScriptOperation.DOWNLOAD_STEAM_APP,
             then: (schema) => schema.required()
+          }),
+          installDirName: schema.string().when('operation', {
+            is: ScriptOperation.DOWNLOAD_STEAM_APP,
+            then: (schema) => schema.required()
           })
         })
       )

@@ -310,11 +310,18 @@ export const PipelineScript: React.FC = () => {
                   />
                 )}
                 {operation === ScriptOperation.DOWNLOAD_STEAM_APP && (
-                  <TextField
-                    control={form.control}
-                    name={`pipelineScripts.${index}.steamAppId`}
-                    label="Application Id"
-                  />
+                  <>
+                    <TextField
+                      control={form.control}
+                      name={`pipelineScripts.${index}.steamAppId`}
+                      label="Application Id"
+                    />
+                    <TextField
+                      control={form.control}
+                      name={`pipelineScripts.${index}.installDirName`}
+                      label="Install Dir Name"
+                    />
+                  </>
                 )}
               </Stack>
             </Box>
@@ -407,6 +414,7 @@ export const PipelineScript: React.FC = () => {
             ...result,
             {
               steamAppId: item.steamAppId || '',
+              installDirName: item.installDirName || '',
               operation: item.operation,
               name: 'Download Steam App'
             }

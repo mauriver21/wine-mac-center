@@ -51,6 +51,7 @@ export const createWineAppPipeline = async (options: {
     appFolderPath,
     pipelineScripts = []
   } = appConfig;
+  const { clients: { steamCli } = {} } = options;
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
 
@@ -253,6 +254,13 @@ export const createWineAppPipeline = async (options: {
       case ScriptOperation.MOUNT_DISK_IMAGE: {
         const diskImagePath = `${WINE_DOWNLOADS_PATH}/${parsePath(args.diskImagePath)}`;
         return wineApp.spawnScript('mountDiskImage', `"${diskImagePath}"`, spawnProcessArgs);
+      }
+      case ScriptOperation.DOWNLOAD_STEAM_APP: {
+        const gameInstallDir = `${appEnv.WINE_APP_DRIVE_C_PATH}/Program Files (x86)/Steam/steamapps/common/${args.installDirName}`;
+        return steamCli?.downloadSteamApp(
+          { appId: args.steamAppId, gameInstallDir },
+          spawnProcessArgs
+        );
       }
       default:
         return;
