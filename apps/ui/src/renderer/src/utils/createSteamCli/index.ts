@@ -2,7 +2,9 @@ import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { createEnv } from '@utils/createEnv';
 import { spawnProcess as baseSpawnProcess } from '@utils/spawnProcess';
 
-export const createSteamCli = () => {
+export const createSteamCli = (options: {
+  credentials: { userName: string; password: string };
+}) => {
   const env = createEnv();
   const STEAM_CLI_PATH = `${env.get().CLIENTS_PATH}/steam`;
 
@@ -50,5 +52,17 @@ export const createSteamCli = () => {
     });
   };
 
-  return { install, login };
+  const downloadSteamApp = (
+    args: { gameInstallDir: string; appId: string },
+    spawnArgs: SpawnProcessArgs
+  ) => {
+    const { userName, password } = options.credentials;
+    const { gameInstallDir, appId } = args;
+    return runSteamCmd(
+      `+@sSteamCmdForcePlatformType windows +force_install_dir "${gameInstallDir}" +login ${userName} ${password} +app_update ${appId} validate +quit`,
+      spawnArgs
+    );
+  };
+
+  return { install, login, downloadSteamApp };
 };

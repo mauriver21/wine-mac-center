@@ -11,10 +11,10 @@ export interface SteamCliProviderProps {
 export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) => {
   const { refresh } = useRefresh();
   const { getState } = useLocalState('steamCredentials');
-  const steamCredentials = getState();
+  const { userName = '', password = '' } = getState() || {};
   const steamCli = useMemo(
-    () => createSteamCli(),
-    [steamCredentials?.userName, steamCredentials?.password]
+    () => createSteamCli({ credentials: { userName, password } }),
+    [userName, password]
   );
 
   return (
