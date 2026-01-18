@@ -10,8 +10,8 @@ PARTS_DIR=$(dirname "$ARCHIVE")
 
 7z x -y "$ARCHIVE" -o"$DEST" &
 PID=$!
-echo "[PID_START]$PID[PID_END]"
+echo "[PIDS_START]$PID[PIDS_END]"
 wait "$PID"
 rm -rf "$PARTS_DIR" &
 PID=$!
-echo "[PID_START]$PID[PID_END]"
+echo "[PIDS_START]$PID[PIDS_END]"

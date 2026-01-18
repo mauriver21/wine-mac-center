@@ -28,7 +28,7 @@ downloadSteamApp() {
 
     "${cmd[@]}" &
     PID=$!
-    echo "[PID_START]$PID[PID_END]"
+    echo "[PIDS_START]$PID[PIDS_END]"
     wait "$PID"
     
     mv "$GAME_INSTALL_DIR_LOWER" "$GAME_INSTALL_DIR"

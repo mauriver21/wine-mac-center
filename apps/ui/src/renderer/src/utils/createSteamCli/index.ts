@@ -64,9 +64,9 @@ export const createSteamCli = (options: {
     );
   };
 
-  const killPid = (pid: number | null, args?: SpawnProcessArgs) => {
-    return spawnProcess(`"${SCRIPTS_PATH}/killPid.sh" "${pid}"`, args);
+  const killPids = (pids: string, args?: SpawnProcessArgs) => {
+    return spawnProcess(`"${SCRIPTS_PATH}/killPids.sh" "${pids}"`, args);
   };
 
-  return { install, login, downloadSteamApp, killPid };
+  return { install, login, downloadSteamApp, killPids };
 };

@@ -2,7 +2,7 @@ import { SteamGuardCodeDialog } from '@components/SteamGuardCodeDialog';
 import { SteamCliContext } from '@contexts/SteamCliContext';
 import { useLocalState } from '@hooks/useLocalState';
 import { createSteamCli } from '@utils/createSteamCli';
-import { findOutputPID } from '@utils/findOutputPID';
+import { findOutputPids } from '@utils/findOutputPids';
 import { useRefresh } from '@utils/useRefresh';
 import { waitValue } from '@utils/waitValue';
 import { useMemo, useRef, useState } from 'react';
@@ -31,7 +31,7 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   const askSteamGuardCode = async (
     args: DownloadSteamAppParams[0],
     spawnArgs: DownloadSteamAppParams[1],
-    prevPid: number | null
+    prevPids: string
   ) => {
     setGuardCode('');
     setOpenGuardCodeDialog(true);
@@ -43,12 +43,12 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
           ...spawnArgs,
           onExit: (data) => {
             spawnArgs?.onExit?.(data);
-            steamCli.killPid(prevPid);
+            steamCli.killPids(prevPids);
           }
         }
       );
     } else if (guardCode === 'CANCELED') {
-      steamCli.killPid(prevPid);
+      steamCli.killPids(prevPids);
     }
     setOpenGuardCodeDialog(false);
   };
@@ -56,9 +56,9 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   const downloadSteamApp: typeof steamCli.downloadSteamApp = (args, spawnArgs) => {
     return steamCli.downloadSteamApp(args, {
       onStdOut: (data) => {
-        const pid = findOutputPID(data);
+        const pids = findOutputPids(data);
         if (data.includes('Steam Guard')) {
-          askSteamGuardCode(args, spawnArgs, pid);
+          askSteamGuardCode(args, spawnArgs, pids);
         }
         spawnArgs?.onStdOut?.(data);
       },

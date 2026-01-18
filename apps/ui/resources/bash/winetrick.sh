@@ -3,7 +3,8 @@ winetrick() {
   "$WINE_APP_SCRIPTS_PATH/wineEnv.sh" \
   "$WINE_APP_SCRIPTS_PATH/winetricks.sh" $@ &
   PID=$!
-  echo "[PID_START]$PID[PID_END]"
+  CHILD_PID=$(ps -p "$PID" -o pgid= | tr -d ' ')
+  echo "[PIDS_START]$PID,$CHILD_PID[PIDS_END]"
   wait "$PID"
 }
 

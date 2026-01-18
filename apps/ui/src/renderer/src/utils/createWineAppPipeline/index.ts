@@ -18,7 +18,7 @@ import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { writeFile } from '@utils/writeFile';
-import { findOutputPID } from '@utils/findOutputPID';
+import { findOutputPids } from '@utils/findOutputPids';
 import { v4 as uuid } from 'uuid';
 import { parsePath } from '@utils/parsePath';
 import { getRelativeDriveCPath } from '@utils/getRelativeDriveCPath';
@@ -37,7 +37,7 @@ export const createWineAppPipeline = async (options: {
   };
 }) => {
   const id = uuid();
-  const store = { outputEnabled: true, killAllProcesses: false, currentProcess: { pid: 0 } };
+  const store = { outputEnabled: true, killAllProcesses: false, currentProcess: { pids: '0' } };
   const env = createEnv();
   const wineApp = await createWineApp(options.appName);
   const appConfig = wineApp.getAppConfig();
@@ -189,10 +189,10 @@ export const createWineAppPipeline = async (options: {
   };
 
   const updateCurrentProcess = (output: string) => {
-    const pid = findOutputPID(output);
+    const pids = findOutputPids(output);
 
-    if (pid && pid !== store.currentProcess.pid) {
-      store.currentProcess.pid = pid;
+    if (pids && pids !== store.currentProcess.pids) {
+      store.currentProcess.pids = pids;
     }
   };
 
@@ -352,8 +352,8 @@ export const createWineAppPipeline = async (options: {
         status: ProcessStatus.Cancelled
       }),
     kill: async () => {
-      const pid = store.currentProcess.pid;
-      pid && (await wineApp.execScript('killPid', `${pid}`));
+      const pids = store.currentProcess.pids;
+      pids && (await wineApp.execScript('killPids', `${pids}`));
       store.killAllProcesses = true;
       savePipelineStatus(ProcessStatus.Cancelled);
       await writePipelineConfig();
