@@ -1,7 +1,7 @@
 import { SteamIcon } from '@assets/icons/24/outline/SteamIcon';
 import { Button } from '@components/Button';
 import { CardItem } from '@components/CardItem';
-import { SteamCliDeveloper } from '@components/SteamCliDeveloper';
+// import { SteamCliDeveloper } from '@components/SteamCliDeveloper';
 import { useLocalState } from '@hooks/useLocalState';
 import { useSteamCli } from '@hooks/useSteamCli';
 import { useAppModel } from '@models/useAppModel';
@@ -77,7 +77,7 @@ export const Settings: React.FC = () => {
             Login
           </Button>
         </Stack>
-        <SteamCliDeveloper />
+        {/* <SteamCliDeveloper /> */}
       </Stack>
     </CardItem>
   ];
