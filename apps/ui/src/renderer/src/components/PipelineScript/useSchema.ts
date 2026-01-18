@@ -1,8 +1,8 @@
 import { ScriptOperation } from '@constants/enums';
 import { fileMaxSize } from '@utils/fileMaxSize';
-import { isAlphanumeric } from '@utils/isAlphanumeric';
 import { isDownloadableURL } from '@utils/isDownloadableURL';
 import { isURL } from '@utils/isURL';
+import { isValidApplicationName } from '@utils/isValidApplicationName';
 import { scriptExists } from '@utils/scriptExists';
 import { schema, InferType } from 'reactjs-shared-ui/forms';
 
@@ -18,9 +18,9 @@ export const useSchema = () => {
       .string()
       .required()
       .test({
-        name: 'isAlphanumeric',
+        name: 'isValidApplicationName',
         message: 'Invalid characters',
-        test: (appName) => isAlphanumeric(appName)
+        test: (appName) => isValidApplicationName(appName)
       })
       .test({
         name: 'appExists',
