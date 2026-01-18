@@ -33,4 +33,5 @@ export type Api = {
   unsubscribeFromWatchDirs: (listenerId: string) => void;
   buildPlist: (obj: plist.PlistValue) => Promise<string>;
   showItemInFolder: (fullPath: string) => Promise<void>;
+  renameDirectory: (from: string, to: string) => Promise<void>;
 };

@@ -21,7 +21,8 @@ import {
   watchDirs,
   writeBinaryFile,
   writeFile,
-  showItemInFolder
+  showItemInFolder,
+  renameDirectory
 } from './commands';
 import icon from '../../resources/icon.png?asset';
 
@@ -43,6 +44,7 @@ ipcMain.handle(ElectronApi.UnwatchDirs, unwatchDirs);
 ipcMain.handle(ElectronApi.BuildPlist, buildPlist);
 ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
 ipcMain.handle(ElectronApi.ShowItemInFolder, showItemInFolder);
+ipcMain.handle(ElectronApi.RenameDirectory, renameDirectory);
 
 let isQuitting = false;
 

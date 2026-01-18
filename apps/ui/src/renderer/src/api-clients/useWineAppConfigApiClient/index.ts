@@ -18,6 +18,7 @@ import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { createObjectURL } from '@utils/createObjectURL';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
+import { renameDirectory } from '@utils/renameDirectory';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
@@ -202,9 +203,8 @@ export const useWineAppConfigApiClient = () => {
     if (await dirExists(SCRIPT_PATH)) {
       if (changedScriptName) {
         if ((await dirExists(NEW_SCRIPT_PATH)) === false) {
-          await createDirectory(NEW_SCRIPT_PATH);
+          await renameDirectory(SCRIPT_PATH, NEW_SCRIPT_PATH);
           config = await writeScript({ ...rest, name });
-          await removeDirectory(SCRIPT_PATH, { recursive: true });
         }
       } else {
         config = await writeScript({ ...rest, name });
