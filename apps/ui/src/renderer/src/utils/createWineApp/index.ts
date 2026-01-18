@@ -240,15 +240,44 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   const wineEnvSource = () => `source "${SCRIPTS_PATH}/env.sh";`;
 
   /**
+   * Handles special winetricks verbs that may never terminate by themselves.
+   */
+  const winetrickKillVerbHandler = (
+    verb: string,
+    output: string,
+    processArgs?: SpawnProcessArgs
+  ) => {
+    switch (verb) {
+      case 'dotnet462':
+        if (output.includes('Using native override for following DLLs: mscorwks')) {
+          killWinetricks({ processArgs });
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  /**
+   * Kill winetricks process
+   */
+  const killWinetricks = (options?: { force?: boolean; processArgs?: SpawnProcessArgs }) => {
+    const force = options?.force ? '-f' : '';
+    return spawnScript('killWinetricks', `${force}`, options?.processArgs);
+  };
+
+  /**
    * Winetrick
    */
-  const winetrick = (
-    verbs: string,
-    processArgs?: SpawnProcessArgs,
-    options?: WinetricksOptions
-  ) => {
+  const winetrick = (verb: string, processArgs?: SpawnProcessArgs, options?: WinetricksOptions) => {
     const flags = winetricksOptionsToFlags(options);
-    return spawnScript('winetrick', `${flags} ${verbs}`, processArgs);
+    return spawnScript('winetrick', `${flags} ${verb}`, {
+      ...processArgs,
+      onStdOut: (output) => {
+        winetrickKillVerbHandler(verb, output, processArgs);
+        processArgs?.onStdOut?.(output);
+      }
+    });
   };
 
   /**
