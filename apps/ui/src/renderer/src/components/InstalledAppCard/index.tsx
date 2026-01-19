@@ -2,7 +2,7 @@ import { AppCardButton } from '@components/AppCardButton';
 import { Body1, Box, Card, CardProps, Image } from 'reactjs-shared-ui';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
-import { Folder, Pending } from '@mui/icons-material';
+import { Folder, Launch, Pending } from '@mui/icons-material';
 import { getAppArtwork } from '@utils/getAppArtwork';
 import { RootState } from '@interfaces/RootState';
 import { useEffect, useState } from 'react';
@@ -26,7 +26,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
   const wineAppConfig = useSelector((state: RootState) =>
     wineAppModel.selectWineAppConfig(state, appName, ConfigOrigin.INSTALLED_APP)
   );
-  const { navigateToAppConfig, navigateToAppPipeline } = useNavigateApp();
+  const { navigateToAppConfig, navigateToAppPipeline, navigateToAppLauncher } = useNavigateApp();
   const [artWorkSrc, setArtWorkSrc] = useState(wineAppConfig?.artworkURL);
   const [noArtWork, setNoArtWork] = useState(false);
 
@@ -88,6 +88,13 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
               installedWineApp?.appPath && showItemInFolder(installedWineApp.appPath);
             }}
           />
+          {installedWineApp?.pipeline?.status == ProcessStatus.Success && (
+            <AppCardButton
+              title="Open Launcher"
+              icon={Launch}
+              onClick={() => navigateToAppLauncher(appName)}
+            />
+          )}
           {installedWineApp?.pipeline?.status == ProcessStatus.Cancelled ? (
             <AppCardButton
               title="Installation pending"

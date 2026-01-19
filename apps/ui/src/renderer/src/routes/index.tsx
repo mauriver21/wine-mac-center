@@ -10,6 +10,7 @@ import { Scripts } from '@pages/Scripts';
 import { Test } from '@pages/Test';
 import { RouteObject } from 'react-router-dom';
 import { PipelineScript } from '@components/PipelineScript';
+import { AppLauncher } from '@components/AppLauncher';
 
 export const routes: RouteObject[] = [
   {
@@ -31,7 +32,7 @@ export const routes: RouteObject[] = [
   {
     path: 'app-launcher',
     element: <SimpleLayout />,
-    children: [{ path: ':appName', element: <></> }]
+    children: [{ path: ':appName', element: <AppLauncher /> }]
   },
   {
     path: '/app-pipeline',

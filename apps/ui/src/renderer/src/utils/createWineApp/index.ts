@@ -11,7 +11,6 @@ import { createEnv } from '@utils/createEnv';
 import { ConfigOrigin, FileName } from '@constants/enums';
 import { spawnProcess as baseSpawnProcess } from '@utils/spawnProcess';
 import { writeFile } from '@utils/writeFile';
-import { createWineEngineApiClient } from '@api-clients/createWineEngineApiClient';
 import { readFileAsString } from '@utils/readFileAsString';
 import { createDirectory } from '@utils/createDirectory';
 import { execCommand as baseExecCommand } from '@utils/execCommand';
@@ -22,7 +21,6 @@ import { buildPlist } from '@utils/buildPlist';
 
 export const createWineApp = async (appName: string, config?: WineAppConfig) => {
   const env = createEnv();
-  const wineEngineApiClient = createWineEngineApiClient();
   const SCRIPTS_PATH = env.get().SCRIPTS_PATH;
   const WINE_DOWNLOADS_PATH = env.get().WINE_DOWNLOADS_PATH;
   const { name: _, ...restConfig } = config || {};
@@ -521,7 +519,6 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     scaffold,
     spawnProcess,
     spawnScript,
-    listWineEngines: wineEngineApiClient.list,
     downloadWineEngine,
     extractEngine,
     wineboot,

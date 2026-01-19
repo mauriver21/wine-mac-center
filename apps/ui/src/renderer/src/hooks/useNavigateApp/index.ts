@@ -12,8 +12,8 @@ export const useNavigateApp = () => {
     navigate('/apps');
   };
 
-  const navigateToAppNotFound = (realAppName: string) => {
-    navigate(`/app-not-found/${realAppName}`);
+  const navigateToAppNotFound = (appName: string) => {
+    navigate(`/app-not-found/${appName}`);
   };
 
   const navigateToScripts = () => {
@@ -26,6 +26,10 @@ export const useNavigateApp = () => {
     } else {
       navigate(`/script`);
     }
+  };
+
+  const navigateToAppLauncher = (appName: string | undefined) => {
+    navigate(`/app-launcher/${appName}`);
   };
 
   const navigateToAppPipeline = (
@@ -46,6 +50,7 @@ export const useNavigateApp = () => {
     navigateToHome,
     navigateToScripts,
     navigateToScript,
-    navigateToAppConfig
+    navigateToAppConfig,
+    navigateToAppLauncher
   };
 };
