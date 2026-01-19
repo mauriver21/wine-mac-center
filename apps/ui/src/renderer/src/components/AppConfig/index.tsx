@@ -111,6 +111,7 @@ export const AppConfig: React.FC = () => {
             <Box
               overflow="auto"
               display="grid"
+              gridTemplateRows="1fr auto"
               sx={{
                 '&::-webkit-scrollbar-thumb': {
                   backgroundColor: (theme) => alpha(theme.palette?.secondary.dark, 0.3)

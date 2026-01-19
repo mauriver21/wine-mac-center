@@ -6,14 +6,16 @@ import {
   Button,
   ContentsAreaHandle,
   ContentsArea,
-  TableOfContents
+  TableOfContents,
+  Stack
 } from 'reactjs-shared-ui';
 import { alpha } from '@mui/material';
 
 export interface ConfigLayoutProps {
   mainTitle: string;
+  contentSlot: React.ReactNode;
   backButtonProps?: ButtonProps;
-  contentSlot?: React.ReactNode;
+  actionsSlot?: React.ReactNode;
   showTableOfContents?: boolean;
 }
 
@@ -21,6 +23,7 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
   mainTitle,
   backButtonProps,
   contentSlot,
+  actionsSlot,
   showTableOfContents = true
 }) => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
@@ -64,6 +67,7 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
           <Box
             overflow="auto"
             display="grid"
+            gridTemplateRows="1fr auto"
             sx={{
               '&::-webkit-scrollbar-thumb': {
                 backgroundColor: (theme) => alpha(theme.palette?.primary.dark, 0.3)
@@ -73,6 +77,19 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
             <Box display="grid" overflow="auto">
               {contentSlot}
             </Box>
+            {actionsSlot ? (
+              <Stack
+                borderTop={(theme) => `1px solid ${theme.palette.secondary.light}`}
+                p={2}
+                direction="row"
+                spacing={1}
+                justifyContent="flex-end"
+              >
+                {actionsSlot}
+              </Stack>
+            ) : (
+              <></>
+            )}
           </Box>
           {showTableOfContents && (
             <Box borderLeft={(theme) => `1px solid ${theme.palette.secondary.light}`}>
