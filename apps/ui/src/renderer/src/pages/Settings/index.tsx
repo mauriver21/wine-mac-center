@@ -17,7 +17,7 @@ const ITEM_STYLE = { px: '20px !important' };
 export const Settings: React.FC = () => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
 
-  const modules = [<SteamCredentials />, <EnvPaths />];
+  const modules = [<EnvPaths />, <SteamCredentials />];
 
   return (
     <Box display="grid" overflow="auto">

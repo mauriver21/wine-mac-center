@@ -65,7 +65,7 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
         </Stack>
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button disabled={loggingIn} onClick={steamLogin}>
-            Login
+            Check Login
           </Button>
         </Stack>
         {developer && <SteamCliDeveloper />}
