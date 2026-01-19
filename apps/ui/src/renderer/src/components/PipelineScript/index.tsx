@@ -1,16 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  Box,
-  ContentsArea,
-  ContentsAreaHandle,
-  ContentsClass,
-  Grid,
-  H6,
-  Icon,
-  Stack,
-  TableOfContents
-} from 'reactjs-shared-ui';
-import { alpha, Chip, Divider } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, ContentsClass, Grid, Icon, Stack } from 'reactjs-shared-ui';
+import { Chip, Divider } from '@mui/material';
 import { DEFAULT_PIPELINE_SCRIPT, FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-shared-ui/forms';
 import { useFieldArray } from 'react-hook-form';
@@ -41,6 +31,7 @@ import { RootState } from '@interfaces/RootState';
 import { IconInput } from '@components/IconInput';
 import { blobToURL } from '@utils/blobToURL';
 import { ArtWorkInput } from '@components/ArtWorkInput';
+import { ConfigLayout } from '@layouts/ConfigLayout';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -48,7 +39,6 @@ export const PipelineScript: React.FC = () => {
   const { appName } = useParams();
   const schema = useSchema();
   const form = useForm(schema);
-  const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const { navigateToScripts } = useNavigateApp();
   const wineAppConfigModel = useWineAppConfigModel();
   const appConfig = useSelector((state: RootState) =>
@@ -496,94 +486,45 @@ export const PipelineScript: React.FC = () => {
 
   return (
     <form onSubmit={form.handleSubmit(submit as any)} style={{ display: 'contents' }}>
-      <Box display="grid" overflow="auto">
-        <ContentsArea
-          ref={contentsAreaRef}
-          style={{
-            height: '100%',
-            display: 'grid',
-            overflow: 'auto',
-            gridTemplateRows: 'auto 1fr'
-          }}
-        >
-          <Box>
-            <Box
-              p={2}
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              sx={{
-                boxShadow: (theme) => `inset 0 -1px ${theme.palette.secondary.main}`
-              }}
-            >
-              <H6 color="text.secondary" fontWeight={500}>
-                {appConfig?.name ? `${appConfig?.name} Script` : `Create Script`}
-              </H6>
-              <Button onClick={navigateToScripts}>Back</Button>
-            </Box>
-            <Box
-              sx={{
-                height: '1px',
-                boxShadow: (theme) => `inset 0 1px ${theme.palette.secondary.light}`
-              }}
-            ></Box>
-          </Box>
-          <Box display="grid" gridTemplateColumns="1fr 250px" overflow="auto">
-            <Box
-              overflow="auto"
-              display="grid"
-              sx={{
-                '&::-webkit-scrollbar-thumb': {
-                  backgroundColor: (theme) => alpha(theme.palette?.secondary.dark, 0.3)
-                }
-              }}
-            >
-              <Stack
-                overflow="auto"
-                spacing={1}
-                sx={{
-                  overflowX: 'hidden !important'
-                }}
-                pb={2}
-                alignItems="center"
+      <ConfigLayout
+        mainTitle={appConfig?.name ? `${appConfig?.name} Script` : `Create Script`}
+        backButtonProps={{ onClick: () => navigateToScripts() }}
+        contentSlot={
+          <Stack
+            overflow="auto"
+            spacing={1}
+            sx={{
+              overflowX: 'hidden !important'
+            }}
+            pb={2}
+            alignItems="center"
+          >
+            {modules.map((item, index) => (
+              <Box
+                key={index}
+                width="100%"
+                maxWidth={800}
+                pt={2}
+                sx={ITEM_STYLE}
+                className={ContentsClass.Item}
               >
-                {modules.map((item, index) => (
-                  <Box
-                    key={index}
-                    width="100%"
-                    maxWidth={800}
-                    pt={2}
-                    sx={ITEM_STYLE}
-                    className={ContentsClass.Item}
-                  >
-                    {item}
-                  </Box>
-                ))}
-              </Stack>
-              <Stack
-                borderTop={(theme) => `1px solid ${theme.palette.secondary.light}`}
-                p={2}
-                direction="row"
-                spacing={1}
-                justifyContent="flex-end"
-              >
-                {appConfig?.name ? (
-                  <Button disabled={loading || form.isInvalid()} type="submit">
-                    Update
-                  </Button>
-                ) : (
-                  <Button disabled={loading || form.isInvalid()} type="submit">
-                    Create
-                  </Button>
-                )}
-              </Stack>
-            </Box>
-            <Box borderLeft={(theme) => `1px solid ${theme.palette.secondary.light}`}>
-              <TableOfContents pt={1} />
-            </Box>
-          </Box>
-        </ContentsArea>
-      </Box>
+                {item}
+              </Box>
+            ))}
+          </Stack>
+        }
+        actionsSlot={
+          appConfig?.name ? (
+            <Button disabled={loading || form.isInvalid()} type="submit">
+              Update
+            </Button>
+          ) : (
+            <Button disabled={loading || form.isInvalid()} type="submit">
+              Create
+            </Button>
+          )
+        }
+      />
     </form>
   );
 };
