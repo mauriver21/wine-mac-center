@@ -51,13 +51,17 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
           <H6 color="text.secondary" fontWeight={500}>
             {mainTitle}
           </H6>
-          <Button
-            sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-            color="secondary"
-            {...backButtonProps}
-          >
-            Back
-          </Button>
+          {backButtonProps ? (
+            <Button
+              sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+              color="secondary"
+              {...backButtonProps}
+            >
+              Back
+            </Button>
+          ) : (
+            <></>
+          )}
         </Box>
         <Box
           display="grid"
