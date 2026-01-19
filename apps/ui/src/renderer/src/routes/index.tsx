@@ -20,14 +20,18 @@ export const routes: RouteObject[] = [
       { path: 'apps', element: <InstalledApps /> },
       { path: 'settings', element: <Settings /> },
       { path: 'scripts', element: <Scripts /> },
-      { path: 'test', element: <Test /> },
-      { path: 'app-launcher', element: <></> }
+      { path: 'test', element: <Test /> }
     ]
   },
   {
     path: '/app-config',
     element: <SimpleLayout />,
     children: [{ path: ':appName', element: <AppConfig /> }]
+  },
+  {
+    path: 'app-launcher',
+    element: <SimpleLayout />,
+    children: [{ path: ':appName', element: <></> }]
   },
   {
     path: '/app-pipeline',
