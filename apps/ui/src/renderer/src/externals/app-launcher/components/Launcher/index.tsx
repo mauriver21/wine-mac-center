@@ -1,26 +1,19 @@
-import { Button } from '@components/Button';
-import { useMemo } from 'react';
-import { Box, H6, Stack } from 'reactjs-shared-ui';
+import { Outlet } from 'react-router-dom';
+import { Box, Card } from 'reactjs-shared-ui';
 
 export const Launcher: React.FC = () => {
-  const menu = useMemo(() => [{ label: 'Run Application' }, { label: 'Configurations' }], []);
-
   return (
-    <Box
-      display="grid"
-      width="100%"
-      height="100%"
-      bgcolor="secondary.main"
-      p={2}
-      position="relative"
-    >
-      <Stack spacing={2} position="absolute" top={260} right={40}>
-        {menu.map((item) => (
-          <Button sx={{ minWidth: 300 }}>
-            <H6>{item.label}</H6>
-          </Button>
-        ))}
-      </Stack>
-    </Box>
+    <Card variant="outlined" sx={{ overflow: 'auto' }}>
+      <Box
+        position="relative"
+        display="grid"
+        width="100%"
+        height="100%"
+        bgcolor="background.paper"
+        overflow="auto"
+      >
+        <Outlet />
+      </Box>
+    </Card>
   );
 };

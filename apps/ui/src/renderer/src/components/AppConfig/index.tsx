@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
 import { WineApp } from '@interfaces/WineApp';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { createWineApp } from '@utils/createWineApp';
 import { useRefresh } from '@utils/useRefresh';
 import { ExecutableConfigModule } from '@components/ExecutableConfigModule';
@@ -26,7 +26,8 @@ export const AppConfig: React.FC = () => {
   const { appName } = useParams();
   const { signal, refresh } = useRefresh();
   const { watchDirEvent } = useDirsWatcherContext() || {};
-  const { navigateToApps, navigateToAppNotFound } = useNavigateApp();
+  const { navigateToAppNotFound } = useNavigateApp();
+  const navigate = useNavigate();
 
   const modules = useMemo(
     () => [
@@ -60,7 +61,7 @@ export const AppConfig: React.FC = () => {
     <AppConfigContext.Provider value={{ loading, setLoading, refresh, signal, wineApp }}>
       <ConfigLayout
         mainTitle={appName}
-        backButtonProps={{ onClick: () => navigateToApps() }}
+        backButtonProps={{ onClick: () => navigate(-1) }}
         contentSlot={
           <Stack
             className={ContentsClass.ScrollableArea}

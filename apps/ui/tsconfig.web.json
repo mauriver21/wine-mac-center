@@ -36,6 +36,7 @@
       "@themes": ["src/renderer/src/themes"],
       "@utils/*": ["src/renderer/src/utils/*"],
       "@app-launcher/components/*": ["src/renderer/src/externals/app-launcher/components/*"],
+      "@app-launcher/hooks/*": ["src/renderer/src/externals/app-launcher/hooks/*"],
       "@app-launcher/layouts/*": ["src/renderer/src/externals/app-launcher/layouts/*"],
       "@app-launcher/routes": ["src/renderer/src/externals/app-launcher/routes"],
       "@app-launcher": ["src/renderer/src/externals/app-launcher"],
