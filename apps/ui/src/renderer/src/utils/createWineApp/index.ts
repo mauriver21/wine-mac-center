@@ -46,7 +46,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
       return appConfig.engineVersion || '';
     },
     get WINE_APP_PATH() {
-      return `${env.get().HOME}/Wine/apps/${WINE_ENV.WINE_APP_NAME}.app`;
+      return `${env.get().WINE_APPS_PATH}/${WINE_ENV.WINE_APP_NAME}.app`;
     },
     get WINE_ENGINES_PATH() {
       return env.get().WINE_ENGINES_PATH;

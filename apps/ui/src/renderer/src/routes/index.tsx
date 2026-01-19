@@ -30,9 +30,9 @@ export const routes: RouteObject[] = [
     children: [{ path: ':appName', element: <AppConfig /> }]
   },
   {
-    path: 'app-launcher',
+    path: '/app-launcher',
     element: <SimpleLayout />,
-    children: [{ path: ':appName', element: <AppLauncher /> }]
+    children: [{ path: ':appName/*', element: <AppLauncher /> }]
   },
   {
     path: '/app-pipeline',

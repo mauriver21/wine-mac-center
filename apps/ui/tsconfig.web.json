@@ -35,7 +35,10 @@
       "@store": ["src/renderer/src/store"],
       "@themes": ["src/renderer/src/themes"],
       "@utils/*": ["src/renderer/src/utils/*"],
-      "@app-launcher/components/*": ["src/renderer/src/externals/app-launcher/components/*"]
+      "@app-launcher/components/*": ["src/renderer/src/externals/app-launcher/components/*"],
+      "@app-launcher/layouts/*": ["src/renderer/src/externals/app-launcher/layouts/*"],
+      "@app-launcher/routes": ["src/renderer/src/externals/app-launcher/routes"],
+      "@app-launcher": ["src/renderer/src/externals/app-launcher"],
     }
   }
 }

@@ -1,7 +1,7 @@
-import { Launcher } from '@app-launcher/components/Launcher';
+import React from 'react';
+import { App as Launcher } from '@app-launcher';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { ConfigLayout } from '@layouts/ConfigLayout';
-import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Box } from 'reactjs-shared-ui';
 

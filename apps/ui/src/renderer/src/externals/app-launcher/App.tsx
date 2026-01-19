@@ -1,11 +1,6 @@
-import { EnvProvider } from '@components/EnvProvider';
-import React from 'react';
-import { Launcher } from '@app-launcher/components/Launcher';
+import { useRoutes } from 'react-router-dom';
+import { routes } from '@app-launcher/routes';
 
 export const App: React.FC = () => {
-  return (
-    <EnvProvider>
-      <Launcher />
-    </EnvProvider>
-  );
+  return useRoutes(routes);
 };
