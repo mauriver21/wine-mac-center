@@ -1,12 +1,7 @@
-import { SteamIcon } from '@assets/icons/24/outline/SteamIcon';
-import { Button } from '@components/Button';
-import { CardItem } from '@components/CardItem';
-// import { SteamCliDeveloper } from '@components/SteamCliDeveloper';
-import { useLocalState } from '@hooks/useLocalState';
-import { useSteamCli } from '@hooks/useSteamCli';
-import { useAppModel } from '@models/useAppModel';
-import { alpha, TextFieldProps } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { EnvPaths } from '@components/EnvPaths';
+import { SteamCredentials } from '@components/SteamCredentials';
+import { alpha } from '@mui/material';
+import { useRef } from 'react';
 import {
   Box,
   ContentsArea,
@@ -16,71 +11,13 @@ import {
   Stack,
   TableOfContents
 } from 'reactjs-shared-ui';
-import { TextField } from 'reactjs-shared-ui/forms';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const Settings: React.FC = () => {
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  const [loggingIn, setLoggingIn] = useState(false);
-  const { getState, setState } = useLocalState('steamCredentials');
-  const steamCli = useSteamCli();
-  const appModel = useAppModel();
 
-  const onChangeSteamCredentials: TextFieldProps['onChange'] = ({
-    currentTarget: { name, value }
-  }) => {
-    setState({ ...getState(), [name]: value });
-  };
-
-  const steamLogin = async () => {
-    setLoggingIn(true);
-    const { userName = '', password = '' } = getState() || {};
-    try {
-      await steamCli.login({ userName, password });
-      appModel.dispatchSuccessMessage('Login Success');
-    } catch (error) {
-      appModel.dispatchError(error);
-    } finally {
-      setLoggingIn(false);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      steamCli.refresh();
-    };
-  }, []);
-
-  const modules = [
-    <CardItem icon={SteamIcon} label="Steam Credentials">
-      <Stack spacing={2}>
-        <Stack spacing={2}>
-          <TextField
-            onChange={onChangeSteamCredentials}
-            value={getState()?.userName}
-            autoComplete="off"
-            name="userName"
-            label="User Name"
-          />
-          <TextField
-            onChange={onChangeSteamCredentials}
-            value={getState()?.password}
-            autoComplete="off"
-            name="password"
-            type="password"
-            label="Password"
-          />
-        </Stack>
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button disabled={loggingIn} onClick={steamLogin}>
-            Login
-          </Button>
-        </Stack>
-        {/* <SteamCliDeveloper /> */}
-      </Stack>
-    </CardItem>
-  ];
+  const modules = [<SteamCredentials />, <EnvPaths />];
 
   return (
     <Box display="grid" overflow="auto">
