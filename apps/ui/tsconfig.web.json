@@ -34,7 +34,8 @@
       "@states/*": ["src/renderer/src/states/*"],
       "@store": ["src/renderer/src/store"],
       "@themes": ["src/renderer/src/themes"],
-      "@utils/*": ["src/renderer/src/utils/*"]
+      "@utils/*": ["src/renderer/src/utils/*"],
+      "@app-launcher/components/*": ["src/renderer/src/externals/app-launcher/components/*"]
     }
   }
 }
