@@ -12,7 +12,7 @@ import {
 import { alpha } from '@mui/material';
 
 export interface ConfigLayoutProps {
-  mainTitle: string;
+  mainTitle: string | undefined;
   contentSlot: React.ReactNode;
   backButtonProps?: ButtonProps;
   actionsSlot?: React.ReactNode;
@@ -69,7 +69,7 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
             display="grid"
             gridTemplateRows="1fr auto"
             sx={{
-              '&::-webkit-scrollbar-thumb': {
+              '& ::-webkit-scrollbar-thumb': {
                 backgroundColor: (theme) => alpha(theme.palette?.primary.dark, 0.3)
               }
             }}

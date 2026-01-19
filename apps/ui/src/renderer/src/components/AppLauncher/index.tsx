@@ -11,6 +11,7 @@ export const AppLauncher: React.FC = () => {
 
   return (
     <ConfigLayout
+      showTableOfContents={false}
       mainTitle={`${appName} Launcher Preview`}
       backButtonProps={{ onClick: () => navigateToApps() }}
       contentSlot={
