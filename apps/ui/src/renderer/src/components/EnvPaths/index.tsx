@@ -26,7 +26,11 @@ export const EnvPaths: React.FC<EnvPathsProps> = ({ developer = false }) => {
   }, []);
 
   return (
-    <CardItem icon={TravelExplore} label="Environment Paths">
+    <CardItem
+      cardProps={{ sx: { overflow: 'auto' } }}
+      icon={TravelExplore}
+      label="Environment Paths"
+    >
       <Stack spacing={2}>
         {envPaths.map(({ name, path }) => (
           <TextField

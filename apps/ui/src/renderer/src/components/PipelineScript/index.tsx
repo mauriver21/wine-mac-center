@@ -488,7 +488,6 @@ export const PipelineScript: React.FC = () => {
     <form onSubmit={form.handleSubmit(submit as any)} style={{ display: 'contents' }}>
       <ConfigLayout
         mainTitle={appConfig?.name ? `${appConfig?.name} Script` : `Create Script`}
-        backButtonProps={{ onClick: () => navigateToScripts() }}
         contentSlot={
           <Stack
             overflow="auto"

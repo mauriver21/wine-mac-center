@@ -1,15 +1,16 @@
 import React from 'react';
-import { Card, CardContent, Stack, Icon, H6, ContentsClass } from 'reactjs-shared-ui';
+import { Card, CardContent, Stack, Icon, H6, ContentsClass, CardProps } from 'reactjs-shared-ui';
 
 export interface CardItemProps {
   children?: React.ReactElement;
   label: string;
   icon: React.FC;
+  cardProps?: CardProps;
 }
 
-export const CardItem: React.FC<CardItemProps> = ({ children, label, icon }) => {
+export const CardItem: React.FC<CardItemProps> = ({ children, label, icon, cardProps }) => {
   return (
-    <Card>
+    <Card {...cardProps}>
       <CardContent>
         <Stack spacing={1}>
           <Stack direction="row" spacing={1}>

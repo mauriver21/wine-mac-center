@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { ButtonProps } from '@components/Button';
 import {
   Box,
   H6,
@@ -10,22 +9,24 @@ import {
   Stack
 } from 'reactjs-shared-ui';
 import { alpha } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 export interface ConfigLayoutProps {
   mainTitle: string | undefined;
   contentSlot: React.ReactNode;
-  backButtonProps?: ButtonProps;
   actionsSlot?: React.ReactNode;
   showTableOfContents?: boolean;
+  showBack?: boolean;
 }
 
 export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
   mainTitle,
-  backButtonProps,
   contentSlot,
   actionsSlot,
-  showTableOfContents = true
+  showTableOfContents = true,
+  showBack = true
 }) => {
+  const navigate = useNavigate();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
 
   return (
@@ -51,11 +52,11 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
           <H6 color="text.secondary" fontWeight={500}>
             {mainTitle}
           </H6>
-          {backButtonProps ? (
+          {showBack ? (
             <Button
               sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
               color="secondary"
-              {...backButtonProps}
+              onClick={() => navigate(-1)}
             >
               Back
             </Button>

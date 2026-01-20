@@ -11,8 +11,13 @@ export const useNavigateApp = () => {
     navigate('app-config');
   };
 
+  const navigateToEnvPath = () => {
+    navigate('env-paths');
+  };
+
   return {
     navigateToMenu,
-    navigateToAppConfig
+    navigateToAppConfig,
+    navigateToEnvPath
   };
 };

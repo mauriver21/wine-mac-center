@@ -75,6 +75,7 @@ export const AppPipeline: React.FC = () => {
   return (
     <ConfigLayout
       mainTitle={appName}
+      showBack={false}
       contentSlot={
         <Box p={2} overflow="auto">
           {wineAppPipelineStatus?.jobs?.map?.((item) => (

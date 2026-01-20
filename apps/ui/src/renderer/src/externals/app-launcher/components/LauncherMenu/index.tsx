@@ -4,13 +4,19 @@ import React, { useMemo } from 'react';
 import { H6, Stack } from 'reactjs-shared-ui';
 
 export const LauncherMenu: React.FC = () => {
-  const { navigateToAppConfig } = useNavigateApp();
+  const { navigateToAppConfig, navigateToEnvPath } = useNavigateApp();
   const menu = useMemo(
     () => [
       {
         label: 'Configurations',
         onClick: () => {
           navigateToAppConfig();
+        }
+      },
+      {
+        label: 'Environment',
+        onClick: () => {
+          navigateToEnvPath();
         }
       }
     ],
