@@ -6,9 +6,11 @@
   "main": "./out/main/index.js",
   "author": "example.com",
   "homepage": "https://electron-vite.org",
-  "./app-launcher": {
-    "types": "./dist/app-launcher/index.d.ts",
-    "import": "./dist/app-launcher/index.mjs"
+  "exports": {
+    "./app-launcher": {
+      "types": "./dist/app-launcher/index.d.ts",
+      "import": "./dist/app-launcher/index.mjs"
+    }
   },
   "scripts": {
     "format": "prettier --write .",
