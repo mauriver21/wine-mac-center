@@ -7,7 +7,6 @@ export const LauncherMenu: React.FC = () => {
   const { navigateToAppConfig } = useNavigateApp();
   const menu = useMemo(
     () => [
-      { label: 'Run Application' },
       {
         label: 'Configurations',
         onClick: () => {
