@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 export interface EnvProviderProps {
   children?: React.ReactNode;
+  standaloneApp?: boolean;
 }
 
 export const EnvProvider: React.FC<EnvProviderProps> = ({ children }) => {

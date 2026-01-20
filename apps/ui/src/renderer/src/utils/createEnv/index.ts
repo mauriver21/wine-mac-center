@@ -6,7 +6,8 @@ import { execCommand } from '@utils/execCommand';
 import { getAppPath } from '@utils/getAppPath';
 import { pathJoin } from '@utils/pathJoin';
 
-export const createEnv = () => {
+export const createEnv = (args?: { standaloneApp?: boolean }) => {
+  const { standaloneApp = false } = args || {};
   const get = () => ENV;
 
   const init = async (mode = process.env.NODE_ENV) => {
@@ -29,6 +30,7 @@ export const createEnv = () => {
 
     ENV.HOME = (await execCommand('echo $HOME')).stdOut.trim();
     ENV.WINE_PATH = `${ENV.HOME}/Wine`;
+    ENV.APPLICATION_PATH = standaloneApp ? ENV.DIRNAME : '';
     ENV.WINE_APPS_PATH = `${ENV.WINE_PATH}/apps`;
     ENV.WINE_ASSETS_PATH = `${ENV.WINE_PATH}/assets`;
     ENV.WINE_DOWNLOADS_PATH = `${ENV.WINE_ASSETS_PATH}/downloads`;
