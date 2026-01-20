@@ -24,5 +24,3 @@ dist-ssr
 *.sln
 *.sw?
 
-electron/types
-electron/commands
