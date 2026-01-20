@@ -10,12 +10,13 @@ export interface EnvPathsProps {
   developer?: boolean;
 }
 
-export const EnvPaths: React.FC<EnvPathsProps> = ({ developer = false }) => {
+export const EnvPaths: React.FC<EnvPathsProps> = ({ developer }) => {
   const env = useEnv();
+  const isDev = developer ?? (env.isDev || false);
   const envPaths = useMemo(() => {
     let envPaths: Array<{ path: string; name: string }> = [];
     for (const [key, value] of Object.entries(env.get())) {
-      if (!developer && !key.includes('WINE') && !key.includes('HOME')) {
+      if (!isDev && !key.includes('WINE') && !key.includes('HOME')) {
         continue;
       }
 
@@ -23,7 +24,7 @@ export const EnvPaths: React.FC<EnvPathsProps> = ({ developer = false }) => {
     }
 
     return envPaths;
-  }, []);
+  }, [isDev]);
 
   return (
     <CardItem

@@ -40,13 +40,13 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
 
   const WINE_ENV = {
     get WINE_APP_NAME() {
-      return appConfig.name;
+      return env.get().APP_NAME || appConfig.name;
     },
     get WINE_ENGINE_VERSION() {
       return appConfig.engineVersion || '';
     },
     get WINE_APP_PATH() {
-      const BASE_PATH = env.get().APPLICATION_PATH || env.get().WINE_APPS_PATH;
+      const BASE_PATH = env.get().APPLICATION_DIR_PATH || env.get().WINE_APPS_PATH;
       return `${BASE_PATH}/${WINE_ENV.WINE_APP_NAME}.app`;
     },
     get WINE_ENGINES_PATH() {

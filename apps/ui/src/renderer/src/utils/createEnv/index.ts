@@ -6,8 +6,11 @@ import { execCommand } from '@utils/execCommand';
 import { getAppPath } from '@utils/getAppPath';
 import { pathJoin } from '@utils/pathJoin';
 
-export const createEnv = (args?: { standaloneApp?: boolean }) => {
-  const { standaloneApp = false } = args || {};
+export const createEnv = (args?: {
+  standaloneApp?: boolean;
+  APPLICATION_PATH_OVERRIDE?: string;
+}) => {
+  const { standaloneApp = false, APPLICATION_PATH_OVERRIDE = '' } = args || {};
   const get = () => ENV;
 
   const init = async (mode = process.env.NODE_ENV) => {
@@ -30,7 +33,9 @@ export const createEnv = (args?: { standaloneApp?: boolean }) => {
 
     ENV.HOME = (await execCommand('echo $HOME')).stdOut.trim();
     ENV.WINE_PATH = `${ENV.HOME}/Wine`;
-    ENV.APPLICATION_PATH = standaloneApp ? ENV.DIRNAME : '';
+    ENV.APPLICATION_PATH = await resolveApplicationPath();
+    ENV.APPLICATION_DIR_PATH = resolveApplicationDirPath();
+    ENV.APP_NAME = resolveApplicationName();
     ENV.WINE_APPS_PATH = `${ENV.WINE_PATH}/apps`;
     ENV.WINE_ASSETS_PATH = `${ENV.WINE_PATH}/assets`;
     ENV.WINE_DOWNLOADS_PATH = `${ENV.WINE_ASSETS_PATH}/downloads`;
@@ -46,6 +51,22 @@ export const createEnv = (args?: { standaloneApp?: boolean }) => {
   };
 
   const dirname = () => ENV.DIRNAME;
+
+  const resolveApplicationPath = async () => {
+    return standaloneApp
+      ? APPLICATION_PATH_OVERRIDE || (await pathJoin(ENV.DIRNAME, '../../'))
+      : '';
+  };
+
+  const resolveApplicationName = () => {
+    return ENV.APPLICATION_PATH.split('/').pop()?.replace('.app', '') || '';
+  };
+
+  const resolveApplicationDirPath = () => {
+    const APPLICATION_PATH_ARRAY = ENV.APPLICATION_PATH.split('/');
+    APPLICATION_PATH_ARRAY.pop();
+    return APPLICATION_PATH_ARRAY.join('/');
+  };
 
   const getEnvExports = () => buildEnvExports(ENV);
 

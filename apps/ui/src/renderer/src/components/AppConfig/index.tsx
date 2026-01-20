@@ -17,13 +17,15 @@ import { useDirsWatcherContext } from '@hooks/useDirsWatcherContext';
 import { extractAppName } from '@utils/extractAppName';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { ConfigLayout } from '@layouts/ConfigLayout';
+import { useEnv } from '@hooks/useEnv';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const AppConfig: React.FC = () => {
+  const env = useEnv();
   const [loading, setLoading] = useState(false);
   const [wineApp, setWineApp] = useState<WineApp>();
-  const { appName } = useParams();
+  const { appName = env.get().APP_NAME } = useParams();
   const { signal, refresh } = useRefresh();
   const { watchDirEvent } = useDirsWatcherContext() || {};
   const { navigateToAppNotFound } = useNavigateApp();
