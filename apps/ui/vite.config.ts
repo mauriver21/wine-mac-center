@@ -14,7 +14,8 @@ const externalDeps = [
 ];
 
 const ENTRY_POINTS: Record<string, string> = {
-  'app-launcher/index': 'src/renderer/src/externals/app-launcher/index.ts'
+  'app-launcher/index': 'src/renderer/src/externals/app-launcher/index.ts',
+  'redux-store/index': 'src/renderer/src/store/index.ts'
 };
 
 export default defineConfig(({ command }) => {
@@ -27,6 +28,12 @@ export default defineConfig(({ command }) => {
         exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
         outDir: 'dist/app-launcher',
         entryRoot: 'src/renderer/src/externals/app-launcher'
+      }),
+      dts({
+        tsconfigPath: 'tsconfig.web.json',
+        exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
+        outDir: 'dist/redux-store',
+        entryRoot: 'src/renderer/src/store'
       })
     ],
     build: {

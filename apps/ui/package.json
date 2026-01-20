@@ -10,6 +10,10 @@
     "./app-launcher": {
       "types": "./dist/app-launcher/index.d.ts",
       "import": "./dist/app-launcher/index.mjs"
+    },
+    "./redux-store": {
+      "types": "./dist/redux-store/index.d.ts",
+      "import": "./dist/redux-store/index.mjs"
     }
   },
   "scripts": {
