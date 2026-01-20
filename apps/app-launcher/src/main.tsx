@@ -6,13 +6,16 @@ import { Provider } from 'react-redux';
 import { store } from 'ui/redux-store';
 import 'reactjs-shared-ui/styles.css';
 import './main.css';
+import { EnvProvider } from 'ui/wine-env';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ThemeProvider>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <EnvProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </EnvProvider>
     </Provider>
   </ThemeProvider>,
 );

@@ -15,10 +15,11 @@ const externalDeps = [
 
 const ENTRY_POINTS: Record<string, string> = {
   'app-launcher/index': 'src/renderer/src/externals/app-launcher/index.ts',
-  'redux-store/index': 'src/renderer/src/store/index.ts'
+  'redux-store/index': 'src/renderer/src/store/index.ts',
+  'wine-env/index': 'src/renderer/src/components/EnvProvider/index.tsx'
 };
 
-export default defineConfig(({ command }) => {
+export default defineConfig(() => {
   return {
     plugins: [
       react(),
@@ -34,6 +35,12 @@ export default defineConfig(({ command }) => {
         exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
         outDir: 'dist/redux-store',
         entryRoot: 'src/renderer/src/store'
+      }),
+      dts({
+        tsconfigPath: 'tsconfig.web.json',
+        exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
+        outDir: 'dist/wine-env',
+        entryRoot: 'src/renderer/src/components/EnvProvider'
       })
     ],
     build: {
