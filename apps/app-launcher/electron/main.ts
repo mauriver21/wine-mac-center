@@ -1,6 +1,28 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { ElectronApi } from './types/ElectronApi';
+import {
+  getAppPath,
+  pathJoin,
+  fileExists,
+  readDirectory,
+  dirExists,
+  readBinaryFile,
+  createDirectory,
+  readFileAsString,
+  writeBinaryFile,
+  showOpenDialog,
+  watchDirs,
+  unwatchDirs,
+  buildPlist,
+  removeDirectory,
+  showItemInFolder,
+  renameDirectory,
+  exec,
+  spawn,
+  writeFile,
+} from './commands';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -25,6 +47,26 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   : RENDERER_DIST;
 
 let win: BrowserWindow | null;
+
+ipcMain.handle(ElectronApi.GetAppPath, getAppPath);
+ipcMain.handle(ElectronApi.ExecCommand, exec);
+ipcMain.handle(ElectronApi.PathJoin, pathJoin);
+ipcMain.handle(ElectronApi.SpawnProcess, spawn);
+ipcMain.handle(ElectronApi.FileExists, fileExists);
+ipcMain.handle(ElectronApi.WriteFile, writeFile);
+ipcMain.handle(ElectronApi.ReadDirectory, readDirectory);
+ipcMain.handle(ElectronApi.DirExists, dirExists);
+ipcMain.handle(ElectronApi.ReadBinaryFile, readBinaryFile);
+ipcMain.handle(ElectronApi.CreateDirectory, createDirectory);
+ipcMain.handle(ElectronApi.ReadFileAsString, readFileAsString);
+ipcMain.handle(ElectronApi.WriteBinaryFile, writeBinaryFile);
+ipcMain.handle(ElectronApi.ShowOpenDialog, showOpenDialog);
+ipcMain.handle(ElectronApi.WatchDirs, watchDirs);
+ipcMain.handle(ElectronApi.UnwatchDirs, unwatchDirs);
+ipcMain.handle(ElectronApi.BuildPlist, buildPlist);
+ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
+ipcMain.handle(ElectronApi.ShowItemInFolder, showItemInFolder);
+ipcMain.handle(ElectronApi.RenameDirectory, renameDirectory);
 
 function createWindow() {
   win = new BrowserWindow({
