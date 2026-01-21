@@ -18,7 +18,7 @@ import { extractAppName } from '@utils/extractAppName';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { useEnv } from '@hooks/useEnv';
-import { AppEnvPaths } from '@components/AppEnvPaths';
+import { AppEnvVariables } from '@components/AppEnvVariables';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -41,7 +41,7 @@ export const AppConfig: React.FC = () => {
       <WinetricksModule />,
       <ExecutableConfigModule appName={appName} />,
       <ChangeEngineModule />,
-      ...(env.isDev ? [<AppEnvPaths />] : [])
+      ...(env.isDev ? [<AppEnvVariables />] : [])
     ],
     []
   );

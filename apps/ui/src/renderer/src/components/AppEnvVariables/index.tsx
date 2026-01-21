@@ -5,7 +5,7 @@ import { TextField } from '@mui/material';
 import { useMemo } from 'react';
 import { Stack } from 'reactjs-shared-ui';
 
-export const AppEnvPaths: React.FC = () => {
+export const AppEnvVariables: React.FC = () => {
   const { wineApp } = useAppConfigContext() || {};
   const envPaths = useMemo(() => {
     let envPaths: Array<{ path: string; name: string }> = [];
@@ -20,7 +20,7 @@ export const AppEnvPaths: React.FC = () => {
     <CardItem
       cardProps={{ sx: { overflow: 'auto' } }}
       icon={TravelExplore}
-      label="Environment Paths"
+      label="App Environment Variables"
     >
       <Stack spacing={2}>
         {envPaths.map(({ name, path }) => (

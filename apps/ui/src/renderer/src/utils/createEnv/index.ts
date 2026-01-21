@@ -20,21 +20,11 @@ export const createEnv = (args?: {
 
   const initEnv = async (mode: string | undefined) => {
     ENV.DIRNAME = await getAppPath();
-
-    switch (mode) {
-      case 'development':
-      case 'integration':
-        ENV.RESOURCES_PATH = await pathJoin(ENV.DIRNAME, 'resources');
-        break;
-      default:
-        ENV.RESOURCES_PATH = await pathJoin(ENV.DIRNAME, '..');
-        break;
-    }
-
-    ENV.HOME = (await execCommand('echo $HOME')).stdOut.trim();
-    ENV.WINE_PATH = `${ENV.HOME}/Wine`;
     ENV.APPLICATION_PATH = await resolveApplicationPath();
     ENV.APPLICATION_DIR_PATH = resolveApplicationDirPath();
+    ENV.RESOURCES_PATH = await resolveResourcesPath(mode);
+    ENV.HOME = (await execCommand('echo $HOME')).stdOut.trim();
+    ENV.WINE_PATH = `${ENV.HOME}/Wine`;
     ENV.APP_NAME = resolveApplicationName();
     ENV.WINE_APPS_PATH = `${ENV.WINE_PATH}/apps`;
     ENV.WINE_ASSETS_PATH = `${ENV.WINE_PATH}/assets`;
@@ -66,6 +56,18 @@ export const createEnv = (args?: {
     const APPLICATION_PATH_ARRAY = ENV.APPLICATION_PATH.split('/');
     APPLICATION_PATH_ARRAY.pop();
     return APPLICATION_PATH_ARRAY.join('/');
+  };
+
+  const resolveResourcesPath = (mode: string | undefined) => {
+    switch (mode) {
+      case 'development':
+      case 'integration':
+        return standaloneApp
+          ? pathJoin(ENV.APPLICATION_PATH, 'Contents/Resources')
+          : pathJoin(ENV.DIRNAME, 'resources');
+      default:
+        return pathJoin(ENV.DIRNAME, '..');
+    }
   };
 
   const getEnvExports = () => buildEnvExports(ENV);
