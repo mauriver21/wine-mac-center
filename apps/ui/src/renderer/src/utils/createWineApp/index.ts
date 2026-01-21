@@ -17,7 +17,6 @@ import { execCommand as baseExecCommand } from '@utils/execCommand';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { isURL } from '@utils/isURL';
 import { AppExecutable } from '@interfaces/AppExecutable';
-import { buildPlist } from '@utils/buildPlist';
 
 export const createWineApp = async (appName: string, config?: WineAppConfig) => {
   const env = createEnv();
@@ -64,20 +63,11 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     get WINE_APP_RESOURCES_PATH() {
       return `${WINE_ENV.WINE_APP_CONTENTS_PATH}/Resources`;
     },
-    get WINE_CONFIG_APP_NAME() {
-      return 'Config';
-    },
-    get WINE_CONFIG_APP_PATH() {
-      return `${WINE_ENV.WINE_APP_PATH}/${WINE_ENV.WINE_CONFIG_APP_NAME}.app`;
-    },
-    get WINE_CONFIG_APP_RESOURCES_PATH() {
-      return `${WINE_ENV.WINE_CONFIG_APP_PATH}/Contents/Resources`;
-    },
     get WINE_APP_SCRIPTS_PATH() {
-      return `${WINE_ENV.WINE_CONFIG_APP_RESOURCES_PATH}/bash`;
+      return `${WINE_ENV.WINE_APP_RESOURCES_PATH}/bash`;
     },
     get WINE_APP_DATA_PATH() {
-      return `${WINE_ENV.WINE_CONFIG_APP_RESOURCES_PATH}/data`;
+      return `${WINE_ENV.WINE_APP_RESOURCES_PATH}/data`;
     },
     get WINE_APP_CONFIG_JSON_PATH() {
       return `${WINE_ENV.WINE_APP_DATA_PATH}/config.json`;
@@ -383,33 +373,12 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   };
 
   /**
-   * Run executable with wine
+   * Set executables with wine
    */
-  const bundleApp = async (
-    params: { executables: WineAppExecutable[] },
-    args?: SpawnProcessArgs
-  ) => {
+  const setExecutables = async (params: { executables: WineAppExecutable[] }) => {
     const { executables } = params;
-    await updateAppConfig({
+    return updateAppConfig({
       executables
-    });
-
-    const mainExecutable = executables.find((item) => item.main === true);
-    const infoPlistXML = (
-      await buildPlist({
-        CFBundleExecutable: FileName.CFBundleExecutable,
-        CFBundleIconFile: FileName.CFBundleIconFile
-      })
-    ).replace(/\n/gi, '');
-
-    const exePath = mainExecutable!.path.replace(/\n/gi, '');
-
-    return spawnScript('bundleApp', '', {
-      ...args,
-      action: {
-        type: 'stdIn',
-        data: `${infoPlistXML}\n ${exePath}\n`
-      }
     });
   };
 
@@ -533,7 +502,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     runMainExe,
     copyWindowsApplication,
     setSetupExe,
-    bundleApp,
+    setExecutables,
     saveAppArtwork,
     saveAppIcon,
     listAppExecutables,

@@ -36,6 +36,7 @@ export const createEnv = (args?: {
     ENV.SCRIPTS_PATH = `${ENV.RESOURCES_PATH}/bash`;
     ENV.COMPRESSED_PATH = `${ENV.RESOURCES_PATH}/compressed`;
     ENV.CLIENTS_PATH = `${ENV.RESOURCES_PATH}/clients`;
+    ENV.LAUNCHER_APP_PATH = `${ENV.RESOURCES_PATH}/launcher/Launcher.app`;
 
     await createDirs();
   };

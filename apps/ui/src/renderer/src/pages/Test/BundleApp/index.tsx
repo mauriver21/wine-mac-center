@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useWineAppContext } from '..';
-import { Code } from '@components/Code';
 import { Select, TextField } from 'reactjs-shared-ui/forms';
 
 export const BundleApp: React.FC = () => {
@@ -9,21 +8,10 @@ export const BundleApp: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [exePath, setExePath] = useState('');
   const [flags, setFlags] = useState('');
-  const [data, setData] = useState<any>();
 
   const bundleApp = async () => {
     setLoading(true);
-    await wineApp.bundleApp(
-      { executables: [{ path: exePath, main: true, flags }] },
-      {
-        onStdOut: (data) => {
-          setData(data);
-        },
-        onStdErr: (data) => {
-          setData(data);
-        }
-      }
-    );
+    await wineApp.setExecutables({ executables: [{ path: exePath, main: true, flags }] });
     setLoading(false);
   };
 
@@ -54,7 +42,6 @@ export const BundleApp: React.FC = () => {
       <button disabled={loading} onClick={bundleApp}>
         Bundle App
       </button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
     </div>
   );
 };

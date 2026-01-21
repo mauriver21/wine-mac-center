@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <EnvProvider
         standaloneApp
-        development={import.meta.env.DEV}
+        development={true}
         APPLICATION_PATH_OVERRIDE="/Users/mauriver/Wine/apps/Finale Notepad.app"
       >
         <BrowserRouter>
