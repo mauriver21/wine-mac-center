@@ -1,3 +1,4 @@
+import { FileName } from '@constants/enums';
 import { ENV } from '@constants/envs';
 import { buildEnvExports } from '@utils/buildEnvExports';
 import { createDirectory } from '@utils/createDirectory';
@@ -6,11 +7,8 @@ import { execCommand } from '@utils/execCommand';
 import { getAppPath } from '@utils/getAppPath';
 import { pathJoin } from '@utils/pathJoin';
 
-export const createEnv = (args?: {
-  standaloneApp?: boolean;
-  APPLICATION_PATH_OVERRIDE?: string;
-}) => {
-  const { standaloneApp = false, APPLICATION_PATH_OVERRIDE = '' } = args || {};
+export const createEnv = (args?: { standaloneApp?: boolean }) => {
+  const { standaloneApp = false } = args || {};
   const get = () => ENV;
 
   const init = async (mode = process.env.NODE_ENV) => {
@@ -19,7 +17,7 @@ export const createEnv = (args?: {
   };
 
   const initEnv = async (mode: string | undefined) => {
-    ENV.DIRNAME = await getAppPath();
+    ENV.DIRNAME = (await getAppPath())?.replace(`/${FileName.ElectronAsar}`, '');
     ENV.APPLICATION_PATH = await resolveApplicationPath();
     ENV.APPLICATION_DIR_PATH = resolveApplicationDirPath();
     ENV.RESOURCES_PATH = await resolveResourcesPath(mode);
@@ -36,7 +34,7 @@ export const createEnv = (args?: {
     ENV.SCRIPTS_PATH = `${ENV.RESOURCES_PATH}/bash`;
     ENV.COMPRESSED_PATH = `${ENV.RESOURCES_PATH}/compressed`;
     ENV.CLIENTS_PATH = `${ENV.RESOURCES_PATH}/clients`;
-    ENV.LAUNCHER_APP_PATH = `${ENV.RESOURCES_PATH}/launcher/Launcher.app`;
+    ENV.LAUNCHER_APP_PATH = `${ENV.RESOURCES_PATH}/launcher/${FileName.CFBundleExecutable}.app`;
 
     await createDirs();
   };
@@ -44,9 +42,7 @@ export const createEnv = (args?: {
   const dirname = () => ENV.DIRNAME;
 
   const resolveApplicationPath = async () => {
-    return standaloneApp
-      ? APPLICATION_PATH_OVERRIDE || (await pathJoin(ENV.DIRNAME, '../../'))
-      : '';
+    return standaloneApp ? await pathJoin(ENV.DIRNAME, '../..') : '';
   };
 
   const resolveApplicationName = () => {
@@ -67,7 +63,9 @@ export const createEnv = (args?: {
           ? pathJoin(ENV.APPLICATION_PATH, 'Contents/Resources')
           : pathJoin(ENV.DIRNAME, 'resources');
       default:
-        return pathJoin(ENV.DIRNAME, '..');
+        return standaloneApp
+          ? pathJoin(ENV.APPLICATION_PATH, 'Contents/Resources')
+          : pathJoin(ENV.DIRNAME, '..');
     }
   };
 

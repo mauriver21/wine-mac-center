@@ -11,11 +11,7 @@ import { EnvProvider } from 'ui/wine-env';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ThemeProvider>
     <Provider store={store}>
-      <EnvProvider
-        standaloneApp
-        development={true}
-        APPLICATION_PATH_OVERRIDE="/Users/mauriver/Wine/apps/Finale Notepad.app"
-      >
+      <EnvProvider standaloneApp development={true}>
         <BrowserRouter>
           <App />
         </BrowserRouter>

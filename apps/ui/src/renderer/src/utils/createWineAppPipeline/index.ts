@@ -444,7 +444,7 @@ export const createWineAppPipeline = async (options: {
           {
             id: uuid(),
             name: 'Configuring app executable',
-            script: async () => {
+            script: async (args?: SpawnProcessArgs) => {
               const appConfig = wineApp.getAppConfig();
               let executables = appConfig.executables || [];
               const mainExecutablePath = executables.find((item) => item.main)?.path || '';
@@ -465,7 +465,8 @@ export const createWineAppPipeline = async (options: {
                 executables = [{ path: exePath, main: true }];
               }
 
-              return wineApp.setExecutables({ executables });
+              await wineApp.setExecutables({ executables });
+              args?.onExit?.(0);
             },
             status: ProcessStatus.Pending,
             output: ''

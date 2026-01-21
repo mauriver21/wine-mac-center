@@ -14,6 +14,7 @@ export enum ExitCode {
 }
 
 export enum FileName {
+  ElectronAsar = 'app.asar',
   CFBundleExecutable = 'winemacapp',
   CFBundleIconFile = 'winemacapp.icns'
 }
