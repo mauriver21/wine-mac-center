@@ -70,7 +70,7 @@ export const AppPipeline: React.FC = () => {
 
   useEffect(() => {
     contentsAreaRef.current?.refreshTableOfContents();
-  }, [status]);
+  }, [wineAppPipelineStatus?.jobs?.length]);
 
   return (
     <ConfigLayout

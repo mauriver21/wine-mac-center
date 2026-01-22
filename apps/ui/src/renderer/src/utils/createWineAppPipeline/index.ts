@@ -312,7 +312,6 @@ export const createWineAppPipeline = async (options: {
         }
 
         step.status = ProcessStatus.InProgress;
-        console.log('->', data);
         step.output = concatDataToOutput(data, step.output);
         updateCurrentProcess(String(data));
 
