@@ -1,20 +1,20 @@
 import { ArtWorkInput } from '@components/ArtWorkInput';
-import { IconInput } from '@components/IconInput';
-import { useEffect, useState } from 'react';
-import { Grid, Stack, Icon, H6, ContentsClass, CardContent, Card, Body1 } from 'reactjs-shared-ui';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
-import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
-import { FilePathInput } from '@components/FilePathInput';
 import { Button } from '@components/Button';
 import { FileFilter } from '@constants/enums';
+import { FilePathInput } from '@components/FilePathInput';
+import { Grid, Stack, Icon, H6, ContentsClass, CardContent, Card, Body1 } from 'reactjs-shared-ui';
+import { IconInput } from '@components/IconInput';
 import { TextField } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useWineAppContext } from '@hooks/useWineAppContext';
+import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
 
 export interface ExecutableConfigModuleProps {
   appName: string | undefined;
 }
 
 export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ appName }) => {
-  const { wineApp, loading, setLoading, refresh, signal } = useAppConfigContext() || {};
+  const { wineApp, loading, setLoading, refresh, signal } = useWineAppContext() || {};
   const [driveCPath, setDriveCPath] = useState<string>('');
   const [mainExecutablePath, setMainExecutablePath] = useState<string>('');
   const [mainExecutableFlags, setMainExecutableFlags] = useState<string>('');

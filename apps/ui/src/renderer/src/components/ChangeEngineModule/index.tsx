@@ -1,7 +1,7 @@
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { ExitCode } from '@constants/enums';
 import { CpuChipIcon } from '@heroicons/react/24/solid';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 import { useEffect, useState } from 'react';
 import {
   Stack,
@@ -15,7 +15,7 @@ import {
 } from 'reactjs-shared-ui';
 
 export const ChangeEngineModule: React.FC = () => {
-  const { wineApp, loading, setLoading } = useAppConfigContext() || {};
+  const { wineApp, loading, setLoading } = useWineAppContext() || {};
   const [engineVersion, setEngineVersion] = useState<string>('');
   const appConfig = wineApp?.getAppConfig();
 

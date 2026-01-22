@@ -32,6 +32,7 @@ import { IconInput } from '@components/IconInput';
 import { blobToURL } from '@utils/blobToURL';
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { ConfigLayout } from '@layouts/ConfigLayout';
+import { LauncherImgInput } from '@components/LauncherImgInput';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -47,6 +48,7 @@ export const PipelineScript: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [iconSrc, setIconSrc] = useState('');
   const [artworkSrc, setArtWorkSrc] = useState('');
+  const [launcherImgSrc, setLauncherImgSrc] = useState('');
   const { fields, insert, remove } = useFieldArray<FormSchema>({
     name: 'pipelineScripts',
     control: form.control
@@ -103,6 +105,16 @@ export const PipelineScript: React.FC = () => {
             appName={'No Artwork'}
             onInput={async (file) => {
               file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
+            }}
+          />
+          <LauncherImgInput
+            control={form.control}
+            name="launcherImgFile"
+            type="image"
+            imgSrc={launcherImgSrc}
+            appName={'No Launcher Image'}
+            onInput={async (file) => {
+              file && setLauncherImgSrc(blobToURL(await file?.arrayBuffer()));
             }}
           />
         </Box>
@@ -418,7 +430,15 @@ export const PipelineScript: React.FC = () => {
   };
 
   const submit = async (data: FormSchema) => {
-    const { originalAppName, winetricksVerbs = [], iconFile, artworkFile, appName, ...rest } = data;
+    const {
+      originalAppName,
+      winetricksVerbs = [],
+      iconFile,
+      artworkFile,
+      launcherImgFile,
+      appName,
+      ...rest
+    } = data;
     setLoading(true);
 
     const pipelineScripts = mapPipelineScripts(rest.pipelineScripts);
@@ -428,7 +448,8 @@ export const PipelineScript: React.FC = () => {
       pipelineScripts,
       winetricks: { verbs: winetricksVerbs },
       iconFile: await iconFile?.arrayBuffer(),
-      artworkFile: await artworkFile?.arrayBuffer()
+      artworkFile: await artworkFile?.arrayBuffer(),
+      launcherImgFile: await launcherImgFile?.arrayBuffer()
     };
 
     if (appConfig?.name) {
@@ -458,6 +479,7 @@ export const PipelineScript: React.FC = () => {
         dxvkEnabled = false,
         artworkFile = undefined,
         iconFile = undefined,
+        launcherImgFile = undefined,
         ...rest
       } = appConfig;
 
@@ -470,6 +492,7 @@ export const PipelineScript: React.FC = () => {
         engineVersion,
         artworkFile: undefined,
         iconFile: undefined,
+        launcherImgFile: undefined,
         ...rest
       });
 
@@ -482,6 +505,7 @@ export const PipelineScript: React.FC = () => {
   useEffect(() => {
     setArtWorkSrc(appConfig?.artworkURL || '');
     setIconSrc(appConfig?.iconURL || '');
+    setLauncherImgSrc(appConfig?.launcherImgURL || '');
   }, [appConfig?.name]);
 
   return (

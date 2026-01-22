@@ -49,6 +49,11 @@ export const useSchema = () => {
       message: 'File exceeds 2000kb',
       test: (file) => fileMaxSize(file, 2000000)
     }),
+    launcherImgFile: schema.mixed<File>().test({
+      name: 'fileSize',
+      message: 'File exceeds 4000kb',
+      test: (file) => fileMaxSize(file, 4000000)
+    }),
     pipelineScripts: schema
       .array(
         schema.object({

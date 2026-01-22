@@ -11,14 +11,14 @@ import {
   Card,
   CardContent
 } from 'reactjs-shared-ui';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 import { useSchema, FormSchema } from './useSchema';
 import { useForm } from 'reactjs-shared-ui/forms';
 
 export const WinetricksModule: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
-  const { wineApp, loading, setLoading } = useAppConfigContext() || {};
+  const { wineApp, loading, setLoading } = useWineAppContext() || {};
 
   return (
     <Card>

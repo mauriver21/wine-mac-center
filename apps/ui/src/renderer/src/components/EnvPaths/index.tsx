@@ -4,13 +4,14 @@ import { Folder, TravelExplore } from '@mui/icons-material';
 import { IconButton, TextField } from '@mui/material';
 import { showItemInFolder } from '@utils/showItemInFolder';
 import { useMemo } from 'react';
-import { Icon, Stack } from 'reactjs-shared-ui';
+import { CardProps, Icon, Stack } from 'reactjs-shared-ui';
 
 export interface EnvPathsProps {
   developer?: boolean;
+  cardProps?: CardProps;
 }
 
-export const EnvPaths: React.FC<EnvPathsProps> = ({ developer }) => {
+export const EnvPaths: React.FC<EnvPathsProps> = ({ developer, cardProps = {} }) => {
   const env = useEnv();
   const isDev = developer ?? (env.isDev || false);
   const envPaths = useMemo(() => {
@@ -26,9 +27,11 @@ export const EnvPaths: React.FC<EnvPathsProps> = ({ developer }) => {
     return envPaths;
   }, [isDev]);
 
+  const { sx: cardPropsSx, ...restCardProps } = cardProps;
+
   return (
     <CardItem
-      cardProps={{ sx: { overflow: 'auto' } }}
+      cardProps={{ sx: { overflow: 'auto', ...cardPropsSx }, ...restCardProps }}
       icon={TravelExplore}
       label="Environment Paths"
     >

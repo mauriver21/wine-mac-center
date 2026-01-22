@@ -128,8 +128,10 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     params: {
       appIconURL?: string;
       appArtWorkURL?: string;
+      launcherImgURL?: string;
       appIconFile?: ArrayBuffer;
       appArtWorkFile?: ArrayBuffer;
+      launcherImgFile?: ArrayBuffer;
     },
     args?: SpawnProcessArgs
   ) => {
@@ -140,6 +142,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
         await updateAppConfig({ name: appName });
         await saveAppIcon(params);
         await saveAppArtwork(params);
+        await saveAppLauncherImg(params);
       }
     });
   };
@@ -173,6 +176,24 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
 
       if (file === undefined) return;
       writeBinaryFile(`${WINE_ENV.WINE_APP_RESOURCES_PATH}/header.jpeg`, file);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const saveAppLauncherImg = async (params: {
+    launcherImgURL?: string;
+    launcherImgFile?: ArrayBuffer;
+  }) => {
+    try {
+      let file = params.launcherImgFile;
+
+      if (params?.launcherImgURL) {
+        file = await downloadFile(params?.launcherImgURL);
+      }
+
+      if (file === undefined) return;
+      writeBinaryFile(`${WINE_ENV.WINE_APP_RESOURCES_PATH}/launcher.jpeg`, file);
     } catch (error) {
       console.error(error);
     }

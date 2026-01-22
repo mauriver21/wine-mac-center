@@ -1,12 +1,12 @@
 import { CardItem } from '@components/CardItem';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 import { TravelExplore } from '@mui/icons-material';
 import { TextField } from '@mui/material';
 import { useMemo } from 'react';
 import { Stack } from 'reactjs-shared-ui';
 
 export const AppEnvVariables: React.FC = () => {
-  const { wineApp } = useAppConfigContext() || {};
+  const { wineApp } = useWineAppContext() || {};
   const envPaths = useMemo(() => {
     let envPaths: Array<{ path: string; name: string }> = [];
     for (const [key, value] of Object.entries(wineApp?.getWineEnv() || {})) {

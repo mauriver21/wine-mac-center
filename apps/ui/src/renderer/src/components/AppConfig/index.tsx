@@ -1,11 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
-import { WineApp } from '@interfaces/WineApp';
-import { useParams } from 'react-router-dom';
-import { createWineApp } from '@utils/createWineApp';
-import { useRefresh } from '@utils/useRefresh';
 import { ExecutableConfigModule } from '@components/ExecutableConfigModule';
-import { AppConfigContext } from '@contexts/AppConfigContext';
 import { ChangeEngineModule } from '@components/ChangeEngineModule';
 import { WinetricksModule } from '@components/WinetricksModule';
 import { WineConfigModule } from '@components/WineConfigModule';
@@ -19,15 +14,14 @@ import { useNavigateApp } from '@hooks/useNavigateApp';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { useEnv } from '@hooks/useEnv';
 import { AppEnvVariables } from '@components/AppEnvVariables';
+import { useResolveAppName } from '@hooks/useResolveAppName';
+import { WineAppProvider } from '@components/WineAppProvider';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const AppConfig: React.FC = () => {
   const env = useEnv();
-  const [loading, setLoading] = useState(false);
-  const [wineApp, setWineApp] = useState<WineApp>();
-  const { appName = env.get().APP_NAME } = useParams();
-  const { signal, refresh } = useRefresh();
+  const appName = useResolveAppName();
   const { watchDirEvent } = useDirsWatcherContext() || {};
   const { navigateToAppNotFound } = useNavigateApp();
 
@@ -46,14 +40,6 @@ export const AppConfig: React.FC = () => {
     []
   );
 
-  const initWineApp = async () => {
-    appName && setWineApp(await createWineApp(appName));
-  };
-
-  useEffect(() => {
-    initWineApp();
-  }, [appName]);
-
   useEffect(() => {
     if (watchDirEvent === undefined || appName === undefined) return;
     const comingAppName = extractAppName(watchDirEvent.path);
@@ -61,7 +47,7 @@ export const AppConfig: React.FC = () => {
   }, [watchDirEvent?.id]);
 
   return (
-    <AppConfigContext.Provider value={{ loading, setLoading, refresh, signal, wineApp }}>
+    <WineAppProvider appName={appName}>
       <ConfigLayout
         mainTitle={appName}
         contentSlot={
@@ -89,6 +75,6 @@ export const AppConfig: React.FC = () => {
           </Stack>
         }
       />
-    </AppConfigContext.Provider>
+    </WineAppProvider>
   );
 };

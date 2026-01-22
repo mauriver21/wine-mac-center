@@ -54,6 +54,7 @@ export const useWineAppConfigApiClient = () => {
         return {
           artworkURL: encodeURL(`${ASSETS_URL}/header.jpeg`),
           iconURL: encodeURL(`${ASSETS_URL}/winemacapp.icns?cache=${uuid()}`),
+          launcherImgURL: encodeURL(`${ASSETS_URL}/launcher.jpeg`),
           scriptURL: encodeURL(`${URL}/index.json`)
         };
       }
@@ -62,6 +63,7 @@ export const useWineAppConfigApiClient = () => {
         return {
           artworkURL: encodeURL(`${SCRIPT_PATH}/header.jpeg`),
           iconURL: encodeURL(`${SCRIPT_PATH}/winemacapp.icns`),
+          launcherImgURL: encodeURL(`${SCRIPT_PATH}/launcher.jpeg`),
           scriptURL: encodeURL(`${SCRIPT_PATH}/index.json`)
         };
       }
@@ -95,6 +97,7 @@ export const useWineAppConfigApiClient = () => {
       let script = '';
       let hasIcon = false;
       let hasArtwork = false;
+      let hasLauncherImg = false;
       const hasScriptFile = await fileExists(SCRIPT_FILE);
 
       if (urls?.iconURL) {
@@ -103,6 +106,10 @@ export const useWineAppConfigApiClient = () => {
 
       if (urls?.artworkURL) {
         hasArtwork = await fileExists(urls?.artworkURL);
+      }
+
+      if (urls?.launcherImgURL) {
+        hasLauncherImg = await fileExists(urls?.launcherImgURL);
       }
 
       if (hasScriptFile) {
@@ -114,7 +121,10 @@ export const useWineAppConfigApiClient = () => {
             ? {
                 ...wineAppConfig,
                 artworkURL: hasArtwork ? await createObjectURL(urls?.artworkURL) : undefined,
-                iconURL: hasIcon ? await createObjectURL(urls?.iconURL) : undefined
+                iconURL: hasIcon ? await createObjectURL(urls?.iconURL) : undefined,
+                launcherImgURL: hasLauncherImg
+                  ? await createObjectURL(urls?.launcherImgURL)
+                  : undefined
               }
             : undefined
         );
@@ -170,13 +180,14 @@ export const useWineAppConfigApiClient = () => {
   };
 
   const create = async (data: WineAppConfig) => {
-    const { iconFile, artworkFile, name, ...restData } = data;
+    const { iconFile, artworkFile, launcherImgFile, name, ...restData } = data;
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${name}`;
 
     if ((await dirExists(SCRIPT_PATH)) === false) {
       await createDirectory(SCRIPT_PATH);
       iconFile && (await saveScriptIconFile(name, iconFile));
       artworkFile && (await saveScriptArtworkFile(name, artworkFile));
+      launcherImgFile && (await saveScriptLauncherImageFile(name, launcherImgFile));
       return await writeScript({ name, ...restData });
     }
 
@@ -193,8 +204,13 @@ export const useWineAppConfigApiClient = () => {
     return writeBinaryFile(`${SCRIPT_PATH}/header.jpeg`, file);
   };
 
+  const saveScriptLauncherImageFile = (appName: string, file: ArrayBuffer) => {
+    const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${appName}`;
+    return writeBinaryFile(`${SCRIPT_PATH}/launcher.jpeg`, file);
+  };
+
   const update = async (data: WineAppConfig & { originalAppName: string }) => {
-    const { originalAppName, name, iconFile, artworkFile, ...rest } = data;
+    const { originalAppName, name, iconFile, artworkFile, launcherImgFile, ...rest } = data;
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${originalAppName}`;
     const NEW_SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${name}`;
     const changedScriptName = name !== originalAppName;
@@ -212,6 +228,7 @@ export const useWineAppConfigApiClient = () => {
 
       iconFile && (await saveScriptIconFile(name, iconFile));
       artworkFile && (await saveScriptArtworkFile(name, artworkFile));
+      launcherImgFile && (await saveScriptLauncherImageFile(name, launcherImgFile));
     }
 
     return config;

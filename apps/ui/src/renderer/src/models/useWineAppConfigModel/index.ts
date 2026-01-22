@@ -85,7 +85,12 @@ export const useWineAppConfigModel = () => {
     });
   };
   const dispatchSave = (wineAppConfig: WineAppConfig) => {
-    const { iconFile: _, artworkFile: __, ...restWineAppConfig } = wineAppConfig;
+    const {
+      iconFile: _,
+      artworkFile: __,
+      launcherImgFile: ___,
+      ...restWineAppConfig
+    } = wineAppConfig;
     dispatch({
       type: ActionType.SAVE,
       wineAppConfig: restWineAppConfig

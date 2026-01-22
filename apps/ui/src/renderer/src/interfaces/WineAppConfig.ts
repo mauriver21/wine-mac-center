@@ -9,8 +9,10 @@ export type WineAppConfig = {
   scriptURL?: string;
   iconURL?: string;
   artworkURL?: string;
+  launcherImgURL?: string;
   iconFile?: ArrayBuffer;
   artworkFile?: ArrayBuffer;
+  launcherImgFile?: ArrayBuffer;
   engineVersion?: string;
   engineURLs?: string[];
   setupExecutableURL?: string;

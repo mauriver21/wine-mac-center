@@ -2,10 +2,10 @@ import React from 'react';
 import { BaseModule } from '@components/BaseModule';
 import { RegeditIcon } from '@assets/icons';
 import { Body1 } from 'reactjs-shared-ui';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 
 export const RegistryEditorModule: React.FC = () => {
-  const { wineApp, setLoading } = useAppConfigContext() || {};
+  const { wineApp, setLoading } = useWineAppContext() || {};
 
   return (
     <BaseModule
