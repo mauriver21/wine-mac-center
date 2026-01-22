@@ -35,12 +35,15 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
   const navigate = useNavigateApp();
   const [artWorkSrc, setArtWorkSrc] = useState(defaultArtwork);
   const [noArtWork, setNoArtWork] = useState(true);
+  const [scaffoldingApp, setScaffoldingApp] = useState(false);
 
   const runPipeline = async () => {
     if (origin === undefined) {
       appModel.dispatchError('Origin is not defined');
     } else {
+      setScaffoldingApp(true);
       const config = await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
+      setScaffoldingApp(false);
       navigate.navigateToAppPipeline(config.name, {
         origin,
         action: PipelineAction.RUN
@@ -120,7 +123,12 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
           </Box>
         </Box>
         <Box display="flex" justifyContent="start" gap={1}>
-          <AppCardButton title="Run Script" onClick={runPipeline} icon={PlayCircleIcon} />
+          <AppCardButton
+            title="Run Script"
+            disabled={scaffoldingApp}
+            onClick={runPipeline}
+            icon={PlayCircleIcon}
+          />
           {origin === ConfigOrigin.SCRIPTS && (
             <>
               <AppCardButton

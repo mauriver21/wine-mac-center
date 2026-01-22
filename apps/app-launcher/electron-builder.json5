@@ -11,6 +11,9 @@
   mac: {
     target: ['dmg'],
     artifactName: '${productName}-Mac-${version}-Installer.${ext}',
+    extendInfo: {
+      CFBundleIconFile: 'winemacapp',
+    },
   },
   win: {
     target: [
