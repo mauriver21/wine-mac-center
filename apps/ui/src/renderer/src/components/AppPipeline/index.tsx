@@ -5,14 +5,16 @@ import { ConfigLayout } from '@layouts/ConfigLayout';
 import { useAppModel } from '@models/useAppModel';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-import { useEffect, useRef, useState } from 'react';
+import { useRefresh } from '@utils/useRefresh';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, ContentsAreaHandle, ContentsClass, sleep, Stack } from 'reactjs-shared-ui';
+import { Box, Button, ContentsClass, sleep, Stack } from 'reactjs-shared-ui';
 
 export const AppPipeline: React.FC = () => {
   const [resuming, setResuming] = useState(false);
   const [stopping, setStopping] = useState(false);
+  const { signal, refresh } = useRefresh();
   const { appName } = useParams();
   const queryParam = useQueryParam();
   const appModel = useAppModel();
@@ -21,7 +23,6 @@ export const AppPipeline: React.FC = () => {
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
-  const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
   const status = wineAppPipelineStatus?.status;
 
@@ -69,11 +70,12 @@ export const AppPipeline: React.FC = () => {
   }, [status]);
 
   useEffect(() => {
-    contentsAreaRef.current?.refreshTableOfContents();
+    refresh();
   }, [wineAppPipelineStatus?.jobs?.length]);
 
   return (
     <ConfigLayout
+      signal={signal}
       mainTitle={appName}
       showBack={false}
       contentSlot={

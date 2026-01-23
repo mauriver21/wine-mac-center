@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Box,
   H6,
@@ -17,6 +17,7 @@ export interface ConfigLayoutProps {
   actionsSlot?: React.ReactNode;
   showTableOfContents?: boolean;
   showBack?: boolean;
+  signal?: number;
 }
 
 export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
@@ -24,10 +25,15 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
   contentSlot,
   actionsSlot,
   showTableOfContents = true,
-  showBack = true
+  showBack = true,
+  signal
 }) => {
   const navigate = useNavigate();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
+
+  useEffect(() => {
+    contentsAreaRef.current?.refreshTableOfContents();
+  }, [signal]);
 
   return (
     <Box display="grid" overflow="auto">

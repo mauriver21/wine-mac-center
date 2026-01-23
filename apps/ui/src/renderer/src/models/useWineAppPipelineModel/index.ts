@@ -68,8 +68,10 @@ export const useWineAppPipelineModel = () => {
         {
           appIconURL: config?.iconURL,
           appArtWorkURL: config?.artworkURL,
+          launcherImgURL: config?.launcherImgURL,
           appIconFile: config?.iconFile,
-          appArtWorkFile: config?.artworkFile
+          appArtWorkFile: config?.artworkFile,
+          launcherImgFile: config?.launcherImgFile
         },
         {
           onExit: () => {
