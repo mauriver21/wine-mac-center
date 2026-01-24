@@ -8,16 +8,21 @@ export const useNavigateApp = () => {
   };
 
   const navigateToAppConfig = () => {
-    navigate('app-config');
+    navigate('../app-config');
   };
 
   const navigateToEnvPath = () => {
-    navigate('env-paths');
+    navigate('../env-paths');
+  };
+
+  const navigateToLauncherConfig = () => {
+    navigate('launcher-config');
   };
 
   return {
     navigateToMenu,
     navigateToAppConfig,
-    navigateToEnvPath
+    navigateToEnvPath,
+    navigateToLauncherConfig
   };
 };

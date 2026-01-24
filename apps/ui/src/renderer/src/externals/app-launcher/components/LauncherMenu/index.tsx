@@ -1,30 +1,22 @@
-import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
+import React, { useState } from 'react';
+import { Body1, Box, Icon, Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
+import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
 import { useWineAppContext } from '@hooks/useWineAppContext';
-import React, { useMemo } from 'react';
-import { Box, H6, Stack } from 'reactjs-shared-ui';
+import { PlayCircle } from '@mui/icons-material';
+import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 
 export const LauncherMenu: React.FC = () => {
   const wineAppContext = useWineAppContext();
-  const { urls } = wineAppContext || {};
-  const { navigateToAppConfig, navigateToEnvPath } = useNavigateApp();
-  const menu = useMemo(
-    () => [
-      {
-        label: 'Configurations',
-        onClick: () => {
-          navigateToAppConfig();
-        }
-      },
-      {
-        label: 'Environment',
-        onClick: () => {
-          navigateToEnvPath();
-        }
-      }
-    ],
-    []
-  );
+  const [runningMainExe, setRunningMainExe] = useState(false);
+  const { urls, wineApp } = wineAppContext || {};
+  const { navigateToLauncherConfig } = useNavigateApp();
+
+  const runExe = async () => {
+    setRunningMainExe(true);
+    await wineApp?.runMainExe();
+    setRunningMainExe(false);
+  };
 
   return (
     <Box
@@ -43,12 +35,24 @@ export const LauncherMenu: React.FC = () => {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      <Stack spacing={2} position="absolute" top={260} right={40}>
-        {menu.map((item) => (
-          <Button sx={{ minWidth: 300 }} onClick={item.onClick}>
-            <H6>{item.label}</H6>
-          </Button>
-        ))}
+      <Stack spacing={2} position="absolute" top={30} right={30}>
+        <Button
+          title="Launcher Configuration"
+          sx={{ p: 0.5, minWidth: 0, borderRadius: 4 }}
+          onClick={navigateToLauncherConfig}
+        >
+          <Icon color="text.secondary" render={Cog6ToothIcon} />
+        </Button>
+      </Stack>
+      <Stack spacing={2} position="absolute" bottom={30} right={30}>
+        <Button
+          sx={{ alignItems: 'center', gap: 1, p: 1 }}
+          disabled={runningMainExe}
+          onClick={runExe}
+        >
+          <Icon color="text.secondary" render={PlayCircle} />{' '}
+          <Body1 fontWeight={500}>Start Game</Body1>
+        </Button>
       </Stack>
     </Box>
   );

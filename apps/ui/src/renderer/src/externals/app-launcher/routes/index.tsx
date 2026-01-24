@@ -1,4 +1,5 @@
 import { Launcher } from '@app-launcher/components/Launcher';
+import { LauncherConfig } from '@app-launcher/components/LauncherConfig';
 import { LauncherMenu } from '@app-launcher/components/LauncherMenu';
 import { MainLayout } from '@app-launcher/layouts/MainLayout';
 import { AppConfig } from '@components/AppConfig';
@@ -16,6 +17,7 @@ export const routes: RouteObject[] = [
         element: <Launcher />,
         children: [
           { index: true, element: <LauncherMenu /> },
+          { path: 'launcher-config', element: <LauncherConfig /> },
           { path: 'app-config', element: <AppConfig /> },
           {
             path: 'env-paths',
