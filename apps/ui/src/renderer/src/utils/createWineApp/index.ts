@@ -17,6 +17,7 @@ import { execCommand as baseExecCommand } from '@utils/execCommand';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { isURL } from '@utils/isURL';
 import { AppExecutable } from '@interfaces/AppExecutable';
+import { spawnLog } from '@utils/spawnLog';
 
 export const createWineApp = async (appName: string, config?: WineAppConfig) => {
   const env = createEnv();
@@ -138,11 +139,19 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     return spawnScript('scaffoldApp', '', {
       ...args,
       onExit: async (data) => {
-        await args?.onExit?.(data);
+        args?.onExit?.(data);
         await updateAppConfig({ name: appName });
         await saveAppIcon(params);
         await saveAppArtwork(params);
         await saveAppLauncherImg(params);
+        spawnScript('refreshPlist', '', {
+          ...args,
+          ...spawnLog,
+          onExit: async (data) => {
+            console.log(data);
+            args?.onExit?.(data);
+          }
+        });
       }
     });
   };

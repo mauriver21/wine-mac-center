@@ -1,6 +1,6 @@
 export type BashScript =
   | 'buildUniqueAppName'
-  | 'bundleApp'
+  | 'refreshPlist'
   | 'joinWineEngine'
   | 'cmd'
   | 'control'

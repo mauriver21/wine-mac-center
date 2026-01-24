@@ -9,10 +9,11 @@
   },
   files: ['dist', 'dist-electron'],
   mac: {
+    icon: 'icon.icns',
     target: ['dmg'],
     artifactName: '${productName}-Mac-${version}-Installer.${ext}',
     extendInfo: {
-      CFBundleIconFile: 'winemacapp',
+      CFBundleIconFile: 'icon',
     },
   },
   win: {
