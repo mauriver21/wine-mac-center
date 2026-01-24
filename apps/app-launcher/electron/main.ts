@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { ElectronApi } from './types/ElectronApi';
@@ -71,8 +71,8 @@ function createWindow() {
   singleton.mainWindow = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
+      devTools: process.env.VITE_APP_ENV === 'development',
       preload: path.join(__dirname, 'preload.mjs'),
-      devTools: true,
       sandbox: false,
       nodeIntegration: true,
       contextIsolation: true,
@@ -84,9 +84,20 @@ function createWindow() {
 
   win.webContents.openDevTools();
 
+  globalShortcut.register('Cmd+Alt+I', () => {
+    win.webContents.toggleDevTools();
+  });
+
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString());
+  });
+
+  app.on('did-become-active', () => {
+    if (!singleton.becameActive) {
+      win?.webContents.closeDevTools();
+      singleton.becameActive = true;
+    }
   });
 
   if (VITE_DEV_SERVER_URL) {
