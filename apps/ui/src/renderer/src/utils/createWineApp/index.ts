@@ -261,40 +261,41 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   /**
    * Handles special winetricks verbs that may never terminate by themselves.
    */
-  const winetrickKillVerbHandler = (args: {
-    verb: string;
-    data: string;
-    processArgs?: SpawnProcessArgs;
-  }) => {
-    const { verb, data, processArgs } = args;
+  const winetrickKillVerbHandler = (verb: string, data: string, processArgs?: SpawnProcessArgs) => {
     switch (verb) {
       case 'dotnet35':
         if (data.includes('Executing load_remove_mono')) {
+          console.log('FINISHED');
           killWinetricks({ processArgs });
         }
         break;
       case 'dotnet35sp1':
         if (data.includes('Executing load_remove_mono')) {
+          console.log('FINISHED');
           killWinetricks({ processArgs });
         }
         break;
       case 'dotnet40':
         if (data.includes('Executing load_remove_mono')) {
+          console.log('FINISHED');
           killWinetricks({ processArgs });
         }
         break;
       case 'dotnet462':
         if (data.includes('Using native override for following DLLs: mscorwks')) {
+          console.log('FINISHED');
           killWinetricks({ processArgs });
         }
         break;
       case 'dotnet472':
         if (data.includes('Using native override for following DLLs: mscorwks')) {
+          console.log('FINISHED');
           killWinetricks({ processArgs });
         }
         break;
       case 'dotnet48':
         if (data.includes('Using native override for following DLLs: mscorwks')) {
+          console.log('FINISHED');
           killWinetricks({ processArgs });
         }
         break;
@@ -318,11 +319,11 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     const flags = winetricksOptionsToFlags(options);
     return spawnScript('winetrick', `${flags} ${verb}`, {
       onStdOut: (data) => {
-        winetrickKillVerbHandler({ verb, data, processArgs });
+        winetrickKillVerbHandler(verb, data, processArgs);
         processArgs?.onStdOut?.(data);
       },
       onStdErr: (data) => {
-        winetrickKillVerbHandler({ verb, data, processArgs });
+        winetrickKillVerbHandler(verb, data, processArgs);
         processArgs?.onStdErr?.(data);
       },
       onExit: (data) => {
