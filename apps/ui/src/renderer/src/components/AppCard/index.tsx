@@ -59,10 +59,6 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
     }
   }, [wineAppConfig?.artworkURL]);
 
-  useEffect(() => {
-    scriptsContext?.setAppName(appName);
-  }, [appName]);
-
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
       <Box
@@ -139,7 +135,10 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
               {scriptsContext?.setOpenConfirmRemoveScript ? (
                 <AppCardButton
                   title="Remove Script"
-                  onClick={() => scriptsContext?.setOpenConfirmRemoveScript(true)}
+                  onClick={() => {
+                    scriptsContext?.setAppName(appName);
+                    scriptsContext?.setOpenConfirmRemoveScript(true);
+                  }}
                   icon={TrashIcon}
                 />
               ) : (
