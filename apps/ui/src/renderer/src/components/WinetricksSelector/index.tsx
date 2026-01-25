@@ -126,9 +126,11 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
                     <Body2 fontWeight={500} color="text.secondary">
                       Selected verbs:
                     </Body2>
-                    <Stack direction="row" spacing={1}>
-                      {verbs?.map((item) => <Chip label={item} />)}
-                    </Stack>
+                    <Box>
+                      {verbs?.map((item) => (
+                        <Chip sx={{ marginBottom: 1, marginRight: 1 }} label={item} />
+                      ))}
+                    </Box>
                   </Stack>
                 ) : (
                   <></>
