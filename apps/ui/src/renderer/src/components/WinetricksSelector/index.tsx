@@ -4,7 +4,7 @@ import { SearchField } from '@components/SearchField';
 import { RootState } from '@interfaces/RootState';
 import { useWinetrickModel } from '@models/useWinetrickModel';
 import { useSelector } from 'react-redux';
-import { Accordion, Box, Grid, SkeletonLoader, Stack } from 'reactjs-shared-ui';
+import { Accordion, Body2, Box, Grid, SkeletonLoader, Stack } from 'reactjs-shared-ui';
 import { Checkbox, Field, FieldProps } from 'reactjs-shared-ui/forms';
 import { Winetricks } from '@interfaces/Winetricks';
 import { Chip } from '@mui/material';
@@ -122,8 +122,13 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
                   );
                 })}
                 {showSelectedVerbs && verbs?.length ? (
-                  <Stack direction="row" pt={2} spacing={1}>
-                    {verbs?.map((item) => <Chip label={item} />)}
+                  <Stack spacing={1} pt={2}>
+                    <Body2 fontWeight={500} color="text.secondary">
+                      Selected verbs:
+                    </Body2>
+                    <Stack direction="row" spacing={1}>
+                      {verbs?.map((item) => <Chip label={item} />)}
+                    </Stack>
                   </Stack>
                 ) : (
                   <></>
