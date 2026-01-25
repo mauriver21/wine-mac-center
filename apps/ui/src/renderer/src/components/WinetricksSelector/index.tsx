@@ -4,10 +4,11 @@ import { SearchField } from '@components/SearchField';
 import { RootState } from '@interfaces/RootState';
 import { useWinetrickModel } from '@models/useWinetrickModel';
 import { useSelector } from 'react-redux';
-import { Accordion, Body2, Box, Grid, SkeletonLoader, Stack } from 'reactjs-shared-ui';
+import { Accordion, Body2, Box, Grid, Icon, SkeletonLoader, Stack } from 'reactjs-shared-ui';
 import { Checkbox, Field, FieldProps } from 'reactjs-shared-ui/forms';
 import { Winetricks } from '@interfaces/Winetricks';
-import { Chip } from '@mui/material';
+import { Chip, IconButton } from '@mui/material';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 
 export interface WinetricksSelectorProps extends FieldProps {
   name?: string;
@@ -128,7 +129,22 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
                     </Body2>
                     <Box>
                       {verbs?.map((item) => (
-                        <Chip sx={{ marginBottom: 1, marginRight: 1 }} label={item} />
+                        <Box
+                          display="inline-block"
+                          position="relative"
+                          sx={{ '&:hover .remove-verb': { display: 'block' } }}
+                        >
+                          <Chip sx={{ marginBottom: 1, marginRight: 1 }} label={item} />
+                          <IconButton
+                            className="remove-verb"
+                            sx={{ position: 'absolute', top: -15, right: -5, display: 'none' }}
+                            onClick={() => {
+                              field.props.onChange({ target: { checked: false, value: item } });
+                            }}
+                          >
+                            <Icon render={XMarkIcon} />
+                          </IconButton>
+                        </Box>
                       ))}
                     </Box>
                   </Stack>
