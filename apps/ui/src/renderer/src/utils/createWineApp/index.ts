@@ -261,46 +261,38 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   /**
    * Handles special winetricks verbs that may never terminate by themselves.
    */
-  const winetrickKillVerbHandler = (verb: string, data: string, processArgs?: SpawnProcessArgs) => {
+  const winetrickKillVerbHandler = (args: {
+    verb: string;
+    data: string;
+    processArgs?: SpawnProcessArgs;
+    ref: { killWinetrick: boolean };
+  }) => {
+    const { verb, data, processArgs, ref } = args;
+
     switch (verb) {
-      case 'dotnet35':
-        if (data.includes('Executing load_remove_mono')) {
-          console.log('FINISHED');
-          killWinetricks({ processArgs });
-        }
-        break;
-      case 'dotnet35sp1':
-        if (data.includes('Executing load_remove_mono')) {
-          console.log('FINISHED');
-          killWinetricks({ processArgs });
-        }
-        break;
-      case 'dotnet40':
-        if (data.includes('Executing load_remove_mono')) {
-          console.log('FINISHED');
-          killWinetricks({ processArgs });
-        }
-        break;
       case 'dotnet462':
         if (data.includes('Using native override for following DLLs: mscorwks')) {
-          console.log('FINISHED');
+          ref.killWinetrick = true;
           killWinetricks({ processArgs });
         }
         break;
       case 'dotnet472':
         if (data.includes('Using native override for following DLLs: mscorwks')) {
-          console.log('FINISHED');
+          ref.killWinetrick = true;
           killWinetricks({ processArgs });
         }
         break;
       case 'dotnet48':
-        if (data.includes('Using native override for following DLLs: mscorwks')) {
-          console.log('FINISHED');
-          killWinetricks({ processArgs });
+        if (data.includes('load_remove_mono internal')) {
+          ref.killWinetrick = true;
         }
         break;
       default:
         break;
+    }
+
+    if (ref.killWinetrick) {
+      killWinetricks({ processArgs });
     }
   };
 
@@ -317,17 +309,18 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
    */
   const winetrick = (verb: string, processArgs?: SpawnProcessArgs, options?: WinetricksOptions) => {
     const flags = winetricksOptionsToFlags(options);
+    const ref = { killWinetrick: false };
     return spawnScript('winetrick', `${flags} ${verb}`, {
       onStdOut: (data) => {
-        winetrickKillVerbHandler(verb, data, processArgs);
+        winetrickKillVerbHandler({ verb, data, processArgs, ref });
         processArgs?.onStdOut?.(data);
       },
       onStdErr: (data) => {
-        winetrickKillVerbHandler(verb, data, processArgs);
+        winetrickKillVerbHandler({ verb, data, processArgs, ref });
         processArgs?.onStdErr?.(data);
       },
       onExit: (data) => {
-        processArgs?.onExit?.(data);
+        !ref.killWinetrick && processArgs?.onExit?.(data);
       }
     });
   };
