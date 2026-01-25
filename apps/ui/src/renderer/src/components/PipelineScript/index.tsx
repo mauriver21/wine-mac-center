@@ -80,7 +80,7 @@ export const PipelineScript: React.FC = () => {
           <Checkbox control={form.control} name="dxvkEnabled" label="Enable DXVK" />
         </Grid>
         <Grid mt={1} item xs={12}>
-          <WinetricksSelector control={form.control} name="winetricksVerbs" />
+          <WinetricksSelector showSelectedVerbs control={form.control} name="winetricksVerbs" />
         </Grid>
       </Grid>
     </CardItem>,
