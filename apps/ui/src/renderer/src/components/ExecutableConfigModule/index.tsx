@@ -8,6 +8,7 @@ import { TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
+import { spawnLog } from '@utils/spawnLog';
 
 export interface ExecutableConfigModuleProps {
   appName: string | undefined;
@@ -32,7 +33,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
 
   const runExe = async () => {
     setLoading?.(true);
-    await wineApp?.runMainExe();
+    await wineApp?.runMainExe(spawnLog);
     setLoading?.(false);
   };
 

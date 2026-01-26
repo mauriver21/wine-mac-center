@@ -14,6 +14,7 @@ import {
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import { useSchema, FormSchema } from './useSchema';
 import { useForm } from 'reactjs-shared-ui/forms';
+import { spawnLog } from '@utils/spawnLog';
 
 export const WinetricksModule: React.FC = () => {
   const schema = useSchema();
@@ -45,7 +46,7 @@ export const WinetricksModule: React.FC = () => {
                 setLoading?.(true);
 
                 if (verbsString) {
-                  await wineApp?.winetrick(verbsString);
+                  await wineApp?.winetrick(verbsString, spawnLog);
                   form.reset();
                   setLoading?.(false);
                 } else {
