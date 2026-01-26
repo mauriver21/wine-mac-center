@@ -203,8 +203,7 @@ export const PipelineScript: React.FC = () => {
                     { value: ScriptOperation.REMOVE, label: 'Remove' },
                     { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' },
                     { value: ScriptOperation.SET_MAIN_EXE, label: 'Set Main EXE' },
-                    { value: ScriptOperation.MOUNT_DISK_IMAGE, label: 'Mount Disk Image' },
-                    { value: ScriptOperation.DOWNLOAD_STEAM_APP, label: 'Download Steam App' }
+                    { value: ScriptOperation.MOUNT_DISK_IMAGE, label: 'Mount Disk Image' }
                   ]}
                 />
                 {operation === ScriptOperation.DOWNLOAD && (
