@@ -9,6 +9,7 @@ import { downloadFile } from '@utils/downloadFile';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { spawnProcess } from '@utils/spawnProcess';
 import { ExitCode } from '@constants/enums';
+import { spawnLog } from '@utils/spawnLog';
 
 export const useWineEngineApiClient = () => {
   const env = useEnv();
@@ -49,13 +50,14 @@ export const useWineEngineApiClient = () => {
 
     return new Promise((resolve, reject) => {
       spawnProcess(
-        `${SCRIPTS_PATH}/joinWineEngine.sh "${engineTmpFolder}/${fileNamePart} ${WINE_ENGINES_PATH}"`,
+        `${SCRIPTS_PATH}/joinWineEngine.sh "${engineTmpFolder}/${fileNamePart}" "${WINE_ENGINES_PATH}"`,
         {
+          ...spawnLog,
           onExit: (data) => {
             if (data === ExitCode.SuccessfulExecution) {
               resolve(undefined);
             } else {
-              reject(undefined);
+              reject(data);
             }
           }
         }
