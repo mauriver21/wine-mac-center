@@ -1,3 +1,4 @@
+import { DownloadWineEngines } from '@components/DownloadWineEngines';
 import { EnvPaths } from '@components/EnvPaths';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
@@ -5,7 +6,7 @@ import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
 const ITEM_STYLE = { px: '20px !important' };
 
 export const Settings: React.FC = () => {
-  const modules = [<EnvPaths />];
+  const modules = [<EnvPaths />, <DownloadWineEngines />];
 
   return (
     <ConfigLayout
