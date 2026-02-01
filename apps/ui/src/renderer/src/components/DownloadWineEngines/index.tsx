@@ -1,8 +1,8 @@
 import { CardItem } from '@components/CardItem';
+import { IconButton } from '@components/IconButton';
 import { CheckIcon, CpuChipIcon } from '@heroicons/react/24/solid';
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { Download } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Icon, Stack } from 'reactjs-shared-ui';
@@ -27,9 +27,7 @@ export const DownloadWineEngines: React.FC<DownloadWineEnginesProps> = () => {
             InputProps={{
               readOnly: true,
               endAdornment: wineEngines?.includes(item.version) ? (
-                <IconButton title="Download Engine">
-                  <Icon color="success.main" render={CheckIcon} />
-                </IconButton>
+                <Icon pr={1} title="Engine Downloaded" color="success.main" render={CheckIcon} />
               ) : (
                 <IconButton title="Download Engine">
                   <Icon render={Download} />
