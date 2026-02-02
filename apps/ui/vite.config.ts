@@ -15,8 +15,7 @@ const externalDeps = [
 
 const ENTRY_POINTS: Record<string, string> = {
   'app-launcher/index': 'src/renderer/src/externals/app-launcher/index.ts',
-  'redux-store/index': 'src/renderer/src/store/index.ts',
-  'wine-env/index': 'src/renderer/src/components/EnvProvider/index.tsx'
+  'public-api/index': 'src/renderer/src/public-api/index.ts'
 };
 
 export default defineConfig(() => {
@@ -32,15 +31,15 @@ export default defineConfig(() => {
       }),
       dts({
         tsconfigPath: 'tsconfig.web.json',
+        include: [
+          'src/renderer/src/components/EnvProvider',
+          'src/renderer/src/public-api',
+          'src/renderer/src/store',
+          'src/renderer/src/hooks/useEnv'
+        ],
         exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
-        outDir: 'dist/redux-store',
-        entryRoot: 'src/renderer/src/store'
-      }),
-      dts({
-        tsconfigPath: 'tsconfig.web.json',
-        exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
-        outDir: 'dist/wine-env',
-        entryRoot: 'src/renderer/src/components/EnvProvider'
+        outDir: 'dist',
+        entryRoot: 'src/renderer/src'
       })
     ],
     build: {

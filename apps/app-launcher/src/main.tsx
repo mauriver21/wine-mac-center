@@ -3,10 +3,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { App } from './App.tsx';
 import { ThemeProvider } from 'reactjs-shared-ui';
 import { Provider } from 'react-redux';
-import { store } from 'ui/redux-store';
+import { store } from 'ui/public-api';
 import 'reactjs-shared-ui/styles.css';
 import './main.css';
-import { EnvProvider } from 'ui/wine-env';
+import { EnvProvider } from 'ui/public-api';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ThemeProvider>

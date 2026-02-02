@@ -11,13 +11,9 @@
       "types": "./dist/app-launcher/index.d.ts",
       "import": "./dist/app-launcher/index.mjs"
     },
-    "./redux-store": {
-      "types": "./dist/redux-store/index.d.ts",
-      "import": "./dist/redux-store/index.mjs"
-    },
-    "./wine-env": {
-      "types": "./dist/wine-env/index.d.ts",
-      "import": "./dist/wine-env/index.mjs"
+    "./public-api": {
+      "types": "./dist/public-api/index.d.ts",
+      "import": "./dist/public-api/index.mjs"
     }
   },
   "scripts": {
