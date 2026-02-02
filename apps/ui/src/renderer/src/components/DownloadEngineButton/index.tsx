@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IconButton, IconButtonProps } from '@components/IconButton';
 import { Download } from '@mui/icons-material';
-import { Icon } from 'reactjs-shared-ui';
+import { CircularProgress, Icon } from 'reactjs-shared-ui';
 import { WineEngineDownloadable } from '@interfaces/WineEngineDownloadable';
 import { useAppModel } from '@models/useAppModel';
 import { useWineEngineApiClient } from '@api-clients/useWineEngineApiClient';
@@ -9,10 +9,12 @@ import { useConfigLayout } from '@hooks/useConfigLayout';
 
 export interface DownloadEngineButtonProps extends Omit<IconButtonProps, 'children' | 'title'> {
   wineEngineDownloadable: WineEngineDownloadable;
+  setDownloadQueue: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const DownloadEngineButton: React.FC<DownloadEngineButtonProps> = ({
   wineEngineDownloadable,
+  setDownloadQueue,
   onClick: onClickProp,
   ...rest
 }) => {
@@ -30,11 +32,13 @@ export const DownloadEngineButton: React.FC<DownloadEngineButtonProps> = ({
   const downloadWineEngine = async (urls: string[], version: string) => {
     try {
       setDownloading(true);
+      setDownloadQueue((prev) => [...prev, version]);
       await wineEngineApiClient.downloadWineEngine(urls, version);
     } catch (error) {
       appModel.dispatchError(error);
     } finally {
       setDownloading(false);
+      setDownloadQueue((prev) => prev.filter((item) => item !== version));
     }
   };
 
@@ -44,7 +48,11 @@ export const DownloadEngineButton: React.FC<DownloadEngineButtonProps> = ({
 
   return (
     <IconButton title="Download Engine" onClick={onClick} disabled={downloading} {...rest}>
-      <Icon render={Download} />
+      {downloading ? (
+        <CircularProgress style={{ width: 20, height: 20 }} />
+      ) : (
+        <Icon render={Download} />
+      )}
     </IconButton>
   );
 };

@@ -36,8 +36,9 @@ export const EnvPaths: React.FC<EnvPathsProps> = ({ developer, cardProps = {} })
       label="Environment Paths"
     >
       <Stack spacing={2}>
-        {envPaths.map(({ name, path }) => (
+        {envPaths.map(({ name, path }, index) => (
           <TextField
+            key={index}
             InputProps={{
               readOnly: true,
               sx: { bgcolor: 'secondary.main' },
