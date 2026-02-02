@@ -11,7 +11,11 @@ import { EnvProvider } from 'ui/wine-env';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ThemeProvider>
     <Provider store={store}>
-      <EnvProvider standaloneApp development={true}>
+      <EnvProvider
+        standaloneApp
+        development={true}
+        APPLICATION_PATH_OVERRIDE="/Users/mauriver/Wine/apps/Ricochet Infinity.app"
+      >
         <BrowserRouter>
           <App />
         </BrowserRouter>

@@ -7,8 +7,11 @@ import { execCommand } from '@utils/execCommand';
 import { getAppPath } from '@utils/getAppPath';
 import { pathJoin } from '@utils/pathJoin';
 
-export const createEnv = (args?: { standaloneApp?: boolean }) => {
-  const { standaloneApp = false } = args || {};
+export const createEnv = (args?: {
+  standaloneApp?: boolean;
+  APPLICATION_PATH_OVERRIDE?: string;
+}) => {
+  const { standaloneApp = false, APPLICATION_PATH_OVERRIDE } = args || {};
   const get = () => ENV;
 
   const init = async (mode = process.env.NODE_ENV) => {
@@ -17,7 +20,7 @@ export const createEnv = (args?: { standaloneApp?: boolean }) => {
   };
 
   const initEnv = async (mode: string | undefined) => {
-    ENV.DIRNAME = (await getAppPath())?.replace(`/${FileName.ElectronAsar}`, '');
+    ENV.DIRNAME = await resolveDirName();
     ENV.APPLICATION_PATH = await resolveApplicationPath();
     ENV.APPLICATION_DIR_PATH = resolveApplicationDirPath();
     ENV.RESOURCES_PATH = await resolveResourcesPath(mode);
@@ -40,6 +43,14 @@ export const createEnv = (args?: { standaloneApp?: boolean }) => {
   };
 
   const dirname = () => ENV.DIRNAME;
+
+  const resolveDirName = async () => {
+    const APP_RESOURCES = APPLICATION_PATH_OVERRIDE
+      ? `${APPLICATION_PATH_OVERRIDE}/Contents/Resources`
+      : '';
+    const appPath = APP_RESOURCES || (await getAppPath());
+    return appPath?.replace(`/${FileName.ElectronAsar}`, '');
+  };
 
   const resolveApplicationPath = async () => {
     return standaloneApp ? await pathJoin(ENV.DIRNAME, '../..') : '';

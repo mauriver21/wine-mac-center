@@ -6,17 +6,22 @@ export interface EnvProviderProps {
   children?: React.ReactNode;
   standaloneApp?: boolean;
   development?: boolean;
+  APPLICATION_PATH_OVERRIDE?: string;
 }
 
 export const EnvProvider: React.FC<EnvProviderProps> = ({
   children,
   standaloneApp,
-  development = false
+  development = false,
+  APPLICATION_PATH_OVERRIDE
 }) => {
   const [initializing, setInitializing] = useState(true);
   const [isDev] = useState(development);
 
-  const { init, ...env } = useMemo(() => createEnv({ standaloneApp }), []);
+  const { init, ...env } = useMemo(
+    () => createEnv({ standaloneApp, APPLICATION_PATH_OVERRIDE }),
+    []
+  );
 
   useEffect(() => {
     (async () => {

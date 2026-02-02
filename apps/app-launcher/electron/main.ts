@@ -71,7 +71,7 @@ function createWindow() {
   singleton.mainWindow = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
-      devTools: process.env.VITE_APP_ENV === 'development',
+      devTools: true,
       preload: path.join(__dirname, 'preload.mjs'),
       sandbox: false,
       nodeIntegration: true,
@@ -84,10 +84,6 @@ function createWindow() {
 
   win.webContents.openDevTools();
 
-  globalShortcut.register('Cmd+Alt+I', () => {
-    win.webContents.toggleDevTools();
-  });
-
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', new Date().toLocaleString());
@@ -98,6 +94,10 @@ function createWindow() {
       win?.webContents.closeDevTools();
       singleton.becameActive = true;
     }
+  });
+
+  globalShortcut.register('Cmd+Alt+I', () => {
+    win.webContents.toggleDevTools();
   });
 
   if (VITE_DEV_SERVER_URL) {
