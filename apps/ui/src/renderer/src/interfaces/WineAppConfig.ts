@@ -22,4 +22,7 @@ export type WineAppConfig = {
   dxvkEnabled?: boolean;
   executables?: Array<WineAppExecutable>;
   pipelineScripts?: Array<PipelineScript>;
+  launcherConfig?: {
+    runMainExeOnStartup?: boolean;
+  };
 };

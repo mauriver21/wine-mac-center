@@ -11,9 +11,14 @@ import React, { useEffect, useState } from 'react';
 export interface WineAppProviderProps {
   children?: React.ReactNode;
   appName?: string;
+  autorun?: boolean;
 }
 
-export const WineAppProvider: React.FC<WineAppProviderProps> = ({ children, appName }) => {
+export const WineAppProvider: React.FC<WineAppProviderProps> = ({
+  children,
+  appName,
+  autorun = false
+}) => {
   const [loading, setLoading] = useState(false);
   const [wineApp, setWineApp] = useState<WineApp>();
   const [urls, setUrls] = useState({ artworkURL: '', iconURL: '', launcherImgURL: '' });
@@ -49,7 +54,9 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({ children, appN
   }, [appName]);
 
   return (
-    <WineAppContext.Provider value={{ loading, setLoading, refresh, signal, wineApp, urls }}>
+    <WineAppContext.Provider
+      value={{ loading, setLoading, refresh, signal, wineApp, urls, autorun }}
+    >
       {children}
     </WineAppContext.Provider>
   );

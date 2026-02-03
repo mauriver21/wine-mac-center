@@ -113,6 +113,11 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     buildWineEnvExports();
   };
 
+  const updateAppLauncherConfig = (data: Partial<WineAppConfig['launcherConfig']>) => {
+    appConfig = { ...appConfig, launcherConfig: { ...appConfig?.launcherConfig, ...data } };
+    return writeAppConfig(appConfig);
+  };
+
   /**
    * Build wine environment variables exports.
    */
@@ -565,6 +570,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     getAppConfig,
     saveMainExecutablePath,
     updateMainExecutableFlags,
+    updateAppLauncherConfig,
     writeAppConfig
   };
 };

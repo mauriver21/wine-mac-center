@@ -1,40 +1,42 @@
-import React, { useState } from 'react';
-import { Body1, Box, Icon, Stack } from 'reactjs-shared-ui';
+import React from 'react';
+import { Body1, Box, H3, Icon, Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
+import { Cog6ToothIcon } from '@heroicons/react/24/solid';
+import { PlayCircle } from '@mui/icons-material';
+import { useLauncherContext } from '@app-launcher/hooks/useLauncherContext';
 import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
 import { useWineAppContext } from '@hooks/useWineAppContext';
-import { PlayCircle } from '@mui/icons-material';
-import { Cog6ToothIcon } from '@heroicons/react/24/solid';
+import LauncherBg from '@app-launcher/assets/imgs/launcher-bg.png';
+import { useResolveAppName } from '@hooks/useResolveAppName';
 
 export const LauncherMenu: React.FC = () => {
-  const wineAppContext = useWineAppContext();
-  const [runningMainExe, setRunningMainExe] = useState(false);
-  const { urls, wineApp } = wineAppContext || {};
+  const { urls } = useWineAppContext();
+  const { runExe, runningMainExe } = useLauncherContext();
   const { navigateToLauncherConfig } = useNavigateApp();
-
-  const runExe = async () => {
-    setRunningMainExe(true);
-    await wineApp?.runMainExe();
-    setRunningMainExe(false);
-  };
+  const backgroundImage = urls?.launcherImgURL || LauncherBg;
+  const hasLauncherImgURL = Boolean(urls?.launcherImgURL);
+  const appName = useResolveAppName();
 
   return (
     <Box
       sx={{
-        backgroundImage: urls?.launcherImgURL
-          ? `
+        backgroundImage: `
                 linear-gradient(
                   rgba(0, 0, 0, 0.4),
                   rgba(0, 0, 0, 0.4)
                 ),
-                url(${urls?.launcherImgURL})
-              `
-          : 'none',
+                url(${backgroundImage})
+              `,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}
     >
+      {!hasLauncherImgURL && (
+        <H3 textAlign="center" p={2} pt={20} maxWidth={800} margin="auto">
+          {appName}
+        </H3>
+      )}
       <Stack spacing={2} position="absolute" top={30} right={30}>
         <Button
           title="Launcher Configuration"

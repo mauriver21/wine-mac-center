@@ -7,9 +7,10 @@ export const WineAppContext = createContext<{
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   refresh: () => void;
   signal: number;
+  autorun: boolean;
   urls: {
     artworkURL: string;
     iconURL: string;
     launcherImgURL: string;
   };
-} | null>(null);
+}>({} as any);

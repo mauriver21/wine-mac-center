@@ -3,7 +3,15 @@ import { routes } from '@app-launcher/routes';
 import { useResolveAppName } from '@hooks/useResolveAppName';
 import { WineAppProvider } from '@components/WineAppProvider';
 
-export const App: React.FC = () => {
+export interface AppProps {
+  autorun?: boolean;
+}
+
+export const App: React.FC<AppProps> = ({ autorun }) => {
   const appName = useResolveAppName();
-  return <WineAppProvider appName={appName}>{useRoutes(routes)}</WineAppProvider>;
+  return (
+    <WineAppProvider autorun={autorun} appName={appName}>
+      {useRoutes(routes)}
+    </WineAppProvider>
+  );
 };

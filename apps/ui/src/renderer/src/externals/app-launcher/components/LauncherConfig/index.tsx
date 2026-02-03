@@ -5,6 +5,7 @@ import { LauncherConfigItem } from '@app-launcher/components/LauncherConfigItem'
 import { TravelExplore } from '@mui/icons-material';
 import { Cog8ToothIcon } from '@heroicons/react/24/solid';
 import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
+import { LauncherSettings } from '@components/LauncherSettings';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -13,6 +14,7 @@ export const LauncherConfig: React.FC = () => {
 
   const modules = useMemo(
     () => [
+      <LauncherSettings />,
       <LauncherConfigItem
         label="App Configuration"
         icon={Cog8ToothIcon}
