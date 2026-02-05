@@ -14,7 +14,7 @@ const externalDeps = [
 ];
 
 const ENTRY_POINTS: Record<string, string> = {
-  'app-launcher/index': 'src/renderer/src/externals/app-launcher/index.ts',
+  'externals/app-launcher/index': 'src/renderer/src/externals/app-launcher/index.ts',
   'public-api/index': 'src/renderer/src/public-api/index.ts'
 };
 
@@ -26,16 +26,21 @@ export default defineConfig(() => {
       dts({
         tsconfigPath: 'tsconfig.web.json',
         exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
-        outDir: 'dist/app-launcher',
+        outDir: 'dist/externals/app-launcher',
         entryRoot: 'src/renderer/src/externals/app-launcher'
       }),
       dts({
         tsconfigPath: 'tsconfig.web.json',
         include: [
           'src/renderer/src/components/EnvProvider',
+          'src/renderer/src/components/WineAppProvider',
           'src/renderer/src/public-api',
           'src/renderer/src/store',
-          'src/renderer/src/hooks/useEnv'
+          'src/renderer/src/hooks/useEnv',
+          'src/renderer/src/interfaces/WineApp.ts',
+          'src/renderer/src/interfaces/WineAppConfig.ts',
+          'src/renderer/src/interfaces/SpawnProcessArgs.ts',
+          'src/renderer/src/utils/createWineApp'
         ],
         exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
         outDir: 'dist',

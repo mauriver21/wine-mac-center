@@ -8,8 +8,8 @@
   "homepage": "https://electron-vite.org",
   "exports": {
     "./app-launcher": {
-      "types": "./dist/app-launcher/index.d.ts",
-      "import": "./dist/app-launcher/index.mjs"
+      "types": "./dist/externals/app-launcher/index.d.ts",
+      "import": "./dist/externals/app-launcher/index.mjs"
     },
     "./public-api": {
       "types": "./dist/public-api/index.d.ts",

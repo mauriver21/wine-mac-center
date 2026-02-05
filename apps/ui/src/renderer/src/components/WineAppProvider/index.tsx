@@ -1,4 +1,5 @@
 import { WineAppContext } from '@contexts/WineAppContext';
+import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineApp } from '@interfaces/WineApp';
 import { useAppModel } from '@models/useAppModel';
 import { createWineApp } from '@utils/createWineApp';
@@ -11,7 +12,10 @@ import React, { useEffect, useState } from 'react';
 export interface WineAppProviderProps {
   children?: React.ReactNode;
   appName?: string;
-  onInitialized?: (wineApp: WineApp) => void;
+  onInitialized?: (context: {
+    wineApp: WineApp;
+    runExe: (processArgs?: SpawnProcessArgs | undefined) => Promise<void>;
+  }) => void;
 }
 
 export const WineAppProvider: React.FC<WineAppProviderProps> = ({
@@ -25,6 +29,12 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
   const [urls, setUrls] = useState({ artworkURL: '', iconURL: '', launcherImgURL: '' });
   const { signal, refresh } = useRefresh();
   const appModel = useAppModel();
+
+  const runExe = async (processArgs?: SpawnProcessArgs | undefined) => {
+    setRunningMainExe(true);
+    await wineApp?.runMainExe(processArgs);
+    setRunningMainExe(false);
+  };
 
   const initWineApp = async () => {
     try {
@@ -43,7 +53,6 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
         iconURL,
         launcherImgURL
       });
-      onInitialized?.(wineApp);
     } catch (error) {
       appModel.dispatchError(error);
     } finally {
@@ -51,15 +60,13 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
     }
   };
 
-  const runExe = async () => {
-    setRunningMainExe(true);
-    await wineApp?.runMainExe();
-    setRunningMainExe(false);
-  };
-
   useEffect(() => {
     initWineApp();
   }, [appName]);
+
+  useEffect(() => {
+    wineApp && onInitialized?.({ wineApp, runExe });
+  }, [wineApp]);
 
   return (
     <WineAppContext.Provider

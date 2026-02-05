@@ -67,8 +67,19 @@ ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
 ipcMain.handle(ElectronApi.ShowItemInFolder, showItemInFolder);
 ipcMain.handle(ElectronApi.RenameDirectory, renameDirectory);
 
+const WINDOW_DIMENSIONS = {
+  width: 980,
+  height: 600,
+};
+
 function createWindow() {
   singleton.mainWindow = new BrowserWindow({
+    width: WINDOW_DIMENSIONS.width,
+    height: WINDOW_DIMENSIONS.height,
+    minWidth: WINDOW_DIMENSIONS.width,
+    minHeight: WINDOW_DIMENSIONS.height,
+    maxWidth: WINDOW_DIMENSIONS.width,
+    maxHeight: WINDOW_DIMENSIONS.height,
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       devTools: true,

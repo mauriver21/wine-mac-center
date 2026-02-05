@@ -9,5 +9,16 @@ export const App = () => {
     import.meta.env.PROD && navigate('/');
   }, []);
 
-  return <Launcher />;
+  return (
+    <Launcher
+      onInitialized={({ wineApp, runExe }) => {
+        const { runMainExeOnStartup } =
+          wineApp.getAppConfig().launcherConfig || {};
+
+        if (runMainExeOnStartup) {
+          runExe();
+        }
+      }}
+    />
+  );
 };
