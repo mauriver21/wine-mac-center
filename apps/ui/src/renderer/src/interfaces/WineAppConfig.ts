@@ -24,5 +24,7 @@ export type WineAppConfig = {
   pipelineScripts?: Array<PipelineScript>;
   launcherConfig?: {
     runMainExeOnStartup?: boolean;
+    preventMonitorFromBecomingInactive?: boolean;
+    quitAppWhenLauncherIsClosed?: boolean;
   };
 };

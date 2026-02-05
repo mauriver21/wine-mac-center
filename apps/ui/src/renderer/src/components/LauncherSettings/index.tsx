@@ -30,7 +30,21 @@ export const LauncherSettings: React.FC = () => {
           <Checkbox
             control={form.control}
             name="runMainExeOnStartup"
-            label="Run main exe on startup"
+            label="Start the app automatically on startup"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Checkbox
+            control={form.control}
+            name="preventMonitorFromBecomingInactive"
+            label="Prevent the monitor from becoming inactive"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Checkbox
+            control={form.control}
+            name="quitAppWhenLauncherIsClosed"
+            label="Quit app when launcher is closed"
           />
         </Grid>
       </Grid>
