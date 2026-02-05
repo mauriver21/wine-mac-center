@@ -3,15 +3,13 @@ import { Body1, Box, H3, Icon, Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { PlayCircle } from '@mui/icons-material';
-import { useLauncherContext } from '@app-launcher/hooks/useLauncherContext';
 import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import LauncherBg from '@app-launcher/assets/imgs/launcher-bg.png';
 import { useResolveAppName } from '@hooks/useResolveAppName';
 
 export const LauncherMenu: React.FC = () => {
-  const { urls } = useWineAppContext();
-  const { runExe, runningMainExe } = useLauncherContext();
+  const { urls, runExe, runningMainExe } = useWineAppContext();
   const { navigateToLauncherConfig } = useNavigateApp();
   const backgroundImage = urls?.launcherImgURL || LauncherBg;
   const hasLauncherImgURL = Boolean(urls?.launcherImgURL);

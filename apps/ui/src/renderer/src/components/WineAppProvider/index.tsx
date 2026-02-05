@@ -11,14 +11,15 @@ import React, { useEffect, useState } from 'react';
 export interface WineAppProviderProps {
   children?: React.ReactNode;
   appName?: string;
-  autorun?: boolean;
+  onInitialized?: (wineApp: WineApp) => void;
 }
 
 export const WineAppProvider: React.FC<WineAppProviderProps> = ({
   children,
   appName,
-  autorun = false
+  onInitialized
 }) => {
+  const [runningMainExe, setRunningMainExe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [wineApp, setWineApp] = useState<WineApp>();
   const [urls, setUrls] = useState({ artworkURL: '', iconURL: '', launcherImgURL: '' });
@@ -42,11 +43,18 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
         iconURL,
         launcherImgURL
       });
+      onInitialized?.(wineApp);
     } catch (error) {
       appModel.dispatchError(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const runExe = async () => {
+    setRunningMainExe(true);
+    await wineApp?.runMainExe();
+    setRunningMainExe(false);
   };
 
   useEffect(() => {
@@ -55,7 +63,17 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
 
   return (
     <WineAppContext.Provider
-      value={{ loading, setLoading, refresh, signal, wineApp, urls, autorun }}
+      value={{
+        loading,
+        setLoading,
+        refresh,
+        signal,
+        wineApp,
+        urls,
+        runExe,
+        runningMainExe,
+        setRunningMainExe
+      }}
     >
       {children}
     </WineAppContext.Provider>
