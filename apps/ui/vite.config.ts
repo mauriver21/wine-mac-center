@@ -40,7 +40,8 @@ export default defineConfig(() => {
           'src/renderer/src/interfaces/WineApp.ts',
           'src/renderer/src/interfaces/WineAppConfig.ts',
           'src/renderer/src/interfaces/SpawnProcessArgs.ts',
-          'src/renderer/src/utils/createWineApp'
+          'src/renderer/src/utils/createWineApp',
+          'src/renderer/src/utils/findOutputPids'
         ],
         exclude: ['**/*.stories.ts', '**/*.stories.tsx'],
         outDir: 'dist',
