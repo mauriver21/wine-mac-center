@@ -12,17 +12,23 @@ export type Api = {
   pathJoin: (...paths: string[]) => Promise<string>;
   spawnProcess: (
     command: string,
-    action?: { type: string; data: string }
+    action?: { type: string; data: string },
   ) => Promise<{ pid: number }>;
   fileExists: (path: string) => Promise<boolean>;
   writeFile: (file: PathOrFileDescriptor, data: string) => void;
   readDirectory: (dirPath: string) => Promise<string[]>;
   dirExists: (dirPath: string) => Promise<boolean>;
   readBinaryFile: (filePath: string) => Promise<Buffer>;
-  createDirectory: (dirPath: string, options?: MakeDirectoryOptions) => Promise<void>;
+  createDirectory: (
+    dirPath: string,
+    options?: MakeDirectoryOptions,
+  ) => Promise<void>;
   removeDirectory: (dirPath: string, options?: RmDirOptions) => Promise<void>;
   readFileAsString: (filePath: string) => Promise<string>;
-  writeBinaryFile: (filePath: string, arrayBuffer: ArrayBuffer) => Promise<void>;
+  writeBinaryFile: (
+    filePath: string,
+    arrayBuffer: ArrayBuffer,
+  ) => Promise<void>;
   showOpenDialog: typeof dialog.showOpenDialog;
   onStdOut: (callback: (data: string) => void) => void;
   onStdErr: (callback: (data: string) => void) => void;
@@ -34,4 +40,5 @@ export type Api = {
   buildPlist: (obj: plist.PlistValue) => Promise<string>;
   showItemInFolder: (fullPath: string) => Promise<void>;
   renameDirectory: (from: string, to: string) => Promise<void>;
+  quitApp: (callbackCmd?: string) => Promise<void>;
 };

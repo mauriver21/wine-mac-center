@@ -79,6 +79,7 @@ const api: RendererApi = {
     ipcRenderer.invoke(ElectronApi.ShowItemInFolder, ...args),
   renameDirectory: (...args) =>
     ipcRenderer.invoke(ElectronApi.RenameDirectory, ...args),
+  quitApp: (...args) => ipcRenderer.invoke(ElectronApi.QuitApp, ...args),
 };
 
 const ipcRendererApi = {

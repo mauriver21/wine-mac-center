@@ -5,6 +5,7 @@ export * from './exec';
 export * from './fileExists';
 export * from './getAppPath';
 export * from './pathJoin';
+export * from './quitApp';
 export * from './readBinaryFile';
 export * from './readDirectory';
 export * from './readFileAsString';

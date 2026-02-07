@@ -20,6 +20,7 @@ import {
   showItemInFolder,
   renameDirectory,
   exec,
+  quitApp,
   spawn,
   writeFile,
 } from './commands';
@@ -66,6 +67,7 @@ ipcMain.handle(ElectronApi.BuildPlist, buildPlist);
 ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
 ipcMain.handle(ElectronApi.ShowItemInFolder, showItemInFolder);
 ipcMain.handle(ElectronApi.RenameDirectory, renameDirectory);
+ipcMain.handle(ElectronApi.QuitApp, quitApp);
 
 let isQuitting = false;
 
@@ -82,7 +84,7 @@ function createWindow() {
     minHeight: WINDOW_DIMENSIONS.height,
     maxWidth: WINDOW_DIMENSIONS.width,
     maxHeight: WINDOW_DIMENSIONS.height,
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    icon: path.join(process.env.VITE_PUBLIC || '', 'electron-vite.svg'),
     webPreferences: {
       devTools: true,
       preload: path.join(__dirname, 'preload.mjs'),

@@ -1,5 +1,5 @@
-import { PidsContext } from '@contexts/PidsContext';
 import { useState } from 'react';
+import { PidsContext } from '@contexts/PidsContext';
 
 export interface PidsProviderProps {
   children?: React.ReactElement;
