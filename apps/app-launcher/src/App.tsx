@@ -12,12 +12,11 @@ export const App = () => {
   return (
     <Launcher
       onInitialized={({ wineApp, runExe }) => {
-        const { runMainExeOnStartup } =
+        const { runMainExeOnStartup, quitAppWhenLauncherIsClosed } =
           wineApp.getAppConfig().launcherConfig || {};
 
-        if (runMainExeOnStartup) {
-          runExe();
-        }
+        runMainExeOnStartup && runExe();
+        quitAppWhenLauncherIsClosed && console.log('XXXX');
       }}
     />
   );

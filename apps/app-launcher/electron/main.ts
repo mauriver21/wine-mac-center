@@ -67,6 +67,8 @@ ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
 ipcMain.handle(ElectronApi.ShowItemInFolder, showItemInFolder);
 ipcMain.handle(ElectronApi.RenameDirectory, renameDirectory);
 
+let isQuitting = false;
+
 const WINDOW_DIMENSIONS = {
   width: 980,
   height: 600,
@@ -107,8 +109,28 @@ function createWindow() {
     }
   });
 
+  app.on('activate', function () {
+    win?.show();
+  });
+
   globalShortcut.register('Cmd+Alt+I', () => {
     win.webContents.toggleDevTools();
+  });
+
+  win?.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+
+      if (win?.isFullScreen()) {
+        win.setFullScreen(false);
+      }
+
+      if (win?.isMaximized()) {
+        win.unmaximize();
+      }
+
+      win?.hide();
+    }
   });
 
   if (VITE_DEV_SERVER_URL) {
@@ -118,6 +140,10 @@ function createWindow() {
     win.loadFile(path.join(RENDERER_DIST, 'index.html'));
   }
 }
+
+app.on('before-quit', () => {
+  isQuitting = true;
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
