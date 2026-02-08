@@ -372,7 +372,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
    * Run executable with wine.
    */
   const runExe = (args: string, processArgs?: SpawnProcessArgs) => {
-    return spawnScript('wine', `WINDOWS_EXE ${args.replace(/( |\\ )/g, ' ')}`, processArgs);
+    return spawnScript('wine', `WINDOWS_EXE "${args.replace(/( |\\ )/g, ' ')}"`, processArgs);
   };
 
   const runMainExe = (processArgs?: SpawnProcessArgs) => {

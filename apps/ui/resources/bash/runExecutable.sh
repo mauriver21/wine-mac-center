@@ -5,7 +5,16 @@ runExecutable() {
   json=$(cat "$WINE_APP_CONFIG_JSON_PATH")
   path=$(echo "$json" | jq -r '.executables[] | select(.main) | .path')
   flags=$(echo "$json" | jq -r '.executables[] | select(.main) | .flags')
-  "$WINE_APP_SCRIPTS_PATH/wine.sh" WINDOWS_EXE "${WINE_APP_PREFIX_PATH}${path}" "$flags"
+  
+  if [ "${flags:-}" = "null" ]; then
+    flags=""
+  fi
+
+  if [ -n "$flags" ]; then
+    "$WINE_APP_SCRIPTS_PATH/wine.sh" WINDOWS_EXE "${WINE_APP_PREFIX_PATH}${path}" $flags
+  else
+    "$WINE_APP_SCRIPTS_PATH/wine.sh" WINDOWS_EXE "${WINE_APP_PREFIX_PATH}${path}"
+  fi
 }
 
 runExecutable "$@"
