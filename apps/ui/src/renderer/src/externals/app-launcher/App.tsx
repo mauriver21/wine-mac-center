@@ -5,12 +5,17 @@ import { WineAppProvider, WineAppProviderProps } from '@components/WineAppProvid
 
 export interface AppProps {
   onInitialized?: WineAppProviderProps['onInitialized'];
+  onUpdateAppLauncherConfig?: WineAppProviderProps['onUpdateAppLauncherConfig'];
 }
 
-export const App: React.FC<AppProps> = ({ onInitialized }) => {
+export const App: React.FC<AppProps> = ({ onInitialized, onUpdateAppLauncherConfig }) => {
   const appName = useResolveAppName();
   return (
-    <WineAppProvider onInitialized={onInitialized} appName={appName}>
+    <WineAppProvider
+      onInitialized={onInitialized}
+      onUpdateAppLauncherConfig={onUpdateAppLauncherConfig}
+      appName={appName}
+    >
       {useRoutes(routes)}
     </WineAppProvider>
   );

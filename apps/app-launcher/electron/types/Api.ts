@@ -2,6 +2,7 @@ import plist from 'plist';
 import { dialog } from 'electron';
 import { MakeDirectoryOptions, PathOrFileDescriptor, RmDirOptions } from 'fs';
 import { WatchDirEvent } from './WatchDirEvent';
+import { ElectronApi } from './ElectronApi';
 
 export type Api = {
   getAppPath: () => Promise<string>;
@@ -41,5 +42,12 @@ export type Api = {
   showItemInFolder: (fullPath: string) => Promise<void>;
   renameDirectory: (from: string, to: string) => Promise<void>;
   quitApp: (callbackCmd?: string) => Promise<void>;
-  onAppClose: (callback: () => void) => void;
+  addEventListener: (
+    eventName: ElectronApi.OnAppClose,
+    callback: () => void,
+  ) => string;
+  removeEventListener: (
+    eventName: ElectronApi.OnAppClose,
+    listenerId: string,
+  ) => void;
 };

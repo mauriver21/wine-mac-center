@@ -41,12 +41,6 @@ const api: RendererApi = {
     };
     ipcRenderer.on(ElectronApi.SpawnExit, cleanupOnExit);
   },
-  onAppClose: (callback: () => void) => {
-    const listener = (_) => {
-      callback();
-    };
-    ipcRenderer.on(ElectronApi.OnAppClose, listener);
-  },
   subscribeToWatchDirs: (callback: (event: WatchDirEvent) => void) => {
     const id = uuid();
     listeners[id] = (_, event: WatchDirEvent) =>
@@ -86,6 +80,37 @@ const api: RendererApi = {
   renameDirectory: (...args) =>
     ipcRenderer.invoke(ElectronApi.RenameDirectory, ...args),
   quitApp: (...args) => ipcRenderer.invoke(ElectronApi.QuitApp, ...args),
+  addEventListener: (
+    eventName: ElectronApi.OnAppClose,
+    callback: () => void,
+  ) => {
+    const id = uuid();
+    switch (eventName) {
+      case ElectronApi.OnAppClose:
+        listeners[id] = (_) => {
+          callback();
+        };
+        ipcRenderer.on(ElectronApi.OnAppClose, listeners[id]);
+        break;
+      default:
+        break;
+    }
+
+    return id;
+  },
+  removeEventListener: (
+    eventName: ElectronApi.OnAppClose,
+    listenerId: string,
+  ) => {
+    console.log('XXXXXXXXXXX', listeners[listenerId]);
+    switch (eventName) {
+      case ElectronApi.OnAppClose:
+        ipcRenderer.removeListener(eventName, listeners[listenerId]);
+        break;
+      default:
+        break;
+    }
+  },
 };
 
 const ipcRendererApi = {

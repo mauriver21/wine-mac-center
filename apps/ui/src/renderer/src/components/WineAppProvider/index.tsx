@@ -16,12 +16,14 @@ export interface WineAppProviderProps {
     wineApp: WineApp;
     runExe: (processArgs?: SpawnProcessArgs | undefined) => Promise<void>;
   }) => void;
+  onUpdateAppLauncherConfig?: (context: { wineApp: WineApp }) => void;
 }
 
 export const WineAppProvider: React.FC<WineAppProviderProps> = ({
   children,
   appName,
-  onInitialized
+  onInitialized,
+  onUpdateAppLauncherConfig
 }) => {
   const [runningMainExe, setRunningMainExe] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,6 +62,11 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
     }
   };
 
+  const updateAppLauncherConfig: WineApp['updateAppLauncherConfig'] = async (...params) => {
+    await wineApp?.updateAppLauncherConfig(...params);
+    wineApp && onUpdateAppLauncherConfig?.({ wineApp });
+  };
+
   useEffect(() => {
     initWineApp();
   }, [appName]);
@@ -75,7 +82,7 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
         setLoading,
         refresh,
         signal,
-        wineApp,
+        wineApp: wineApp ? { ...wineApp, updateAppLauncherConfig } : undefined,
         urls,
         runExe,
         runningMainExe,

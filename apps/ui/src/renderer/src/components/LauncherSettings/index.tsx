@@ -18,9 +18,9 @@ export const LauncherSettings: React.FC = () => {
       form.fill(launcherConfig);
     }
 
-    return () => {
-      wineApp?.updateAppLauncherConfig(form.getFormValues());
-    };
+    form.watch((data) => {
+      wineApp?.updateAppLauncherConfig(data);
+    });
   }, []);
 
   return (
