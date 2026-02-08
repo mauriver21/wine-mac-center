@@ -120,6 +120,8 @@ function createWindow() {
   });
 
   win?.on('close', (event) => {
+    win?.webContents.send(ElectronApi.OnAppClose);
+
     if (!isQuitting) {
       event.preventDefault();
 

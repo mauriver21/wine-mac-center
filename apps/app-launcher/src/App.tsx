@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as Launcher } from 'ui/app-launcher';
+import { onAppClose } from '@utils/onAppClose';
+import { quitApp } from '@utils/quitApp';
 
 export const App = () => {
   const navigate = useNavigate();
@@ -15,8 +17,13 @@ export const App = () => {
         const { runMainExeOnStartup, quitAppWhenLauncherIsClosed } =
           wineApp.getAppConfig().launcherConfig || {};
 
-        runMainExeOnStartup && runExe();
-        quitAppWhenLauncherIsClosed && console.log('XXXX');
+        if (runMainExeOnStartup) {
+          runExe();
+        }
+
+        if (quitAppWhenLauncherIsClosed) {
+          onAppClose(quitApp);
+        }
       }}
     />
   );

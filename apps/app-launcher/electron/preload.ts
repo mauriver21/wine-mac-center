@@ -41,6 +41,12 @@ const api: RendererApi = {
     };
     ipcRenderer.on(ElectronApi.SpawnExit, cleanupOnExit);
   },
+  onAppClose: (callback: () => void) => {
+    const listener = (_) => {
+      callback();
+    };
+    ipcRenderer.on(ElectronApi.OnAppClose, listener);
+  },
   subscribeToWatchDirs: (callback: (event: WatchDirEvent) => void) => {
     const id = uuid();
     listeners[id] = (_, event: WatchDirEvent) =>

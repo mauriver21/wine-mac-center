@@ -41,4 +41,5 @@ export type Api = {
   showItemInFolder: (fullPath: string) => Promise<void>;
   renameDirectory: (from: string, to: string) => Promise<void>;
   quitApp: (callbackCmd?: string) => Promise<void>;
+  onAppClose: (callback: () => void) => void;
 };

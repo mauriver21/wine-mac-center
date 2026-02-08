@@ -24,4 +24,5 @@ export enum ElectronApi {
   RenameDirectory = 'rename-directory',
   ShowItemInFolder = 'show-item-in-folder',
   QuitApp = 'quit-app',
+  OnAppClose = 'on-app-close',
 }
