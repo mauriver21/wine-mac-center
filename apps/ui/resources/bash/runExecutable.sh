@@ -10,7 +10,7 @@ runExecutable() {
     flags=""
   fi
 
-  if [ -n "$flags" ]; then
+  if [ -n "$flags" ]; then    
     "$WINE_APP_SCRIPTS_PATH/wine.sh" WINDOWS_EXE "${WINE_APP_PREFIX_PATH}${path}" $flags
   else
     "$WINE_APP_SCRIPTS_PATH/wine.sh" WINDOWS_EXE "${WINE_APP_PREFIX_PATH}${path}"

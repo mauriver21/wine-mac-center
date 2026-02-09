@@ -102,10 +102,10 @@ const api: RendererApi = {
     eventName: ElectronApi.OnAppClose,
     listenerId: string,
   ) => {
-    console.log('XXXXXXXXXXX', listeners[listenerId]);
     switch (eventName) {
       case ElectronApi.OnAppClose:
-        ipcRenderer.removeListener(eventName, listeners[listenerId]);
+        listeners[listenerId] &&
+          ipcRenderer.removeListener(eventName, listeners[listenerId]);
         break;
       default:
         break;

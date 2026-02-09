@@ -16,7 +16,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <EnvProvider
           standaloneApp
           development={true}
-          APPLICATION_PATH_OVERRIDE="/Users/mauriver/Wine/apps/Ricochet Infinity.app"
+          APPLICATION_PATH_OVERRIDE={
+            import.meta.env.DEV
+              ? '/Users/mauriver/Wine/apps/Ricochet Infinity.app'
+              : ''
+          }
         >
           <BrowserRouter>
             <App />
