@@ -35,7 +35,6 @@ export * from './NotificationsProvider';
 export * from './PipelineScript';
 export * from './PipelineStep';
 export * from './RegistryEditorModule';
-export * from './ScriptItem';
 export * from './SearchField';
 export * from './Sidebar';
 export * from './SidebarItem';

@@ -5,18 +5,14 @@ import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useEffect, useState } from 'react';
 import { ConfigOrigin, PipelineAction } from '@constants/enums';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import {
-  Cog6ToothIcon,
-  ComputerDesktopIcon,
-  PlayCircleIcon,
-  TrashIcon
-} from '@heroicons/react/24/solid';
-import defaultArtwork from '@assets/imgs/header.jpg';
+import { Cog6ToothIcon, ComputerDesktopIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
 import { Cloud } from '@mui/icons-material';
 import { useScriptsContext } from '@hooks/useScriptsContext';
 import { AppCardButton } from '@components/AppCardButton';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { useAppModel } from '@models/useAppModel';
+import { ContextMenu } from '@components/ContextMenu';
+import defaultArtwork from '@assets/imgs/header.jpg';
 
 export interface AppCardProps extends CardProps {
   appName: string | undefined;
@@ -118,7 +114,7 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
             )}
           </Box>
         </Box>
-        <Box display="flex" justifyContent="start" gap={1}>
+        <Box display="flex" justifyContent="end" alignItems="center" gap={1}>
           <AppCardButton
             title="Run Script"
             disabled={scaffoldingApp}
@@ -132,20 +128,27 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
                 onClick={() => navigateToScript(appName)}
                 icon={Cog6ToothIcon}
               />
-              {scriptsContext?.setOpenConfirmRemoveScript ? (
-                <AppCardButton
-                  title="Remove Script"
-                  onClick={() => {
-                    scriptsContext?.setAppName(appName);
-                    scriptsContext?.setOpenConfirmRemoveScript(true);
-                  }}
-                  icon={TrashIcon}
-                />
-              ) : (
-                <></>
-              )}
             </>
           )}
+          <ContextMenu
+            menuItems={[
+              ...(origin === ConfigOrigin.SCRIPTS
+                ? [
+                    {
+                      label: 'Copy Script',
+                      onClick: () => {}
+                    },
+                    {
+                      label: 'Remove Script',
+                      onClick: () => {
+                        scriptsContext?.setAppName(appName);
+                        scriptsContext?.setOpenConfirmRemoveScript(true);
+                      }
+                    }
+                  ]
+                : [])
+            ]}
+          />
         </Box>
       </Box>
     </Card>
