@@ -33,11 +33,17 @@ import { blobToURL } from '@utils/blobToURL';
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { LauncherImgInput } from '@components/LauncherImgInput';
+import { useQueryParam } from '@hooks/useQueryParam';
+import { buildUniqueAppName } from '@utils/buildUniqueAppName';
+import { blobUrlToFile } from '@utils/blobUrlToFile';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const PipelineScript: React.FC = () => {
-  const { appName } = useParams();
+  const { appName: appNameParam } = useParams();
+  const params = useQueryParam();
+  const appNameToCopy = params.get('appNameToCopy') || '';
+  const appName = appNameToCopy || appNameParam;
   const schema = useSchema();
   const form = useForm(schema);
   const { navigateToScripts } = useNavigateApp();
@@ -452,7 +458,7 @@ export const PipelineScript: React.FC = () => {
       launcherImgFile: await launcherImgFile?.arrayBuffer()
     };
 
-    if (appConfig?.name) {
+    if (appConfig?.name && !appNameToCopy) {
       await wineAppConfigModel.update({
         ...rest,
         originalAppName,
@@ -469,10 +475,9 @@ export const PipelineScript: React.FC = () => {
     navigateToScripts();
   };
 
-  useEffect(() => {
+  const fillForm = async () => {
     if (appConfig) {
       const {
-        name,
         pipelineScripts = [],
         winetricks,
         engineVersion = '',
@@ -483,6 +488,27 @@ export const PipelineScript: React.FC = () => {
         ...rest
       } = appConfig;
 
+      let { name } = appConfig;
+      let copiedArtworkFile: File | undefined;
+      let copiedIconFile: File | undefined;
+      let copiedLauncherImgFile: File | undefined;
+
+      if (appNameToCopy) {
+        name = await buildUniqueAppName(name);
+
+        if (appConfig?.artworkURL) {
+          copiedArtworkFile = await blobUrlToFile(appConfig.artworkURL, 'artwork-img');
+        }
+
+        if (appConfig?.iconURL) {
+          copiedIconFile = await blobUrlToFile(appConfig.iconURL, 'icon-img');
+        }
+
+        if (appConfig?.launcherImgURL) {
+          copiedLauncherImgFile = await blobUrlToFile(appConfig.launcherImgURL, 'launcher-img');
+        }
+      }
+
       form.fill({
         appName: name,
         originalAppName: appName || '',
@@ -490,9 +516,9 @@ export const PipelineScript: React.FC = () => {
         winetricksVerbs: winetricks?.verbs || [],
         dxvkEnabled,
         engineVersion,
-        artworkFile: undefined,
-        iconFile: undefined,
-        launcherImgFile: undefined,
+        artworkFile: copiedArtworkFile || undefined,
+        iconFile: copiedIconFile || undefined,
+        launcherImgFile: copiedLauncherImgFile || undefined,
         ...rest
       });
 
@@ -500,6 +526,15 @@ export const PipelineScript: React.FC = () => {
         form.trigger();
       }, 200);
     }
+  };
+
+  const mainTitle = () => {
+    if (appNameToCopy) return `Copy Script`;
+    return appConfig?.name ? `${appConfig?.name} Script` : `Create Script`;
+  };
+
+  useEffect(() => {
+    fillForm();
   }, [appConfig?.name]);
 
   useEffect(() => {
@@ -511,7 +546,7 @@ export const PipelineScript: React.FC = () => {
   return (
     <form onSubmit={form.handleSubmit(submit as any)} style={{ display: 'contents' }}>
       <ConfigLayout
-        mainTitle={appConfig?.name ? `${appConfig?.name} Script` : `Create Script`}
+        mainTitle={mainTitle()}
         contentSlot={
           <Stack
             overflow="auto"
@@ -537,15 +572,9 @@ export const PipelineScript: React.FC = () => {
           </Stack>
         }
         actionsSlot={
-          appConfig?.name ? (
-            <Button disabled={loading || form.isInvalid()} type="submit">
-              Update
-            </Button>
-          ) : (
-            <Button disabled={loading || form.isInvalid()} type="submit">
-              Create
-            </Button>
-          )
+          <Button disabled={loading || form.isInvalid()} type="submit">
+            Save
+          </Button>
         }
       />
     </form>

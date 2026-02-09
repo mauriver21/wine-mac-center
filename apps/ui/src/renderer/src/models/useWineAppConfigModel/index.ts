@@ -24,7 +24,6 @@ export const useWineAppConfigModel = () => {
   const create = async (data: WineAppConfig) => {
     try {
       const config = await wineAppConfigApiClient.create(data);
-      if (config === undefined) throw new Error('App config already exists.');
       dispatchSave(config);
     } catch (error) {
       appModel.dispatchError(error);

@@ -15,6 +15,7 @@ import { appExists } from '@utils/appExists';
 import { WineAppArgs } from '@interfaces/WineAppArgs';
 import { ConfigOrigin } from '@constants/enums';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
+import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
@@ -104,21 +105,6 @@ export const useWineAppPipelineModel = () => {
       appModel.dispatchError(error);
       return;
     }
-  };
-
-  const buildUniqueAppName = async (appName: string) => {
-    let count = 1;
-    let newAppName = appName;
-
-    while (true) {
-      if ((await appExists(newAppName)) === false) {
-        break;
-      }
-      newAppName = `${appName} ${count}`;
-      count++;
-    }
-
-    return newAppName;
   };
 
   const runWineAppPipeline = async (args: WineAppArgs) => {

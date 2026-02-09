@@ -136,7 +136,9 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
                 ? [
                     {
                       label: 'Copy Script',
-                      onClick: () => {}
+                      onClick: () => {
+                        navigateToScript(appName, { copyScript: true });
+                      }
                     },
                     {
                       label: 'Remove Script',

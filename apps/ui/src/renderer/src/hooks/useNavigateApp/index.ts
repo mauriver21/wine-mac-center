@@ -1,4 +1,5 @@
 import { ConfigOrigin, PipelineAction } from '@constants/enums';
+import { buildUrl } from '@utils/buildUrl';
 import { useNavigate } from 'react-router-dom';
 
 export const useNavigateApp = () => {
@@ -20,8 +21,10 @@ export const useNavigateApp = () => {
     navigate(`/scripts`);
   };
 
-  const navigateToScript = (appName?: string) => {
-    if (appName) {
+  const navigateToScript = (appName?: string, options?: { copyScript?: boolean }) => {
+    if (appName && options?.copyScript) {
+      navigate(buildUrl('/script', { appNameToCopy: appName }));
+    } else if (appName) {
       navigate(`/script/${appName}`);
     } else {
       navigate(`/script`);

@@ -189,9 +189,9 @@ export const useWineAppConfigApiClient = () => {
       artworkFile && (await saveScriptArtworkFile(name, artworkFile));
       launcherImgFile && (await saveScriptLauncherImageFile(name, launcherImgFile));
       return await writeScript({ name, ...restData });
+    } else {
+      throw new Error('App config already exists.');
     }
-
-    return;
   };
 
   const saveScriptIconFile = (appName: string, file: ArrayBuffer) => {
