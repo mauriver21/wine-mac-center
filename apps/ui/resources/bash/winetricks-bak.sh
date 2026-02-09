@@ -6,7 +6,7 @@
 
 # Name of this version of winetricks (YYYYMMDD)
 # (This doesn't change often, use the sha256sum of the file when reporting problems)
-WINETRICKS_VERSION=20260125-next
+WINETRICKS_VERSION=20240105-next
 
 # This is a UTF-8 file
 # You should see an o with two dots over it here [ö]
@@ -28,7 +28,10 @@ WINETRICKS_VERSION=20260125-next
 # - wine is used to execute Win32 apps except on Cygwin.
 # - cabextract, unrar, unzip, and 7z are needed by some verbs.
 # - aria2c, wget, curl, or fetch is needed for downloading.
+# - fuseiso, archivemount (Linux), or hdiutil (macOS) is used to mount .iso images.
 # - perl is used for displaying download progress for wget when using zenity
+# - pkexec, sudo, or kdesu (gksu/gksudo/kdesudo are deprecated upstream but also still supported)
+#   are used to mount .iso images if the user cached them with -k option.
 # - sha256sum, sha256, or shasum (OSX 10.5 does not support these, 10.6+ is required)
 # - torify is used with option "--torify" if sites are blocked in single countries.
 # - xdg-open (if present) or open (for OS X) is used to open download pages
@@ -37,14 +40,14 @@ WINETRICKS_VERSION=20260125-next
 # - zenity is needed by the GUI, though it can limp along somewhat with kdialog/xmessage.
 #
 # On Ubuntu (23.04 and newer), the following line can be used to install all the prerequisites:
-#    sudo apt install 7zip aria2 binutils cabextract pkexec tor unrar-free unzip wine xdg-utils xz-utils zenity
+#    sudo apt install 7zip aria2 binutils cabextract fuseiso pkexec tor unrar-free unzip wine xdg-utils xz-utils zenity
 #
 # On older Ubuntu, the following line can be used to install all the prerequisites:
-#    sudo apt install aria2 binutils cabextract p7zip-full policykit-1 tor unrar-free unzip wine xdg-utils xz-utils zenity
+#    sudo apt install aria2 binutils cabextract fuseiso p7zip-full policykit-1 tor unrar-free unzip wine xdg-utils xz-utils zenity
 #
 # On Fedora, these commands can be used (RPM Fusion is used to install unrar):
 #    sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-#    sudo dnf install binutils cabextract p7zip-plugins polkit tor unrar unzip wget wine xdg-utils xz zenity
+#    sudo dnf install binutils cabextract fuseiso p7zip-plugins polkit tor unrar unzip wget wine xdg-utils xz zenity
 #
 # See https://github.com/Winetricks/winetricks for documentation and tutorials,
 # including how to contribute changes to winetricks.
@@ -53,7 +56,7 @@ WINETRICKS_VERSION=20260125-next
 #
 # Copyright:
 #   Copyright (C) 2007-2014 Dan Kegel <dank!kegel.com>
-#   Copyright (C) 2008-2025 Austin English <austinenglish!gmail.com>
+#   Copyright (C) 2008-2024 Austin English <austinenglish!gmail.com>
 #   Copyright (C) 2010-2011 Phil Blankenship <phillip.e.blankenship!gmail.com>
 #   Copyright (C) 2010-2015 Shannon VanWagner <shannon.vanwagner!gmail.com>
 #   Copyright (C) 2010 Belhorma Bendebiche <amro256!gmail.com>
@@ -75,8 +78,6 @@ WINETRICKS_VERSION=20260125-next
 #   Copyright (C) 2013-2020 Hillwood Yang <hillwood!opensuse.org>
 #   Copyright (C) 2013,2016 André Hentschel <nerv!dawncrow.de>
 #   Copyright (C) 2023 Georgi Georgiev (RacerBG) <g.georgiev.shumen!gmail.com>
-#   Copyright (C) 2025 ykla <yklaxds!gmail.com>
-#   Copyright (C) 2025 Allan Rémy
 #
 # License:
 #   This program is free software; you can redistribute it and/or
@@ -219,7 +220,6 @@ w_askpermission()
             uk*) w_die "Операція скасована." ;;
             pl*) w_die "Anulowano operację, opuszczanie." ;;
             pt*) w_die "Operação cancelada, saindo." ;;
-            zh_CN*) w_die "操作已取消，正在退出。" ;;
             *) w_die "Operation cancelled, quitting." ;;
         esac
     fi
@@ -361,31 +361,6 @@ _w_get_broken_messages()
             broken_only_bad_version_known_win64="Пакетът (${W_PACKAGE}) е повреден при 64-битовата архитектура на wine-${_wine_version_stripped}. Повреден е от версия ${bad_version}. Използвайте папка, създадена с WINEARCH=win32. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
             broken_no_version_known_win64="Пакетът (${W_PACKAGE}) е повреден, когато wine е създаден без mingw. Вижте ${bug_link} за повече информация. Използвайте --force, за да опитате въпреки това."
             ;;
-        fr*)
-            # default broken messages
-            broken_good_version_known_default="Ce paquet (${W_PACKAGE}) ne fonctionne pas correctement dans wine-${_wine_version_stripped}. Effectuez une mise à niveau vers >=${good_version}. Consultez ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_good_and_bad_version_known_default="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version}. Mettez à jour vers >=${good_version}. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_only_bad_version_known_default="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version}. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_no_version_known_default="Ce paquet (${W_PACKAGE}) est cassé. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-
-            # mingw broken messages
-            broken_good_version_known_mingw="Ce paquet (${W_PACKAGE}) ne fonctionne pas sous wine-${_wine_version_stripped} lorsque wine est compilé avec mingw. Effectuez une mise à niveau vers >=${good_version} ou recompilez wine sans mingw. Consultez ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_good_and_bad_version_known_mingw="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version} lorsque wine est compilé avec mingw. Mettez à jour vers >=${good_version} ou recompilez wine sans mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_only_bad_version_known_mingw="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version} lorsque wine est compilé avec mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_no_version_known_mingw="Ce paquet (${W_PACKAGE}) est cassé lorsque Wine est compilé avec mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-
-            # no mingw broken messages
-            broken_good_version_known_no_mingw="Ce paquet (${W_PACKAGE}) est défectueux dans wine-${_wine_version_stripped} lorsque wine est compilé sans mingw. Effectuez une mise à niveau vers >=${good_version}. Consultez ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_good_and_bad_version_known_no_mingw="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version} lorsque wine est compilé sans mingw. Mettez à jour vers >=${good_version}. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_only_bad_version_known_no_mingw="Ce paquet (${W_PACKAGE}) est cassé dans wine-${_wine_version_stripped}. Cassé depuis ${bad_version} lorsque wine est compilé sans mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_no_version_known_no_mingw="Ce paquet (${W_PACKAGE}) est cassé lorsque wine est compilé sans mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-
-            # win64 broken messages
-            broken_good_version_known_win64="Ce paquet (${W_PACKAGE}) ne fonctionne pas sous Wine 64 bits-${_wine_version_stripped}. Utilisez un préfixe créé avec WINEARCH=win32 ou mettez à niveau Wine vers >=${good_version} pour contourner ce problème. Ou utilisez --force pour essayer quand même. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_good_and_bad_version_known_win64="Ce paquet (${W_PACKAGE}) est cassé sur wine-${_wine_version_stripped} 64 bits. Cassé depuis ${bad_version}. Utilisez un préfixe créé avec WINEARCH=win32 ou mettez à jour wine vers >=${good_version} pour contourner ce problème. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_only_bad_version_known_win64="Ce paquet (${W_PACKAGE}) est cassé sur wine-${_wine_version_stripped} 64 bits. Cassé depuis ${bad_version}. Utilisez un préfixe créé avec WINEARCH=win32 pour contourner ce problème. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            broken_no_version_known_win64="Ce paquet (${W_PACKAGE}) est cassé lorsque wine est compilé sans mingw. Voir ${bug_link} pour plus d'informations. Utilisez --force pour essayer quand même."
-            ;;
         pt*)
             # default broken messages
             broken_good_version_known_default="O pacote (${W_PACKAGE}) está quebrado no wine-${_wine_version_stripped}. Atualize para >=${good_version}. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
@@ -410,31 +385,6 @@ _w_get_broken_messages()
             broken_good_and_bad_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado em 64-bit wine-${_wine_version_stripped}. Quebrado desde ${bad_version}. Use um prefixo feito com WINEARCH=win32 ou atualize o wine para >=${good_version} para trabalhar com isto. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
             broken_only_bad_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado em 64-bit wine-${_wine_version_stripped}. Quebrado desde ${bad_version}. Use um prefixo feito com WINEARCH=win32 para trabalhar com isto. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
             broken_no_version_known_win64="Este pacote (${W_PACKAGE}) está quebrado quando o wine é feito sem mingw. Veja ${bug_link} para mais informações. Use --force para tentar forçar de toda forma."
-            ;;
-        zh_CN*)
-            # default broken messages
-            broken_good_version_known_default="此软件包（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已损坏，请升级到 >=${good_version}，更多信息请参见 ${bug_link}，如仍要尝试，请使用 --force。"
-            broken_good_and_bad_version_known_default="此软件包（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已损坏，自 ${bad_version} 起出现问题，请升级到 >=${good_version}，更多信息请参见 ${bug_link}，如仍要尝试，请使用 --force。"
-            broken_only_bad_version_known_default="此软件包（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已损坏，自 ${bad_version} 起出现问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_no_version_known_default="此软件包（${W_PACKAGE}）已损坏。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-
-            # mingw broken messages
-            broken_good_version_known_mingw="此软件包（${W_PACKAGE}）在使用 mingw 构建的 wine-${_wine_version_stripped} 中已损坏，请升级到 >=${good_version}，或重新构建不带 mingw 的 wine。更多信息请参见 ${bug_link}，如仍要尝试，请使用 --force。"
-            broken_good_and_bad_version_known_mingw="此软件包（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已损坏，自 ${bad_version} 起在使用 mingw 构建的 wine 中出现问题。请升级到 >=${good_version}，或重新构建不带 mingw 的 wine。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_only_bad_version_known_mingw="此软件包（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已损坏。自 ${bad_version} 起，当 wine 使用 mingw 构建时出现该问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_no_version_known_mingw="此软件包（${W_PACKAGE}）在使用 mingw 构建的 Wine 中存在问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-
-            # no mingw broken messages
-            broken_good_version_known_no_mingw="此软件包（${W_PACKAGE}）在未使用 mingw 构建的 wine-${_wine_version_stripped} 中已损坏。请升级到 >=${good_version}。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_good_and_bad_version_known_no_mingw="此软件包（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已损坏。自 ${bad_version} 起，当 wine 未使用 mingw 构建时出现该问题。请升级到 >=${good_version}。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_only_bad_version_known_no_mingw="此软件包（${W_PACKAGE}）在 wine-${_wine_version_stripped} 中已损坏。自 ${bad_version} 起，当 wine 未使用 mingw 构建时出现该问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_no_version_known_no_mingw="此软件包（${W_PACKAGE}）在 wine 未使用 mingw 构建时已损坏。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-
-            # win64 broken messages
-            broken_good_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上存在问题。可以使用 WINEARCH=win32 创建的前缀，或升级 wine 至 >=${good_version} 来解决此问题。或者使用 --force 仍可尝试。更多信息请参见 ${bug_link}。"
-            broken_good_and_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 中已损坏，自 ${bad_version} 起出现该问题。请使用使用 WINEARCH=win32 创建的前缀，或升级 wine 至 >=${good_version} 来解决此问题。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_only_bad_version_known_win64="此软件包（${W_PACKAGE}）在 64 位 wine-${_wine_version_stripped} 上已损坏，自 ${bad_version} 起出现该问题。请使用 WINEARCH=win32 创建的前缀作为解决方法。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
-            broken_no_version_known_win64="此软件包（${W_PACKAGE}）在 wine 未使用 mingw 构建时已损坏。更多信息请参见 ${bug_link}。如仍要尝试，请使用 --force。"
             ;;
         *)
             # default broken messages
@@ -645,7 +595,7 @@ w_package_unsupported_win64()
             pl*) w_warn "Ten pakiet (${W_PACKAGE}) nie działa z 64-bitową instalacją. Musisz użyć prefiksu utworzonego z WINEARCH=win32." ;;
             pt*) w_warn "Este pacote (${W_PACKAGE}) não funciona em instalação de 64-bit. Você precisa usar um prefixo feito com WINEARCH=win32." ;;
             ru*) w_warn "Данный пакет не работает в 64-битном окружении. Используйте префикс, созданный с помощью WINEARCH=win32." ;;
-            zh_CN*) w_warn "(${W_PACKAGE}) 无法在64位下工作，只能将容器变量设置为 WINEARCH=win32。" ;;
+            zh_CN*) w_warn "(${W_PACKAGE}) 无法在64位下工作，只能将容器变量设置为 WINEARCH=win32 安装。" ;;
             zh_TW*|zh_HK*) w_warn "(${W_PACKAGE}) 無法在64元下工作，只能將容器變數設定為 WINEARCH=win32 安装。" ;;
             *) w_warn "This package (${W_PACKAGE}) does not work on a 64-bit installation. You must use a prefix made with WINEARCH=win32." ;;
         esac
@@ -711,7 +661,6 @@ w_try()
     pl_abort="Informacja: poelcenie $* zwróciło status ${status}. Przerywam."
     pt_abort="Nota: comando $* retornou o status ${status}. Cancelando."
     ru_abort="Важно: команда $* вернула статус ${status}. Прерывание."
-    zh_CN_abort="注意：命令 $* 返回了状态码 ${status}，操作中止。"
 
     if [ -n "${_w_ms_installer}" ]; then
         case ${status} in
@@ -734,7 +683,6 @@ w_try()
                     pl*) w_die "${pl_abort}" ;;
                     pt*) w_die "${pt_abort}" ;;
                     ru*) w_die "${ru_abort}" ;;
-                    zh_CN*) w_die "${zh_CN_abort}" ;;
                     *) w_die "${en_abort}" ;;
                 esac
                 ;;
@@ -771,7 +719,7 @@ w_try_7z()
         w_try_cd "${PWD}"
 
         # errors out if there is a space between -o and path
-        w_try "${WINE}" "${W_PROGRAMS_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${filename}")" -y -o"$(w_pathconv -w "${destdir}")" "$@"
+        w_try "${WINE}" "${W_PROGRAMS_X86_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${filename}")" -y -o"$(w_pathconv -w "${destdir}")" "$@"
     fi
 }
 
@@ -938,7 +886,7 @@ w_try_regedit64()
     w_try "${WINE64}" ${cmdc} "C:\\windows\\regedit.exe" ${W_OPT_UNATTENDED:+/S} "$@"
 }
 
-w_try_regsvr32()
+w_try_regsvr()
 {
     w_try "${WINE}" "${W_SYSTEM32_DLLS_WIN}\\regsvr32.exe" ${W_OPT_UNATTENDED:+/S} "$@"
 }
@@ -962,7 +910,7 @@ w_try_unrar()
         # w_call above will wipe $W_TMP; if that's the CWD, things will break. So forcefully reset the directory:
         w_try_cd "${PWD}"
 
-        w_try "${WINE}" "${W_PROGRAMS_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "$1")"
+        w_try "${WINE}" "${W_PROGRAMS_X86_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "$1")"
     fi
 }
 
@@ -996,7 +944,7 @@ w_try_unzip()
     w_try_cd "${PWD}"
 
     # errors out if there is a space between -o and path
-    w_try "${WINE}" "${W_PROGRAMS_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${zipfile}")" -o"$(w_pathconv -w "${destdir}")" "$@"
+    w_try "${WINE}" "${W_PROGRAMS_X86_WIN}\\7-Zip\\7z.exe" x "$(w_pathconv -w "${zipfile}")" -o"$(w_pathconv -w "${destdir}")" "$@"
 }
 
 ### End of w_try ###
@@ -1041,7 +989,7 @@ w_read_key()
                 _W_nokeymsg="Ключ не надано"
                 ;;
             zh_CN*)  _W_keymsg="按任意键为 '${W_PACKAGE}'"
-                _W_nokeymsg="未检测到按键"
+                _W_nokeymsg="No key given"
                 ;;
             zh_TW*|zh_HK*)  _W_keymsg="按任意鍵為 '${W_PACKAGE}'"
                 _W_nokeymsg="No key given"
@@ -1126,7 +1074,7 @@ w_pathconv()
 # Expand an environment variable and print it to stdout
 w_expand_env()
 {
-    winetricks_early_wine_arch cmd.exe /c "chcp 65001 > nul & echo %$1%"
+    winetricks_early_wine_arch cmd.exe /c echo "%$1%"
 }
 
 # Determine what architecture a binary file is built for, silently continue in case of failure.
@@ -1195,29 +1143,6 @@ w_get_github_latest_prerelease()
     case "${json_length}" in
         0*) latest_version="$(sed -e "s/\",\"/|/g" "${W_TMP_EARLY}/release.json" | tr '|' '\n' | grep tag_name -m 1 | sed 's@.*"@@')";;
         *) latest_version="$(grep -m 1 -w tag_name "${W_TMP_EARLY}/release.json" | cut -d '"' -f 4)";;
-    esac
-
-    echo "${latest_version}"
-}
-
-# Get the latest tagged release from gitlab.com API
-w_get_gitlab_latest_release()
-{
-    # FIXME: can we get releases that aren't on master branch?
-    org="$1"
-    repo="$2"
-
-    # release.json might still exists from the previous verb
-    w_try rm -f "${W_TMP_EARLY}/release.json"
-
-    WINETRICKS_SUPER_QUIET=1 w_download_to "${W_TMP_EARLY}" "https://gitlab.com/api/v4/projects/${org}%2F${repo}/releases" "" "release.json" >/dev/null 2>&1
-
-    # aria2c condenses the json (https://github.com/aria2/aria2/issues/1389)
-    # but curl/wget don't, so handle both cases:
-    json_length="$(wc -l "${W_TMP_EARLY}/release.json")"
-    case "${json_length}" in
-        0*) latest_version="$(sed -e "s/\",\"/|/g" "${W_TMP_EARLY}/release.json" | tr '|' '\n' | grep tag_name | sed 's@.*"@@' | head -n 1)";;
-        *) latest_version="$(grep -w tag_name "${W_TMP_EARLY}/release.json" | cut -d '"' -f 4 | head -n 1)";;
     esac
 
     echo "${latest_version}"
@@ -1318,15 +1243,13 @@ winetricks_parse_wget_progress()
     # then use them to create the output line.
     case ${LANG} in
         bg*) perl -p -e \
-            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# Изтегляне... \2 (\3)/' ;;
+            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Изтегляне... \2 (\3)/' ;;
         pl*) perl -p -e \
-            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# Pobieranie… \2 (\3)/' ;;
+            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Pobieranie… \2 (\3)/' ;;
         ru*) perl -p -e \
-            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# Загрузка... \2 (\3)/' ;;
-        zh_CN*) perl -p -e \
-            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# 正在下载…… \2 (\3)/' ;;
+            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Загрузка... \2 (\3)/' ;;
         *) perl -p -e \
-            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKBT]) +([0-9hms,.]+).*$/\1\n# Downloading... \2 (\3)/' ;;
+            '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Downloading... \2 (\3)/' ;;
     esac
 }
 
@@ -1382,7 +1305,6 @@ w_dotnet_verify()
         dotnet471) version="4.7.1" ;;
         dotnet472) version="4.7.2" ;;
         dotnet48) version="4.8" ;;
-        dotnet481) version="4.8.1" ;;
         *) echo error ; exit 1 ;;
     esac
 
@@ -1453,7 +1375,7 @@ winetricks_selfupdate()
     _W_tmpdir=${TMPDIR:-/tmp}
     _W_tmpdir="$(mktemp -d "${_W_tmpdir}/${_W_filename}.XXXXXXXX")"
 
-    w_download_to "${_W_tmpdir}" https://raw.githubusercontent.com/Sikarugir-app/winetricks/sikarugir/src/winetricks "" "${_W_filename}"
+    w_download_to "${_W_tmpdir}" https://raw.githubusercontent.com/Kegworks-App/winetricks/kegworks/src/winetricks "" "${_W_filename}"
 
     # 2016/10/26: now file is uncompressed? Handle both cases:
     update_file_type="$(file "${_W_tmpdir}/${_W_filename}")"
@@ -1577,7 +1499,6 @@ w_download_to()
                         pl*) w_warn "Niezgodność sum kontrolnych dla ${_W_cache}/${_W_file}, pobieram ponownie" ;;
                         pt*) w_warn "Checksum para ${_W_cache}/${_W_file} não confere, tentando novo download" ;;
                         ru*) w_warn "Контрольная сумма файла ${_W_cache}/${_W_file} не совпадает, попытка повторной загрузки" ;;
-                        zh_CN*) w_warn "${_W_cache}/${_W_file} 的校验和不匹配，正在重新下载。" ;;
                         *) w_warn "Checksum for ${_W_cache}/${_W_file} did not match, retrying download" ;;
                     esac
                     mv -f "${_W_cache}/${_W_file}" "${_W_cache}/${_W_file}".bak
@@ -1882,6 +1803,105 @@ w_question()
 }
 
 #----------------------------------------------------------------
+
+
+# Usage: w_mount "volume name" [filename-to-check [discnum]]
+# Some games have two volumes with identical volume names.
+# For these, please specify discnum 1 for first disc, discnum 2 for 2nd, etc.,
+# else caching can't work.
+# FIXME: should take mount option 'unhide' for poorly mastered discs
+w_mount()
+{
+    if test "$3"; then
+        WINETRICKS_IMG="${W_CACHE}/${W_PACKAGE}/$1-$3.iso"
+    else
+        WINETRICKS_IMG="${W_CACHE}/${W_PACKAGE}/$1.iso"
+    fi
+    w_try_mkdir "${W_CACHE}/${W_PACKAGE}"
+
+    if test -f "${WINETRICKS_IMG}"; then
+        winetricks_mount_cached_iso
+    else
+        if test "${WINETRICKS_OPT_KEEPISOS}" = 0 || test "$2"; then
+            while true; do
+                winetricks_mount_real_volume "$1"
+                if test "$2" = "" || test -f "${W_ISO_MOUNT_ROOT}/$2"; then
+                    break
+                else
+                    w_warn "Wrong disc inserted, $2 not found."
+                fi
+            done
+        fi
+
+        case "${WINETRICKS_OPT_KEEPISOS}" in
+            1)
+                winetricks_cache_iso "$1"
+                winetricks_mount_cached_iso
+                ;;
+        esac
+    fi
+}
+
+w_umount()
+{
+    if test "${WINE}" = ""; then
+        # Windows
+        winetricks_load_vcdmount
+        w_try_cd "${VCD_DIR}"
+        w_try vcdmount.exe /u
+    else
+        if test "${W_USE_USERMOUNT}"; then
+            # FUSE-based tools or hdiutil
+            if test -d "${W_ISO_USER_MOUNT_ROOT}"; then
+                "${WINE}" eject "${W_ISO_MOUNT_LETTER}:"
+                cat > "${W_TMP}"/unset_type_cdrom.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\\Software\\Wine\\Drives]
+"${W_ISO_MOUNT_LETTER}:"=-
+_EOF_
+                w_try_regedit "${W_TMP}"/unset_type_cdrom.reg
+                rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
+                rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
+
+                case "${WINETRICKS_ISO_MOUNT}" in
+                    hdiutil)
+                        "${WINETRICKS_ISO_MOUNT}" detach "${W_ISO_USER_MOUNT_ROOT}"
+                        ;;
+                    *)
+                        # -uz lazy unmount in case executable still running
+                        fusermount -uz "${W_ISO_USER_MOUNT_ROOT}"
+                        ;;
+                esac
+                w_try rmdir "${W_ISO_USER_MOUNT_ROOT}"
+            fi
+            W_ISO_MOUNT_ROOT=/mnt/winetricks
+        else
+            # sudo + umount
+            echo "Running ${WINETRICKS_SUDO} umount ${W_ISO_MOUNT_ROOT}"
+
+            case "${WINETRICKS_SUDO}" in
+                gksu*|kdesudo)
+                    # -l lazy unmount in case executable still running
+                    "${WINETRICKS_SUDO}" "umount -l ${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" "rm -rf ${W_ISO_MOUNT_ROOT}"
+                    ;;
+                kdesu)
+                    "${WINETRICKS_SUDO}" -c "umount -l ${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" -c "rm -rf ${W_ISO_MOUNT_ROOT}"
+                    ;;
+                *)
+                    "${WINETRICKS_SUDO}" umount -l "${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" rm -rf "${W_ISO_MOUNT_ROOT}"
+                    ;;
+            esac
+
+            "${WINE}" eject "${W_ISO_MOUNT_LETTER}:"
+            rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
+            rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
+        fi
+    fi
+}
 
 w_ahk_do()
 {
@@ -2845,6 +2865,9 @@ w_do_call()
         test "${W_OPT_NOCLEAN}" = 1 || rm -rf "${W_TMP}"
         w_try_mkdir -q "${W_TMP}"
 
+        # Reset whether use of user mount tool
+        unset W_USE_USERMOUNT
+
         # Calling subshell must explicitly propagate error code with exit $?
     ) || exit $?
 }
@@ -3037,7 +3060,6 @@ winetricks_dl_warning() {
         bg*) _W_countrymsg="Вашият IP адрес е от Русия. Ако възникне грешка със сертификата по време на изтеглянето, моля, рестартирайте с '--torify' или изтеглете файловете ръчно, например с VPN." ;;
         ru*) _W_countrymsg="Скрипт определил, что ваш IP-адрес принадлежит России. Если во время загрузки файлов вы увидите ошибки несоответствия сертификата, перезапустите скрипт с опцией '--torify' или скачайте файлы вручную, например, используя VPN." ;;
         pl*) _W_countrymsg="Wykryto, że twój adres IP należy do Rosji. W wypadku problemów z pobieraniem, uruchom z parametrem '--torify' lub pobierz plik manualnie, np. z użyciem VPN." ;;
-        zh_CN*) _W_countrymsg="系统检测到您的 IP 地址属于俄罗斯。如果您在下载时遇到证书错误，请使用选项 --torify 重新启动，或者通过 VPN 手动下载文件。" ;;
         *)  _W_countrymsg="Your IP address has been determined to belong to Russia. If you encounter a certificate error while downloading, please relaunch with the '--torify' option, or download files manually, for instance using VPN." ;;
     esac
 
@@ -3099,7 +3121,7 @@ winetricks_latest_version_check()
         return
     fi
 
-    latest_version="$(winetricks_dl_url_to_stdout https://raw.githubusercontent.com/Sikarugir-app/winetricks/sikarugir/files/LATEST)"
+    latest_version="$(winetricks_dl_url_to_stdout https://raw.githubusercontent.com/Kegworks-App/winetricks/kegworks/files/LATEST)"
 
     # Check that $latest_version is an actual number in case github is down
     if ! echo "${latest_version}" | grep -q -E "[0-9]{8}" || [ -z "${latest_version}" ] ; then
@@ -3143,7 +3165,7 @@ winetricks_latest_version_check()
                     ;;
                 zh_CN*)
                     w_warn "你正在使用 winetricks-${WINETRICKS_VERSION}，最新版本是 winetricks-${latest_version}!"
-                    w_warn "你应该使用你的发行版软件管理器、--self-update 或者手动来更新。"
+                    w_warn "你应该使用你的发行版软件管理器、--self-update 或者手动更新。"
                     ;;
                 zh_TW*|zh_HK*)
                     w_warn "你正在使用 winetricks-${WINETRICKS_VERSION}，最新版本是 winetricks-${latest_version}!"
@@ -3235,6 +3257,71 @@ winetricks_detect_gui()
     fi
 }
 
+# Detect which sudo to use
+winetricks_detect_sudo()
+{
+    WINETRICKS_SUDO=sudo
+    if test "${WINETRICKS_GUI}" = "none"; then
+        return
+    fi
+
+    if test x"${DISPLAY}" != x""; then
+        # This should be the default option because some of GUI sudo programs are unmaintained
+        # See https://github.com/Winetricks/winetricks/issues/912
+        if test -x "$(command -v pkexec 2>/dev/null)"; then
+            # Maintained and recommended, part of Polkit, desktop-independent
+            # Usage: pkexec command ...
+            WINETRICKS_SUDO=pkexec
+        # Austin said "gksu*/kdesu* should stay (at least for a while)" in Feb 2018
+        # See https://github.com/Winetricks/winetricks/pull/915#issuecomment-362984379
+        elif test -x "$(command -v gksudo 2>/dev/null)"; then
+            # Unmaintained [2009], part of gksu
+            # Usage: gksudo "command ..."
+            WINETRICKS_SUDO=gksudo
+        elif test -x "$(command -v kdesudo 2>/dev/null)"; then
+            # Unmaintained [2015] (latest is for KDE4, no KF5 version available)
+            # https://cgit.kde.org/kdesudo.git/
+            # Usage: kdesudo "command ..."
+            WINETRICKS_SUDO=kdesudo
+        # fall back to the su versions if sudo isn't available (Fedora, etc.):
+        elif test -x "$(command -v gksu 2>/dev/null)"; then
+            # Unmaintained [2009]
+            # Usage: gksu "command ..."
+            WINETRICKS_SUDO=gksu
+        elif test -x "$(command -v kdesu 2>/dev/null)"; then
+            # Maintained, KF5 version available
+            # https://cgit.kde.org/kdesu.git/
+            # Usage: kdesu -c "command ..."
+            WINETRICKS_SUDO=kdesu
+        fi
+    fi
+}
+
+# Detect which iso mount tool to use
+winetricks_detect_iso_mount()
+{
+    if test -x "$(command -v fuseiso 2>/dev/null)"; then
+        # File/dir names are converted to lowercase
+        WINETRICKS_ISO_MOUNT=fuseiso
+    elif test -x "$(command -v archivemount 2>/dev/null)"; then
+        # File/dir names may be uppercase and we may need
+        # case-insensitive operations
+        #   e.g. w_try "$WINE" cmd /c "copy $W_ISO_MOUNT_LETTER:\\DOC.PDF C:\\doc.pdf"
+        # This tool had path issue in 0.8.8 or older versions
+        #   e.g. office2013pro works in 0.8.9 or later but doesn't work in 0.8.8
+        WINETRICKS_ISO_MOUNT=archivemount
+    elif test -x "$(command -v hdiutil 2>/dev/null)"; then
+        # File/dir names may be uppercase (same as archivemount)
+        WINETRICKS_ISO_MOUNT=hdiutil
+    else
+        WINETRICKS_ISO_MOUNT=none
+    fi
+    # Notes about other tools:
+    #   fuseiso9660: may append ";1" to filenames
+    #   unar: the drive icon is not "optical drive + disc" in Wine Explorer
+    #         and "wine eject" command fails
+}
+
 winetricks_get_prefix_var()
 {
     (
@@ -3260,17 +3347,6 @@ winetricks_prefixmenu()
             _W_msg_unattended1="Включване на автоматичното инсталиране"
             _W_msg_help="Отваряне на помощта"
             ;;
-        fr*) _W_msg_title="Winetricks - Choisir un préfixe"
-            _W_msg_body="Que souhaitez-vous faire ?"
-            _W_msg_apps="Installer une application"
-            _W_msg_benchmarks="Installer un benchmark"
-            _W_msg_default="Sélectionner le préfixe par défaut"
-            _W_msg_mkprefix="Créer un nouveau préfixe"
-            _W_msg_unattended0="Désactiver une installation silencieuse"
-            _W_msg_unattended1="Activer une installation silencieuse"
-            _W_msg_help="Voir aide"
-            _W_msg_cancel="Quitter"
-            ;;
         ru*) _W_msg_title="Winetricks - выберите путь wine (префикс)"
             _W_msg_body='Что вы хотите сделать?'
             _W_msg_apps='Установить программу'
@@ -3289,9 +3365,9 @@ winetricks_prefixmenu()
             _W_msg_unattended1="Увімкнути автоматичне встановлення"
             _W_msg_help="Переглянути довідку"
             ;;
-        zh_CN*)   _W_msg_title="Winetricks - 请选择一个 Wine 容器"
-            _W_msg_body='您想要做些什么？'
-            _W_msg_apps='安装 Windows 应用'
+        zh_CN*)   _W_msg_title="Winetricks - 择一 Wine 容器"
+            _W_msg_body='君欲何为？'
+            _W_msg_apps='安装一个 Windows 应用'
             _W_msg_default="选择默认的 Wine 容器"
             _W_msg_mkprefix="创建新的 Wine 容器"
             _W_msg_unattended0="禁用静默安装"
@@ -3441,17 +3517,9 @@ winetricks_mkprefixmenu()
             _W_msg_name="Name"
             _W_msg_arch="Architektur"
             ;;
-        fr*)  _W_msg_title="Winetricks - Créer un nouveau préfixe"
-            _W_msg_name="Nom :"
-            _W_msg_arch="Architecture"
-            ;;
         pt*) _W_msg_title="Winetricks - criar novo wineprefix"
             _W_msg_name="Nome"
             _W_msg_arch="Arquitetura"
-            ;;
-        zh_CN*) _W_msg_title="Winetricks - 创建新的 wineprefix"
-            _W_msg_name="名称"
-            _W_msg_arch="架构"
             ;;
         *)  _W_msg_title="Winetricks - create new wineprefix"
             _W_msg_name="Name"
@@ -3530,23 +3598,6 @@ winetricks_mainmenu()
             _W_msg_folder='Ordner durchsuchen'
             _W_msg_annihilate="ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen"
             ;;
-        fr*) _W_msg_title="Winetricks - Le préfixe actuel est \"${WINEPREFIX}\""
-            _W_msg_body='Que souhaitez-vous faire avec ce préfixe ?'
-            _W_msg_cancel="Revenir en arrière"
-            _W_msg_dlls="Installer une DLL ou un composant Windows"
-            _W_msg_fonts='Installer une police'
-            _W_msg_settings='Modifier les paramètres'
-            _W_msg_winecfg='Exécuter winecfg'
-            _W_msg_regedit='Exécuter regedit'
-            _W_msg_taskmgr='Exécuter taskmgr'
-            _W_msg_explorer='Exécuter explorer'
-            _W_msg_uninstaller='Exécuter uninstaller'
-            _W_msg_winecmd='Exécuter une invite de commande'
-            _W_msg_wine_misc_exe='Exécuter un exécutable arbitraire (.exe/.msi/.msu)'
-            _W_msg_shell='Exécuter une invite de commande pour le débogage'
-            _W_msg_folder='Parcourir les fichiers'
-            _W_msg_annihilate="Supprimer TOUTES LES DONNÉES ET APPLICATIONS CONTENUES DANS CE PRÉFIXE"
-            ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
             _W_msg_body='Co chcesz zrobić w tym prefiksie?'
             _W_msg_dlls="Zainstalować windowsową bibliotekę DLL lub komponent"
@@ -3561,7 +3612,7 @@ winetricks_mainmenu()
             _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='Uruchomić powłokę wiersza poleceń (dla debugowania)'
             _W_msg_folder='Przeglądać pliki'
-            _W_msg_annihilate="Usunąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
+            _W_msg_annihilate="Usuńąć WSZYSTKIE DANE I APLIKACJE WEWNĄTRZ TEGO PREFIKSU WINE"
             ;;
         pt*) _W_msg_title="Winetricks - o prefixo atual é \"${WINEPREFIX}\""
             _W_msg_body='O que você gostaria de fazer com este prefixo wineprefix?'
@@ -3622,7 +3673,7 @@ winetricks_mainmenu()
             _W_msg_explorer='运行资源管理器'
             _W_msg_uninstaller='运行卸载程序'
             _W_msg_winecmd='运行 Wine cmd'
-            _W_msg_wine_misc_exe='运行任意可执行文件 (.exe/.msi/.msu)'
+            _W_msg_wine_misc_exe='Run an arbitrary executable (.exe/.msi/.msu)'
             _W_msg_shell='运行命令提示窗口 (作为调试)'
             _W_msg_folder='浏览容器中的文件'
             _W_msg_annihilate="删除容器中所有数据和应用程序"
@@ -3733,9 +3784,6 @@ winetricks_settings_menu()
         de*) _W_msg_title="Winetricks - Aktueller Präfix ist \"${WINEPREFIX}\""
             _W_msg_body='Welche Einstellungen möchten Sie ändern?'
             ;;
-        fr*) _W_msg_title="Winetricks - Le préfixe actuel est \"${WINEPREFIX}\""
-            _W_msg_body='Quels paramètres souhaitez-vous modifier ?'
-            ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
             _W_msg_body='Jakie ustawienia chcesz zmienić?'
             ;;
@@ -3794,19 +3842,6 @@ winetricks_settings_menu()
                         --column '' \
                         --column Einstellung \
                         --column Name \
-                        --height ${WINETRICKS_MENU_HEIGHT} \
-                        --width ${WINETRICKS_MENU_WIDTH} \
-                        "
-                    ;;
-                fr*) printf %s "zenity \
-                        --title '${_W_msg_title}' \
-                        --text '${_W_msg_body}' \
-                        --cancel-label 'Revenir en arrière' \
-                        --list \
-                        --checklist \
-                        --column '' \
-                        --column Paramètres \
-                        --column Titre \
                         --height ${WINETRICKS_MENU_HEIGHT} \
                         --width ${WINETRICKS_MENU_WIDTH} \
                         "
@@ -3919,12 +3954,6 @@ winetricks_settings_menu()
                             *) title="${title_ru}";;
                         esac
                     ;;
-                    zh_CN*)
-                        case "${title_zh_CN}" in
-                            "") ;;
-                            *) title="${title_zh_CN}";;
-                        esac
-                    ;;
                     uk*)
                         case "${title_uk}" in
                             "") ;;
@@ -3971,10 +4000,6 @@ winetricks_showmenu()
         de*) _W_msg_title="Winetricks - Aktueller Prefix ist \"${WINEPREFIX}\""
             _W_msg_body='Welche Paket(e) möchten Sie installieren?'
             _W_cached="gecached"
-            ;;
-        fr*) _W_msg_title="Winetricks - Le préfixe actuel est \"${WINEPREFIX}\""
-            _W_msg_body="Quel(s) paquet(s) souhaitez-vous installer ?"
-            _W_cached="mis en cache"
             ;;
         pl*) _W_msg_title="Winetricks - obecny prefiks to \"${WINEPREFIX}\""
             _W_msg_body='Które paczki chesz zainstalować?'
@@ -4052,22 +4077,6 @@ winetricks_showmenu()
                         --column Name \
                         --column Herausgeber \
                         --column Jahr \
-                        --column Media \
-                        --column Status \
-                        --height ${WINETRICKS_MENU_HEIGHT} \
-                        --width ${WINETRICKS_MENU_WIDTH} \
-                        "
-                        ;;
-                fr*) printf %s "zenity \
-                        --title '${_W_msg_title}' \
-                        --text '${_W_msg_body}' \
-                        --list \
-                        --checklist \
-                        --column '' \
-                        --column Package \
-                        --column Titre \
-                        --column Éditeur \
-                        --column Année \
                         --column Media \
                         --column Status \
                         --height ${WINETRICKS_MENU_HEIGHT} \
@@ -4414,12 +4423,11 @@ winetricks_list_all()
         bg*) _W_cached="кеширано"   ; _W_download="за изтегляне"  ;;
         da*) _W_cached="cached"   ; _W_download="kan hentes"    ;;
         de*) _W_cached="gecached" ; _W_download="herunterladbar";;
-        fr*) _W_cached="mis en cache"   ; _W_download="téléchargeable";;
         pl*) _W_cached="zarchiwizowane"   ; _W_download="do pobrania"  ;;
         pt*) _W_cached="em cache"   ; _W_download="para download"  ;;
         ru*) _W_cached="в кэше"   ; _W_download="доступно для скачивания"  ;;
         uk*) _W_cached="кешовано"   ; _W_download="завантажуване"  ;;
-        zh_CN*) _W_cached="已缓存"   ; _W_download="可下载"  ;;
+        zh_CN*)   _W_cached="已缓存"   ; _W_download="可下载"  ;;
         zh_TW*|zh_HK*)   _W_cached="已緩存"   ; _W_download="可下載"  ;;
         *)   _W_cached="cached"   ; _W_download="downloadable"  ;;
     esac
@@ -4459,9 +4467,505 @@ winetricks_die_if_user_not_dirowner()
     fi
     _W_nuser=$(id -u)
     _W_nowner=$(stat -c '%u' "${_W_checkdir}")
-    if test "${_W_nuser}" != "${_W_nowner}"; then
+    if test x"${_W_nuser}" != x"${_W_nowner}"; then
         w_die "You ($(id -un)) don't own ${_W_checkdir}.  Don't run this tool as another user!"
     fi
+}
+
+# See
+# https://www.ecma-international.org/publications/files/ECMA-ST/Ecma-119.pdf (iso9660)
+# https://www.ecma-international.org/publications/files/ECMA-ST/Ecma-167.pdf
+# http://www.osta.org/specs/pdf/udf102.pdf
+# https://www.ecma-international.org/publications/techreports/E-TR-071.htm
+
+# Usage: read_bytes offset count device
+winetricks_read_bytes()
+{
+    dd status=noxfer if="$3" bs=1 skip="$1" count="$2" 2>/dev/null
+}
+
+# Usage: read_hex offset count device
+winetricks_read_hex()
+{
+    od -j "$1" -N "$2" -t x1 "$3"     | # offset $1, count $2, single byte hex format, file $3
+        sed 's/^[^ ]* //'             | # remove address
+        sed '$d'                        # remove final line which is just final offset
+}
+
+# Usage: read_decimal offset device
+# Reads single four byte word, outputs in decimal.
+# Uses default endianness.
+# udf uses little endian words, so this only works on little endian machines.
+winetricks_read_decimal()
+{
+    od -j "$1" -N 4  -t u4 "$2"          | # offset $1, byte count 4, four byte decimal format, file $2
+        sed 's/^[^ ]* //'             | # remove address
+        sed '$d'                        # remove final line which is just final offset
+}
+
+winetricks_read_udf_volume_name()
+{
+    # "Anchor volume descriptor pointer" starts at sector 256
+
+    # AVDP Layout (ECMA-167 3/10.2):
+    # size   offset   contents
+    # 16     0        descriptor tag (id = 2)
+    # 16     8        main (primary?) volume descriptor sequence extent
+    # ...
+
+    # descriptor tag layout (ECMA-167 3/7.2):
+    # size   offset   contents
+    # 2      0        TagIdentifier
+    # ...
+
+    # extent layout (ECMA-167 3/7.1):
+    # size   offset   contents
+    # 4      0        length (in bytes)
+    # 8      4        location (in 2k sectors)
+
+    # primary volume descriptor layout (ECMA-167 3/10.1):
+    # size   offset   contents
+    # 16     0        descriptor tag (id = 1)
+    # ...
+    # 32     24       volume identifier (dstring)
+
+    # 1. check the 16 bit TagIdentifier of the descriptor tag, make sure it's 2
+    tagid=$(winetricks_read_hex 524288 2 "$1")
+    : echo "tagid is ${tagid}"
+    case "${tagid}" in
+        "02 00") : echo "Found AVDP" ;;
+        *) echo "Did not find AVDP (tagid was ${tagid})"; exit 1;;
+    esac
+
+    # 2. read the location of the main volume descriptor:
+    offset=$(winetricks_read_decimal 524308 "$1")
+    : echo "MVD is at sector ${offset}"
+    offset=$((offset * 2048))
+    : echo "MVD is at byte ${offset}"
+
+    # 3. check the TagIdentifier of the MVD's descriptor tag, make sure it's 1
+    tagid=$(winetricks_read_hex ${offset} 2 "$1")
+    : echo "tagid is ${tagid}"
+    case "${tagid}" in
+        "01 00") : echo Found MVD ;;
+        *) echo Did not find MVD; exit 1;;
+    esac
+
+    # 4. Read whether the name is in 8 or 16 bit chars
+    offset=$((offset + 24))
+    width=$(winetricks_read_hex ${offset} 1 "$1")
+
+    offset=$((offset + 1))
+
+    # 5. Profit!
+    case ${width} in
+        08)   winetricks_read_bytes ${offset} 30 "$1" | sed 's/  *$//' ;;
+        10)  winetricks_read_bytes ${offset} 30 "$1" | tr -d '\000' | sed 's/  *$//' ;;
+        *) echo "Unhandled dvd volname character width '${width}'"; exit 1;;
+    esac
+
+    echo ""
+}
+
+winetricks_read_iso9660_volume_name()
+{
+    winetricks_read_bytes 32808 30 "$1" | sed 's/  *$//'
+}
+
+winetricks_read_volume_name()
+{
+    # ECMA-119 says that CD-ROMs have sector size 2k, and at sector 16 have:
+    # size  offset contents
+    #  1    0      Volume descriptor type (1 for primary volume descriptor)
+    #  5    1      Standard identifier ("CD001" for iso9660)
+    # ECMA-167, section 9.1.2, has a table of standard identifiers:
+    # "BEA01": ecma-167 9.2, Beginning Extended Area Descriptor
+    # "CD001": ecma-119
+    # "CDW02": ecma-168
+
+    std_id=$(winetricks_read_bytes 32769 5 "$1")
+    : echo "std_id is ${std_id}"
+
+    case ${std_id} in
+        CD001) winetricks_read_iso9660_volume_name "$1" ;;
+        BEA01) winetricks_read_udf_volume_name "$1" ;;
+        *) echo "Unrecognized disk type ${std_id}"; exit 1 ;;
+    esac
+}
+
+winetricks_volname()
+{
+    x=$(volname "$1" 2> /dev/null| sed 's/  *$//')
+    if test -z "${x}"; then
+        # UDF?  See https://bugs.launchpad.net/bugs/678419
+        x=$(winetricks_read_volume_name "$1")
+    fi
+    echo "${x}"
+}
+
+# Really, should take a volume name as argument, and use 'mount' to get
+# mount point if system automounted it.
+winetricks_detect_optical_drive()
+{
+    case "${WINETRICKS_DEV}" in
+        "") ;;
+        *) return ;;
+    esac
+
+    for WINETRICKS_DEV in /dev/cdrom /dev/dvd /dev/sr0; do
+        test -b ${WINETRICKS_DEV} && break
+    done
+
+    case "${WINETRICKS_DEV}" in
+        "x") w_die "can't find cd/dvd drive" ;;
+    esac
+}
+
+winetricks_cache_iso()
+{
+    # WINETRICKS_IMG has already been set by w_mount
+    _W_expected_volname="$1"
+
+    winetricks_die_if_user_not_dirowner "${W_CACHE}"
+    winetricks_detect_optical_drive
+
+    # Horrible hack for Gentoo - make sure we can read from the drive
+    if ! test -r "${WINETRICKS_DEV}"; then
+        case "${WINETRICKS_SUDO}" in
+            gksu*|kdesudo) ${WINETRICKS_SUDO} chmod 666 "${WINETRICKS_DEV}" ;;
+            kdesu) ${WINETRICKS_SUDO} -c "chmod 666 ${WINETRICKS_DEV}" ;;
+            *) ${WINETRICKS_SUDO} chmod 666 "${WINETRICKS_DEV}" ;;
+        esac
+    fi
+
+    while true; do
+        # Wait for user to insert disc.
+        # Sleep long to make it less likely to close the drive during insertion.
+        while ! dd if="${WINETRICKS_DEV}" of=/dev/null count=1; do
+            sleep 5
+        done
+
+        # Some distributions automount discs in /media, take advantage of that
+        if test -d "/media/_W_expected_volname"; then
+            break
+        fi
+        # Otherwise try and read it straight from unmounted volume
+        _W_volname="$(winetricks_volname "${WINETRICKS_DEV}")"
+        if test "${_W_expected_volname}" != "${_W_volname}"; then
+            case ${LANG} in
+                bg*)  w_warn "Дискът [${_W_volname}] е неправилен. Моля, използвайте [${_W_expected_volname}]" ;;
+                da*)  w_warn "Forkert disk [${_W_volname}] indsat. Indsæt venligst disken [${_W_expected_volname}]" ;;
+                de*)  w_warn "Falsche Disk [${_W_volname}] eingelegt. Bitte legen Sie Disk [${_W_expected_volname}] ein!" ;;
+                pl*)  w_warn "Umieszczono zły dysk [${_W_volname}]. Proszę włożyć dysk [${_W_expected_volname}]" ;;
+                pt*)  w_warn "Disco errado [${_W_volname}] inserido. Por favor insira o disco [${_W_expected_volname}]" ;;
+                ru*)  w_warn "Неверный диск [${_W_volname}]. Пожалуйста, вставьте диск [${_W_expected_volname}]" ;;
+                uk*)  w_warn "Неправильний диск [${_W_volname}]. Будь ласка, вставте диск [${_W_expected_volname}]" ;;
+                zh_CN*)    w_warn " [${_W_volname}] 光盘插入错误，请插入光盘 [${_W_expected_volname}]" ;;
+                zh_TW*|zh_HK*)    w_warn " [${_W_volname}] 光碟插入錯誤，請插入光碟 [${_W_expected_volname}]" ;;
+                *)    w_warn "Wrong disc [${_W_volname}] inserted.  Please insert disc [${_W_expected_volname}]" ;;
+            esac
+
+            sleep 10
+        else
+            break
+        fi
+    done
+
+    # Copy disc to .iso file, display progress every 5 seconds
+    # Use conv=noerror,sync to replace unreadable blocks with zeroes
+    case "${WINETRICKS_OPT_DD}" in
+        dd)
+            "${WINETRICKS_OPT_DD}" if="${WINETRICKS_DEV}" of="${W_CACHE}"/temp.iso bs=2048 conv=noerror,sync &
+            WINETRICKS_DD_PID=$!
+            ;;
+        ddrescue)
+            if [ ! -x "$(command -v ddrescue)" ]; then
+                w_die "Please install ddrescue first."
+            fi
+
+            "${WINETRICKS_OPT_DD}" -v -b 2048 "${WINETRICKS_DEV}" "${W_CACHE}"/temp.iso &
+            WINETRICKS_DD_PID=$!
+            ;;
+    esac
+
+    echo "${WINETRICKS_DD_PID}" > "${WINETRICKS_WORKDIR}"/dd-pid
+
+    # Note: if user presses ^C, winetricks_cleanup will call winetricks_iso_cleanup
+    # FIXME: add progress bar for kde, too
+    case ${WINETRICKS_GUI} in
+        none|kdialog)
+            while ps -p "${WINETRICKS_DD_PID}" > /dev/null 2>&1; do
+                sleep 5
+                ls -l "${W_CACHE}"/temp.iso
+            done
+            ;;
+        zenity)
+            while ps -p "${WINETRICKS_DD_PID}" > /dev/null 2>&1; do
+                echo 1
+                sleep 2
+            done | ${WINETRICKS_GUI} --title "Copying to ${_W_expected_volname}.iso" --progress --pulsate --auto-kill
+            ;;
+    esac
+    rm "${WINETRICKS_WORKDIR}"/dd-pid
+
+    mv "${W_CACHE}"/temp.iso "${WINETRICKS_IMG}"
+
+    eject "${WINETRICKS_DEV}" || true    # punt if eject not found (as on cygwin)
+}
+
+winetricks_load_vcdmount()
+{
+    if test "${WINE}" != ""; then
+        return
+    fi
+
+    # Call only on real Windows.
+    # Sets VCD_DIR and W_ISO_MOUNT_ROOT
+
+    # The only free mount tool I know for Windows Vista is Virtual CloneDrive,
+    # which can be downloaded at
+    # http://www.slysoft.com/en/virtual-clonedrive.html
+    # FIXME: actually install it here
+
+    # Locate vcdmount.exe.
+    VCD_DIR="Elaborate Bytes/VirtualCloneDrive"
+    if test ! -x "${W_PROGRAMS_UNIX}/${VCD_DIR}/vcdmount.exe" && test ! -x "${W_PROGRAMS_X86_UNIX}/${VCD_DIR}/vcdmount.exe"; then
+        w_warn "Installing Virtual CloneDrive"
+        w_download_to vcd http://static.slysoft.com/SetupVirtualCloneDrive.exe
+        # have to use cmd else vista won't let cygwin run .exe's?
+        chmod +x "${W_CACHE}"/vcd/SetupVirtualCloneDrive.exe
+        w_try_cd "${W_CACHE}/vcd"
+        cmd /c SetupVirtualCloneDrive.exe
+    fi
+    if test -x "${W_PROGRAMS_UNIX}/${VCD_DIR}/vcdmount.exe"; then
+        VCD_DIR="${W_PROGRAMS_UNIX}/${VCD_DIR}"
+    elif test -x "${W_PROGRAMS_X86_UNIX}/${VCD_DIR}/vcdmount.exe"; then
+        VCD_DIR="${W_PROGRAMS_X86_UNIX}/${VCD_DIR}"
+    else
+        w_die "can't find Virtual CloneDrive?"
+    fi
+    # FIXME: Use WMI to locate the drive named
+    # "ELBY CLONEDRIVE..." using WMI as described in
+    # https://delphihaven.wordpress.com/2009/07/05/using-wmi-to-get-a-drive-friendly-name/
+}
+
+winetricks_mount_cached_iso()
+{
+    # On entry, WINETRICKS_IMG is already set
+    w_umount
+
+    if test "${WINE}" = ""; then
+        winetricks_load_vcdmount
+        my_img_win="$(w_pathconv -w "${WINETRICKS_IMG}" | tr '\012' ' ' | sed 's/ $//')"
+        w_try_cd "${VCD_DIR}"
+        w_try vcdmount.exe /l="${letter}" "${my_img_win}"
+
+        tries=0
+        while test ${tries} -lt 20; do
+            for W_ISO_MOUNT_LETTER in e f g h i j k; do
+                # let user blacklist drive letters
+                echo "${WINETRICKS_MOUNT_LETTER_IGNORE}" | grep -q "${W_ISO_MOUNT_LETTER}" && continue
+                W_ISO_MOUNT_ROOT=/cygdrive/${W_ISO_MOUNT_LETTER}
+                if find ${W_ISO_MOUNT_ROOT} -iname 'setup*' -o -iname '*.exe' -o -iname '*.msi'; then
+                    break 2
+                fi
+            done
+            tries=$((tries + 1))
+            echo "Waiting for mount to finish mounting"
+            sleep 1
+        done
+    else
+        if test "${W_USE_USERMOUNT}"; then
+            # Linux (FUSE-based tools), macOS (hdiutil)
+            if test "${WINETRICKS_ISO_MOUNT}" = "none"; then
+                # If no tools found, fall back to sudo + mount
+                w_warn "No user mount tools detected, using sudo + mount"
+                unset W_USE_USERMOUNT
+                winetricks_mount_cached_iso
+                return
+            fi
+            echo "Running mkdir -p ${W_ISO_USER_MOUNT_ROOT}"
+            mkdir -p "${W_ISO_USER_MOUNT_ROOT}"
+            if test $? -ne 0; then
+                w_warn "mkdir -p ${W_ISO_USER_MOUNT_ROOT} failed, falling back to sudo + mount"
+                unset W_USE_USERMOUNT
+                winetricks_mount_cached_iso
+                return
+            fi
+            case "${WINETRICKS_ISO_MOUNT}" in
+                fuseiso)
+                    echo "Running ${WINETRICKS_ISO_MOUNT} ${WINETRICKS_IMG} ${W_ISO_USER_MOUNT_ROOT}"
+                    ${WINETRICKS_ISO_MOUNT} "${WINETRICKS_IMG}" "${W_ISO_USER_MOUNT_ROOT}"
+                    ;;
+                archivemount)
+                    echo "Running ${WINETRICKS_ISO_MOUNT} ${WINETRICKS_IMG} ${W_ISO_USER_MOUNT_ROOT} -o readonly"
+                    ${WINETRICKS_ISO_MOUNT} "${WINETRICKS_IMG}" "${W_ISO_USER_MOUNT_ROOT}" -o readonly
+                    ;;
+                hdiutil)
+                    echo "Running ${WINETRICKS_ISO_MOUNT} attach -mountpoint ${W_ISO_USER_MOUNT_ROOT} ${WINETRICKS_IMG}"
+                    ${WINETRICKS_ISO_MOUNT} attach -mountpoint "${W_ISO_USER_MOUNT_ROOT}" "${WINETRICKS_IMG}"
+                    ;;
+                *)
+                    w_warn "Unknown ISO mount tool ${WINETRICKS_ISO_MOUNT}, using sudo + mount"
+                    unset W_USE_USERMOUNT
+                    winetricks_mount_cached_iso
+                    return
+                    ;;
+            esac
+            if test $? -ne 0; then
+                w_warn "${WINETRICKS_ISO_MOUNT} failed, falling back to sudo + mount"
+                unset W_USE_USERMOUNT
+                winetricks_mount_cached_iso
+                return
+            fi
+
+            echo "Mounting as drive ${W_ISO_MOUNT_LETTER}:"
+            # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
+            rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"*
+            ln -sf "${WINETRICKS_IMG}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
+            ln -sf "${W_ISO_USER_MOUNT_ROOT}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
+            # Gotta set the type to "cdrom", else "wine eject" will fail
+            cat > "${W_TMP}"/set_type_cdrom.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\\Software\\Wine\\Drives]
+"${W_ISO_MOUNT_LETTER}:"="cdrom"
+_EOF_
+            w_try_regedit "${W_TMP}"/set_type_cdrom.reg
+            # The new drive is not recognized without waiting
+            # FIXME: not sure if the duration is appropriate
+            sleep 5
+
+            W_ISO_MOUNT_ROOT="${W_ISO_USER_MOUNT_ROOT}"
+        else
+            # Linux (sudo + mount)
+            _W_USERID=$(id -u)
+            # WINETRICKS_IMG may contain spaces and needs to be quoted
+            case "${WINETRICKS_SUDO}" in
+                gksu*|kdesudo)
+                    w_try "${WINETRICKS_SUDO}" "mkdir -p ${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" "mount -o ro,loop,uid=${_W_USERID},unhide '${WINETRICKS_IMG}' ${W_ISO_MOUNT_ROOT}"
+                    ;;
+                kdesu)
+                    w_try "${WINETRICKS_SUDO}" -c "mkdir -p ${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" -c "mount -o ro,loop,uid=${_W_USERID},unhide '${WINETRICKS_IMG}' ${W_ISO_MOUNT_ROOT}"
+                    ;;
+                *)
+                    w_try "${WINETRICKS_SUDO}" mkdir -p "${W_ISO_MOUNT_ROOT}"
+                    w_try "${WINETRICKS_SUDO}" mount -o ro,loop,uid="${_W_USERID}",unhide "${WINETRICKS_IMG}" "${W_ISO_MOUNT_ROOT}"
+                    ;;
+            esac
+
+            echo "Mounting as drive ${W_ISO_MOUNT_LETTER}:"
+            # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
+            rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"*
+            ln -sf "${WINETRICKS_IMG}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
+            ln -sf "${W_ISO_MOUNT_ROOT}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
+            unset _W_USERID
+        fi
+    fi
+}
+
+# List the currently mounted UDF or iso9660 filesystems that match the given pattern
+# Output format:
+#   dev mountpoint
+#   dev mountpoint
+#   ...
+# Mount points may contain spaces.
+
+winetricks_list_mounts()
+{
+    mount | grep -E 'udf|iso9660' | sed 's,^\([^ ]*\) on \(.*\) type .*,\1 \2,'| grep "$1\$"
+}
+
+# Return success and set _W_dev _W_mountpoint if volume $1 is mounted
+# Note: setting variables as a way of returning results from a
+# shell function exposed several bugs in most shells (except ksh!)
+# related to implicit subshells.  It would be better to output
+# one string to stdout instead.
+winetricks_is_mounted()
+{
+    # First, check for matching mountpoint
+    _W_tmp="$(winetricks_list_mounts "$1")"
+    if test "${_W_tmp}"; then
+        _W_dev=$(echo "${_W_tmp}" | sed 's/ .*//')
+        _W_mountpoint="$(echo "${_W_tmp}" | sed 's/^[^ ]* //')"
+        # Volume found!
+        return "${TRUE}"
+    fi
+
+    # If that fails, read volume name the hard way for each volume
+    # Have to use file to return results from implicit subshell
+    rm -f "${W_TMP_EARLY}/_W_tmp.${LOGNAME}"
+    winetricks_list_mounts . | while true; do
+        IFS= read -r _W_tmp
+
+        _W_dev=$(echo "${_W_tmp}" | sed 's/ .*//')
+        test "${_W_dev}" || break
+        _W_mountpoint="$(echo "${_W_tmp}" | sed 's/^[^ ]* //')"
+        _W_volname=$(winetricks_volname "${_W_dev}")
+        if test "$1" = "${_W_volname}"; then
+            # Volume found!  Want to return from function here, but can't
+            echo "${_W_tmp}" > "${W_TMP_EARLY}/_W_tmp.${LOGNAME}"
+            break
+        fi
+    done
+
+    if test -f "${W_TMP_EARLY}/_W_tmp.${LOGNAME}"; then
+        # Volume found!  Return from function.
+        _W_dev=$(sed 's/ .*//' "${W_TMP_EARLY}/_W_tmp.${LOGNAME}")
+        _W_mountpoint="$(sed 's/^[^ ]* //' "${W_TMP_EARLY}/_W_tmp.${LOGNAME}")"
+        rm -f "${W_TMP_EARLY}/_W_tmp.${LOGNAME}"
+        return "${TRUE}"
+    fi
+
+    # Volume not found
+    unset _W_dev _W_mountpoint _W_volname
+    return "${FALSE}"
+}
+
+winetricks_mount_real_volume()
+{
+    _W_expected_volname="$1"
+
+    # Wait for user to insert disc.
+
+    case ${LANG} in
+        bg*) _W_mountmsg="Моля, използвайте ${_W_expected_volname} (изисква се от пакета ${W_PACKAGE})" ;;
+        da*)_W_mountmsg="Indsæt venligst disken '${_W_expected_volname}' (krævet af pakken '${W_PACKAGE}')" ;;
+        de*)_W_mountmsg="Bitte Disk '${_W_expected_volname}' einlegen (für Paket '${W_PACKAGE}')" ;;
+        pl*)  _W_mountmsg="Proszę włożyć dysk '${_W_expected_volname}' (potrzebny paczce '${W_PACKAGE}')" ;;
+        pt*)  _W_mountmsg="Por favor insira o volume '${_W_expected_volname}' (necessário para o pacote '${W_PACKAGE}')" ;;
+        ru*)  _W_mountmsg="Пожалуйста, вставьте том '${_W_expected_volname}' (требуется для пакета '${W_PACKAGE}')" ;;
+        uk*)  _W_mountmsg="Будь ласка, вставте том '${_W_expected_volname}' (потрібний для пакунка '${W_PACKAGE}')" ;;
+        zh_CN*)  _W_mountmsg="请插入卷 '${_W_expected_volname}' (为包 '${W_PACKAGE} 所需')" ;;
+        zh_TW*|zh_HK*)  _W_mountmsg="請插入卷 '${_W_expected_volname}' (為包 '${W_PACKAGE} 所需')" ;;
+        *)  _W_mountmsg="Please insert volume '${_W_expected_volname}' (needed for package '${W_PACKAGE}')" ;;
+    esac
+
+    if test "${WINE}" = ""; then
+        # Assume already mounted, just get drive letter
+        W_ISO_MOUNT_LETTER=$(awk '/iso/ {print $1}' < /proc/mounts | tr -d :)
+        W_ISO_MOUNT_ROOT=$(awk '/iso/ {print $2}' < /proc/mounts)
+    else
+        while ! winetricks_is_mounted "${_W_expected_volname}"; do
+            w_try w_warn_cancel "${_W_mountmsg}"
+            # In non-gui case, give user two seconds to futz with disc drive before spamming him again
+            sleep 2
+        done
+        WINETRICKS_DEV=${_W_dev}
+        W_ISO_MOUNT_ROOT="${_W_mountpoint}"
+
+        # Gotta provide a symlink to the raw disc, else installers that check volume names will fail
+        rm -f "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"*
+        ln -sf "${WINETRICKS_DEV}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}::"
+        ln -sf "${W_ISO_MOUNT_ROOT}" "${WINEPREFIX}/dosdevices/${W_ISO_MOUNT_LETTER}:"
+    fi
+
+    # FIXME: need to remount some discs with unhide option,
+    # add that as option to w_mount
+
+    unset _W_mountmsg
 }
 
 winetricks_cleanup()
@@ -4535,12 +5039,6 @@ winetricks_set_wineprefix()
         WINEPREFIX="${W_PREFIXES_ROOT}/$1"
     fi
 
-    if test "${WINEPREFIX}" = "${LAST_WINEPREFIX}"; then
-        # A previous verb already set the prefix
-        return
-    fi
-
-    LAST_WINEPREFIX="${WINEPREFIX}"
     export WINEPREFIX
     w_try_mkdir "$(dirname "${WINEPREFIX}")"
 
@@ -4577,13 +5075,7 @@ winetricks_set_wineprefix()
     if test -d "${W_DRIVE_C}/windows/syswow64"; then
         # Check the bitness of wineserver + wine binary, used later to determine if we're on a WOW setup (no wine64)
         # https://github.com/Winetricks/winetricks/issues/2030
-        # WINE_BIN and WINESERVER_BIN can be set outside Winetricks in case
-        # the `wine` and `wineserver` executables and the actual Wine binaries
-        # are located in different locations (usually the case for wrappers);
-        # this helps to avoid spurious "unknown file arch" warnings.
-        if [ -z "${WINESERVER_BIN}" ]; then
-            WINESERVER_BIN="$(command -v "${WINESERVER}")"
-        fi
+        WINESERVER_BIN="$(command -v "${WINESERVER}")"
 
         # wineboot often is a link pointing to wineapploader in Wine's bindir. If we don't find binaries we may look for them there later
         if [ -n "${READLINK_F}" ]; then
@@ -4618,18 +5110,17 @@ winetricks_set_wineprefix()
                 _W_wineserver_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wineserver")"
             fi
         fi
-        if [ -z "${W_OPT_UNATTENDED}" ] && [ -z "${_W_wineserver_binary_arch}" ]; then
+        if [ -z "${_W_wineserver_binary_arch}" ]; then
             w_warn "Unknown file arch of ${WINESERVER_BIN}."
         fi
 
-        if [ -z "${WINE_BIN}" ]; then
-            WINE_BIN="$(command -v "${WINE}")"
-        fi
+        WINE_BIN="$(command -v "${WINE}")"
 
         if [ "$(uname -s)" = "Darwin" ]; then
             _W_wine_binary_arch=x86_64
         else
             _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BIN}")"
+
         fi
 
         if [ -z "${_W_wine_binary_arch}" ]; then
@@ -4641,7 +5132,7 @@ winetricks_set_wineprefix()
                 _W_wine_binary_arch="$(winetricks_get_file_arch "${WINE_BINDIR}/wine")"
             fi
         fi
-        if [ -z "${W_OPT_UNATTENDED}" ] && [ -z "${_W_wine_binary_arch}" ]; then
+        if [ -z "${_W_wine_binary_arch}" ]; then
             w_warn "Unknown file arch of ${WINE_BIN}."
         fi
 
@@ -4734,11 +5225,6 @@ winetricks_set_wineprefix()
             else
                 W_NO_WIN64_WARNINGS=0
             fi
-
-            # In unattended mode, do NOT show any Win64 warnings
-            if [ "${W_OPT_UNATTENDED}" = "1" ]; then
-                W_NO_WIN64_WARNINGS=1
-            fi
         fi
 
         # In case of GUI, only warn once per prefix, per session (i.e., don't warn next time)
@@ -4751,14 +5237,14 @@ winetricks_set_wineprefix()
         if [ "${W_NO_WIN64_WARNINGS}" = 0 ]; then
             case ${LANG} in
                 bg*) w_warn "Използвате 64-битова папка. Повечето програми са за 32-битова архитектура. Ако възникнат проблеми, моля, използвайте 32-битова папка, преди да ги докладвате." ;;
-                fr*) w_warn "Vous utilisez un WINEPREFIX 64 bits. Notez que de nombreux verbes n'installent que des versions 32 bits des paquets. Si vous rencontrez des problèmes, veuillez refaire un test dans un WINEPREFIX 32 bits propre avant de signaler un bug." ;;
                 ru*) w_warn "Вы используете 64-битный WINEPREFIX. Важно: многие ветки устанавливают только 32-битные версии пакетов. Если у вас возникли проблемы, пожалуйста, проверьте еще раз на чистом 32-битном WINEPREFIX до отправки отчета об ошибке." ;;
                 pt*) w_warn "Você está usando um WINEPREFIX de 64-bit. Observe que muitos casos instalam apenas versões de pacotes de 32-bit. Se você encontrar problemas, teste novamente em um WINEPREFIX limpo de 32-bit antes de relatar um bug." ;;
-                zh_CN*) w_warn "您正在使用 64 位的 WINEPREFIX。请注意，许多脚本（verbs）只安装 32 位版本的软件包。如果遇到问题，请先在干净的 32 位 WINEPREFIX 中重新测试，然后再报告错误。" ;;
                 *) w_warn "You are using a 64-bit WINEPREFIX. Note that many verbs only install 32-bit versions of packages. If you encounter problems, please retest in a clean 32-bit WINEPREFIX before reporting a bug." ;;
             esac
 
-            if [ "${_W_wow64_style}" = "unknown" ]; then
+            if [ "${_W_wow64_style}" = "new" ]; then
+                w_warn "You appear to be using Wine's new wow64 mode. Note that this is EXPERIMENTAL and not yet fully supported. If reporting an issue, be sure to mention this."
+            elif [ "${_W_wow64_style}" = "unknown" ]; then
                 w_warn "WoW64 type could not be detected."
             fi
         fi
@@ -4862,11 +5348,9 @@ winetricks_annihilate_wineprefix()
 
     case ${LANG} in
         bg*) w_askpermission "Изтриване на ${WINEPREFIX}, нейните приложения, икони и менюта?" ;;
-        fr*) w_askpermission "Supprimer ${WINEPREFIX}, ses applications, ses icônes et ses éléments de menu ?" ;;
         uk*) w_askpermission "Бажаєте видалити '${WINEPREFIX}'?" ;;
         pl*) w_askpermission "Czy na pewno chcesz usunąć prefiks ${WINEPREFIX} i wszystkie jego elementy?" ;;
         pt*) w_askpermission "Apagar ${WINEPREFIX}, Estes apps, ícones e ítens do menu?" ;;
-        zh_CN*) w_askpermission "要删除 ${WINEPREFIX} 及其应用程序、图标和菜单项？" ;;
         *) w_askpermission "Delete ${WINEPREFIX}, its apps, icons, and menu items?" ;;
     esac
 
@@ -4927,6 +5411,13 @@ winetricks_init()
     # Delete work directory after each run, on exit either graceful or abrupt
     trap winetricks_cleanup EXIT HUP INT QUIT ABRT
 
+    # Whether to always cache cached iso's (1) or only use cache if present (0)
+    # Can be inherited from environment or set via -k, defaults to off
+    WINETRICKS_OPT_KEEPISOS=${WINETRICKS_OPT_KEEPISOS:-0}
+
+    # what program to use to make disc image (dd or ddrescue)
+    WINETRICKS_OPT_DD=${WINETRICKS_OPT_DD:-dd}
+
     # whether to use shared wineprefix (1) or unique wineprefix for each app (0)
     WINETRICKS_OPT_SHAREDPREFIX=${WINETRICKS_OPT_SHAREDPREFIX:-0}
 
@@ -4939,8 +5430,6 @@ winetricks_init()
     if [ -n "${WINETRICKS_FALLBACK_LIBRARY_PATH}" ]; then
         export DYLD_FALLBACK_LIBRARY_PATH="${WINETRICKS_FALLBACK_LIBRARY_PATH}"
     fi
-
-    export MVK_CONFIG_LOG_LEVEL=0
 
     #---- Public Variables ----
 
@@ -4997,6 +5486,11 @@ winetricks_wine_setup()
     fi
 
     winetricks_latest_version_check
+
+    # Overridden for windows
+    W_ISO_MOUNT_ROOT=/mnt/winetricks
+    W_ISO_USER_MOUNT_ROOT="${HOME}"/winetricks-iso
+    W_ISO_MOUNT_LETTER=i
 
     ######################
     # System-specific variables
@@ -5076,10 +5570,10 @@ winetricks_wine_setup()
     # wine-2.8
     _wine_version_stripped="$(echo "${WINETRICKS_WINE_VERSION}" | cut -d ' ' -f1 | sed -e 's/wine-//' -e 's/-rc.*//')"
 
-    # If WINE is < 10.0, warn user:
-    # 10.0 doesn't do what I thought it would
-    if w_wine_version_in ,9.99 ; then
-        w_warn "Your version of wine ${_wine_version_stripped} is no longer supported upstream. You should upgrade to 10.x"
+    # If WINE is < 8.0, warn user:
+    # 8.0 doesn't do what I thought it would
+    if w_wine_version_in ,7.99 ; then
+        w_warn "Your version of wine ${_wine_version_stripped} is no longer supported upstream. You should upgrade to 8.x"
     fi
 
     winetricks_set_wineprefix "$1"
@@ -5105,10 +5599,12 @@ winetricks_usage()
     --isolate         Инсталира всяко приложение или игра в отделна бутилка (ПАПКА)
     --self-update     Обновява това приложение
     --update-rollback Отменя последното обновяване на това приложение
+-k, --keep_isos       Кешира .iso файловете (позволява инсталация без диск)
     --no-clean        Не изтрива временните директории (полезно е за отстраняване на неизправности)
     --optin           Включва докладването за използваните глаголи към разработчиците на Winetricks
     --optout          Изключва докладването за използваните глаголи към разработчиците на Winetricks
 -q, --unattended      Не задава въпроси, инсталира автоматично
+-r, --ddrescue        Повтаря опитите за кеширане на одраскани дискове
 -t  --torify          Стартира изтегляне с torify, ако е налично
     --verify          Стартира автоматични графични тестове за глаголи, ако е налично
 -v, --verbose         Изписва всички изпълнени команди
@@ -5144,8 +5640,10 @@ Tilvalg:
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
     --self-update     Update this application to the last version
     --update-rollback Rollback the last self update
+-k, --keep_isos       lagr iso'er lokalt (muliggør senere installation uden disk)
     --no-clean        Don't delete temp directories (useful during debugging)
 -q, --unattended      stil ingen spørgsmål, installér bare automatisk
+-r, --ddrescue        brug alternativ disk-tilgangsmetode (hjælper i tilfælde af en ridset disk)
 -t, --torify          Run downloads under torify, if available
     --verify          Run (automated) GUI tests for verbs, if available
 -v, --verbose         vis alle kommandoer som de bliver udført
@@ -5183,8 +5681,10 @@ Optionen:
     --isolate         Jedes Programm oder Spiel in eigener Bottle (WINEPREFIX) installieren
     --self-update     Dieses Programm auf die neueste Version aktualisieren
     --update-rollback Rollback des letzten Self Update
+-k, --keep_isos       ISOs local speichern (erlaubt spätere Installation ohne Disk)
     --no-clean        Temp Verzeichnisse nicht löschen (nützlich beim debuggen)
 -q, --unattended      Keine Fragen stellen, alles automatisch installieren
+-r, --ddrescue        Alternativer Zugriffsmodus (hilft bei zerkratzten Disks)
 -t  --torify          Wenn möglich Downloads unter torify ausführen
     --verify          Wenn möglich automatische GUI Tests für Verben starten
 -v, --verbose         Alle ausgeführten Kommandos anzeigen
@@ -5209,90 +5709,6 @@ prefix=foobar         WINEPREFIX=${W_PREFIXES_ROOT}/foobar auswählen
 annihilate            ALLE DATEIEN UND PROGRAMME IN DIESEM WINEPREFIX Löschen
 _EOF_
             ;;
-        fr*)
-            cat <<_EOF_
-Utilisation : $0 [options] [commande|verbe|chemin-vers-le-verbe] ...
-Exécute les verbes donnés. Chaque verbe installe une application ou modifie un paramètre.
-
-Options :
-    --country=CC      Définit le code pays sur CC et ne détecte pas votre adresse IP
--f, --force           Ne vérifie pas si les paquets sont déjà installés
-    --gui             Affiche les diagnostics de l'interface graphique même lorsque l'application est lancée en ligne de commande
-    --gui=OPT         Définit OPT sur kdialog ou zenity pour remplacer le moteur GUI
-    --isolate         Installe chaque application ou jeu dans son propre bottle (WINEPREFIX)
-    --self-update     Mettre à jour cette application vers la dernière version (non Debian)
-    --update-rollback Annuler la dernière mise à jour automatique
--k, --keep_isos       Mettre en cache les images ISO (permet une installation ultérieure sans disque)
-    --no-clean        Ne pas supprimer les répertoires temporaires (utile pendant le débogage)
-    --optin           Activer le rapport des verbes que vous utilisez aux responsables de Winetricks
-    --optout          Désactiver le rapport des verbes que vous utilisez aux responsables de Winetricks
--q, --unattended      Ne poser aucune question, installer automatiquement
--r, --ddrescue        Réessayer plusieurs fois lors de la mise en cache de disques rayés
--t  --torify          Exécute les téléchargements sous torify, si disponible
-    --verify          Exécute des tests GUI (automatisés) pour les verbes, si disponibles
--v, --verbose         Affiche toutes les commandes au fur et à mesure de leur exécution
--h, --help            Affiche ce message et quitte
--V, --version         Affiche la version et quitte
-
-Commandes :
-list                  Liste des catégories
-list-all              Liste toutes les catégories et leurs verbes
-apps list             Liste les verbes dans la catégorie « applications »
-benchmarks list       Liste les verbes dans la catégorie « benchmarks »
-dlls list             Liste les verbes de la catégorie « dlls »
-fonts list            Liste les verbes de la catégorie « polices »
-settings list         Liste les verbes de la catégorie « paramètres »
-list-cached           Liste les verbes mis en cache et prêts à être installés
-list-download         Liste les verbes qui se téléchargent automatiquement
-list-manual-download  Liste les verbes qui se téléchargent avec l'aide de l'utilisateur
-list-installed        Liste les verbes déjà installés
-arch=32|64            Crée un préfixe en 32 ou 64 bits, cette option doit être
-                      Spécifiée avant prefix=foobar et ne fonctionnera pas dans le cas du
-                      wineprefix par défaut.
-prefix=foobar         Sélectionner WINEPREFIX=${W_PREFIXES_ROOT}/foobar
-annihilate            Supprimer TOUTES LES DONNÉES ET APPLICATIONS CONTENUES DANS CE WINEPREFIX
-_EOF_
-            ;;
-        zh_CN*)
-            cat <<_EOF_
-用法：$0 [选项] [命令|脚本|脚本路径] ...
-执行指定的脚本。每个脚本用于安装应用程序或更改设置。
-
-选项：
-    --country=CC      设置区域代码为 CC，且不检测您的 IP 地址
--f, --force           不检查软件包是否已安装
-    --gui             即使在命令行模式下，也显示 GUI 诊断
-    --gui=OPT         设置 GUI 引擎为 kdialog 或 zenity
-    --isolate         将每个应用或游戏安装到独立的 WINEPREFIX 中
-    --self-update     更新此应用到最新版本
-    --update-rollback 回滚最近一次的自我更新
-    --no-clean        不删除临时目录（调试时有用）
-    --optin           选择向 Winetricks 维护者报告所使用的脚本
-    --optout          选择不向 Winetricks 维护者报告所使用的脚本
--q, --unattended      不询问任何问题，自动安装
--t, --torify          如果可用，通过 torify 运行下载
-    --verify          运行（自动化）GUI 脚本测试（如果有）
--v, --verbose         执行时回显所有命令
--h, --help            显示此帮助信息并退出
--V, --version         显示版本信息并退出
-
-命令：
-list                  列出分类
-list-all              列出所有分类及其脚本
-apps list             列出 applications 分类下的脚本
-benchmarks list       列出 benchmarks 分类下的脚本
-dlls list             列出 dlls 分类下的脚本
-fonts list            列出 fonts 分类下的脚本
-settings list         列出 settings 分类下的脚本
-list-cached           列出已缓存且准备安装的脚本
-list-download         列出会自动下载的脚本
-list-manual-download  列出需要用户协助下载的脚本
-list-installed        列出已安装的脚本
-arch=32|64            创建 32 位或 64 位 wineprefix，此选项必须在 prefix=foobar 之前指定，默认 wineprefix 不支持此选项
-prefix=foobar         选择 WINEPREFIX 为 ${W_PREFIXES_ROOT}/foobar
-annihilate            删除该 WINEPREFIX 内的所有数据和应用程序
-_EOF_
-            ;;
         *)
             cat <<_EOF_
 Usage: $0 [options] [command|verb|path-to-verb] ...
@@ -5306,10 +5722,12 @@ Options:
     --isolate         Install each app or game in its own bottle (WINEPREFIX)
     --self-update     Update this application to the last version
     --update-rollback Rollback the last self update
+-k, --keep_isos       Cache isos (allows later installation without disc)
     --no-clean        Don't delete temp directories (useful during debugging)
     --optin           Opt in to reporting which verbs you use to the Winetricks maintainers
     --optout          Opt out of reporting which verbs you use to the Winetricks maintainers
 -q, --unattended      Don't ask any questions, just install automatically
+-r, --ddrescue        Retry hard when caching scratched discs
 -t  --torify          Run downloads under torify, if available
     --verify          Run (automated) GUI tests for verbs, if available
 -v, --verbose         Echo all commands as they are executed
@@ -5345,11 +5763,13 @@ winetricks_handle_option()
         --gui*) winetricks_detect_gui "${1##--gui=}";;
         -h|--help) winetricks_usage ; exit 0 ;;
         --isolate) WINETRICKS_OPT_SHAREDPREFIX=0 ;;
+        -k|--keep_isos) WINETRICKS_OPT_KEEPISOS=1 ;;
         --no-clean) W_OPT_NOCLEAN=1 ;;
         --no-isolate) WINETRICKS_OPT_SHAREDPREFIX=1 ;;
         --optin) WINETRICKS_STATS_REPORT=1;;
         --optout) WINETRICKS_STATS_REPORT=0;;
         -q|--unattended) winetricks_set_unattended 1 ;;
+        -r|--ddrescue) WINETRICKS_OPT_DD=ddrescue ;;
         --self-update) winetricks_selfupdate;;
         -t|--torify)  WINETRICKS_OPT_TORIFY=1 ;;
         --update-rollback) winetricks_selfupdate_rollback;;
@@ -5409,7 +5829,7 @@ winetricks_install_app()
         pt*) fail_msg="Falha ao instalar o pacote $1" ;;
         ru*) fail_msg="Ошибка установки пакета $1" ;;
         uk*) fail_msg="Помилка встановлення пакунка $1" ;;
-        zh_CN*) fail_msg="$1 安装失败" ;;
+        zh_CN*)   fail_msg="$1 安装失败" ;;
         zh_TW*|zh_HK*)   fail_msg="$1 安裝失敗" ;;
         *)   fail_msg="Failed to install package $1" ;;
     esac
@@ -5448,7 +5868,7 @@ helper_directx_dl()
     # FIXME: none of the verbs that use this will show download status right
     # until file1 metadata is extended to handle common cache dir
     # 2021/01/28: https://download.microsoft.com/download/E/E/1/EE17FF74-6C45-4575-9CF4-7FC2597ACD18/directx_feb2010_redist.exe
-    w_download_to directx9 https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/directx_feb2010_redist/directx_feb2010_redist.exe f6d191e89a963d7cca34f169d30f49eab99c1ed3bb92da73ec43617caaa1e93f
+    w_download_to directx9 https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/directx_feb2010_redist/directx_feb2010_redist.exe f6d191e89a963d7cca34f169d30f49eab99c1ed3bb92da73ec43617caaa1e93f
 
     DIRECTX_NAME=directx_feb2010_redist.exe
 }
@@ -5459,7 +5879,7 @@ helper_directx_Jun2010()
     # June 2010 DirectX 9c User Redistributable
     # https://www.microsoft.com/en-us/download/details.aspx?id=8109
     # 2021/01/28: https://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe
-    w_download_to directx9 https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/directx_Jun2010_redist/directx_Jun2010_redist.exe 8746ee1a84a083a90e37899d71d50d5c7c015e69688a466aa80447f011780c0d
+    w_download_to directx9 https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/directx_Jun2010_redist/directx_Jun2010_redist.exe 8746ee1a84a083a90e37899d71d50d5c7c015e69688a466aa80447f011780c0d
 
     DIRECTX_NAME=directx_Jun2010_redist.exe
 }
@@ -5522,7 +5942,7 @@ helper_winxp64sp2()
     filename="$1"
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=1779
-    w_download_to winxp64sp2 https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/helper_winxp64sp2/WindowsServer2003.WindowsXP-KB914961-SP2-x64-ENU.exe 62c6f31edc47f5a00651a83b6fa6edc7b4245dcf693d9233b6d0a79e52a5a57a
+    w_download_to winxp64sp2 https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/helper_winxp64sp2/WindowsServer2003.WindowsXP-KB914961-SP2-x64-ENU.exe 62c6f31edc47f5a00651a83b6fa6edc7b4245dcf693d9233b6d0a79e52a5a57a
 
     w_try_cabextract -d "${W_TMP}" -L -F "${filename}" "${W_CACHE}"/winxp64sp2/WindowsServer2003.WindowsXP-KB914961-SP2-x64-ENU.exe
 }
@@ -5533,7 +5953,7 @@ helper_winxpsp2_support_tools()
     filename="$1"
 
     # https://www.microsoft.com/en-us/download/details.aspx?id=18546
-    w_download_to winxpsp2_support_tools https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/helper_winxpsp2_support_tools/WindowsXP-KB838079-SupportTools-ENU.exe 7927e87af616d2fb8d4ead0db0103eb845a4e6651b20a5bffea9eebc3035c24d
+    w_download_to winxpsp2_support_tools https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/helper_winxpsp2_support_tools/WindowsXP-KB838079-SupportTools-ENU.exe 7927e87af616d2fb8d4ead0db0103eb845a4e6651b20a5bffea9eebc3035c24d
 
     w_try_cabextract -d "${W_TMP}" -L -F support.cab "${W_CACHE}"/winxpsp2_support_tools/WindowsXP-KB838079-SupportTools-ENU.exe
     w_try_cabextract -d "${W_TMP}" -L -F "${filename}" "${W_TMP}"/support.cab
@@ -5602,7 +6022,7 @@ load_amstream()
 
     w_override_dlls native,builtin amstream
 
-    w_try_regsvr32 amstream.dll
+    w_try_regsvr amstream.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-other_31bf3856ad364e35_6.1.7601.17514_none_6b778d68f75a1a54/amstream.dll
@@ -5814,9 +6234,9 @@ load_comctl32ocx()
 {
     helper_vb6sp6 "${W_SYSTEM32_DLLS}" comctl32.ocx mscomctl.ocx mscomct2.ocx
 
-    w_try_regsvr32 comctl32.ocx
-    w_try_regsvr32 mscomctl.ocx
-    w_try_regsvr32 mscomct2.ocx
+    w_try_regsvr comctl32.ocx
+    w_try_regsvr mscomctl.ocx
+    w_try_regsvr mscomct2.ocx
 }
 
 #----------------------------------------------------------------
@@ -5833,7 +6253,7 @@ load_comdlg32ocx()
 {
     helper_vb6sp6 "${W_TMP}" ComDlg32.ocx
     w_try mv "${W_TMP}/ComDlg32.ocx" "${W_SYSTEM32_DLLS}/comdlg32.ocx"
-    w_try_regsvr32 comdlg32.ocx
+    w_try_regsvr comdlg32.ocx
 }
 
 #----------------------------------------------------------------
@@ -5940,11 +6360,11 @@ w_metadata d3dcompiler_42 dlls \
 
 load_d3dcompiler_42()
 {
-    w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/d3dcompiler_42/d3dcompiler_42_32.dll 6c976311406c23aa71018d274da0ecdef43b6e3a3b0b01e941a5e8e4e974386c
+    w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/d3dcompiler_42/d3dcompiler_42_32.dll 6c976311406c23aa71018d274da0ecdef43b6e3a3b0b01e941a5e8e4e974386c
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/d3dcompiler_42_32.dll" "${W_SYSTEM32_DLLS}/d3dcompiler_42.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/d3dcompiler_42/d3dcompiler_42.dll 4d61e843aa86d8801a60d01b8e872379c5b2503795a2bcbe6141978396ade00b
+        w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/d3dcompiler_42/d3dcompiler_42.dll 4d61e843aa86d8801a60d01b8e872379c5b2503795a2bcbe6141978396ade00b
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/d3dcompiler_42.dll" "${W_SYSTEM64_DLLS}/d3dcompiler_42.dll"
     fi
 
@@ -5963,11 +6383,11 @@ w_metadata d3dcompiler_43 dlls \
 
 load_d3dcompiler_43()
 {
-    w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/d3dcompiler_43/d3dcompiler_43_32.dll 2f23182ec6f4889397ac4bf03d62536136c5bdba825c7d2c4ef08c827f3a8a1c
+    w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/d3dcompiler_43/d3dcompiler_43_32.dll 2f23182ec6f4889397ac4bf03d62536136c5bdba825c7d2c4ef08c827f3a8a1c
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/d3dcompiler_43_32.dll" "${W_SYSTEM32_DLLS}/d3dcompiler_43.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/d3dcompiler_43/d3dcompiler_43.dll 44c3a7e330b54a35a9efa015831392593aa02e7da1460be429d17c3644850e8a
+        w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/d3dcompiler_43/d3dcompiler_43.dll 44c3a7e330b54a35a9efa015831392593aa02e7da1460be429d17c3644850e8a
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/d3dcompiler_43.dll" "${W_SYSTEM64_DLLS}/d3dcompiler_43.dll"
     fi
 
@@ -5986,11 +6406,11 @@ w_metadata d3dcompiler_46 dlls \
 
 load_d3dcompiler_46()
 {
-    w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/d3dcompiler_46/d3dcompiler_46_32.dll 58d9a00888af693b2a5222fe74cfded32ce83e74f85b474f1cbe5987217b5a9d
+    w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/d3dcompiler_46/d3dcompiler_46_32.dll 58d9a00888af693b2a5222fe74cfded32ce83e74f85b474f1cbe5987217b5a9d
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/d3dcompiler_46_32.dll" "${W_SYSTEM32_DLLS}/d3dcompiler_46.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/d3dcompiler_46/d3dcompiler_46.dll b1a06f7aa52439a948a152bfd3301d9b595c78969bb77c9741bba935139f58a0
+        w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/d3dcompiler_46/d3dcompiler_46.dll b1a06f7aa52439a948a152bfd3301d9b595c78969bb77c9741bba935139f58a0
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/d3dcompiler_46.dll" "${W_SYSTEM64_DLLS}/d3dcompiler_46.dll"
     fi
 
@@ -6009,11 +6429,11 @@ w_metadata d3dcompiler_47 dlls \
 
 load_d3dcompiler_47()
 {
-    w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/d3dcompiler_47/d3dcompiler_47_32.dll 2ad0d4987fc4624566b190e747c9d95038443956ed816abfd1e2d389b5ec0851
+    w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/d3dcompiler_47/d3dcompiler_47_32.dll 2ad0d4987fc4624566b190e747c9d95038443956ed816abfd1e2d389b5ec0851
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/d3dcompiler_47_32.dll" "${W_SYSTEM32_DLLS}/d3dcompiler_47.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/d3dcompiler_47/d3dcompiler_47.dll 4432bbd1a390874f3f0a503d45cc48d346abc3a8c0213c289f4b615bf0ee84f3
+        w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/d3dcompiler_47/d3dcompiler_47.dll 4432bbd1a390874f3f0a503d45cc48d346abc3a8c0213c289f4b615bf0ee84f3
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/d3dcompiler_47.dll" "${W_SYSTEM64_DLLS}/d3dcompiler_47.dll"
     fi
 
@@ -6550,7 +6970,6 @@ w_metadata devenum dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    conflicts="quartz" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/devenum.dll"
 
@@ -6561,7 +6980,7 @@ load_devenum()
     w_try_cabextract -d "${W_TMP}" -L -F 'dxnt.cab' "${W_CACHE}/directx9/${DIRECTX_NAME}"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'devenum.dll' "${W_TMP}/dxnt.cab"
     w_override_dlls native devenum
-    w_try_regsvr32 devenum.dll
+    w_try_regsvr devenum.dll
 
     if [ "$W_ARCH" = "win64" ]; then
         helper_winxp64sp2 amd64/devenum.dl_
@@ -6578,7 +6997,6 @@ w_metadata dinput dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    conflicts="dinputto8" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dinput.dll"
 
@@ -6589,7 +7007,7 @@ load_dinput()
     w_try_cabextract -d "${W_TMP}" -L -F 'dxnt.cab' "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dinput.dll' "${W_TMP}/dxnt.cab"
     w_override_dlls native dinput
-    w_try_regsvr32 dinput
+    w_try_regsvr dinput
 }
 
 #----------------------------------------------------------------
@@ -6612,25 +7030,6 @@ load_dinput8()
     # Don't try to register native dinput8; it doesn't export DllRegisterServer().
     #w_try_regsvr32 dinput8
     w_override_dlls native dinput8
-}
-
-#----------------------------------------------------------------
-
-w_metadata dinputto8 dlls \
-    title="A dll module that is designed to improve compatibility in games using DirectInput 1-7 by converting all API calls to their equivalent DirectInput 8 (1.0.92.0)" \
-    homepage="https://github.com/elishacloud/dinputto8" \
-    publisher="Elisha Riedlinger" \
-    year="2018" \
-    media="download" \
-    conflicts="dinput" \
-    file1="dinput.dll" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/dinput.dll"
-
-load_dinputto8()
-{
-    w_download https://github.com/elishacloud/dinputto8/releases/download/v1.0.92.0/dinput.dll 8f1e53a55c66f870b91c1e43a39c02a4a87900cf453776de41643863bdfa00e6
-    w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/dinput.dll" "${W_SYSTEM32_DLLS}/dinput.dll"
-    w_override_dlls native dinput
 }
 
 #----------------------------------------------------------------
@@ -6712,10 +7111,10 @@ load_directplay()
 
     w_override_dlls native dplaysvr.exe dplayx dpmodemx dpnet dpnhpast dpnhupnp dpnsvr.exe dpwsockx
 
-    w_try_regsvr32 dplayx.dll
-    w_try_regsvr32 dpnet.dll
-    w_try_regsvr32 dpnhpast.dll
-    w_try_regsvr32 dpnhupnp.dll
+    w_try_regsvr dplayx.dll
+    w_try_regsvr dpnet.dll
+    w_try_regsvr dpnhpast.dll
+    w_try_regsvr dpnhupnp.dll
 }
 
 #----------------------------------------------------------------
@@ -6794,9 +7193,9 @@ load_dpvoice()
         w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dpvacm.dll' "${x}"
     done
     w_override_dlls native dpvoice dpvvox dpvacm
-    w_try_regsvr32 dpvoice.dll
-    w_try_regsvr32 dpvvox.dll
-    w_try_regsvr32 dpvacm.dll
+    w_try_regsvr dpvoice.dll
+    w_try_regsvr dpvvox.dll
+    w_try_regsvr dpvacm.dll
 }
 
 #----------------------------------------------------------------
@@ -6816,8 +7215,8 @@ load_dsdmo()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dsdmo.dll' "${W_TMP}/dxnt.cab"
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dsdmoprp.dll' "${W_TMP}/dxnt.cab"
-    w_try_regsvr32 dsdmo.dll
-    w_try_regsvr32 dsdmoprp.dll
+    w_try_regsvr dsdmo.dll
+    w_try_regsvr dsdmoprp.dll
 }
 
 #----------------------------------------------------------------
@@ -6951,9 +7350,7 @@ w_metadata dxsdk_jun2010 apps \
 
 load_dxsdk_jun2010()
 {
-    # 2017/11/13: 9f818a977c32b254af5d649a4cec269ed8762f8a49ae67a9f01101a7237ae61a
-    # 2025/04/03: 705271dc83bfee54d9b94e028426e288d5f070784b7446d164f48ecfbb2a02cb
-    w_download https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 705271dc83bfee54d9b94e028426e288d5f070784b7446d164f48ecfbb2a02cb
+    w_download https://download.microsoft.com/download/A/E/7/AE743F1F-632B-4809-87A9-AA1BB3458E31/DXSDK_Jun10.exe 9f818a977c32b254af5d649a4cec269ed8762f8a49ae67a9f01101a7237ae61a
 
     # Without dotnet20, install aborts halfway through
     w_call dotnet20
@@ -6977,7 +7374,7 @@ load_dxtrans()
     helper_winxpsp3 i386/dxtrans.dl_
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/dxtrans.dl_
     w_override_dlls native,builtin dxtrans
-    w_try_regsvr32 dxtrans.dll
+    w_try_regsvr dxtrans.dll
 }
 
 #----------------------------------------------------------------
@@ -6987,8 +7384,8 @@ w_metadata d9vk dlls \
     publisher="Philip Rebohle / CodeWeavers / Robin Kertels" \
     year="2021" \
     media="download" \
-    file1="d9vk-macOS-async-v1.10.3-20250511.tar.gz" \
-    homepage="https://github.com/Sikarugir-app/d9vk" \
+    file1="../d9vk/d9vk-macOS-async-v1.10.3-20240229.tar.gz" \
+    homepage="https://github.com/Kegworks-App/d9vk" \
 
 load_d9vk()
 {
@@ -6998,12 +7395,12 @@ load_d9vk()
         w_die "${W_PACKAGE} requires wine version 7.7 (or newer)"
     fi
 
-    w_download https://github.com/Sikarugir-app/d9vk/releases/download/v1.10.3-20250511/${file1} 13a088e96c90501705c26326044ccc57e2b03adda3ed0dd7061e89249d4c176e
+    w_download_to d9vk https://github.com/Kegworks-App/d9vk/releases/download/v1.10.3-20240229/d9vk-macOS-async-v1.10.3-20240229.tar.gz bb3bd16cc93e5ca8ee3f6f7df31edf8950a0db4421d53f4ce72e28a681d1cfdf
 
     w_try_cd "${W_TMP}"
-    w_try tar -xf "${W_CACHE}/${W_PACKAGE}/${file1}"
-    w_try_cp_dll "${W_TMP}"/d9vk-macOS-async-v1.10.3-20250511/x32/d3d9.dll     "${W_SYSTEM32_DLLS}"/d3d9.dll
-    w_try_cp_dll "${W_TMP}"/d9vk-macOS-async-v1.10.3-20250511/x64/d3d9.dll     "${W_SYSTEM64_DLLS}"/d3d9.dll
+    w_try tar -xf "${W_CACHE}/d9vk/d9vk-macOS-async-v1.10.3-20240229.tar.gz"
+    w_try_cp_dll "${W_TMP}"/d9vk-macOS-async-v1.10.3-20240229/x32/d3d9.dll     "${W_SYSTEM32_DLLS}"/d3d9.dll
+    w_try_cp_dll "${W_TMP}"/d9vk-macOS-async-v1.10.3-20240229/x64/d3d9.dll     "${W_SYSTEM64_DLLS}"/d3d9.dll
 
     w_override_dlls native,builtin d3d9
 }
@@ -7049,7 +7446,7 @@ w_metadata dmusic32 dlls \
 
 load_dmusic32()
 {
-    w_download_to directx9 https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/directx_apr2006_redist/directx_apr2006_redist.exe dd8c3d401efe4561b67bd88475201b2f62f43cd23e4acc947bb34a659fa74952
+    w_download_to directx9 https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/directx_apr2006_redist/directx_apr2006_redist.exe dd8c3d401efe4561b67bd88475201b2f62f43cd23e4acc947bb34a659fa74952
 
     w_try_cabextract -d "${W_TMP}" -F DirectX.cab "${W_CACHE}"/directx9/directx_apr2006_redist.exe
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F dmusic32.dll "${W_TMP}"/DirectX.cab
@@ -7075,7 +7472,7 @@ load_dmband()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmband.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmband
-    w_try_regsvr32 dmband.dll
+    w_try_regsvr dmband.dll
 }
 
 #----------------------------------------------------------------
@@ -7096,7 +7493,7 @@ load_dmcompos()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmcompos.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmcompos
-    w_try_regsvr32 dmcompos.dll
+    w_try_regsvr dmcompos.dll
 }
 
 #----------------------------------------------------------------
@@ -7117,7 +7514,7 @@ load_dmime()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmime.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmime
-    w_try_regsvr32 dmime.dll
+    w_try_regsvr dmime.dll
 }
 
 #----------------------------------------------------------------
@@ -7138,7 +7535,7 @@ load_dmloader()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmloader.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmloader
-    w_try_regsvr32 dmloader.dll
+    w_try_regsvr dmloader.dll
 }
 
 #----------------------------------------------------------------
@@ -7159,7 +7556,7 @@ load_dmscript()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmscript.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmscript
-    w_try_regsvr32 dmscript.dll
+    w_try_regsvr dmscript.dll
 }
 
 #----------------------------------------------------------------
@@ -7180,7 +7577,7 @@ load_dmstyle()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmstyle.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmstyle
-    w_try_regsvr32 dmstyle.dll
+    w_try_regsvr dmstyle.dll
 }
 
 #----------------------------------------------------------------
@@ -7201,7 +7598,7 @@ load_dmsynth()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmsynth.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmsynth
-    w_try_regsvr32 dmsynth.dll
+    w_try_regsvr dmsynth.dll
 }
 
 #----------------------------------------------------------------
@@ -7222,7 +7619,7 @@ load_dmusic()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dmusic.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dmusic
-    w_try_regsvr32 dmusic.dll
+    w_try_regsvr dmusic.dll
 }
 
 #----------------------------------------------------------------
@@ -7243,7 +7640,7 @@ load_dswave()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dswave.dll' "${W_TMP}/dxnt.cab"
 
     w_override_dlls native dswave
-    w_try_regsvr32 dswave.dll
+    w_try_regsvr dswave.dll
 }
 
 #----------------------------------------------------------------
@@ -7322,9 +7719,7 @@ load_dotnet11sp1()
     # The installer itself doesn't support 64-bit
     w_package_unsupported_win64
 
-    # This file is no longer in the source, we are downloading from the web archive
-    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
-    w_download https://web.archive.org/web/20240910105856/https://msassist.com/files/dotNETframework/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
+    w_download https://msassist.com/files/dotNETframework/NDP1.1sp1-KB867460-X86.exe 2c0a35409ff0873cfa28b70b8224e9aca2362241c1f0ed6f622fef8d4722fd9a
 
     w_call remove_mono internal
     w_call dotnet11
@@ -7606,11 +8001,11 @@ load_dotnet20sp2()
 
     if [ "${W_ARCH}" = "win32" ]; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=1639
-        w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/dotnet20sp2/NetFx20SP2_x86.exe 6e3f363366e7d0219b7cb269625a75d410a5c80d763cc3d73cf20841084e851f
+        w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/dotnet20sp2/NetFx20SP2_x86.exe 6e3f363366e7d0219b7cb269625a75d410a5c80d763cc3d73cf20841084e851f
         exe="NetFx20SP2_x86.exe"
     elif [ "${W_ARCH}" = "win64" ]; then
         # https://www.microsoft.com/en-us/download/details.aspx?id=1639
-        w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/dotnet20sp2/NetFx20SP2_x64.exe 430315c97c57ac158e7311bbdbb7130de3e88dcf5c450a25117c74403e558fbe
+        w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/dotnet20sp2/NetFx20SP2_x64.exe 430315c97c57ac158e7311bbdbb7130de3e88dcf5c450a25117c74403e558fbe
         exe="NetFx20SP2_x64.exe"
     fi
 
@@ -7913,7 +8308,7 @@ load_dotnet40()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -7959,7 +8354,7 @@ load_dotnet40_kb2468871()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8011,13 +8406,10 @@ load_dotnet45()
 
     w_override_dlls native mscoree
 
-    # Avoid a popup on WINEPREFIX updates, see https://bugs.winehq.org/show_bug.cgi?id=41727#c5
-    "${WINE}" reg add "HKLM\\Software\\Microsoft\\.NETFramework" /v OnlyUseLatestCLR /t REG_DWORD /d 0001 /f
-
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8074,7 +8466,7 @@ load_dotnet452()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8124,7 +8516,7 @@ load_dotnet46()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8177,7 +8569,7 @@ load_dotnet461()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8231,7 +8623,7 @@ load_dotnet462()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8284,7 +8676,7 @@ load_dotnet471()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8336,7 +8728,7 @@ load_dotnet472()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8389,7 +8781,7 @@ load_dotnet48()
     # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
     case "${LANG}" in
         C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "在尝试使用依赖 WPF 的应用程序时，你可能会遇到无限循环的问题。作为临时解决方法，请在运行应用程序时使用 LC_ALL=C。"
+        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
         # Based on the bug, there may be other locales that are affected. But in the absence of a full list
         # I don't think it's worth warning *every* non-en_US.UTF-8 user:
         # *) w_warn "
@@ -8401,59 +8793,6 @@ load_dotnet48()
 verify_dotnet48()
 {
     w_dotnet_verify dotnet48
-}
-
-#----------------------------------------------------------------
-
-w_metadata dotnet481 dlls \
-    title="MS .NET 4.8.1" \
-    publisher="Microsoft" \
-    year="2022" \
-    media="download" \
-    file1="ndp481-x86-x64-allos-enu.exe" \
-    conflicts="dotnet20sdk" \
-    installed_file1="${W_WINDIR_WIN}/dotnet481.installed.workaround"
-
-load_dotnet481()
-{
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49532" 5.12 5.18
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=49897" 5.18 6.6
-
-    w_package_warn_win64
-
-    # Official version. See https://dotnet.microsoft.com/download/dotnet-framework/net481
-    w_download https://download.microsoft.com/download/4/b/2/cd00d4ed-ebdd-49ee-8a33-eabc3d1030e3/ndp481-x86-x64-allos-enu.exe c0ca2e0c9cd18a24a0a77369a13fae2c2c4e8bc83355dd24e5ddc00f9d791fe3
-
-    w_call remove_mono internal
-
-    w_store_winver
-    w_call dotnet40
-    w_set_winver win10
-
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-
-    WINEDLLOVERRIDES=fusion=b w_try_ms_installer "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/sfxlang:1027 /q /norestart}
-
-    w_override_dlls native mscoree
-
-    # Do not rely on temporary files. As a workaround, touch a file instead so that we know it's been installed for list-installed
-    w_try touch "${W_WINDIR_UNIX}/dotnet481.installed.workaround"
-
-    # See https://bugs.winehq.org/show_bug.cgi?id=47277#c9
-    case "${LANG}" in
-        C|en_US.UTF-8*) ;;
-        zh_CN*) w_warn "You may encounter infinite loops when trying to use applications that use WPF. Use LC_ALL=C when running your application as a workaround."
-        # Based on the bug, there may be other locales that are affected. But in the absence of a full list
-        # I don't think it's worth warning *every* non-en_US.UTF-8 user:
-        # *) w_warn "
-    esac
-
-    w_restore_winver
-}
-
-verify_dotnet481()
-{
-    w_dotnet_verify dotnet481
 }
 
 #----------------------------------------------------------------
@@ -8638,21 +8977,21 @@ w_metadata dotnet8 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="dotnet-runtime-8.0.12-win-x86.exe" \
+    file1="dotnet-runtime-8.0.11-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnet8()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/3210417e-ab32-4d14-a152-1ad9a2fcfdd2/da097cee5aa85bd79b6d593e3866fb7f/dotnet-runtime-8.0.12-win-x86.exe eb0d8f39fa2dbb4ff3ff72ad325b6030773df875ab509824ea18c87a368985fa
+    w_download https://download.visualstudio.microsoft.com/download/pr/a8d1a489-60d6-4e63-93ee-ab9c44d78b0d/5519f99ff50de6e096bb1d266dd0e667/dotnet-runtime-8.0.11-win-x86.exe ad8ff237ab0a18dd34cadb10b646c0bf46754225b2848a25758a16a15bc8daf4
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/136f4593-e3cd-4d52-bc25-579cdf46e80c/8b98c1347293b48c56c3a68d72f586a1/dotnet-runtime-8.0.12-win-x64.exe a7c394e6ee4e8104d7a01f78103700052cc504370941b7f620e3aa5afbbc61df
-        w_try "${WINE}" "dotnet-runtime-8.0.12-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/53e9e41c-b362-4598-9985-45f989518016/53c5e1919ba2fe23273f2abaff65595b/dotnet-runtime-8.0.11-win-x64.exe f4f7768725105f4c07b2b80b872ded1fe9b56d98b4fd0b825a7df80d6bf6d2b0
+        w_try "${WINE}" "dotnet-runtime-8.0.11-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -8663,21 +9002,21 @@ w_metadata dotnetdesktop8 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="windowsdesktop-runtime-8.0.12-win-x86.exe" \
+    file1="windowsdesktop-runtime-8.0.11-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnetdesktop8()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/8.0
-    w_download https://download.visualstudio.microsoft.com/download/pr/acf6e5d3-1e2f-4072-833c-fa84a10841c5/acd48342207247f404a5aaa58d1a1ea1/windowsdesktop-runtime-8.0.12-win-x86.exe 340e30c8611af3800b74f0560f0b6f3feab82ee5cfa3fc0d115b84b08bd5456d
+    w_download https://download.visualstudio.microsoft.com/download/pr/6e1f5faf-ee7d-4db0-9111-9e270a458342/4cdcd1af2d6914134308630f048fbdfc/windowsdesktop-runtime-8.0.11-win-x86.exe 20fff5daa81998e2c05529da8a15af982e84aefd3d12e09dddd981c5f5f60757
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://download.visualstudio.microsoft.com/download/pr/f1e7ffc8-c278-4339-b460-517420724524/f36bb75b2e86a52338c4d3a90f8dac9b/windowsdesktop-runtime-8.0.12-win-x64.exe cb51b559f343cb56e23cad2e5af8c4d1701e221a0a2a4116193a2a9375568814
-        w_try "${WINE}" "windowsdesktop-runtime-8.0.12-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/27bcdd70-ce64-4049-ba24-2b14f9267729/d4a435e55182ce5424a7204c2cf2b3ea/windowsdesktop-runtime-8.0.11-win-x64.exe 7a418127fb8510cfefc6b9db220168b851ef2748f8252829997b3c61510c830a
+        w_try "${WINE}" "windowsdesktop-runtime-8.0.11-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -8688,21 +9027,21 @@ w_metadata dotnet9 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="dotnet-runtime-9.0.7-win-x86.exe" \
+    file1="dotnet-runtime-9.0.0-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnet9()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/9.0
-    w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.7/dotnet-runtime-9.0.7-win-x86.exe a4d077890c9820d9968a3c310973dceeae6ce949f4af3dae50611c0457196c82
+    w_download https://download.visualstudio.microsoft.com/download/pr/0e89cce9-dc02-423c-a657-0c2b421edf21/af2e916785775fe7e023b953af404db5/dotnet-runtime-9.0.0-win-x86.exe 23ea08b36404c0328ba25bb3f023dfe3bc7de055ddd96c36472937b7b8f4d784
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/9.0.7/dotnet-runtime-9.0.7-win-x64.exe 482a02fa01dd822d67d5286049ed7cc74fe8eda01848612cd070e0b0583de9c4
-        w_try "${WINE}" "dotnet-runtime-9.0.7-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/99bd07c2-c95c-44dc-9d47-36d3b18df240/bdf26c62f69c1b783687c1dce83ccf7a/dotnet-runtime-9.0.0-win-x64.exe d49c026086cf2f496d3f0470e6b0bf58e695261cc76f4e9fca9869f63f9d4ca1
+        w_try "${WINE}" "dotnet-runtime-9.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -8713,71 +9052,21 @@ w_metadata dotnetdesktop9 dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="windowsdesktop-runtime-9.0.7-win-x86.exe" \
+    file1="windowsdesktop-runtime-9.0.0-win-x86.exe" \
     installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
 
 load_dotnetdesktop9()
 {
     # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/9.0
-    w_download https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/9.0.7/windowsdesktop-runtime-9.0.7-win-x86.exe 3e5c3181836cc55e7fc4feb6378bba3d7ed11a322e22e8b4ad91bf9ba7a1a63a
+    w_download https://download.visualstudio.microsoft.com/download/pr/8dfbde7b-c316-418d-934a-d3246253f342/69c6a35b77a4f01b95588e1df2bddf9a/windowsdesktop-runtime-9.0.0-win-x86.exe f9f7e182a3516ec7ebba4f2a1d68b016ce7786a460bb7353641031dc4c6e9834
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Also install the 64-bit version
-        w_download https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/9.0.7/windowsdesktop-runtime-9.0.7-win-x64.exe 508e14881c88eb98d224fe9438e7f1ff39fb4b45ada7cd4bffc27b41c35d46d5
-        w_try "${WINE}" "windowsdesktop-runtime-9.0.7-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
-    fi
-}
-
-#----------------------------------------------------------------
-
-w_metadata dotnet10 dlls \
-    title="MS .NET Runtime 10.0 LTS" \
-    publisher="Microsoft" \
-    year="2025" \
-    media="download" \
-    file1="dotnet-runtime-10.0.0-win-x86.exe" \
-    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
-
-load_dotnet10()
-{
-    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/10.0
-    w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.0/dotnet-runtime-10.0.0-win-x86.exe 90bc5667c2a35c030a2e964e7083fe8fbdbc461377d27b4f0d9bf7b400d7b982
-
-    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
-
-    if [ "${W_ARCH}" = "win64" ]; then
-        # Also install the 64-bit version
-        w_download https://builds.dotnet.microsoft.com/dotnet/Runtime/10.0.0/dotnet-runtime-10.0.0-win-x64.exe ca2dd25d477174767a55756d9ef92bbda0d3c7ef12cef284a542689b2ba52767
-        w_try "${WINE}" "dotnet-runtime-10.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
-    fi
-}
-
-#----------------------------------------------------------------
-
-w_metadata dotnetdesktop10 dlls \
-    title="MS .NET Desktop Runtime 10.0 LTS" \
-    publisher="Microsoft" \
-    year="2025" \
-    media="download" \
-    file1="windowsdesktop-runtime-10.0.0-win-x86.exe" \
-    installed_file1="${W_PROGRAMS_WIN}/dotnet/dotnet.exe"
-
-load_dotnetdesktop10()
-{
-    # Official version, see https://dotnet.microsoft.com/en-us/download/dotnet/10.0
-    w_download https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.0/windowsdesktop-runtime-10.0.0-win-x86.exe ac38c81fef78c565d6bfbddf49ac5bcca354616176c0108c5f0e23333c3d093a
-
-    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/quiet}
-
-    if [ "${W_ARCH}" = "win64" ]; then
-        # Also install the 64-bit version
-        w_download https://builds.dotnet.microsoft.com/dotnet/WindowsDesktop/10.0.0/windowsdesktop-runtime-10.0.0-win-x64.exe fc0494eaf529b15f74b10d920784cc618ff0845bebfdfd5d85d585e921157a5c
-        w_try "${WINE}" "windowsdesktop-runtime-10.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
+        w_download https://download.visualstudio.microsoft.com/download/pr/685792b6-4827-4dca-a971-bce5d7905170/1bf61b02151bc56e763dc711e45f0e1e/windowsdesktop-runtime-9.0.0-win-x64.exe f8695b6ea8b98ff075160a9200adf3a9c26585bc05f14f2a1e3c755a31f488b3
+        w_try "${WINE}" "windowsdesktop-runtime-9.0.0-win-x64.exe" ${W_OPT_UNATTENDED:+/quiet}
     fi
 }
 
@@ -8842,7 +9131,7 @@ load_dxdiagn()
     helper_win7sp1 x86_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_25cb021dbc0611db/dxdiagn.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_25cb021dbc0611db/dxdiagn.dll" "${W_SYSTEM32_DLLS}/dxdiagn.dll"
     w_override_dlls native,builtin dxdiagn
-    w_try_regsvr32 dxdiagn.dll
+    w_try_regsvr dxdiagn.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-d..x-directxdiagnostic_31bf3856ad364e35_6.1.7601.17514_none_81e99da174638311/dxdiagn.dll
@@ -8869,37 +9158,7 @@ load_dxdiagn_feb2010()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'dxdiagn.dll' "${W_TMP}/dxnt.cab"
     w_override_dlls native dxdiagn
-    w_try_regsvr32 dxdiagn.dll
-}
-
-#----------------------------------------------------------------
-
-w_metadata dsoal dlls \
-    title="A DirectSound DLL replacer that enables surround sound, HRTF, and EAX support via OpenAL Soft" \
-    homepage="https://github.com/kcat/dsoal" \
-    publisher="kcat" \
-    year="2019" \
-    media="download" \
-    conflicts="dsound" \
-    file1="DSOAL.7z" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/dsoal-aldrv.dll" \
-    installed_file2="${W_SYSTEM32_DLLS_WIN}/dsound.dll"
-
-load_dsoal()
-{
-    if [ -e "${W_CACHE}/${W_PACKAGE}/DSOAL.7z" ]; then
-        w_warn "${W_PACKAGE} is already downloaded in ${W_CACHE}/${W_PACKAGE}/DSOAL.7z. This does not prevent the installation of this package. However, the downloaded version may be out-of-date. If you want a more up-to-date version, delete ${W_CACHE}/${W_PACKAGE}/DSOAL.7z."
-    fi
-    w_download https://github.com/kcat/dsoal/releases/download/latest-master/DSOAL.7z
-    w_try_7z "${W_TMP}" "${W_CACHE}/${W_PACKAGE}/DSOAL.7z"
-    w_try_cp_dll "${W_TMP}/DSOAL/Win32/dsoal-aldrv.dll" "${W_SYSTEM32_DLLS}/dsoal-aldrv.dll"
-    w_try_cp_dll "${W_TMP}/DSOAL/Win32/dsound.dll" "${W_SYSTEM32_DLLS}/dsound.dll"
-    if [ "${W_ARCH}" = "win64" ]; then
-        w_try_cp_dll "${W_TMP}/DSOAL/Win64/dsoal-aldrv.dll" "${W_SYSTEM64_DLLS}/dsoal-aldrv.dll"
-        w_try_cp_dll "${W_TMP}/DSOAL/Win64/dsound.dll" "${W_SYSTEM64_DLLS}/dsound.dll"
-    fi
-    w_override_dlls native dsoal-aldrv
-    w_override_dlls native dsound
+    w_try_regsvr dxdiagn.dll
 }
 
 #----------------------------------------------------------------
@@ -8909,7 +9168,6 @@ w_metadata dsound dlls \
     publisher="Microsoft" \
     year="2010" \
     media="download" \
-    conflicts="dsoal" \
     file1="../directx9/directx_feb2010_redist.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/dsound.dll"
 
@@ -8922,7 +9180,7 @@ load_dsound()
 
     # Don't try to register native dsound; it doesn't export DllRegisterServer().
     #w_try_regsvr32 dsound.dll
-    w_override_dlls native,builtin dsound
+    w_override_dlls native dsound
 }
 
 #----------------------------------------------------------------
@@ -9401,8 +9659,7 @@ load_icodecs()
     # Original source, ftp://download.intel.com/support/createshare/camerapack/codinstl.exe, had same checksum
     # 2010/11/14: http://codec.alshow.co.kr/Down/codinstl.exe
     # 2014/04/11: http://www.cucusoft.com/codecdownload/codinstl.exe (linked from http://www.cucusoft.com/codec.asp)
-    # 2025/05/15: https://web.archive.org/web/20241217170639/http://www.cucusoft.com/codecdownload/codinstl.exe (cucusoft.com is dead)
-    w_download "https://web.archive.org/web/20241217170639/http://www.cucusoft.com/codecdownload/codinstl.exe" 0979d43568111cadf0b3bf43cd8d746ac3de505759c14f381592b4f8439f6c95
+    w_download "http://www.cucusoft.com/codecdownload/codinstl.exe" 0979d43568111cadf0b3bf43cd8d746ac3de505759c14f381592b4f8439f6c95
 
     # Extract the installer so that we can use the included Install Shield
     # response file for unattended installations
@@ -9414,7 +9671,7 @@ load_icodecs()
     # https://support.britannica.com/other/touchthesky/win/issues/TSTUw_150.htm
     # https://appdb.winehq.org/objectManager.php?sClass=version&iId=7091
     w_override_dlls native,builtin ir50_32
-    w_try_regsvr32 ir50_32
+    w_try_regsvr ir50_32
 
     # Apparently some codecs are missing, see https://github.com/Winetricks/winetricks/issues/302
     # Download at https://www.moviecodec.com/download-codec-packs/indeo-codecs-legacy-package-31/
@@ -9541,7 +9798,7 @@ load_itircl()
     w_try_cabextract -d "${W_TMP}" -F hhupd.exe "${W_CACHE}"/hhw/htmlhelp.exe
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -F itircl.dll "${W_TMP}"/hhupd.exe
     w_override_dlls native itircl
-    w_try_regsvr32 itircl.dll
+    w_try_regsvr itircl.dll
 }
 
 #----------------------------------------------------------------
@@ -9562,7 +9819,7 @@ load_itss()
     w_try_cabextract -d "${W_TMP}" -F hhupd.exe "${W_CACHE}"/hhw/htmlhelp.exe
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -F itss.dll "${W_TMP}"/hhupd.exe
     w_override_dlls native itss
-    w_try_regsvr32 itss.dll
+    w_try_regsvr itss.dll
 }
 
 #----------------------------------------------------------------
@@ -9756,7 +10013,7 @@ load_l3codecx()
     w_try_cabextract -d "${W_TMP}" -L -F dxnt.cab "${W_CACHE}"/directx9/${DIRECTX_NAME}
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F 'l3codecx.ax' "${W_TMP}/dxnt.cab"
 
-    w_try_regsvr32 l3codecx.ax
+    w_try_regsvr l3codecx.ax
 }
 
 #----------------------------------------------------------------
@@ -9943,22 +10200,22 @@ w_metadata mf dlls \
 
 load_mf()
 {
-    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/syswow64/colorcnv.dll 703559b28738cf6f14456f330fd1bc740671a7584694b03cb03245dae5aaa58d colorcnv.dll
+    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/syswow64/colorcnv.dll 703559b28738cf6f14456f330fd1bc740671a7584694b03cb03245dae5aaa58d colorcnv.dll
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/colorcnv.dll" "${W_SYSTEM32_DLLS}/colorcnv.dll"
 
-    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/syswow64/mferror.dll 34c74d48f31872f195d3fcf5c57278db741bd98424cf54159aa2d8a69e6f869d mferror.dll
+    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/syswow64/mferror.dll 34c74d48f31872f195d3fcf5c57278db741bd98424cf54159aa2d8a69e6f869d mferror.dll
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/mferror.dll" "${W_SYSTEM32_DLLS}/mferror.dll"
 
-    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/system32/mfplat.dll 025294dd69a421fe4eacaa463f8cb797610d8f3a7a3c61656ae83d0cee07a9bf mfplat.dll.64
+    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/system32/mfplat.dll 025294dd69a421fe4eacaa463f8cb797610d8f3a7a3c61656ae83d0cee07a9bf mfplat.dll.64
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/mfplat.dll.64" "${W_SYSTEM64_DLLS}/mfplat.dll"
 
-    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/syswow64/mfplay.dll a1ade23dada272236c724107648e1ff53741a5b53dfd24e0724f170d99c79ced mfplay.dll
+    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/syswow64/mfplay.dll a1ade23dada272236c724107648e1ff53741a5b53dfd24e0724f170d99c79ced mfplay.dll
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/mfplay.dll" "${W_SYSTEM32_DLLS}/mfplay.dll"
 
-    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/syswow64/msmpeg2adec.dll 9c0708bc7b1e49725d2ab7bb1cc67f635284c6452ad4743f2262b71f3ceef287 msmpeg2adec.dll
+    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/syswow64/msmpeg2adec.dll 9c0708bc7b1e49725d2ab7bb1cc67f635284c6452ad4743f2262b71f3ceef287 msmpeg2adec.dll
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/msmpeg2adec.dll" "${W_SYSTEM32_DLLS}/msmpeg2adec.dll"
 
-    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/syswow64/msmpeg2vdec.dll b023fbd3ef0658512b059f5703e05fff29af3025a4f48da7c3c013d0a8119e3c msmpeg2vdec.dll
+    w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/syswow64/msmpeg2vdec.dll b023fbd3ef0658512b059f5703e05fff29af3025a4f48da7c3c013d0a8119e3c msmpeg2vdec.dll
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/msmpeg2vdec.dll" "${W_SYSTEM32_DLLS}/msmpeg2vdec.dll"
 
     helper_win7sp1 x86_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_9e6699276b03c38e/mf.dll
@@ -9977,22 +10234,22 @@ load_mf()
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-wmvdecod_31bf3856ad364e35_6.1.7601.17514_none_c491ee3d3e923b78/wmvdecod.dll" "${W_SYSTEM32_DLLS}/wmvdecod.dll"
 
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/system32/colorcnv.dll 0bab1293a19c960315b89789f7cf4dd39d6cb743d0f4929d03e8f149b6845718 colorcnv.dll.64
+        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/system32/colorcnv.dll 0bab1293a19c960315b89789f7cf4dd39d6cb743d0f4929d03e8f149b6845718 colorcnv.dll.64
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/colorcnv.dll.64" "${W_SYSTEM64_DLLS}/colorcnv.dll"
 
-        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/system32/mferror.dll d9ce54938155a37f260b01d808917bc541383b750cd3a3094ce9308e318a0e2c mferror.dll.64
+        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/system32/mferror.dll d9ce54938155a37f260b01d808917bc541383b750cd3a3094ce9308e318a0e2c mferror.dll.64
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/mferror.dll.64" "${W_SYSTEM64_DLLS}/mferror.dll"
 
-        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/system32/mfplat.dll 025294dd69a421fe4eacaa463f8cb797610d8f3a7a3c61656ae83d0cee07a9bf mfplat.dll.64
+        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/system32/mfplat.dll 025294dd69a421fe4eacaa463f8cb797610d8f3a7a3c61656ae83d0cee07a9bf mfplat.dll.64
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/mfplat.dll.64" "${W_SYSTEM64_DLLS}/mfplat.dll"
 
-        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/system32/mfplay.dll a5c579a7ad6d55cbb13c748201b97c286e0e165827b8ed19019c696459f1f13a mfplay.dll.64
+        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/system32/mfplay.dll a5c579a7ad6d55cbb13c748201b97c286e0e165827b8ed19019c696459f1f13a mfplay.dll.64
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/mfplay.dll.64" "${W_SYSTEM64_DLLS}/mfplay.dll"
 
-        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/system32/msmpeg2adec.dll 97a9b89b1b50cddf6adff9059dce5935d905796dbcd6db58ea2fa693caaa194a msmpeg2adec.dll.64
+        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/system32/msmpeg2adec.dll 97a9b89b1b50cddf6adff9059dce5935d905796dbcd6db58ea2fa693caaa194a msmpeg2adec.dll.64
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/msmpeg2adec.dll.64" "${W_SYSTEM64_DLLS}/msmpeg2adec.dll"
 
-        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Sikarugir-app/mf-install/raw/master/system32/msmpeg2vdec.dll d7d0bc980c658d5e2f2c605075338493eac97b9d7674007a9490846c2dcdf6f3 msmpeg2vdec.dll.64
+        w_download_to "${W_CACHE}/${W_PACKAGE}" https://github.com/Kegworks-App/mf-install/raw/master/system32/msmpeg2vdec.dll d7d0bc980c658d5e2f2c605075338493eac97b9d7674007a9490846c2dcdf6f3 msmpeg2vdec.dll.64
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/msmpeg2vdec.dll.64" "${W_SYSTEM64_DLLS}/msmpeg2vdec.dll"
 
         helper_win7sp1_x64 amd64_microsoft-windows-mediafoundation_31bf3856ad364e35_6.1.7601.17514_none_fa8534ab236134c4/mf.dll
@@ -10458,7 +10715,7 @@ load_msdxmocx()
     w_download http://hell.pl/agnus/windows95/mpfull.exe a39b2b9735cedd513fcb78f8634695d35073e9d7e865e536a0da6db38c7225e4
 
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_CACHE}/${W_PACKAGE}/${file1}"
-    w_try_regsvr32 msdxm.ocx
+    w_try_regsvr msdxm.ocx
 }
 
 #----------------------------------------------------------------
@@ -10475,7 +10732,7 @@ load_msflxgrd()
 {
     helper_vb6sp6 "${W_TMP}" MSFlxGrd.ocx
     w_try mv "${W_TMP}/MSFlxGrd.ocx" "${W_SYSTEM32_DLLS}/msflxgrd.ocx"
-    w_try_regsvr32 msflxgrd.ocx
+    w_try_regsvr msflxgrd.ocx
 }
 
 #----------------------------------------------------------------
@@ -10492,7 +10749,7 @@ load_mshflxgd()
 {
     helper_vb6sp6 "${W_TMP}" MShflxgd.ocx
     w_try mv "${W_TMP}/MShflxgd.ocx" "${W_SYSTEM32_DLLS}/mshflxgd.ocx"
-    w_try_regsvr32 mshflxgd.ocx
+    w_try_regsvr mshflxgd.ocx
 }
 
 #----------------------------------------------------------------
@@ -10565,7 +10822,7 @@ load_msmask()
 {
     helper_vb6sp6 "${W_TMP}" msmask32.ocx
     w_try mv "${W_TMP}/msmask32.ocx" "${W_SYSTEM32_DLLS}/msmask32.ocx"
-    w_try_regsvr32 msmask32.ocx
+    w_try_regsvr msmask32.ocx
 }
 
 #----------------------------------------------------------------
@@ -11018,24 +11275,24 @@ load_peverify()
 w_metadata physx dlls \
     title="PhysX" \
     publisher="Nvidia" \
-    year="2024" \
+    year="2021" \
     media="download" \
-    file1="PhysX_9.23.1019_SystemSoftware.exe" \
+    file1="PhysX_9.21.0713_SystemSoftware.exe" \
 
 load_physx()
 {
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=56606" 9.5 9.10
+    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=56606" 9.5
 
     w_get_sha256sum "${W_PROGRAMS_X86_UNIX}/NVIDIA Corporation/PhysX/Engine/86C5F4F22ECD/APEX_Particles_x64.dll"
-    if [ "${_W_gotsha256sum}"x = "10bc05958e874739064d1acaf7720a9bb4f5bdc0f219e6aeb6ece6f202d194a1"x ] ; then
+    if [ "${_W_gotsha256sum}"x = "b3991e0165a9802b60e2f7d14c1be5f879071999ae74a38263cec9bf043a9eaa"x ] ; then
         w_warn "${W_PACKAGE} is already installed - not updating"
         unset _W_gotsha256sum
         return
     else
         unset _W_gotsha256sum
-        w_download https://us.download.nvidia.com/Windows/9.23.1019/PhysX_9.23.1019_SystemSoftware.exe 9b42b84e881769d681e09f62a1b51532616b2e6a2d5d99d0ccae6eb5fbbc208c
+        w_download https://us.download.nvidia.com/Windows/9.21.0713/PhysX_9.21.0713_SystemSoftware.exe 26d62c5c347c15cb27c3be92bf10706113511b48b28aecc09f61ee58b3b62778
         w_try_cd "${W_CACHE}/${W_PACKAGE}"
-        w_try "${WINE}" PhysX_9.23.1019_SystemSoftware.exe ${W_OPT_UNATTENDED:+/s}
+        w_try "${WINE}" PhysX_9.21.0713_SystemSoftware.exe ${W_OPT_UNATTENDED:+/s}
     fi
 }
 
@@ -11056,7 +11313,7 @@ load_pngfilt()
 
     helper_winxpsp3 i386/pngfilt.dl_
     w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}"/i386/pngfilt.dl_
-    w_try_regsvr32 pngfilt.dll
+    w_try_regsvr pngfilt.dll
 }
 
 #----------------------------------------------------------------
@@ -11066,23 +11323,23 @@ w_metadata powershell_core dlls \
     publisher="Microsoft" \
     year="2024" \
     media="download" \
-    file1="PowerShell-7.4.11-win-x86.msi" \
-    file2="PowerShell-7.4.11-win-x64.msi"
+    file1="PowerShell-7.2.21-win-x86.msi" \
+    file2="PowerShell-7.2.21-win-x64.msi"
 
 load_powershell_core()
 {
-    # Uncomment below and remove win32 download elif and file when PowerShell Core's 32bit support goes EOL
+    # Uncomment below and remove win32 download elif and file when PowerShell Core v7.2 LTS goes EOL
     #w_package_unsupported_win32
 
-    # Download PowerShell Core 7.4.x MSI (Latest LTS Release)
-    # https://github.com/PowerShell/PowerShell/releases/v7.4.11
+    # Download PowerShell Core 7.2.x MSI (Latest LTS Version to support win32)
+    # https://github.com/PowerShell/PowerShell/releases/v7.2.21
     if [ "${W_ARCH}" = "win64" ]; then
-        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.4.11/PowerShell-7.4.11-win-x64.msi" 9579011c463a3ad6abf890736a97e2fbba9a7b4e09ce851576ccf263e15bdc97
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x64.msi" 407640b11c89d66ec7892229e68b1d74b26f0e820b52da268c67fd166c2b46ad
         # Disable SC2154 due to shellcheck not knowing metadata is sourced before this function is run
         # shellcheck disable=SC2154
         msi="${file2}"
     elif [ "${W_ARCH}" = "win32" ]; then
-        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.4.11/PowerShell-7.4.11-win-x86.msi" beaed5a0860421383afd18b7d4c2b2663f62b6a89b4e30ac0894575aa65226f8
+        w_download "https://github.com/PowerShell/PowerShell/releases/download/v7.2.21/PowerShell-7.2.21-win-x86.msi" cdfd69f6997eabe5abdc38869eedfd90761416261bf95531300f652d0932bf0a
         # shellcheck disable=SC2154
         msi="${file1}"
     fi
@@ -11091,7 +11348,7 @@ load_powershell_core()
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # Install PowerShell Core using Wine's msiexec
-    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=0 REGISTER_MANIFEST=1 DISABLE_TELEMETRY=1 USE_MU=0 ENABLE_MU=0 LAUNCHAPPONEXIT=0
+    w_try "${WINE}" msiexec ${W_OPT_UNATTENDED:+/quiet} /i "${msi}" ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
 }
 
 #----------------------------------------------------------------
@@ -11109,16 +11366,18 @@ load_powershell()
 {
     w_do_call powershell_core
 
+    _W_powershell_version="$(w_get_github_latest_release projectsynchro powershell-wrapper-for-wine)"
+
     # Download PowerShell Wrapper 32bit exe
-    w_linkcheck_ignore=1 w_download "https://codeberg.org/Synchro/powershell-wrapper-for-wine/releases/download/latest/powershell32.exe"
+    w_linkcheck_ignore=1 w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/${_W_powershell_version}/powershell32.exe"
 
     if [ "${W_ARCH}" = "win64" ]; then
         # Download PowerShell Wrapper 64bit exe
-        w_linkcheck_ignore=1 w_download "https://codeberg.org/Synchro/powershell-wrapper-for-wine/releases/download/latest/powershell64.exe"
+        w_linkcheck_ignore=1 w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/${_W_powershell_version}/powershell64.exe"
     fi
 
     # Download PowerShell Wrapper profile.ps1
-    w_linkcheck_ignore=1 w_download "https://codeberg.org/Synchro/powershell-wrapper-for-wine/releases/download/latest/profile.ps1"
+    w_linkcheck_ignore=1 w_download "https://github.com/ProjectSynchro/powershell-wrapper-for-wine/releases/download/${_W_powershell_version}/profile.ps1"
 
     # Change directories to cache
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
@@ -11164,7 +11423,7 @@ load_prntvpt()
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_1562129afd710f2c/prntvpt.dll" "${W_SYSTEM32_DLLS}/prntvpt.dll"
 
     w_override_dlls native,builtin prntvpt
-    w_try_regsvr32 prntvpt.dll
+    w_try_regsvr prntvpt.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-p..g-printticket-win32_31bf3856ad364e35_6.1.7601.17514_none_7180ae1eb5ce8062/prntvpt.dll
@@ -11259,7 +11518,7 @@ load_qasf()
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_1cc4e9c15ccc8ae8/qasf.dll" "${W_SYSTEM32_DLLS}/qasf.dll"
 
     w_override_dlls native,builtin qasf
-    w_try_regsvr32 qasf.dll
+    w_try_regsvr qasf.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-asf_31bf3856ad364e35_6.1.7601.17514_none_78e385451529fc1e/qasf.dll
@@ -11283,7 +11542,7 @@ load_qcap()
     helper_win7sp1 x86_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_bae08d1e7dcccf2a/qcap.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_bae08d1e7dcccf2a/qcap.dll" "${W_SYSTEM32_DLLS}/qcap.dll"
     w_override_dlls native,builtin qcap
-    w_try_regsvr32 qcap.dll
+    w_try_regsvr qcap.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-capture_31bf3856ad364e35_6.1.7601.17514_none_16ff28a2362a4060/qcap.dll
@@ -11307,7 +11566,7 @@ load_qdvd()
     helper_win7sp1 x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_562994bd321aac67/qdvd.dll" "${W_SYSTEM32_DLLS}/qdvd.dll"
     w_override_dlls native,builtin qdvd
-    w_try_regsvr32 qdvd.dll
+    w_try_regsvr qdvd.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-dvdsupport_31bf3856ad364e35_6.1.7601.17514_none_b2483040ea781d9d/qdvd.dll
@@ -11331,7 +11590,7 @@ load_qedit()
     helper_win7sp1 x86_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_5ca34698a5a970d2/qedit.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_5ca34698a5a970d2/qedit.dll" "${W_SYSTEM32_DLLS}/qedit.dll"
     w_override_dlls native,builtin qedit
-    w_try_regsvr32 qedit.dll
+    w_try_regsvr qedit.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-qedit_31bf3856ad364e35_6.1.7601.17514_none_b8c1e21c5e06e208/qedit.dll
@@ -11347,7 +11606,6 @@ w_metadata quartz dlls \
     publisher="Microsoft" \
     year="2011" \
     media="download" \
-    conflicts="devenum quartz_feb2010" \
     file1="../win7sp1/windows6.1-KB976932-X86.exe" \
     installed_file1="${W_SYSTEM32_DLLS_WIN}/quartz.dll"
 
@@ -11356,7 +11614,7 @@ load_quartz()
     helper_win7sp1 x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_a877a1cc4c284497/quartz.dll" "${W_SYSTEM32_DLLS}/quartz.dll"
     w_override_dlls native,builtin quartz
-    w_try_regsvr32 quartz.dll
+    w_try_regsvr quartz.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-directshow-core_31bf3856ad364e35_6.1.7601.17514_none_04963d500485b5cd/quartz.dll
@@ -11384,7 +11642,7 @@ load_quartz_feb2010()
     w_try_cabextract -d "${W_SYSTEM32_DLLS}" -L -F quartz.dll "${W_TMP}/dxnt.cab"
 
     w_override_dlls native,builtin quartz
-    w_try_regsvr32 quartz.dll
+    w_try_regsvr quartz.dll
 }
 
 #----------------------------------------------------------------
@@ -11414,7 +11672,6 @@ load_quicktime72()
             bg*) w_warn "В настройките на Quicktime, включете Разширени / Безопасен режим (gdi), иначе видеоклиповете няма да се възпроизвеждат." ;;
             ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
             pt*) w_warn "Nas preferências do Quicktime, marque Advanced / Safe Mode (gdi), ou os vídeos não irão reproduzir." ;;
-            zh_CN*) w_warn "在 QuickTime 的偏好设置中，勾选高级 / 安全模式（GDI），否则影片将无法播放。" ;;
             *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
         esac
         if [ -z "${W_OPT_UNATTENDED}" ]; then
@@ -11455,7 +11712,6 @@ load_quicktime76()
             bg*) w_warn "В настройките на Quicktime, включете Разширени / Безопасен режим (gdi), иначе видеоклиповете няма да се възпроизвеждат." ;;
             ru*) w_warn "В настройках Quicktime включите Дополнительно / Безопасный режим (только gdi), иначе видеофайлы не будут воспроизводиться." ;;
             pt*) w_warn "Nas preferências do Quicktime, marque Advanced / Safe Mode (gdi), ou os vídeos não irão reproduzir." ;;
-            zh_CN*) w_warn "在 QuickTime 的偏好设置中，勾选高级 / 安全模式（GDI），否则影片将无法播放。" ;;
             *) w_warn "In Quicktime preferences, check Advanced / Safe Mode (gdi), or movies won't play." ;;
         esac
         if [ -z "${W_OPT_UNATTENDED}" ]; then
@@ -11539,7 +11795,7 @@ w_metadata richtx32 dlls \
 load_richtx32()
 {
     helper_vb6sp6 "${W_SYSTEM32_DLLS}" richtx32.ocx
-    w_try_regsvr32 richtx32.ocx
+    w_try_regsvr richtx32.ocx
 }
 
 #----------------------------------------------------------------
@@ -11565,7 +11821,7 @@ load_sapi()
     helper_win7sp1 x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll
     w_try_cp_dll "${W_TMP}/x86_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_d809b28230ecfe46/sapi.dll" "${W_SYSTEM32_DLLS}/sapi.dll"
     w_override_dlls native sapi
-    w_try_regsvr32 sapi.dll
+    w_try_regsvr sapi.dll
 
     if [ "${W_ARCH}" = "win64" ]; then
         helper_win7sp1_x64 amd64_microsoft-windows-speechcommon_31bf3856ad364e35_6.1.7601.17514_none_34284e05e94a6f7c/sapi.dll
@@ -11719,7 +11975,7 @@ load_tabctl32()
 {
     helper_vb6sp6 "${W_TMP}" TabCtl32.ocx
     w_try mv "${W_TMP}/TabCtl32.ocx" "${W_SYSTEM32_DLLS}/tabctl32.ocx"
-    w_try_regsvr32 tabctl32.ocx
+    w_try_regsvr tabctl32.ocx
 }
 
 #----------------------------------------------------------------
@@ -11886,8 +12142,6 @@ w_metadata vb5run dlls \
 
 load_vb5run()
 {
-    w_package_broken "https://bugs.winehq.org/show_bug.cgi?id=56209" 8.10
-
     w_download https://download.microsoft.com/download/vb50pro/utility/1/win98/en-us/msvbvm50.exe b5f8ea5b9d8b30822a2be2cdcb89cda99ec0149832659ad81f45360daa6e6965
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" msvbvm50.exe ${W_OPT_UNATTENDED:+/q}
@@ -12037,7 +12291,7 @@ load_vcrun2003()
 {
     # Sadly, I know of no Microsoft URL for these
     # winetricks-test can't handle ${file1} in url since it does a raw parsing :/
-    w_download https://downloads.sourceforge.net/project/bzflag/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
+    w_download https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
 
     w_try_7z "${W_SYSTEM32_DLLS}" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" "msvcp71.dll" "msvcr71.dll" -y
 }
@@ -12052,7 +12306,7 @@ w_metadata mfc71 dlls \
 
 load_mfc71()
 {
-    w_download_to vcrun2003 https://downloads.sourceforge.net/project/bzflag/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
+    w_download_to vcrun2003 https://sourceforge.net/projects/bzflag/files/bzedit%20win32/1.6.5/BZEditW32_1.6.5.exe 84d1bda5dbf814742898a2e1c0e4bc793e9bc1fba4b7a93d59a7ef12bd0fd802
 
     w_try_7z "${W_SYSTEM32_DLLS}" "${W_CACHE}/vcrun2003/BZEditW32_1.6.5.exe" "mfc71.dll" -y
 }
@@ -12357,7 +12611,6 @@ load_vcrun2013()
     w_download https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x86.exe 89f4e593ea5541d1c53f983923124f9fd061a1c0c967339109e375c661573c17
 
     w_override_dlls native,builtin atl120 msvcp120 msvcr120 vcomp120
-    rm -f "${W_SYSTEM32_DLLS}"/msvcp120.dll "${W_SYSTEM32_DLLS}"/msvcr120.dll "${W_SYSTEM32_DLLS}"/vcomp120.dll
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try_ms_installer "${WINE}" vcredist_x86.exe ${W_OPT_UNATTENDED:+/q}
 
@@ -12367,7 +12620,6 @@ load_vcrun2013()
             # 2015/10/19: e554425243e3e8ca1cd5fe550db41e6fa58a007c74fad400274b128452f38fb8
             # 2019/03/24: 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
             w_download https://download.microsoft.com/download/0/5/6/056dcda9-d667-4e27-8001-8a0c6971d6b1/vcredist_x64.exe 20e2645b7cd5873b1fa3462b99a665ac8d6e14aae83ded9d875fea35ffdd7d7e
-            rm -f "${W_SYSTEM64_DLLS}"/msvcp120.dll "${W_SYSTEM64_DLLS}"/msvcr120.dll "${W_SYSTEM64_DLLS}"/vcomp120.dll
             w_try_ms_installer "${WINE}" vcredist_x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
@@ -12442,7 +12694,7 @@ load_vcrun2015()
             w_download https://download.microsoft.com/download/6/D/F/6DF3FF94-F7F9-4F0B-838C-A328D1A7D0EE/vc_redist.x64.exe d7257265dbc0635c96dd67ddf938a09abe0866cb2d4fa05f8b758c8644e724e4
             # Also replace 64-bit msvcp140.dll & ucrtbase.dll
             w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a10'
-            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'msvcp140.dll'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win32/a10" -F 'msvcp140.dll'
             w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a10" -F 'ucrtbase.dll'
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
@@ -12600,8 +12852,8 @@ load_vcrun2019()
             w_download https://aka.ms/vs/16/release/vc_redist.x64.exe 5d9999036f2b3a930f83b7fe3e2186b12e79ae7c007d538f52e3582e986a37c3
 
             # Also replace 64-bit msvcp140.dll
-            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a12'
-            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a12" -F 'msvcp140.dll'
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a11'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a11" -F 'msvcp140.dll'
 
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
@@ -12623,12 +12875,12 @@ w_metadata ucrtbase2019 dlls \
 
 load_ucrtbase2019()
 {
-    w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/ucrtbase2019/ucrtbase_32.dll 66a93e40dd6721ded8a32d407d2c5fc291edaf74485ccbc848b6804efebd6dba
+    w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/ucrtbase2019/ucrtbase_32.dll 66a93e40dd6721ded8a32d407d2c5fc291edaf74485ccbc848b6804efebd6dba
     w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/ucrtbase_32.dll" "${W_SYSTEM32_DLLS}/ucrtbase.dll"
 
     case "${W_ARCH}" in
         win64)
-            w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/ucrtbase2019/ucrtbase.dll 51cbbde17a768930300236facd9738f54b7801e6715771ff8af90bfbe3fad44f
+            w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/ucrtbase2019/ucrtbase.dll 51cbbde17a768930300236facd9738f54b7801e6715771ff8af90bfbe3fad44f
             w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/ucrtbase.dll" "${W_SYSTEM64_DLLS}/ucrtbase.dll"
     esac
 
@@ -12657,17 +12909,14 @@ load_vcrun2022()
     # 2024/06/10: a32dd41eaab0c5e1eaa78be3c0bb73b48593de8d97a7510b97de3fd993538600
     # 2024/10/17: ed1967c2ac27d806806d121601b526f84e497ae1b99ed139c0c4c6b50147df4a
     # 2024/11/20: dd1a8be03398367745a87a5e35bebdab00fdad080cf42af0c3f20802d08c25d4
-    # 2025/03/30: c4e3992f3883005881cf3937f9e33f1c7d792ac1c860ea9c52d8f120a16a7eb1
-    # 2025/04/14: 0c09f2611660441084ce0df425c51c11e147e6447963c3690f97e0b25c55ed64
     w_override_dlls native,builtin concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
 
-    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe 0c09f2611660441084ce0df425c51c11e147e6447963c3690f97e0b25c55ed64
+    w_download https://aka.ms/vs/17/release/vc_redist.x86.exe dd1a8be03398367745a87a5e35bebdab00fdad080cf42af0c3f20802d08c25d4
 
     # Setup will refuse to install msvcp140 because the builtin's version number is higher, so manually replace it
     # See https://bugs.winehq.org/show_bug.cgi?id=57518
     w_try_cabextract --directory="${W_TMP}/win32"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x86.exe -F 'a10'
-    w_try_cabextract --directory="${W_TMP}/win32" "${W_TMP}/win32/a10" -F 'msvcp140.dll_x86'
-    w_try mv "${W_TMP}/win32/msvcp140.dll_x86" "${W_SYSTEM32_DLLS}/msvcp140.dll"
+    w_try_cabextract --directory="${W_SYSTEM32_DLLS}" "${W_TMP}/win32/a10" -F 'msvcp140.dll'
 
     w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
     w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
@@ -12683,57 +12932,20 @@ load_vcrun2022()
             # 2024/06/10: 3642e3f95d50cc193e4b5a0b0ffbf7fe2c08801517758b4c8aeb7105a091208a
             # 2024/10/17: 814e9da5ec5e5d6a8fa701999d1fc3baddf7f3adc528e202590e9b1cb73e4a11
             # 2024/11/20: 1821577409c35b2b9505ac833e246376cc68a8262972100444010b57226f0940
-            # 2025/03/30: 8f9fb1b3cfe6e5092cf1225ecd6659dab7ce50b8bf935cb79bfede1f3c895240
-            # 2025/07/14: cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b
             # vcruntime140_1 is only shipped on x64:
             w_override_dlls native,builtin vcruntime140_1
 
-            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe cc0ff0eb1dc3f5188ae6300faef32bf5beeba4bdd6e8e445a9184072096b713b
+            w_download https://aka.ms/vs/17/release/vc_redist.x64.exe 1821577409c35b2b9505ac833e246376cc68a8262972100444010b57226f0940
 
             # Also replace 64-bit msvcp140.dll
-            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a12'
-            w_try_cabextract --directory="${W_TMP}/win64" "${W_TMP}/win64/a12" -F 'msvcp140.dll_amd64'
-            w_try mv "${W_TMP}/win64/msvcp140.dll_amd64" "${W_SYSTEM64_DLLS}/msvcp140.dll" 
+            w_try_cabextract --directory="${W_TMP}/win64"  "${W_CACHE}"/"${W_PACKAGE}"/vc_redist.x64.exe -F 'a11'
+            w_try_cabextract --directory="${W_SYSTEM64_DLLS}" "${W_TMP}/win64/a11" -F 'msvcp140.dll'
 
             w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
             ;;
     esac
 
     w_call ucrtbase2019
-}
-
-#----------------------------------------------------------------
-
-w_metadata vcrun2026 dlls \
-    title="Visual C++ 2017-2026 libraries (concrt140.dll,mfc140.dll,mfc140chs.dll,mfc140cht.dll,mfc140deu.dll,mfc140enu.dll,mfc140esn.dll,mfc140fra.dll,mfc140ita.dll,mfc140jpn.dll,mfc140kor.dll,mfc140rus.dll,mfc140u.dll,mfcm140.dll,mfcm140u.dll,msvcp140.dll,msvcp140_1.dll,msvcp140_2.dll,msvcp140_atomic_wait.dll,msvcp140_codecvt_ids.dll,vcamp140.dll,vccorlib140.dll,vcomp140.dll,vcruntime140.dll,vcruntime140_1.dll)" \
-    publisher="Microsoft" \
-    year="2026" \
-    media="download" \
-    conflicts="vcrun2017 vcrun2019 vcrun2022" \
-    file1="vc_redist.x86.exe" \
-    installed_file1="${W_SYSTEM32_DLLS_WIN}/vcruntime140.dll"
-
-load_vcrun2026()
-{
-    # https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
-    # 2026-02-01: 14.50.35719 @ https://download.visualstudio.microsoft.com/download/pr/6f02464a-5e9b-486d-a506-c99a17db9a83/E7267C1BDF9237C0B4A28CF027C382B97AA909934F84F1C92D3FB9F04173B33E/VC_redist.x86.exe
-    w_override_dlls native,builtin concrt140 msvcp140 msvcp140_1 msvcp140_2 msvcp140_atomic_wait msvcp140_codecvt_ids vcamp140 vccorlib140 vcomp140 vcruntime140
-
-    w_download https://aka.ms/vc14/vc_redist.x86.exe e7267c1bdf9237c0b4a28cf027c382b97aa909934f84f1c92d3fb9f04173b33e
-    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
-    w_try_ms_installer "${WINE}" vc_redist.x86.exe ${W_OPT_UNATTENDED:+/q}
-
-    case "${W_ARCH}" in
-        win64)
-            # Also install the 64-bit version
-            # 2026-02-01: 14.50.35719 @ https://download.visualstudio.microsoft.com/download/pr/6f02464a-5e9b-486d-a506-c99a17db9a83/8995548DFFFCDE7C49987029C764355612BA6850EE09A7B6F0FDDC85BDC5C280/VC_redist.x64.exe
-            # vcruntime140_1 is only shipped on x64:
-            w_override_dlls native,builtin vcruntime140_1
-
-            w_download https://aka.ms/vc14/vc_redist.x64.exe 8995548dfffcde7c49987029c764355612ba6850ee09a7b6f0fddc85bdc5c280
-            w_try_ms_installer "${WINE}" vc_redist.x64.exe ${W_OPT_UNATTENDED:+/q}
-            ;;
-    esac
 }
 
 #----------------------------------------------------------------
@@ -12769,10 +12981,7 @@ w_metadata vstools2019 apps \
 load_vstools2019()
 {
     w_call dotnet472
-
-    # 2021/12/17: e653e715ddb8a08873e50a2fe091fca2ce77726b8b6ed2b99ed916d0e03c1fbe
-    # 2025/04/03: 0f0cc11f000593a064d419462a8467b529fed8075b21a605a40785baa3d2f611
-    w_download https://aka.ms/vs/16/release/installer 0f0cc11f000593a064d419462a8467b529fed8075b21a605a40785baa3d2f611 vstools2019.zip
+    w_download https://aka.ms/vs/16/release/installer e653e715ddb8a08873e50a2fe091fca2ce77726b8b6ed2b99ed916d0e03c1fbe vstools2019.zip
     w_try_unzip "${W_TMP}/vs_installer_16" "${W_CACHE}/${W_PACKAGE}/vstools2019.zip"
     w_try "${WINE}" "${W_TMP}"/vs_installer_16/Contents/vs_installer.exe install \
         --channelId VisualStudio.16.Release \
@@ -13016,7 +13225,7 @@ load_wsh57()
 
     # Wine doesn't provide the other dll's (yet?)
     w_override_dlls native,builtin jscript scrrun vbscript cscript.exe wscript.exe
-    w_try_regsvr32 dispex.dll jscript.dll scrobj.dll scrrun.dll vbscript.dll wshcon.dll wshext.dll
+    w_try_regsvr dispex.dll jscript.dll scrobj.dll scrrun.dll vbscript.dll wshcon.dll wshext.dll
 }
 
 #----------------------------------------------------------------
@@ -13070,13 +13279,13 @@ load_xact_x32()
     w_override_dlls native,builtin xactengine2_0 xactengine2_10 xactengine2_1 xactengine2_2 xactengine2_3 xactengine2_4 xactengine2_5 xactengine2_6 xactengine2_7 xactengine2_8 xactengine2_9 xactengine3_0 xactengine3_1 xactengine3_2 xactengine3_3 xactengine3_4 xactengine3_5 xactengine3_6 xactengine3_7
 
     # Register xactengine?_?.dll
-    for x in "${W_SYSTEM32_DLLS}"/xactengine*.dll ; do
-        w_try_regsvr32 "$(basename "${x}")"
+    for x in "${W_SYSTEM32_DLLS}"/xactengine* ; do
+        w_try_regsvr "$(basename "${x}")"
     done
 
     # and xaudio?_?.dll, but not xaudio2_8 (unsupported)
     for x in 0 1 2 3 4 5 6 7 ; do
-        w_try_regsvr32 "$(basename "${W_SYSTEM32_DLLS}/xaudio2_${x}")"
+        w_try_regsvr "$(basename "${W_SYSTEM32_DLLS}/xaudio2_${x}")"
     done
 }
 
@@ -13115,7 +13324,7 @@ load_xact_x64()
     w_override_dlls native,builtin xactengine2_0 xactengine2_10 xactengine2_1 xactengine2_2 xactengine2_3 xactengine2_4 xactengine2_5 xactengine2_6 xactengine2_7 xactengine2_8 xactengine2_9 xactengine3_0 xactengine3_1 xactengine3_2 xactengine3_3 xactengine3_4 xactengine3_5 xactengine3_6 xactengine3_7
 
     # Register xactengine?_?.dll
-    for x in "${W_SYSTEM64_DLLS}"/xactengine*.dll ; do
+    for x in "${W_SYSTEM64_DLLS}"/xactengine* ; do
         w_try_regsvr64 "$(basename "${x}")"
     done
 
@@ -13539,7 +13748,7 @@ w_metadata andale fonts \
 
 load_andale()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/andale32.exe" 0524fe42951adc3a7eb870e32f0920313c71f170c859b5f770d82b4ee111e970
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/andale32.exe" 0524fe42951adc3a7eb870e32f0920313c71f170c859b5f770d82b4ee111e970
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/andale32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "AndaleMo.TTF"
     w_register_font andalemo.ttf "Andale Mono"
@@ -13557,8 +13766,8 @@ w_metadata arial fonts \
 
 load_arial()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/arial32.exe" 85297a4d146e9c87ac6f74822734bdee5f4b2a722d7eaa584b7f2cbf76f478f6
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/arialb32.exe" a425f0ffb6a1a5ede5b979ed6177f4f4f4fdef6ae7c302a7b7720ef332fec0a8
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/arial32.exe" 85297a4d146e9c87ac6f74822734bdee5f4b2a722d7eaa584b7f2cbf76f478f6
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/arialb32.exe" a425f0ffb6a1a5ede5b979ed6177f4f4f4fdef6ae7c302a7b7720ef332fec0a8
 
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/arial32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "Arial*.TTF"
@@ -13584,7 +13793,7 @@ w_metadata comicsans fonts \
 
 load_comicsans()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/comic32.exe" 9c6df3feefde26d4e41d4a4fe5db2a89f9123a772594d7f59afd062625cd204e
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/comic32.exe" 9c6df3feefde26d4e41d4a4fe5db2a89f9123a772594d7f59afd062625cd204e
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/comic32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "Comic*.TTF"
     w_register_font comicbd.ttf "Comic Sans MS Bold"
@@ -13602,7 +13811,7 @@ w_metadata courier fonts \
     installed_file1="${W_FONTSDIR_WIN}/cour.ttf"
 load_courier()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/courie32.exe" bb511d861655dde879ae552eb86b134d6fae67cb58502e6ff73ec5d9151f3384
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/courie32.exe" bb511d861655dde879ae552eb86b134d6fae67cb58502e6ff73ec5d9151f3384
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/courie32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "cour*.ttf"
     w_register_font courbd.ttf "Courier New Bold"
@@ -13622,7 +13831,7 @@ w_metadata georgia fonts \
     installed_file1="${W_FONTSDIR_WIN}/georgia.ttf"
 load_georgia()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/georgi32.exe" 2c2c7dcda6606ea5cf08918fb7cd3f3359e9e84338dc690013f20cd42e930301
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/georgi32.exe" 2c2c7dcda6606ea5cf08918fb7cd3f3359e9e84338dc690013f20cd42e930301
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/georgi32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "Georgia*.TTF"
     w_register_font georgiab.ttf "Georgia Bold"
@@ -13643,7 +13852,7 @@ w_metadata impact fonts \
 
 load_impact()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/impact32.exe" 6061ef3b7401d9642f5dfdb5f2b376aa14663f6275e60a51207ad4facf2fccfb
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/impact32.exe" 6061ef3b7401d9642f5dfdb5f2b376aa14663f6275e60a51207ad4facf2fccfb
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/impact32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "Impact.TTF"
     w_register_font impact.ttf "Impact"
@@ -13661,7 +13870,7 @@ w_metadata times fonts \
 
 load_times()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/times32.exe" db56595ec6ef5d3de5c24994f001f03b2a13e37cee27bc25c58f6f43e8f807ab
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/times32.exe" db56595ec6ef5d3de5c24994f001f03b2a13e37cee27bc25c58f6f43e8f807ab
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/times32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "Times*.TTF"
     w_register_font timesbd.ttf "Times New Roman Bold"
@@ -13682,7 +13891,7 @@ w_metadata trebuchet fonts \
 
 load_trebuchet()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/trebuc32.exe" 5a690d9bb8510be1b8b4fe49f1f2319651fe51bbe54775ddddd8ef0bd07fdac9
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/trebuc32.exe" 5a690d9bb8510be1b8b4fe49f1f2319651fe51bbe54775ddddd8ef0bd07fdac9
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/trebuc32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "[tT]rebuc*.ttf"
     w_register_font trebucbd.ttf "Trebuchet MS Bold"
@@ -13703,7 +13912,7 @@ w_metadata verdana fonts \
 
 load_verdana()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/verdan32.exe" c1cb61255e363166794e47664e2f21af8e3a26cb6346eb8d2ae2fa85dd5aad96
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/verdan32.exe" c1cb61255e363166794e47664e2f21af8e3a26cb6346eb8d2ae2fa85dd5aad96
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/verdan32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "Verdana*.TTF"
     w_register_font verdanab.ttf "Verdana Bold"
@@ -13724,7 +13933,7 @@ w_metadata webdings fonts \
 
 load_webdings()
 {
-    w_download_to corefonts "https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/corefonts/webdin32.exe" 64595b5abc1080fba8610c5c34fab5863408e806aafe84653ca8575bed17d75a
+    w_download_to corefonts "https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/corefonts/webdin32.exe" 64595b5abc1080fba8610c5c34fab5863408e806aafe84653ca8575bed17d75a
     w_try_cabextract -d "${W_TMP}" "${W_CACHE}"/corefonts/webdin32.exe
     w_try_cp_font_files "${W_TMP}" "${W_FONTSDIR_UNIX}" "Webdings.TTF"
     w_register_font webdings.ttf "Webdings"
@@ -14434,9 +14643,7 @@ w_metadata adobe_diged4 apps \
 
 load_adobe_diged4()
 {
-    # 2020/11/26: a21a9d5389728fdac6a7288953dddeea774ef2bee07f1caf7ea20bbed8f5a2c6
-    # 2025/04/03: db40676c6925f64ab79c3d8b7a24be0973b07ef1c14eec6ec8c44f47cfe665b8
-    w_download https://download.adobe.com/pub/adobe/digitaleditions/ADE_4.5_Installer.exe db40676c6925f64ab79c3d8b7a24be0973b07ef1c14eec6ec8c44f47cfe665b8
+    w_download https://download.adobe.com/pub/adobe/digitaleditions/ADE_4.5_Installer.exe a21a9d5389728fdac6a7288953dddeea774ef2bee07f1caf7ea20bbed8f5a2c6
 
     if w_workaround_wine_bug 32323; then
         w_call corefonts
@@ -14488,15 +14695,9 @@ w_metadata battle_net apps \
 
 load_battle_net()
 {
-    if w_wine_version_in ,9.99; then
-        w_die "${W_PACKAGE} requires wine version 10.0 (or newer)"
-    fi
-
     w_download "https://www.battle.net/download/getInstallerForGame?os=win&gameProgram=BATTLENET_APP&version=Live" "" "Battle.net-Setup.exe"
 
     w_override_dlls disabled BlizzardError.exe
-
-    "${WINE}" reg add "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts" /f
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+ --lang=enUS --installpath="${W_PROGRAMS_X86_WIN}\\Battle.net"} > /dev/null 2>&1
@@ -14506,21 +14707,21 @@ load_battle_net()
 #----------------------------------------------------------------
 
 w_metadata busybox apps \
-    title="BusyBox FRP-5579-g5749feb35" \
+    title="BusyBox FRP-4621-gf3c5e8bc3" \
     publisher="Ron Yorston / Busybox authors" \
-    year="2025" \
+    year="2021" \
     media="download" \
-    file1="busybox-w32-FRP-5579-g5749feb35.exe" \
+    file1="busybox-w32-FRP-4621-gf3c5e8bc3.exe" \
     installed_exe1="${W_SYSTEM32_DLLS_WIN}/busybox.exe"
 
 load_busybox()
 {
-    w_download https://frippery.org/files/busybox/busybox-w32-FRP-5579-g5749feb35.exe 497607849a3e581615e46292d9063313d9a27a54380aad60ba2c5328838e3bb6
+    w_download https://frippery.org/files/busybox/busybox-w32-FRP-4621-gf3c5e8bc3.exe 58c9da9ba094eade662572f9a725a6af44350dc3ff5a7897696926c651fdb582
 
     if test "${W_ARCH}" = "win64"; then
-        w_download https://frippery.org/files/busybox/busybox-w64-FRP-5579-g5749feb35.exe 1255109d6335adf8374888f9c9fc70221f098cb6bf03f183e710e71179ecad78
+        w_download https://frippery.org/files/busybox/busybox-w64-FRP-4621-gf3c5e8bc3.exe 7109bc6f129ab7ce466f7b3175ca830316184b431d16a965ade17b93c035ec7c
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
-        w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/busybox-w64-FRP-5579-g5749feb35.exe" "${W_SYSTEM64_DLLS}/busybox.exe"
+        w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/busybox-w64-FRP-4621-gf3c5e8bc3.exe" "${W_SYSTEM64_DLLS}/busybox.exe"
     else
         w_try_cp_dll "${W_CACHE}/${W_PACKAGE}/${file1}" "${W_SYSTEM32_DLLS}/busybox.exe"
     fi
@@ -14661,10 +14862,8 @@ w_metadata dxwnd apps \
 load_dxwnd()
 {
     # 2022/10/02 v2_05_88_build.rar a80ad1246493b3b34fba2131494052423ac298a39592d4e06a685568b829922e
-    w_download https://downloads.sourceforge.net/project/dxwnd/Latest%20build/v2_05_88_build.rar a80ad1246493b3b34fba2131494052423ac298a39592d4e06a685568b829922e
-    w_try_mkdir "${W_PROGRAMS_X86_UNIX}"/dxwnd
-    w_try_cd "${W_PROGRAMS_X86_UNIX}"/dxwnd
-    w_try_unrar "${W_CACHE}/${W_PACKAGE}/${file1}"
+    w_download https://versaweb.dl.sourceforge.net/project/dxwnd/Latest%20build/v2_05_88_build.rar a80ad1246493b3b34fba2131494052423ac298a39592d4e06a685568b829922e
+    w_try_7z "${W_PROGRAMS_X86_UNIX}"/dxwnd "${W_CACHE}"/"${W_PACKAGE}"/"${file1}" -aoa
 }
 
 #----------------------------------------------------------------
@@ -14694,16 +14893,17 @@ load_eadesktop()
 {
     w_package_unsupported_win32
 
-    if w_wine_version_in ,9.99 ; then
-        w_die "${W_PACKAGE} requires wine version 10.0 (or newer)"
+    if w_wine_version_in ,7.6 ; then
+        w_die "${W_PACKAGE} requires wine version 7.7 (or newer)"
     fi
 
-    if w_workaround_wine_bug 32342 "EACefSubProcess crashes when updating or launching EALauncher (missing fonts)"; then
-        w_call corefonts
-    fi
+    #if w_workaround_wine_bug 32342 "EACefSubProcess crashes when updating or launching EALauncher (missing fonts)"; then
+    #    w_call corefonts
+    #fi
 
     if w_workaround_wine_bug 54948 "EALauncher fails to render."; then
         w_call d3dcompiler_47
+        w_call dxvk
     fi
 
     w_call vcrun2010
@@ -14713,14 +14913,23 @@ load_eadesktop()
 
     w_override_dlls disabled EACrashReporter.exe
 
-    w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/eadesktop/EAappInstaller.exe bb88080525f2d72403b6529e6ec366d4cdac73d2fc9d7585c3636aaae37e718a
+    w_download https://origin-a.akamaihd.net/EA-Desktop-Client-Download/installer-releases/EAappInstaller.exe 2270592e00263b7f9af84652f7fc09449066f0e7395a4a37678e134ae46791fb
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # NSIS installer
-    w_try "${WINE}" "${file1}" EAX_LAUNCH_CLIENT=0 ${W_OPT_UNATTENDED:+ /S} > /dev/null 2>&1
+    WINEDLLOVERRIDES=EALauncher.exe=d "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+ /S} > /dev/null 2>&1
+
+    # Don't auto starting when refreshing the wineprefix
+    "${WINE}" reg delete "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" /v EADM /f || true
 
     w_warn "Stop Steam from installing EA app"
-    "${WINE}" reg add "HKLM\\Software\\Electronic Arts\\EA Desktop" /v InstallSuccessful /t REG_SZ /d "true" /f
+    cat > "${W_TMP}"/ea-app.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\\Software\\Electronic Arts\\EA Desktop]
+"InstallSuccessful"="true"
+_EOF_
+    w_try_regedit "${W_TMP}"/ea-app.reg
 }
 
 #----------------------------------------------------------------
@@ -14755,7 +14964,10 @@ w_metadata epicgames apps \
 
 load_epicgames()
 {
-    w_package_broken "https://github.com/Sikarugir-App/Sikarugir/issues/128"
+    # crossover-preview-20240913 (wine-9.16)
+    if w_wine_version_in ,9.15 ; then
+        w_die "${title} requires wine version 9.16 (or newer)"
+    fi
 
     if w_workaround_wine_bug 48404 ""; then
         w_warn "Free game notifications and other pop up messages can't be closed and"
@@ -14766,11 +14978,48 @@ load_epicgames()
     #    w_call corefonts
     #fi
 
+    # Ubisoft Connect
+    w_set_app_winver upc.exe win7
+
     w_download "https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi" "" "EpicGamesLauncherInstaller.msi"
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # https://silentinstallhq.com/epic-games-launcher-silent-install-how-to-guide/
     w_try "${WINE}" msiexec /i EpicGamesLauncherInstaller.msi ${W_OPT_UNATTENDED:+/qb}
+}
+
+#----------------------------------------------------------------
+
+w_metadata ev3 apps \
+    title="Lego Mindstorms EV3 Home Edition" \
+    publisher="Lego" \
+    year="2014" \
+    media="download" \
+    file1="LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/LEGO Software/LEGO MINDSTORMS EV3 Home Edition/MindstormsEV3.exe"
+
+load_ev3()
+{
+    if w_workaround_wine_bug 40192 "Installing vcrun2005 as Wine does not have MFC80.dll"; then
+        w_call vcrun2005
+    fi
+
+    if w_workaround_wine_bug 40193 "Installing IE8 as built-in Gecko is not sufficient"; then
+        w_call ie8
+    fi
+
+    w_call dotnet40
+
+    # 2016/03/22: LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
+
+    w_download http://esd.lego.com.edgesuite.net/digitaldelivery/mindstorms/6ecda7c2-1189-4816-b2dd-440e22d65814/public/LMS-EV3-WIN32-ENUS-01-02-01-full-setup.exe c47341f08242f0f6f01996530e7c93bda2d666747ada60ab93fa773a55d40a19
+
+    w_try_cd "${W_CACHE}"/"${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/qb /AcceptLicenses yes}
+
+    if w_workaround_wine_bug 40729 "Setting override for urlmon.dll to native to avoid crash"; then
+        w_override_dlls native urlmon
+    fi
 }
 
 #----------------------------------------------------------------
@@ -14847,7 +15096,7 @@ w_metadata galaxy apps \
     publisher="GOG" \
     year="2020" \
     media="download" \
-    file1="setup_galaxy_2.0.89.99.exe" \
+    file1="setup_galaxy_2.0.77.22.exe" \
     installed_exe1="${W_PROGRAMS_X86_WIN}/GOG Galaxy/GalaxyClient.exe" \
     homepage="https://www.gog.com"
 
@@ -14861,7 +15110,7 @@ load_galaxy()
     w_package_broken "https://www.codeweavers.com/compatibility/crossover/gog-galaxy" 8.0.2 9.13
 
     # Find latest version from https://remote-config.gog.com/components/webinstaller?component_version=2.0.0
-    w_download https://content-system.gog.com/open_link/download?path=/open/galaxy/client/setup_galaxy_2.0.89.99.exe
+    w_download https://content-system.gog.com/open_link/download?path=/open/galaxy/client/2.0.77.22/setup_galaxy_2.0.77.22.exe 58c7ffd847589c924316c6b36f1aab11b6ced07af2a25e3092a0ca1fe2847ae7
 
     #w_call corefonts
     #w_call dotnet48
@@ -14957,16 +15206,16 @@ w_metadata hoyoplay apps \
     publisher="HoYoLAB" \
     year="2024" \
     media="download" \
-    file1="HoYoPlay_install_ua_6ff6c1cd4e8b.exe" \
+    file1="hyp_global_setup.exe" \
     installed_file1="${W_PROGRAMS_WIN}/HoYoPlay/launcher.exe" \
     homepage="https://hoyoplay.hoyoverse.com/"
 
 load_hoyoplay()
 {
-    w_download "https://download-porter.hoyoverse.com/download-porter/2025/02/21/VYTpXlbWo8_1.4.5.222_1_0_hyp_hoyoverse_prod_202502081529_XFGRLkBk.exe?trace_key=HoYoPlay_install_ua_6ff6c1cd4e8b" "6fb0219d7d7d9683bea7084b2b530902b17be7afe5ebe5ba5b4cd8b47f303b6b" "${file1}"
+    w_download "https://ys-api-os.mihoyo.com/event/download_porter/link/hyp_global/hyphoyoverse/default" "" "hyp_global_setup.exe"
 
     if [ -n "${W_OPT_UNATTENDED}" ]; then
-        w_try_7z "${W_PROGRAMS_UNIX}"/HoYoPlay "${W_CACHE}/${W_PACKAGE}"/${file1} -aoa
+        w_try_7z "${W_PROGRAMS_UNIX}"/HoYoPlay "${W_CACHE}/${W_PACKAGE}"/hyp_global_setup.exe -aoa
         w_try cp -f "${W_PROGRAMS_UNIX}"/HoYoPlay/*.*.*.*/launcher.exe "${W_PROGRAMS_UNIX}"/HoYoPlay/launcher.exe
         w_call vcrun2022
     else
@@ -15285,7 +15534,7 @@ load_ie8()
     w_call msls31
 
     # Change the override to the native so we are sure we use and register them
-    w_override_dlls native,builtin ieframe ieproxy iertutil itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
+    w_override_dlls native,builtin ieframe ieproxy itircl itss jscript msctf mshtml shdoclc shdocvw shlwapi urlmon wininet xmllite
 
     # IE8 installer will check the version number of iexplore.exe which causes IE8 installer to fail on wine-1.9.0+
     w_override_dlls native iexplore.exe
@@ -15365,18 +15614,16 @@ load_ie8()
 
     # Work around DLL registration bug until ierunonce/RunOnce/wineboot is fixed
     # FIXME: whittle down this list
-
-    # The list has been divided to avoid errors when installing the dll using "/i"
-    # And removed the dll files that cannot be installed or registered
-    for i in actxprxy.dll ddraw.dll dispex.dll dsound.dll iedkcs32.dll \
-        iepeers.dll inetcomm.dll jscript.dll mlang.dll msctf.dll mshtmled.dll \
-        msi.dll msimtf.dll msident.dll mstime.dll msxml3.dll ole32.dll \
-        oleaut32.dll olepro32.dll quartz.dll rpcrt4.dll rsabase.dll rsaenh.dll \
-        scrobj.dll scrrun.dll vbscript.dll hhctrl.ocx tdc.ocx wshom.ocx; do
-        w_try_regsvr32 ${i} > /dev/null 2>&1
-    done
-
-    for i in browseui.dll shdocvw.dll shell32.dll urlmon.dll; do
+    for i in actxprxy.dll browseui.dll browsewm.dll cdfview.dll ddraw.dll \
+        dispex.dll dsound.dll iedkcs32.dll iepeers.dll iesetup.dll \
+        imgutil.dll inetcomm.dll isetup.dll jscript.dll laprxy.dll \
+        mlang.dll msctf.dll mshtml.dll mshtmled.dll msi.dll msimtf.dll msident.dll \
+        msoeacct.dll msrating.dll mstime.dll msxml3.dll occache.dll \
+        ole32.dll oleaut32.dll olepro32.dll pngfilt.dll quartz.dll \
+        rpcrt4.dll rsabase.dll rsaenh.dll scrobj.dll scrrun.dll \
+        shdocvw.dll shell32.dll urlmon.dll vbscript.dll webcheck.dll \
+        wshcon.dll wshext.dll asctrls.ocx hhctrl.ocx mscomct2.ocx \
+        plugin.ocx proctexe.ocx tdc.ocx uxtheme.dll webcheck.dll wshom.ocx; do
         w_try_regsvr32 /i ${i} > /dev/null 2>&1
     done
 
@@ -15713,9 +15960,7 @@ load_nook()
 {
     # Dates from curl --head
     # 2012/03/07: sha256sum 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
-    # This file is no longer in the source, we are downloading from the web archive
-    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
-    w_download https://web.archive.org/web/20230716074105/http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
+    w_download http://images.barnesandnoble.com/PResources/download/eReader2/bndr2_setup_latest.exe 436616d99f0e2351909ab53d910b505c7a3fca248876ebb835fd7bce4aad9720
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # Exits with 199 for some reason..
@@ -15733,16 +15978,192 @@ load_nook()
 w_metadata npp apps \
     title="Notepad++" \
     publisher="Don Ho" \
-    year="2026" \
+    year="2019" \
     media="download" \
-    file1="npp.8.9.1.Installer.x64.exe" \
-    installed_exe1="${W_PROGRAMS_WIN}/Notepad++/notepad++.exe"
+    file1="npp.7.7.1.Installer.exe" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Notepad++/notepad++.exe"
 
 load_npp()
 {
-    w_download https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.9.1/npp.8.9.1.Installer.x64.exe 06c42ea6edbbc2c1ffa74d5c3355ced51616896f41aee66372bfb55eb54ae68f
+    w_download https://notepad-plus-plus.org/repository/7.x/7.7.1/npp.7.7.1.Installer.exe 6787c524b0ac30a698237ffb035f932d7132343671b8fe8f0388ed380d19a51c
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_try "${WINE}" "${file1}" ${W_OPT_UNATTENDED:+/S}
+}
+
+#----------------------------------------------------------------
+
+w_metadata office2003pro apps \
+    title="Microsoft Office 2003 Professional" \
+    publisher="Microsoft" \
+    year="2002" \
+    media="cd" \
+    file1="setup.exe" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Microsoft Office/Office11/WINWORD.EXE"
+
+load_office2003pro()
+{
+    w_mount OFFICE11
+    w_read_key
+
+    w_ahk_do "
+        if ( w_opt_unattended > 0 ) {
+            run ${W_ISO_MOUNT_LETTER}:setup.exe /EULA_ACCEPT=YES /PIDKEY=${W_KEY}
+        } else {
+            run ${W_ISO_MOUNT_LETTER}:setup.exe
+        }
+        SetTitleMatchMode, 2
+        WinWait,Microsoft Office 2003 Setup, Welcome
+        if ( w_opt_unattended > 0 ) {
+            Sleep 500
+            WinWait,Microsoft Office 2003 Setup,Key
+            Sleep 500
+            ControlClick Button1 ; Next
+            WinWait,Microsoft Office 2003 Setup,Initials
+            Sleep 500
+            ControlClick Button1 ; Next
+            WinWait,Microsoft Office 2003 Setup,End-User
+            Sleep 500
+            ControlClick Button1 ; I accept
+            ControlClick Button2 ; Next
+            WinWait,Microsoft Office 2003 Setup,Recommended
+            Sleep 500
+            ControlClick Button7 ; Next
+            WinWait,Microsoft Office 2003 Setup,Summary
+            Sleep 500
+            ControlClick Button1 ; Install
+        }
+        WinWait,Microsoft Office 2003 Setup,Completed
+        if ( w_opt_unattended > 0 ) {
+            Sleep 500
+            ControlClick Button2 ; Finish
+        }
+        WinWaitClose
+    "
+}
+
+#----------------------------------------------------------------
+
+w_metadata office2007pro apps \
+    title="Microsoft Office 2007 Professional" \
+    publisher="Microsoft" \
+    year="2006" \
+    media="cd" \
+    file1="setup.exe" \
+    installed_file1="${W_PROGRAMS_X86_WIN}/Microsoft Office/Office12/WINWORD.EXE"
+
+load_office2007pro()
+{
+    if w_workaround_wine_bug 14980 "Using native riched20"; then
+        w_override_app_dlls winword.exe n riched20
+        w_override_app_dlls excel.exe n riched20
+        w_override_app_dlls powerpnt.exe n riched20
+        w_override_app_dlls msaccess.exe n riched20
+        w_override_app_dlls outlook.exe n riched20
+        w_override_app_dlls mspub.exe n riched20
+        w_override_app_dlls infopath.exe n riched20
+    fi
+
+    w_mount OFFICE12
+    w_read_key
+
+    if [ -n "${W_OPT_UNATTENDED}" ]; then
+        # See
+        # https://blogs.technet.microsoft.com/office_resource_kit/2009/01/29/configure-a-silent-install-of-the-2007-office-system-with-config-xml/
+        # https://www.symantec.com/connect/articles/office-2007-silent-installation-lessons-learned
+        cat > "${W_TMP}"/config.xml <<__EOF__
+<Configuration Product="ProPlus">
+<Display Level="none" CompletionNotice="no" SuppressModal="yes" AcceptEula="yes" />
+<PIDKEY Value="${W_KEY}" />
+</Configuration>
+__EOF__
+        "${WINE}" "${W_ISO_MOUNT_LETTER}":setup.exe /config "${W_TMP_WIN}"\\config.xml
+
+        status=$?
+        case ${status} in
+            0|43) ;;
+            78)
+                w_die "Installing ${W_PACKAGE} failed, product key ${W_KEY} \
+    might be wrong. Try again without -q, or put correct key in \
+    ${W_CACHE}/${W_PACKAGE}/key.txt and rerun."
+                ;;
+            *)
+                w_die "Installing ${W_PACKAGE} failed."
+                ;;
+        esac
+
+    else
+        w_try "${WINE}" "${W_ISO_MOUNT_LETTER}":setup.exe
+    fi
+}
+
+#----------------------------------------------------------------
+
+w_metadata office2013pro apps \
+    title="Microsoft Office 2013 Professional" \
+    publisher="Microsoft" \
+    year="2013" \
+    media="download" \
+    file1="setup.exe" \
+    installed_file1="${W_PROGRAMS_X86_WIN}/Microsoft Office/Office15/WINWORD.EXE"
+
+load_office2013pro()
+{
+    w_package_unsupported_win64
+
+    if [ ! -x "$(command -v ntlm_auth 2>/dev/null)" ]; then
+        w_die "winbind (part of samba) is required for the installation"
+    fi
+
+    # link from https://www.askvg.com/direct-download-link-microsoft-office-2013-professional-plus-free-trial/
+    w_download https://web.archive.org/web/20130324022555/http://care.dlservice.microsoft.com/dl/download/2/9/C/29CC45EF-4CDA-4710-9FB3-1489786570A1/OfficeProfessionalPlus_x86_en-us.img 236f8faae3f979ec72592a63784bba2f0d614916350c44631221b88ae9dae206 "OFFICE15.iso"
+
+    w_set_winver win7
+
+    w_call corefonts
+    w_call tahoma
+
+    w_call riched20
+
+
+    if w_workaround_wine_bug 43581 "Wine has problems parsing some regex strings during installation"; then
+        w_call msxml6
+    fi
+
+    case "${WINETRICKS_ISO_MOUNT}" in
+        # archivemount > 0.8.8: works
+        # archivemount <= 0.8.8: cannot finish installation due to path issue
+        archivemount)
+            _W_last_bad_ver=0.8.8
+            _W_tool_ver="$(archivemount --version 2>&1 | head -n 1 | cut -d ' ' -f3)"
+            _W_pos_am_ver="$(printf "%s\\n%s" "${_W_tool_ver}" "${_W_last_bad_ver}" | sort -t. -k 1,1n -k 2,2n -k 3,3n | grep -n "^${_W_tool_ver}\$" | cut -d : -f1 | head -n 1)"
+            if test "${_W_pos_am_ver}" = "2"; then
+                W_USE_USERMOUNT=1
+            else
+                w_warn "archivemount <= ${_W_last_bad_ver} has path issue and cannot be used."
+            fi
+            unset _W_last_bad_ver _W_tool_ver _W_pos_am_ver
+            ;;
+        # fuseiso: works
+        # hdiutil: partially tested (only mounting/unmounting and copying files)
+        *) W_USE_USERMOUNT=1 ;;
+    esac
+    w_mount OFFICE15
+
+    if [ -n "${W_OPT_UNATTENDED}" ]; then
+        cat > "${W_TMP}"/config.xml <<_EOF_
+<Configuration Product="ProPlus">
+<Display Level="none" CompletionNotice="no" SuppressModal="yes" AcceptEula="yes" />
+</Configuration>
+_EOF_
+        w_try "${WINE}" "${W_ISO_MOUNT_LETTER}:${file1}" /config "${W_TMP_WIN}"\\config.xml
+    else
+        w_try "${WINE}" "${W_ISO_MOUNT_LETTER}:${file1}"
+    fi
+
+    w_wineserver -w
+    w_umount
+
+    w_warn "Microsoft Office 2013 is far away from running stable under wine 3.3. It should not be used in a productive environment."
 }
 
 #----------------------------------------------------------------
@@ -15849,6 +16270,86 @@ load_openwatcom()
 
 #----------------------------------------------------------------
 
+w_metadata origin apps \
+    title="EA Origin" \
+    publisher="EA" \
+    year="2011" \
+    media="download" \
+    file1="OriginSetup.exe" \
+    file2="version_v3.dll" \
+    installed_file1="${W_PROGRAMS_X86_WIN}/Origin/Origin.exe" \
+    homepage="https://www.origin.com/"
+
+load_origin()
+{
+    if w_wine_version_in ,7.6 ; then
+        w_die "${W_PACKAGE} requires wine version 7.7 (or newer)"
+    fi
+
+    w_download https://github.com/Kegworks-App/winetricks-archive-mirror/releases/download/origin/OriginSetup.exe ed6ee5174f697744ac7c5783ff9021da603bbac42ae9836cd468d432cadc9779
+    w_download_to origin https://github.com/p0358/Fuck_off_EA_App/releases/download/v3/version.dll 6c2df238a5cbff3475527aa7adf1d8b76d4d2d1a33a6d62edd4749408305c2be version_v3.dll
+
+    w_try_mkdir "${W_DRIVE_C}/ProgramData/Origin"
+
+    w_warn "Stopping Origin from finding updates"
+    cat > "${W_DRIVE_C}/ProgramData/Origin/local.xml" <<_EOF_
+<?xml version="1.0"?>
+<Settings>
+  <Setting value="true" key="MigrationDisabled" type="1"/>
+  <Setting key="UpdateURL" value="http://joe.rilla" type="10"/>
+  <Setting key="AutoPatchGlobal" value="false" type="1"/>
+  <Setting key="AutoUpdate" value="false" type="1"/>
+</Settings>
+_EOF_
+
+    w_try_cd "${W_CACHE}/${W_PACKAGE}"
+    w_try "${WINE}" "${file1}" /NoLaunch ${W_OPT_UNATTENDED:+/SILENT}
+
+    #if w_workaround_wine_bug 32342 "QtWebEngineProcess.exe crashes when updating or launching Origin (missing fonts)"; then
+    #    w_call corefonts
+    #fi
+
+    if w_workaround_wine_bug 36863 "Disabling Origin In-game overlay."; then
+        w_override_dlls disabled igoproxy.exe
+        w_override_dlls disabled igoproxy64.exe
+    fi
+
+    if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly."; then
+        w_override_app_dlls Origin.exe disabled libglesv2
+    fi
+
+    # Avoids "An unexpected error has occurred. Please try again in a few moments. Error: 327684:3"
+    # Games won't register correctly unless disabled
+    if w_workaround_wine_bug 52781 "Origin does not notice games exiting, does not allow them to be relaunched."; then
+        w_override_app_dlls Origin.exe disabled gameux
+    fi
+
+    if [ "$(uname -s)" = "Darwin" ]; then
+        w_override_app_dlls EALink.exe disabled d3d10
+        w_override_app_dlls EALink.exe disabled d3d10core
+        w_override_app_dlls EALink.exe disabled d3d12
+        w_override_app_dlls EALink.exe disabled d3d11
+        w_override_app_dlls EALink.exe disabled dxgi
+        w_override_app_dlls Origin.exe disabled dxgi
+    fi
+
+    w_warn "Workaround Forced EA app upgrade."
+    w_try cp -f "${W_CACHE}/${W_PACKAGE}/version_v3.dll" "${W_PROGRAMS_X86_UNIX}/Origin/version.dll"
+    w_override_app_dlls Origin.exe native version
+
+    w_warn "Pretend EA app is installed"
+    cat > "${W_TMP}"/ea-app.reg <<_EOF_
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\\Software\\Electronic Arts\\EA Desktop]
+"InstallSuccessful"="true"
+
+_EOF_
+    w_try_regedit "${W_TMP}"/ea-app.reg
+}
+
+#----------------------------------------------------------------
+
 w_metadata procexp apps \
     title="Process Explorer" \
     publisher="Steve P. Miller" \
@@ -15857,9 +16358,7 @@ w_metadata procexp apps \
 
 load_procexp()
 {
-    # 2024/04/04: c50bddaaacb26c5654f845962f9ee34db6ce26b62f94a03bb59f3b5a6eea1922
-    # 2025/04/03: 54336cd4f4608903b1f89a43ca88f65c2f209f4512a5201cebd2b38ddc855f24
-    w_download https://download.sysinternals.com/files/ProcessExplorer.zip 54336cd4f4608903b1f89a43ca88f65c2f209f4512a5201cebd2b38ddc855f24
+    w_download https://download.sysinternals.com/files/ProcessExplorer.zip c50bddaaacb26c5654f845962f9ee34db6ce26b62f94a03bb59f3b5a6eea1922
     w_try_unzip "${W_TMP}" "${W_CACHE}"/procexp/ProcessExplorer.zip
     if [ "${W_ARCH}" = "win64" ] ; then
         w_try cp "${W_TMP}"/procexp64.exe "${W_WINDIR_UNIX}"
@@ -15933,7 +16432,7 @@ load_psdk2003()
     # Unpack ISO (how handy that 7z can do this!)
     # Only the Windows version of 7z can handle .img files?
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
-    w_try_cd "${W_PROGRAMS_UNIX}"/7-Zip
+    w_try_cd "${W_PROGRAMS_X86_UNIX}"/7-Zip
     w_try "${WINE}" 7z.exe x -y -o"${W_TMP_WIN}" "${W_CACHE_WIN}\\psdk2003\\5.2.3790.1830.15.PlatformSDK_Svr2003SP1_rtm.img"
 
     w_try_cd "${W_TMP}/Setup"
@@ -16005,29 +16504,6 @@ _EOF_
 
 #----------------------------------------------------------------
 
-w_metadata rare apps \
-    title="Epic Games Launcher alternative" \
-    publisher="RareDevs" \
-    year="2020" \
-    media="download" \
-    file1="Rare-1.12.0.0.msi" \
-    installed_exe1="${W_PROGRAMS_WIN}/rare/Rare.exe" \
-    homepage="https://github.com/RareDevs/Rare"
-
-load_rare()
-{
-    if w_wine_version_in ,8.99 ; then
-        w_die "${title} requires wine version 9.0 (or newer)"
-    fi
-
-    w_download https://github.com/RareDevs/Rare/releases/download/1.12.0/${file1}
-
-    w_try_cd "${W_CACHE}/${W_PACKAGE}"
-    w_try "${WINE}" msiexec /i ${file1} ${W_OPT_UNATTENDED:+/qb}
-}
-
-#----------------------------------------------------------------
-
 w_metadata rockstar apps \
     title="Rockstar Games Launcher" \
     publisher="Rockstar" \
@@ -16039,18 +16515,14 @@ w_metadata rockstar apps \
 
 load_rockstar()
 {
-    if w_wine_version_in ,7.6; then
-        w_die "${title} requires wine version 8.0.1 (or newer)"
+    if w_wine_version_in ,8.0; then
+        w_die "${title} requires wine version 8.0.1 (or newer) when using D3DMetal"
     fi
 
     w_download https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe
 
     if [ -n "${W_OPT_UNATTENDED}" ]; then
         w_warn "There's no silent install for ${title}"
-    fi
-
-    if w_wine_version_in ,8.99; then
-        "${WINE}" reg add "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control" /v ServicesPipeTimeout /t REG_SZ /d "40000" /f
     fi
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
@@ -16101,9 +16573,7 @@ w_metadata sketchup apps \
 
 load_sketchup()
 {
-    # This file is no longer in the source, we are downloading from the web archive
-    # w_download downloads the oldest snapshot, instead we change the link to the newest one with the same sha
-    w_download https://web.archive.org/web/20160324215618/https://dl.google.com/sketchup/GoogleSketchUpWEN.exe e50c1b36131d72437eb32a124a5208fad22dc22b843683cfb520e1ef172b8352
+    w_download https://dl.google.com/sketchup/GoogleSketchUpWEN.exe e50c1b36131d72437eb32a124a5208fad22dc22b843683cfb520e1ef172b8352
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     w_ahk_do "
@@ -16136,6 +16606,17 @@ load_sketchup()
 
 #----------------------------------------------------------------
 
+load_steam_download_client()
+{
+    w_try_cd "${W_PROGRAMS_X86_UNIX}/Steam"
+    "${WINE}" Steam.exe -forcesteamupdate -forcepackagedownload -overridepackageurl http://web.archive.org/web/20240601000000if_/media.steampowered.com/client -exitsteam > /dev/null 2>&1
+
+    cat > "${W_PROGRAMS_X86_UNIX}/Steam/steam.cfg" <<_EOF_
+BootStrapperInhibitAll=enable
+
+_EOF_
+}
+
 w_metadata steam apps \
     title="Steam" \
     publisher="Valve" \
@@ -16146,19 +16627,18 @@ w_metadata steam apps \
 
 load_steam()
 {
-    if w_wine_version_in ,9.99; then
-        w_die "${W_PACKAGE} requires wine version 10.0 (or newer)"
-    fi
-
     # 2016/10/28: 029f918a29b2b311711788e8a477c8de529c11d7dba3caf99cbbde5a983efdad
     # 2018/06/01: 3bc6942fe09f10ed3447bccdcf4a70ed369366fef6b2c7f43b541f1a3c5d1c51
     # 2021/03/27: 874788b45dfc043289ba05387e83f27b4a046004a88a4c5ee7c073187ff65b9d
     # 2022/03/27: 3b616cb0beaacffb53884b5ba0453312d2577db598d2a877a3b251125fb281a1
-    # 2025/04/03: 7d3654531c32d941b8cae81c4137fc542172bfa9635f169cb392f245a0a12bcb
     w_download http://media.steampowered.com/client/installer/SteamSetup.exe
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     w_try "${WINE}" SteamSetup.exe ${W_OPT_UNATTENDED:+ /S}
+
+    #if w_workaround_wine_bug 32342 "Steamwebhelper.exe crashes when updating or launching (missing fonts)"; then
+    #    w_call corefonts
+    #fi
 
     if w_workaround_wine_bug 44985 "Disabling libglesv2 to make Store and Library function correctly." 7.0,; then
         w_override_app_dlls steamwebhelper.exe disabled libglesv2
@@ -16168,17 +16648,14 @@ load_steam()
         w_call d3dcompiler_47
     fi
 
+    if w_wine_version_in ,9.0 ; then
+        load_steam_download_client
+    fi
+
     w_override_dlls disabled EACrashReporter.exe
 
-    # Other common deps installed by Steam
-    w_call vcrun2010
-    w_call vcrun2012
-    w_call vcrun2013
-    w_call vcrun2022
-
-    if w_wine_version_in ,8.99; then
-        "${WINE}" reg add "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Control" /v ServicesPipeTimeout /t REG_SZ /d "40000" /f
-    fi
+    # Ubisoft Connect
+    w_set_app_winver upc.exe win7
 
     # vulkandriverquery & vulkandriverquery64 crash a lot on macOS
     if [ "$(uname -s)" = "Darwin" ]; then
@@ -16188,6 +16665,21 @@ load_steam()
 
     # Don't auto starting when refreshing the wineprefix
     "${WINE}" reg delete "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run" /v Steam /f || true
+}
+
+#----------------------------------------------------------------
+
+w_metadata steam_remove_workaround apps \
+    title="Remove Steam workaround" \
+    installed_exe1="${W_PROGRAMS_X86_WIN}/Steam/steam.cfg"
+
+load_steam_remove_workaround()
+{
+    if w_wine_version_in ,8.99 ; then
+        w_die "${W_PACKAGE} requires wine version 9.0 (or newer)"
+    fi
+
+    w_try rm -f "${W_PROGRAMS_X86_UNIX}/Steam/steam.cfg"
 }
 
 #----------------------------------------------------------------
@@ -16213,13 +16705,14 @@ w_metadata ubisoftconnect apps \
 
 load_ubisoftconnect()
 {
-    w_package_broken "https://github.com/Sikarugir-App/Sikarugir/issues/128"
-
-    w_download https://github.com/Sikarugir-app/winetricks-archive-mirror/releases/download/ubisoftconnect/UbisoftConnectInstaller.exe aa3e768b812a0a45cbc4aba548da034b7aa924de1c63e6453c892d66ab6ca5ac
+    # Changes too frequently, don't check anymore
+    w_download https://ubistatic3-a.akamaihd.net/orbit/launcher_installer/UbisoftConnectInstaller.exe
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
 
     # NSIS installer
     w_try "${WINE}" UbisoftConnectInstaller.exe ${W_OPT_UNATTENDED:+ /S}
+
+    w_set_app_winver upc.exe win7
 }
 
 #----------------------------------------------------------------
@@ -16254,8 +16747,7 @@ w_metadata utorrent3 apps \
 load_utorrent3()
 {
     # 2017/03/26: sha256sum 482cfc0759f484ad4e6547cc160ef3f08057cb05969242efd75a51525ab9bd92
-    # 2025/04/03: bf4ee47d0df1870104f4fada8a68c2fb29e94fea9284c7bb6a6b385a718d8a18
-    w_download https://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ bf4ee47d0df1870104f4fada8a68c2fb29e94fea9284c7bb6a6b385a718d8a18 uTorrent.exe
+    w_download https://download-new.utorrent.com/endpoint/utorrent/os/windows/track/stable/ 482cfc0759f484ad4e6547cc160ef3f08057cb05969242efd75a51525ab9bd92 uTorrent.exe
 
     w_try_cd "${W_CACHE}/${W_PACKAGE}"
     # If you don't use /PERFORMINSTALL, it just runs µTorrent
@@ -16355,7 +16847,7 @@ load_vc2005trial()
     # Unpack ISO (how handy that 7z can do this!)
     # Only the Windows version of 7z can handle .img files?
     WINETRICKS_OPT_SHAREDPREFIX=1 w_call 7zip
-    w_try_cd "${W_PROGRAMS_UNIX}"/7-Zip
+    w_try_cd "${W_PROGRAMS_X86_UNIX}"/7-Zip
     w_try "${WINE}" 7z.exe x -y -o"${W_TMP_WIN}" "${W_CACHE_WIN}\\vc2005trial\\En_vs_2005_vsts_180_Trial.img"
 
     w_try_cd "${W_TMP}"
@@ -16849,7 +17341,6 @@ load_wmp11()
 #######################
 
 #----------------------------------------------------------------
-
 w_metadata atiadlxx=default settings \
     title="Enable builtin atidlxx (default)"
 w_metadata atiadlxx=disabled settings \
@@ -17356,43 +17847,6 @@ REGEDIT4
 "CurrentInstrument"="${MIDI_DEVICE}"
 _EOF_
     w_try_regedit "${W_TMP_WIN}"\\set-mididevice.reg
-}
-
-#----------------------------------------------------------------
-
-w_metadata sdl_mapping_disable settings \
-    title="Disable SDL Controller Mapping"
-
-load_sdl_mapping_disable()
-{
-    "${WINE}" reg delete "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\winebus" /v "Enable SDL" /f || true
-    "${WINE}" reg delete "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\winebus" /v "Map Controllers" /f || true
-}
-
-w_metadata sdl_mapping_enable settings \
-    title="Enable SDL Controller Mapping (makes all controlles Xinput)"
-
-load_sdl_mapping_enable()
-{
-    "${WINE}" reg add "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\winebus" /v "Enable SDL" /t REG_DWORD /d 0001 /f
-    "${WINE}" reg add "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\winebus" /v "Map Controllers" /t REG_DWORD /d 0001 /f
-}
-
-w_metadata winebus_disablehidraw settings \
-    title="winebus DisableHidraw (makes all controllers Xinput)"
-
-load_winebus_disablehidraw()
-{
-    "${WINE}" reg add "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\winebus" /v "DisableHidraw" /t REG_DWORD /d 0001 /f
-}
-
-w_metadata winebus_enablehidraw settings \
-    title="winebus EnableHidraw (DualSense controllers show normally)"
-
-load_winebus_enablehidraw()
-{
-    w_call sdl_mapping_disable
-    "${WINE}" reg delete "HKEY_LOCAL_MACHINE\\System\\CurrentControlSet\\Services\\winebus" /v "DisableHidraw" /f || true
 }
 
 #----------------------------------------------------------------
@@ -18153,12 +18607,6 @@ winetricks_stats_init()
                     thanks="Дякуємо! Ви більше не отримуватиме це питання знову. Пам'ятайте, що ви можете будь-коли вимкнути звітність за допомогою команди 'winetricks --optout'"
                     declined="Надсилання звітності Winetricks вимкнено. Ви більше не отримуватиме це питання знову."
                     ;;
-                zh_CN*)
-                    title="有关是否协助 Winetricks 开发的一次性提问。"
-                    question="您是否愿意通过允许 winetricks 报告统计信息来协助 winetricks 的开发？您可以随时通过命令 'winetricks --optout' 关闭统计信息上报。"
-                    thanks="谢谢！您将不会被要求再次回答此问题。切记，您可随时使用命令 'winetricks --optout' 关闭统计信息上报功能。"
-                    declined="好的，winetricks 将不会报告统计信息。您将不会被要求再次回答此问题。"
-                    ;;
                 *)
                     title="One-time question about helping Winetricks development"
                     question="Would you like to help winetricks development by letting winetricks report statistics? You can turn reporting off at any time with the command 'winetricks --optout'"
@@ -18460,6 +18908,17 @@ if ! test "${WINETRICKS_LIB}"; then
 
     case "$1" in
         die) w_die "we who are about to die salute you." ;;
+        volnameof=*)
+            # Debug code.  Remove later?
+            # Since Linux's volname command can't handle DVDs, winetricks has its own,
+            # implemented using dd, old gum, and some string I had laying around.
+            # You can try it like this:
+            #  winetricks volnameof=/dev/sr0
+            # or
+            #  winetricks volnameof=foo.iso
+            # This will read the volname from the given image and put it to stdout.
+            winetricks_volname "${1#volnameof=}"
+            ;;
         "")
             if [ -z "${DISPLAY}" ]; then
                 if [ "$(uname -s)" = "Darwin" ]; then
@@ -18476,6 +18935,8 @@ if ! test "${WINETRICKS_LIB}"; then
             if [ "${WINETRICKS_GUI}" = "none" ]; then
                 winetricks_detect_gui --gui
             fi
+            winetricks_detect_sudo
+            test -z "${WINETRICKS_ISO_MOUNT}" && winetricks_detect_iso_mount
             while true; do
                 case ${WINETRICKS_CURMENU} in
                     main) verbs=$(winetricks_mainmenu) ;;
@@ -18541,6 +19002,8 @@ if ! test "${WINETRICKS_LIB}"; then
         *)
             winetricks_stats_init
             # Command-line case
+            winetricks_detect_sudo
+            test -z "${WINETRICKS_ISO_MOUNT}" && winetricks_detect_iso_mount
             # User gave command-line arguments, so just run those verbs and exit
             for verb; do
                 case ${verb} in
