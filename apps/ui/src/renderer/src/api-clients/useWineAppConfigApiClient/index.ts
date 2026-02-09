@@ -53,7 +53,7 @@ export const useWineAppConfigApiClient = () => {
         const ASSETS_URL = `${URL}/assets`;
         return {
           artworkURL: encodeURL(`${ASSETS_URL}/header.jpeg`),
-          iconURL: encodeURL(`${ASSETS_URL}/winemacapp.icns?cache=${uuid()}`),
+          iconURL: encodeURL(`${ASSETS_URL}/icon.icns?cache=${uuid()}`),
           launcherImgURL: encodeURL(`${ASSETS_URL}/launcher.jpeg`),
           scriptURL: encodeURL(`${URL}/index.json`)
         };
@@ -62,7 +62,7 @@ export const useWineAppConfigApiClient = () => {
         const SCRIPT_PATH = `${env.get().WINE_SCRIPTS_PATH}/${appName}`;
         return {
           artworkURL: encodeURL(`${SCRIPT_PATH}/header.jpeg`),
-          iconURL: encodeURL(`${SCRIPT_PATH}/winemacapp.icns`),
+          iconURL: encodeURL(`${SCRIPT_PATH}/icon.icns`),
           launcherImgURL: encodeURL(`${SCRIPT_PATH}/launcher.jpeg`),
           scriptURL: encodeURL(`${SCRIPT_PATH}/index.json`)
         };
