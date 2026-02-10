@@ -32,8 +32,9 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ menuItems }) => {
         <Icon render={EllipsisVerticalIcon} />
       </Button>
       <Menu anchorEl={anchorEl} open={open} onClose={onClose}>
-        {menuItems?.map(({ onClick, label }) => (
+        {menuItems?.map(({ onClick, label }, index) => (
           <MenuItem
+            key={index}
             onClick={() => {
               onClick?.();
               onClose();
