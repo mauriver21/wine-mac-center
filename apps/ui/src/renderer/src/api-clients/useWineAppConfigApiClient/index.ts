@@ -239,11 +239,17 @@ export const useWineAppConfigApiClient = () => {
     await removeDirectory(SCRIPT_PATH, { recursive: true });
   };
 
+  const downloadScript = async (data: WineAppConfig) => {
+    console.log(data);
+    //await writeScript(data);
+  };
+
   return {
     create,
     update,
     read,
     remove,
-    listAll
+    listAll,
+    downloadScript
   };
 };

@@ -128,29 +128,29 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
                 onClick={() => navigateToScript(appName)}
                 icon={Cog6ToothIcon}
               />
+              <ContextMenu
+                menuItems={[
+                  ...(origin === ConfigOrigin.SCRIPTS
+                    ? [
+                        {
+                          label: 'Copy Script',
+                          onClick: () => {
+                            navigateToScript(appName, { copyScript: true });
+                          }
+                        },
+                        {
+                          label: 'Remove Script',
+                          onClick: () => {
+                            scriptsContext?.setAppName(appName);
+                            scriptsContext?.setOpenConfirmRemoveScript(true);
+                          }
+                        }
+                      ]
+                    : [])
+                ]}
+              />
             </>
           )}
-          <ContextMenu
-            menuItems={[
-              ...(origin === ConfigOrigin.SCRIPTS
-                ? [
-                    {
-                      label: 'Copy Script',
-                      onClick: () => {
-                        navigateToScript(appName, { copyScript: true });
-                      }
-                    },
-                    {
-                      label: 'Remove Script',
-                      onClick: () => {
-                        scriptsContext?.setAppName(appName);
-                        scriptsContext?.setOpenConfirmRemoveScript(true);
-                      }
-                    }
-                  ]
-                : [])
-            ]}
-          />
         </Box>
       </Box>
     </Card>
