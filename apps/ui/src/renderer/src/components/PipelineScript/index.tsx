@@ -37,6 +37,7 @@ import { useQueryParam } from '@hooks/useQueryParam';
 import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { blobUrlToFile } from '@utils/blobUrlToFile';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
+import { WinetricksVersionSelect } from '@components/WinetricksVersionSelect';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -83,8 +84,16 @@ export const PipelineScript: React.FC = () => {
     </CardItem>,
     <CardItem icon={SparklesIcon} label="Winetricks">
       <Grid container>
-        <Grid item xs={4}>
-          <Checkbox control={form.control} name="dxvkEnabled" label="Enable DXVK" />
+        <Grid item xs={12}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Checkbox control={form.control} name="dxvkEnabled" label="Enable DXVK" />
+            <WinetricksVersionSelect
+              size="small"
+              control={form.control}
+              name="winetricksVersion"
+              sx={{ minWidth: 190 }}
+            />
+          </Stack>
         </Grid>
         <Grid mt={1} item xs={12}>
           <WinetricksSelector showSelectedVerbs control={form.control} name="winetricksVerbs" />
