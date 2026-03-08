@@ -1,3 +1,4 @@
+import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { ScriptOperation } from '@constants/enums';
 import { fileMaxSize } from '@utils/fileMaxSize';
 import { isDownloadableURL } from '@utils/isDownloadableURL';
@@ -39,6 +40,7 @@ export const useSchema = () => {
     engineVersion: schema.string().required().default(''),
     dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
     winetricksVerbs: schema.array().of(schema.string().required()).default([]),
+    winetricksVersion: schema.string().required().default(DEFAULT_WINETRICKS_VERSION),
     iconFile: schema.mixed<File>().test({
       name: 'fileSize',
       message: 'File exceeds 2000kb',

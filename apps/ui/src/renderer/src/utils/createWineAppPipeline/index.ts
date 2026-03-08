@@ -54,6 +54,7 @@ export const createWineAppPipeline = async (options: {
   const { clients: { steamCli } = {} } = options;
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
+  const WINETRICKS_VERSION = winetricks?.version || '20260125';
 
   let pipelineConfig: WineAppPipelineConfig = {
     appConfig,
@@ -160,7 +161,8 @@ export const createWineAppPipeline = async (options: {
       steps.push({
         id: uuid(),
         name: `Running winetrick ${verb}`,
-        script: (args: SpawnProcessArgs) => wineApp.winetrick(verb, args, winetricks?.options),
+        script: (args: SpawnProcessArgs) =>
+          wineApp.winetrick({ verb, version: WINETRICKS_VERSION }, args, winetricks?.options),
         status: ProcessStatus.Pending,
         output: ''
       });
@@ -393,7 +395,8 @@ export const createWineAppPipeline = async (options: {
                 {
                   id: uuid(),
                   name: 'Enabling DXVK',
-                  script: (args: SpawnProcessArgs) => wineApp.winetrick('dxvk1102', args),
+                  script: (args: SpawnProcessArgs) =>
+                    wineApp.winetrick({ verb: 'dxvk1102', version: WINETRICKS_VERSION }, args),
                   status: ProcessStatus.Pending,
                   output: ''
                 }

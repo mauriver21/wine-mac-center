@@ -12,19 +12,22 @@ export const Winetrick: React.FC = () => {
 
   const winetrick = async () => {
     setLoading(true);
-    await wineApp.winetrick(trick, {
-      onStdOut: (data) => {
-        console.log(data);
-        setData(data);
-      },
-      onStdErr: (data) => {
-        console.log(data);
-        setData(data);
-      },
-      onExit: (data) => {
-        console.log(data);
+    await wineApp.winetrick(
+      { verb: trick, version: '20260125' },
+      {
+        onStdOut: (data) => {
+          console.log(data);
+          setData(data);
+        },
+        onStdErr: (data) => {
+          console.log(data);
+          setData(data);
+        },
+        onExit: (data) => {
+          console.log(data);
+        }
       }
-    });
+    );
     setLoading(false);
   };
 

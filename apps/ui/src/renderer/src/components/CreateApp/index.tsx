@@ -143,6 +143,7 @@ export const CreateApp: React.FC = () => {
       iconFile,
       useWinetricks: _,
       winetricksVerbs = [],
+      winetricksVersion,
       ...rest
     } = data;
     const config = await wineAppPipelineModel.scaffoldWineApp({
@@ -153,7 +154,7 @@ export const CreateApp: React.FC = () => {
         artworkFile: await artworkFile?.arrayBuffer(),
         iconFile: await iconFile?.arrayBuffer(),
         origin,
-        winetricks: { verbs: winetricksVerbs },
+        winetricks: { verbs: winetricksVerbs, version: winetricksVersion },
         ...rest
       },
       origin

@@ -36,6 +36,7 @@ import { LauncherImgInput } from '@components/LauncherImgInput';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { blobUrlToFile } from '@utils/blobUrlToFile';
+import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -439,6 +440,7 @@ export const PipelineScript: React.FC = () => {
     const {
       originalAppName,
       winetricksVerbs = [],
+      winetricksVersion,
       iconFile,
       artworkFile,
       launcherImgFile,
@@ -452,7 +454,7 @@ export const PipelineScript: React.FC = () => {
       name: appName,
       origin: ConfigOrigin.SCRIPTS,
       pipelineScripts,
-      winetricks: { verbs: winetricksVerbs },
+      winetricks: { verbs: winetricksVerbs, version: winetricksVersion },
       iconFile: await iconFile?.arrayBuffer(),
       artworkFile: await artworkFile?.arrayBuffer(),
       launcherImgFile: await launcherImgFile?.arrayBuffer()
@@ -519,6 +521,7 @@ export const PipelineScript: React.FC = () => {
         artworkFile: copiedArtworkFile || undefined,
         iconFile: copiedIconFile || undefined,
         launcherImgFile: copiedLauncherImgFile || undefined,
+        winetricksVersion: winetricks?.version || DEFAULT_WINETRICKS_VERSION,
         ...rest
       });
 

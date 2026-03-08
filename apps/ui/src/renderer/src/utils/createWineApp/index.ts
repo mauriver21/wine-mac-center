@@ -312,10 +312,15 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   /**
    * Winetrick
    */
-  const winetrick = (verb: string, processArgs?: SpawnProcessArgs, options?: WinetricksOptions) => {
+  const winetrick = (
+    args: { verb: string; version: string },
+    processArgs?: SpawnProcessArgs,
+    options?: WinetricksOptions
+  ) => {
+    const { verb, version } = args;
     const flags = winetricksOptionsToFlags(options);
     const ref = { killWinetrick: false };
-    return spawnScript('winetrick', `${flags} ${verb}`, {
+    return spawnScript('winetrick', `${flags} ${verb} ${version}`, {
       onStdOut: (data) => {
         winetrickKillVerbHandler({ verb, data, processArgs, ref });
         processArgs?.onStdOut?.(data);

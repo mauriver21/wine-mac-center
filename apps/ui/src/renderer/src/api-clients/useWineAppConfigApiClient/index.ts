@@ -19,6 +19,7 @@ import axios from 'axios';
 import { createObjectURL } from '@utils/createObjectURL';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { renameDirectory } from '@utils/renameDirectory';
+import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
@@ -32,7 +33,10 @@ export const useWineAppConfigApiClient = () => {
       dxvkEnabled: data.dxvkEnabled || false,
       setupExecutableURL: '',
       engineVersion: data.engineVersion,
-      winetricks: { verbs: data.winetricks?.verbs || [] },
+      winetricks: {
+        verbs: data.winetricks?.verbs || [],
+        version: data.winetricks?.version || DEFAULT_WINETRICKS_VERSION
+      },
       executables: [{ main: true, path: '', flags: '' }],
       pipelineScripts: data.pipelineScripts
     };

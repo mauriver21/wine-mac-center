@@ -46,7 +46,7 @@ export const WinetricksModule: React.FC = () => {
                 setLoading?.(true);
 
                 if (verbsString) {
-                  await wineApp?.winetrick(verbsString, spawnLog);
+                  await wineApp?.winetrick({ verb: verbsString, version: '20260125' }, spawnLog);
                   form.reset();
                   setLoading?.(false);
                 } else {
