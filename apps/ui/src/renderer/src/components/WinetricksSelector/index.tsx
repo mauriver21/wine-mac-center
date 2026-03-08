@@ -9,12 +9,14 @@ import { Checkbox, Field, FieldProps } from 'reactjs-shared-ui/forms';
 import { Winetricks } from '@interfaces/Winetricks';
 import { Chip, IconButton } from '@mui/material';
 import { XMarkIcon } from '@heroicons/react/24/solid';
+import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 
 export interface WinetricksSelectorProps extends FieldProps {
   name?: string;
   disabled?: boolean;
   value?: string[];
   showSelectedVerbs?: boolean;
+  version?: string;
 }
 
 const CATEGORIES = [
@@ -34,6 +36,7 @@ const DEFAULT_EXPANDED_STATE = {
 
 export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
   name = '',
+  version = DEFAULT_WINETRICKS_VERSION,
   control,
   fieldOptions,
   value,
@@ -49,7 +52,7 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
   );
 
   useEffect(() => {
-    winetrickModel.listAll();
+    winetrickModel.listAll({ version });
   }, []);
 
   return (

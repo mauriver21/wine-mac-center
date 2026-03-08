@@ -1,4 +1,5 @@
 import { Winetrick } from '@interfaces/Winetrick';
+import { WinetrickCmd } from '@interfaces/WinetrickCmd';
 import { Winetricks } from '@interfaces/Winetricks';
 import { createDirectory } from '@utils/createDirectory';
 import { createEnv } from '@utils/createEnv';
@@ -26,42 +27,47 @@ export const useWinetrickApiClient = () => {
     return mappedData;
   };
 
-  const execScript = async (args: string) =>
-    execCommand(`"${env.get().SCRIPTS_PATH}/winetricks.sh" ${args}`);
+  const execScript = async (args: WinetrickCmd) => {
+    const { cmd, version } = args;
+    return execCommand(`"${env.get().SCRIPTS_PATH}/winetricks_${version}.sh" ${cmd}`);
+  };
 
-  const getWinetricks = async (cmd: string) => {
-    const { stdOut, stdErr } = await execScript(cmd);
+  const getWinetricks = async (args: WinetrickCmd) => {
+    const { cmd, version } = args;
+    const { stdOut, stdErr } = await execScript({ cmd, version });
     console.warn(stdErr);
     return mapResponse(stdOut);
   };
 
-  const help = () => {
-    return execScript('--help');
+  const help = (version: string) => {
+    return execScript({ cmd: '--help', version });
   };
 
-  const listApps = async () => {
-    return getWinetricks('apps list');
+  const listApps = async (version: string) => {
+    return getWinetricks({ cmd: 'apps list', version });
   };
 
-  const listBenchmarks = async () => {
-    return getWinetricks('benchmarks list');
+  const listBenchmarks = async (version: string) => {
+    return getWinetricks({ cmd: 'benchmarks list', version });
   };
 
-  const listDlls = async () => {
-    return getWinetricks('dlls list');
+  const listDlls = async (version: string) => {
+    return getWinetricks({ cmd: 'dlls list', version });
   };
 
-  const listFonts = async () => {
-    return getWinetricks('fonts list');
+  const listFonts = async (version: string) => {
+    return getWinetricks({ cmd: 'fonts list', version });
   };
 
-  const listSettings = () => {
-    return getWinetricks('settings list');
+  const listSettings = (version: string) => {
+    return getWinetricks({ cmd: 'settings list', version });
   };
 
-  const listAll = async (options?: { force?: boolean }) => {
+  const listAll = async (params: { version: string; force?: boolean }) => {
     const WINE_ASSETS_PATH = env.get().WINE_ASSETS_PATH;
-    const WINETRICKS_PATH = `${WINE_ASSETS_PATH}/winetricks.json`;
+    const WINETRICKS_VERSION = params.version;
+    const WINETRICKS_FOLDER_PATH = `${WINE_ASSETS_PATH}/winetricks/${WINETRICKS_VERSION}`;
+    const WINETRICKS_PATH = `${WINETRICKS_FOLDER_PATH}/index.json`;
 
     let winetricks: Winetricks = {
       apps: [],
@@ -70,16 +76,16 @@ export const useWinetrickApiClient = () => {
       settings: []
     };
 
-    if (!(await dirExists(WINE_ASSETS_PATH))) {
-      await createDirectory(WINE_ASSETS_PATH);
+    if (!(await dirExists(WINETRICKS_FOLDER_PATH))) {
+      await createDirectory(WINETRICKS_FOLDER_PATH, { recursive: true });
     }
 
-    if (!(await fileExists(WINETRICKS_PATH)) || options?.force) {
+    if (!(await fileExists(WINETRICKS_PATH)) || params?.force) {
       const promises = await Promise.all([
-        await listApps(),
-        await listDlls(),
-        await listFonts(),
-        await listSettings()
+        await listApps(WINETRICKS_VERSION),
+        await listDlls(WINETRICKS_VERSION),
+        await listFonts(WINETRICKS_VERSION),
+        await listSettings(WINETRICKS_VERSION)
       ]);
 
       const [apps, dlls, fonts, settings] = promises;

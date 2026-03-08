@@ -13,10 +13,10 @@ export const useWinetrickModel = () => {
   const winetrickApiClient = useWinetrickApiClient();
   const dispatch = useDispatch<Dispatch<WinetrickAction>>();
 
-  const listAll = async () => {
+  const listAll = async (params: { version: string; force?: boolean }) => {
     try {
       dispatchLoader({ listingAll: true });
-      dispatchWinetricks(await winetrickApiClient.listAll());
+      dispatchWinetricks(await winetrickApiClient.listAll(params));
     } catch (error) {
       appModel.dispatchError(error);
     } finally {
