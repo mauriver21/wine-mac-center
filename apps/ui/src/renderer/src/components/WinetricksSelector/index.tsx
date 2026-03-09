@@ -53,7 +53,7 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
 
   useEffect(() => {
     winetrickModel.listAll({ version });
-  }, []);
+  }, [version]);
 
   return (
     <SkeletonLoader loading={loaders.listingAll}>

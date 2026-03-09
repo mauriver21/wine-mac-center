@@ -96,7 +96,12 @@ export const PipelineScript: React.FC = () => {
           </Stack>
         </Grid>
         <Grid mt={1} item xs={12}>
-          <WinetricksSelector showSelectedVerbs control={form.control} name="winetricksVerbs" />
+          <WinetricksSelector
+            showSelectedVerbs
+            control={form.control}
+            name="winetricksVerbs"
+            version={form.watch('winetricksVersion')}
+          />
         </Grid>
       </Grid>
     </CardItem>,
