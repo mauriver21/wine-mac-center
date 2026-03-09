@@ -29,6 +29,7 @@ import { ArtWorkInput } from '@components/ArtWorkInput';
 import { blobToURL } from '@utils/blobToURL';
 import { IconInput } from '@components/IconInput';
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { WinetricksVersionSelect } from '@components/WinetricksVersionSelect';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -122,12 +123,20 @@ export const CreateApp: React.FC = () => {
         <Grid item xs={4}>
           <Checkbox control={form.control} name="useWinetricks" label="Use Winetricks" />
         </Grid>
-
+        <Grid item xs={4}>
+          <WinetricksVersionSelect
+            size="small"
+            control={form.control}
+            name="winetricksVersion"
+            sx={{ minWidth: 190 }}
+          />
+        </Grid>
         <Grid mt={1} item xs={12}>
           <WinetricksSelector
             disabled={!Boolean(form.watch('useWinetricks'))}
             control={form.control}
             name="winetricksVerbs"
+            version={form.watch('winetricksVersion')}
           />
         </Grid>
       </Grid>
