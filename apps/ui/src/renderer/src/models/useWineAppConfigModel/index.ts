@@ -152,6 +152,17 @@ export const useWineAppConfigModel = () => {
       return wineAppsConfigs;
     }
   );
+  const selectIsDownloadedScript = createSelector(
+    [
+      (state: RootState) => selectWineAppsConfigs(state),
+      (_: RootState, name: string | undefined) => name
+    ],
+    (wineAppConfigs, name) => {
+      return wineAppConfigs?.find(
+        (item) => item.name == name && item.origin == ConfigOrigin.SCRIPTS
+      );
+    }
+  );
   const selectWineAppConfig = createSelector(
     [
       (state: RootState) => selectWineAppsConfigs(state),
@@ -174,6 +185,7 @@ export const useWineAppConfigModel = () => {
     dispatchListAll,
     selectWineAppConfigState,
     selectWineAppsConfigs,
-    selectWineAppConfig
+    selectWineAppConfig,
+    selectIsDownloadedScript
   };
 };

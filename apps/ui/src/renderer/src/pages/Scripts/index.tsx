@@ -63,7 +63,7 @@ export const Scripts: React.FC = () => {
   const [filters, setFilters] = useState({
     criteria: '',
     order: 'asc' as SortDirection,
-    origin: ConfigOrigin.ALL_EXCEPT_INSTALLED_APP
+    origin: ConfigOrigin.SCRIPTS
   });
   const appConfigs = useSelector((state: RootState) =>
     wineAppConfigModel.selectWineAppsConfigs(state, filters)

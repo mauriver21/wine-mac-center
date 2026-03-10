@@ -33,6 +33,9 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
   const wineAppConfig = useSelector((state: RootState) =>
     wineAppConfigModel.selectWineAppConfig(state, appName, origin)
   );
+  const isDownloadedScript = useSelector((state: RootState) =>
+    wineAppConfigModel.selectIsDownloadedScript(state, appName)
+  );
   const navigate = useNavigateApp();
   const [artWorkSrc, setArtWorkSrc] = useState(defaultArtwork);
   const [noArtWork, setNoArtWork] = useState(true);
@@ -126,7 +129,7 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
             onClick={runPipeline}
             icon={PlayCircleIcon}
           />
-          {origin === ConfigOrigin.CLOUD && (
+          {origin === ConfigOrigin.CLOUD && !isDownloadedScript && (
             <AppCardButton
               title="Download Script"
               disabled={scaffoldingApp}
