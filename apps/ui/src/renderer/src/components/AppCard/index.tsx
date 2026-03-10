@@ -94,6 +94,10 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
             )}
           </Box>
           <Image
+            onError={() => {
+              setNoArtWork(true);
+              setArtWorkSrc(defaultArtwork);
+            }}
             src={artWorkSrc}
             height="100%"
             width="100%"

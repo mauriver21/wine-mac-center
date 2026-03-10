@@ -11,8 +11,8 @@ export const ConfigOriginSelect: React.FC<ConfigOriginSelectProps> = ({ onChange
       {...rest}
       options={[
         { value: ConfigOrigin.SCRIPTS, label: 'Local Configs' },
-        { value: ConfigOrigin.CLOUD, label: 'Cloud Configs' },
-        { value: ConfigOrigin.ALL_EXCEPT_INSTALLED_APP, label: 'All Configs' }
+        { value: ConfigOrigin.CLOUD, label: 'Cloud Configs' }
+        // { value: ConfigOrigin.ALL_EXCEPT_INSTALLED_APP, label: 'All Configs' }
       ]}
       onChange={(event) => onChange?.((event.target as HTMLInputElement).value as ConfigOrigin)}
     />
