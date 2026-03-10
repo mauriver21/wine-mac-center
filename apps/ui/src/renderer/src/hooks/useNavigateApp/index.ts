@@ -37,9 +37,11 @@ export const useNavigateApp = () => {
 
   const navigateToAppPipeline = (
     appName: string | undefined,
-    params: { origin: ConfigOrigin; action: PipelineAction }
+    params: { origin: ConfigOrigin | undefined; action: PipelineAction }
   ) => {
-    navigate(`/app-pipeline/${appName}?origin=${params.origin}&action=${params.action}`);
+    navigate(
+      buildUrl(`/app-pipeline/${appName}`, { origin: params.origin, action: params.action })
+    );
   };
 
   const navigateToAppConfig = (appName: string | undefined) => {

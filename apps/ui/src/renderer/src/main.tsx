@@ -12,6 +12,7 @@ import { DirsWatcherProvider } from '@components/DirsWatcherProvider';
 import 'reactjs-shared-ui/styles.css';
 import './main.css';
 import { SteamCliProvider } from '@components/SteamCliProvider';
+import { LoadingDialogProvider } from '@components/LoadingDialogProvider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ThemeProvider>
@@ -23,7 +24,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               <WineAppPipelineProvider>
                 <BrowserRouter>
                   <AppSetup>
-                    <App />
+                    <LoadingDialogProvider>
+                      <App />
+                    </LoadingDialogProvider>
                   </AppSetup>
                 </BrowserRouter>
               </WineAppPipelineProvider>

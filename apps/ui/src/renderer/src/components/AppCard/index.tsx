@@ -15,7 +15,6 @@ import { Cloud } from '@mui/icons-material';
 import { useScriptsContext } from '@hooks/useScriptsContext';
 import { AppCardButton } from '@components/AppCardButton';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
-import { useAppModel } from '@models/useAppModel';
 import { ContextMenu } from '@components/ContextMenu';
 import defaultArtwork from '@assets/imgs/header.jpg';
 
@@ -27,7 +26,6 @@ export interface AppCardProps extends CardProps {
 export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest }) => {
   const scriptsContext = useScriptsContext();
   const { navigateToScript } = useNavigateApp();
-  const appModel = useAppModel();
   const wineAppConfigModel = useWineAppConfigModel();
   const wineAppPipelineModel = useWineAppPipelineModel();
   const wineAppConfig = useSelector((state: RootState) =>
@@ -39,20 +37,14 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
   const navigate = useNavigateApp();
   const [artWorkSrc, setArtWorkSrc] = useState(defaultArtwork);
   const [noArtWork, setNoArtWork] = useState(true);
-  const [scaffoldingApp, setScaffoldingApp] = useState(false);
 
   const runPipeline = async () => {
-    if (origin === undefined) {
-      appModel.dispatchError('Origin is not defined');
-    } else {
-      setScaffoldingApp(true);
-      const config = await wineAppPipelineModel.scaffoldWineApp({ appName, origin });
-      setScaffoldingApp(false);
-      navigate.navigateToAppPipeline(config.name, {
+    await wineAppPipelineModel.scaffoldWineApp({ appName, origin }, (appName) => {
+      navigate.navigateToAppPipeline(appName, {
         origin,
         action: PipelineAction.RUN
       });
-    }
+    });
   };
 
   useEffect(() => {
@@ -127,16 +119,10 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
           </Box>
         </Box>
         <Box display="flex" justifyContent="end" alignItems="center" gap={1}>
-          <AppCardButton
-            title="Run Script"
-            disabled={scaffoldingApp}
-            onClick={runPipeline}
-            icon={PlayCircleIcon}
-          />
+          <AppCardButton title="Run Script" onClick={runPipeline} icon={PlayCircleIcon} />
           {origin === ConfigOrigin.CLOUD && !isDownloadedScript && (
             <AppCardButton
               title="Download Script"
-              disabled={scaffoldingApp}
               onClick={() => wineAppConfigModel.downloadScript(appName)}
               icon={ArrowDownCircleIcon}
             />

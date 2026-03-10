@@ -155,21 +155,23 @@ export const CreateApp: React.FC = () => {
       winetricksVersion,
       ...rest
     } = data;
-    const config = await wineAppPipelineModel.scaffoldWineApp({
-      appName: data.name,
-      config: {
-        name,
-        appFolderPath,
-        artworkFile: await artworkFile?.arrayBuffer(),
-        iconFile: await iconFile?.arrayBuffer(),
-        origin,
-        winetricks: { verbs: winetricksVerbs, version: winetricksVersion },
-        ...rest
+    await wineAppPipelineModel.scaffoldWineApp(
+      {
+        appName: data.name,
+        config: {
+          name,
+          appFolderPath,
+          artworkFile: await artworkFile?.arrayBuffer(),
+          iconFile: await iconFile?.arrayBuffer(),
+          origin,
+          winetricks: { verbs: winetricksVerbs, version: winetricksVersion },
+          ...rest
+        },
+        origin
       },
-      origin
-    });
+      (appName) => navigateToAppPipeline(appName, { origin, action: PipelineAction.RUN })
+    );
     reset();
-    navigateToAppPipeline(config.name, { origin, action: PipelineAction.RUN });
   };
 
   return (
