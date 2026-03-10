@@ -54,8 +54,7 @@ export const useWineAppConfigApiClient = () => {
 
     switch (origin) {
       case ConfigOrigin.CLOUD: {
-        const URL = `${WINE_APPS_CONFIGS_URL}/${appName}`;
-        const ASSETS_URL = `${URL}/assets`;
+        const ASSETS_URL = `${WINE_APPS_CONFIGS_URL}/${appName}`;
         return {
           artworkURL: encodeURL(`${ASSETS_URL}/header.jpeg`),
           iconURL: encodeURL(`${ASSETS_URL}/icon.icns?cache=${uuid()}`),
