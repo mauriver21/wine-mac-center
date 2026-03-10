@@ -10,6 +10,7 @@ import { WineInstalledApp } from '@interfaces/WineInstalledApp';
 import { WineInstalledAppAction } from '@interfaces/WineInstalledAppAction';
 import { useAppModel } from '@models/useAppModel';
 import { objectMatchCriteria } from '@utils/objectMatchCriteria';
+import { ProcessStatus } from '@constants/enums';
 
 export const useWineInstalledAppModel = () => {
   const [state, setState] = useState({
@@ -128,6 +129,20 @@ export const useWineInstalledAppModel = () => {
     (wineInstalledApps, appName) =>
       wineInstalledApps?.find((item) => item.name?.toLowerCase() == appName?.toLowerCase())
   );
+  const selectPipelineContainsErrors = createSelector(
+    [selectWineInstalledApp],
+    (wineInstalledApp) => {
+      const jobs = wineInstalledApp?.pipeline?.jobs || [];
+      let hasErrors = false;
+      for (const job of jobs) {
+        if (job.steps.some((item) => item.status === ProcessStatus.Error)) {
+          hasErrors = true;
+          break;
+        }
+      }
+      return hasErrors;
+    }
+  );
 
   return {
     loaders: state.loaders,
@@ -138,6 +153,7 @@ export const useWineInstalledAppModel = () => {
     dispatchPatch,
     selectWineInstalledAppState,
     selectWineInstalledApps,
-    selectWineInstalledApp
+    selectWineInstalledApp,
+    selectPipelineContainsErrors
   };
 };
