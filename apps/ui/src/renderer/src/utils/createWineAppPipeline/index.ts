@@ -242,7 +242,7 @@ export const createWineAppPipeline = async (options: {
         return wineApp.spawnScript('remove', `"${path}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
-        const exePath = `${parsePath(`${args.baseExePath}${args.exePath}`)}`
+        const exePath = `${parsePath(args.baseExePath)}/${parsePath(args.exePath)}`
           .replace('$HOME', env.get().HOME)
           .replace('$WINE_APP_PREFIX_PATH', appEnv.WINE_APP_PREFIX_PATH);
         return wineApp.runExe(`${exePath}`, spawnProcessArgs);
