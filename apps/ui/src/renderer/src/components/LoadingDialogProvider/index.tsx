@@ -8,7 +8,7 @@ export interface LoadingDialogProviderProps {
 
 export const LoadingDialogProvider: React.FC<LoadingDialogProviderProps> = ({ children }) => {
   const [dialogState, setDialogState] = useState<{ message: string; open: boolean }>({
-    message: '',
+    message: 'Preparing Wine App...',
     open: false
   });
 

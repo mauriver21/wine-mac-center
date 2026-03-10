@@ -52,7 +52,7 @@ export const useWineAppPipelineModel = () => {
 
   const scaffoldWineApp = async (args: WineAppArgs, onScaffolded: (appName: string) => void) => {
     try {
-      loadingDialog.open({ message: 'Preparing Wine App' });
+      loadingDialog.open({ message: 'Preparing Wine App...' });
 
       let { appName, config } = args;
       const originalAppName = appName;
