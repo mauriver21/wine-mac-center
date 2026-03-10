@@ -21,6 +21,14 @@ export const useWineAppConfigModel = () => {
   const wineAppConfigApiClient = useWineAppConfigApiClient();
   const dispatch = useDispatch<Dispatch<WineAppConfigAction>>();
 
+  const downloadScript = async (appName: string) => {
+    try {
+      await wineAppConfigApiClient.downloadScript(appName);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
+
   const create = async (data: WineAppConfig) => {
     try {
       const config = await wineAppConfigApiClient.create(data);
@@ -162,6 +170,7 @@ export const useWineAppConfigModel = () => {
     listAll,
     read,
     remove,
+    downloadScript,
     dispatchListAll,
     selectWineAppConfigState,
     selectWineAppsConfigs,

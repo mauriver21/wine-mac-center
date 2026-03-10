@@ -5,7 +5,12 @@ import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useEffect, useState } from 'react';
 import { ConfigOrigin, PipelineAction } from '@constants/enums';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { Cog6ToothIcon, ComputerDesktopIcon, PlayCircleIcon } from '@heroicons/react/24/solid';
+import {
+  ArrowDownCircleIcon,
+  Cog6ToothIcon,
+  ComputerDesktopIcon,
+  PlayCircleIcon
+} from '@heroicons/react/24/solid';
 import { Cloud } from '@mui/icons-material';
 import { useScriptsContext } from '@hooks/useScriptsContext';
 import { AppCardButton } from '@components/AppCardButton';
@@ -121,6 +126,14 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
             onClick={runPipeline}
             icon={PlayCircleIcon}
           />
+          {origin === ConfigOrigin.CLOUD && (
+            <AppCardButton
+              title="Download Script"
+              disabled={scaffoldingApp}
+              onClick={() => wineAppConfigModel.downloadScript(appName)}
+              icon={ArrowDownCircleIcon}
+            />
+          )}
           {origin === ConfigOrigin.SCRIPTS && (
             <>
               <AppCardButton
