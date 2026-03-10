@@ -1,1 +1,11 @@
-[{ "name": "Age of Mythology Extended Edition", "origin": "CLOUD" }]
+[
+  { "name": "Age of Mythology Extended Edition", "origin": "CLOUD" },
+  { "name": "Deep Rock Galactic", "origin": "CLOUD" },
+  { "name": "Finale Notepad", "origin": "CLOUD" },
+  { "name": "Heavy Weapon Deluxe", "origin": "CLOUD" },
+  { "name": "Left 4 Dead 2", "origin": "CLOUD" },
+  { "name": "Looney Tunes Sheep Raider", "origin": "CLOUD" },
+  { "name": "Mega Man 2.5D", "origin": "CLOUD" },
+  { "name": "Ricochet Infinity", "origin": "CLOUD" },
+  { "name": "Steam", "origin": "CLOUD" }
+]
