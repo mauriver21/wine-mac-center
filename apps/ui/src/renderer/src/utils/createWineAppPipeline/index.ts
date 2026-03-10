@@ -478,15 +478,21 @@ export const createWineAppPipeline = async (options: {
         ]
       }
     ],
-    async run() {
+    async run(args?: { fromJobIndex?: number; fromStepIndex?: number }) {
+      const { fromJobIndex, fromStepIndex } = args || {};
       savePipelineStatus(ProcessStatus.InProgress);
       await writePipelineConfig();
+      let jobIndex = 0;
 
       for (const job of pipeline.jobs) {
+        if (fromJobIndex && jobIndex <= fromJobIndex) continue;
+        let stepIndex = 0;
+
         savePipelineJob(job);
         resetJobStepsStatus(job.steps, this._.onUpdate);
 
         for (const step of job.steps) {
+          if (fromStepIndex && stepIndex <= fromStepIndex) continue;
           if (step.status == ProcessStatus.Success) {
             continue;
           }
@@ -510,7 +516,11 @@ export const createWineAppPipeline = async (options: {
               this._.std(job.name, 'stdErr', step, data, updateProcess),
             onExit: (data) => this._.std(job.name, 'exit', step, data)
           });
+
+          stepIndex++;
         }
+
+        jobIndex++;
       }
 
       if (store.killAllProcesses === false) {

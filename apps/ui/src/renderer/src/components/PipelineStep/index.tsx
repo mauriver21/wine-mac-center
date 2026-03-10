@@ -8,6 +8,8 @@ import { Code } from 'reactjs-shared-ui/syntax-highlighter';
 
 export interface PipelineStepProps {
   step: WineAppStep;
+  jobIndex: number;
+  stepIndex: number;
 }
 
 export const PipelineStep: React.FC<PipelineStepProps> = ({ step }) => {

@@ -122,12 +122,12 @@ export const useWineAppPipelineModel = () => {
 
   const runWineAppPipeline = async (args: WineAppArgs) => {
     try {
-      const { appName } = args;
+      const { appName, fromJobIndex, fromStepIndex } = args;
       if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
       // Required delay for config.json be ready when loading wine pipeline.
       await sleep(200);
       const pipeline = await loadWineAppPipeline(appName);
-      const promise = pipeline?.run();
+      const promise = pipeline?.run({ fromJobIndex, fromStepIndex });
       await sleep(200);
       wineInstalledAppModel.listAll();
       await promise;

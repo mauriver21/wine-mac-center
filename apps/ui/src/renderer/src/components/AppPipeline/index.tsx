@@ -26,7 +26,7 @@ export const AppPipeline: React.FC = () => {
   const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
   const status = wineAppPipelineStatus?.status;
 
-  const resumePipeline = async () => {
+  const runWineAppPipeline = async () => {
     try {
       setStopping(false);
       setResuming(true);
@@ -80,11 +80,11 @@ export const AppPipeline: React.FC = () => {
       showBack={false}
       contentSlot={
         <Box p={2} overflow="auto">
-          {wineAppPipelineStatus?.jobs?.map?.((item) => (
+          {wineAppPipelineStatus?.jobs?.map?.((item, jobIndex) => (
             <Stack alignItems="center" key={item.name} spacing={2}>
-              {item?.steps?.map((step, index) => (
-                <Box key={index} width="100%" maxWidth={800} className={ContentsClass.Item}>
-                  <PipelineStep step={step} />
+              {item?.steps?.map((step, stepIndex) => (
+                <Box key={stepIndex} width="100%" maxWidth={800} className={ContentsClass.Item}>
+                  <PipelineStep jobIndex={jobIndex} stepIndex={stepIndex} step={step} />
                 </Box>
               ))}
             </Stack>
@@ -117,7 +117,7 @@ export const AppPipeline: React.FC = () => {
               disabled={resuming}
               sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
               color="secondary"
-              onClick={resumePipeline}
+              onClick={runWineAppPipeline}
             >
               Resume
             </Button>
