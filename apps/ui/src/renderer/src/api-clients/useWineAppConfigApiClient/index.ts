@@ -20,6 +20,7 @@ import { createObjectURL } from '@utils/createObjectURL';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { renameDirectory } from '@utils/renameDirectory';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
+import { blobUrlToFile } from '@utils/blobUrlToFile';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
@@ -244,8 +245,15 @@ export const useWineAppConfigApiClient = () => {
   };
 
   const downloadScript = async (appName: string) => {
-    const data = await readCloudFile(appName);
-    console.log(data);
+    const { artworkURL, iconURL, ...rest } = await readCloudFile(appName);
+    return create({
+      ...rest,
+      origin: ConfigOrigin.SCRIPTS,
+      ...(artworkURL
+        ? { artworkFile: await (await blobUrlToFile(artworkURL, '')).arrayBuffer() }
+        : {}),
+      ...(iconURL ? { iconFile: await (await blobUrlToFile(iconURL, '')).arrayBuffer() } : {})
+    });
   };
 
   return {
