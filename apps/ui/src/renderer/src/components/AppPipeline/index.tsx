@@ -1,5 +1,6 @@
 import { PipelineStep } from '@components/PipelineStep';
 import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
+import { AppPipelineContext, AppPipelineContextType } from '@contexts/AppPipelineContext';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { useAppModel } from '@models/useAppModel';
@@ -26,14 +27,15 @@ export const AppPipeline: React.FC = () => {
   const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
   const status = wineAppPipelineStatus?.status;
 
-  const runWineAppPipeline = async () => {
+  const runWineAppPipeline: AppPipelineContextType['runWineAppPipeline'] = async (args) => {
     try {
       setStopping(false);
       setResuming(true);
       if (appName === undefined) throw new Error(`Invalid application name`);
       await wineAppPipelineModel.runWineAppPipeline({
         appName,
-        origin: ConfigOrigin.INSTALLED_APP
+        origin: ConfigOrigin.INSTALLED_APP,
+        ...args
       });
     } catch (error) {
       appModel.dispatchError(error);
@@ -74,58 +76,60 @@ export const AppPipeline: React.FC = () => {
   }, [wineAppPipelineStatus?.jobs?.length]);
 
   return (
-    <ConfigLayout
-      signal={signal}
-      mainTitle={appName}
-      showBack={false}
-      contentSlot={
-        <Box p={2} overflow="auto">
-          {wineAppPipelineStatus?.jobs?.map?.((item, jobIndex) => (
-            <Stack alignItems="center" key={item.name} spacing={2}>
-              {item?.steps?.map((step, stepIndex) => (
-                <Box key={stepIndex} width="100%" maxWidth={800} className={ContentsClass.Item}>
-                  <PipelineStep jobIndex={jobIndex} stepIndex={stepIndex} step={step} />
-                </Box>
-              ))}
-            </Stack>
-          ))}
-        </Box>
-      }
-      actionsSlot={
-        <>
-          {status === ProcessStatus.InProgress ? (
-            <Button
-              disabled={stopping}
-              sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-              color="secondary"
-              onClick={killPipeline}
-            >
-              Stop
-            </Button>
-          ) : (
-            <Button
-              disabled={resuming}
-              sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-              color="secondary"
-              onClick={() => navigate('/apps')}
-            >
-              Close
-            </Button>
-          )}
-          {status === ProcessStatus.Cancelled ? (
-            <Button
-              disabled={resuming}
-              sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-              color="secondary"
-              onClick={runWineAppPipeline}
-            >
-              Resume
-            </Button>
-          ) : (
-            <></>
-          )}
-        </>
-      }
-    />
+    <AppPipelineContext.Provider value={{ runWineAppPipeline }}>
+      <ConfigLayout
+        signal={signal}
+        mainTitle={appName}
+        showBack={false}
+        contentSlot={
+          <Box p={2} overflow="auto">
+            {wineAppPipelineStatus?.jobs?.map?.((item, jobIndex) => (
+              <Stack alignItems="center" key={item.name} spacing={2}>
+                {item?.steps?.map((step, stepIndex) => (
+                  <Box key={stepIndex} width="100%" maxWidth={800} className={ContentsClass.Item}>
+                    <PipelineStep jobIndex={jobIndex} stepIndex={stepIndex} step={step} />
+                  </Box>
+                ))}
+              </Stack>
+            ))}
+          </Box>
+        }
+        actionsSlot={
+          <>
+            {status === ProcessStatus.InProgress ? (
+              <Button
+                disabled={stopping}
+                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                color="secondary"
+                onClick={killPipeline}
+              >
+                Stop
+              </Button>
+            ) : (
+              <Button
+                disabled={resuming}
+                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                color="secondary"
+                onClick={() => navigate('/apps')}
+              >
+                Close
+              </Button>
+            )}
+            {status === ProcessStatus.Cancelled ? (
+              <Button
+                disabled={resuming}
+                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                color="secondary"
+                onClick={() => runWineAppPipeline()}
+              >
+                Resume
+              </Button>
+            ) : (
+              <></>
+            )}
+          </>
+        }
+      />
+    </AppPipelineContext.Provider>
   );
 };

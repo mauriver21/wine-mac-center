@@ -173,14 +173,22 @@ export const createWineAppPipeline = async (options: {
 
   const resetJobStepsStatus = (
     steps: WineAppJobWithScript['steps'],
-    onUpdate: ((status: WineAppPipelineStatus) => void) | undefined
+    onUpdate: ((status: WineAppPipelineStatus) => void) | undefined,
+    fromStepIndex?: number
   ) => {
+    let stepIndex = 0;
     for (const step of steps) {
-      if (step.status == ProcessStatus.Success) {
+      if (fromStepIndex && stepIndex <= fromStepIndex) {
+        stepIndex++;
+        continue;
+      }
+
+      if (step.status == ProcessStatus.Success && fromStepIndex == undefined) {
         continue;
       }
 
       step.status = ProcessStatus.Pending;
+      step.output = '';
     }
 
     onUpdate?.({
@@ -485,14 +493,20 @@ export const createWineAppPipeline = async (options: {
       let jobIndex = 0;
 
       for (const job of pipeline.jobs) {
-        if (fromJobIndex && jobIndex <= fromJobIndex) continue;
         let stepIndex = 0;
+        if (fromJobIndex && jobIndex <= fromJobIndex) {
+          jobIndex++;
+          continue;
+        }
 
         savePipelineJob(job);
-        resetJobStepsStatus(job.steps, this._.onUpdate);
+        resetJobStepsStatus(job.steps, this._.onUpdate, fromStepIndex);
 
         for (const step of job.steps) {
-          if (fromStepIndex && stepIndex <= fromStepIndex) continue;
+          if (fromStepIndex && stepIndex <= fromStepIndex) {
+            stepIndex++;
+            continue;
+          }
           if (step.status == ProcessStatus.Success) {
             continue;
           }
@@ -516,11 +530,7 @@ export const createWineAppPipeline = async (options: {
               this._.std(job.name, 'stdErr', step, data, updateProcess),
             onExit: (data) => this._.std(job.name, 'exit', step, data)
           });
-
-          stepIndex++;
         }
-
-        jobIndex++;
       }
 
       if (store.killAllProcesses === false) {

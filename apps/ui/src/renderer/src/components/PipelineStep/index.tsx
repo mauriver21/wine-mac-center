@@ -5,6 +5,8 @@ import { IconButton } from '@mui/material';
 import { useState } from 'react';
 import { Card, Stack, Body1, ContentsClass, Box, Icon } from 'reactjs-shared-ui';
 import { Code } from 'reactjs-shared-ui/syntax-highlighter';
+import { ContextMenu } from '@components/ContextMenu';
+import { useAppPipelineContext } from '@hooks/useAppPipelineContext';
 
 export interface PipelineStepProps {
   step: WineAppStep;
@@ -12,7 +14,8 @@ export interface PipelineStepProps {
   stepIndex: number;
 }
 
-export const PipelineStep: React.FC<PipelineStepProps> = ({ step }) => {
+export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, stepIndex }) => {
+  const { runWineAppPipeline } = useAppPipelineContext();
   const [show, setShow] = useState(false);
   const output =
     step.output
@@ -40,12 +43,30 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step }) => {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          p={1}
+          pr={1.5}
         >
-          <Body1 className={ContentsClass.ItemTitle} fontWeight={500} color="text.secondary">
-            {step.name}
-          </Body1>
-          <StatusBox status={step.status} />
+          <Stack
+            width="100%"
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            p={1}
+          >
+            <Body1 className={ContentsClass.ItemTitle} fontWeight={500} color="text.secondary">
+              {step.name}
+            </Body1>
+            <StatusBox status={step.status} />
+          </Stack>
+          <ContextMenu
+            menuItems={[
+              {
+                label: 'Run pipeline from here.',
+                onClick: () => {
+                  runWineAppPipeline({ fromJobIndex: jobIndex, fromStepIndex: stepIndex });
+                }
+              }
+            ]}
+          />
         </Stack>
       </Stack>
       {show ? (

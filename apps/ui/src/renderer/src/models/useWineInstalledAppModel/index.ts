@@ -135,7 +135,11 @@ export const useWineInstalledAppModel = () => {
       const jobs = wineInstalledApp?.pipeline?.jobs || [];
       let hasErrors = false;
       for (const job of jobs) {
-        if (job.steps.some((item) => item.status === ProcessStatus.Error)) {
+        if (
+          job.steps.some(
+            (item) => item.status === ProcessStatus.Error || item.status === ProcessStatus.Pending
+          )
+        ) {
           hasErrors = true;
           break;
         }
