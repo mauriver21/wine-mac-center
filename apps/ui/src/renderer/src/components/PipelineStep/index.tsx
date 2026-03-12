@@ -72,8 +72,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
       {show ? (
         <Code
           sx={{
-            '& > pre': { maxHeight: 200, overflowY: 'auto', overflowX: 'hidden !important' },
-            '& code > span': { display: 'none' }
+            '& > pre': { maxHeight: 200, overflowY: 'auto', overflowX: 'hidden !important' }
           }}
           type="content"
           language="bash"

@@ -178,7 +178,7 @@ export const createWineAppPipeline = async (options: {
   ) => {
     let stepIndex = 0;
     for (const step of steps) {
-      if (fromStepIndex && stepIndex <= fromStepIndex) {
+      if (fromStepIndex && stepIndex < fromStepIndex) {
         stepIndex++;
         continue;
       }
@@ -250,7 +250,7 @@ export const createWineAppPipeline = async (options: {
         return wineApp.spawnScript('remove', `"${path}"`, spawnProcessArgs);
       }
       case ScriptOperation.RUN_WINDOWS_EXE: {
-        const exePath = `${parsePath(args.baseExePath)}/${parsePath(args.exePath)}`
+        const exePath = `/${parsePath(args.baseExePath)}/${parsePath(args.exePath)}`
           .replace('$HOME', env.get().HOME)
           .replace('$WINE_APP_PREFIX_PATH', appEnv.WINE_APP_PREFIX_PATH);
         return wineApp.runExe(`${exePath}`, spawnProcessArgs);
@@ -494,7 +494,7 @@ export const createWineAppPipeline = async (options: {
 
       for (const job of pipeline.jobs) {
         let stepIndex = 0;
-        if (fromJobIndex && jobIndex <= fromJobIndex) {
+        if (fromJobIndex && jobIndex < fromJobIndex) {
           jobIndex++;
           continue;
         }
@@ -503,7 +503,7 @@ export const createWineAppPipeline = async (options: {
         resetJobStepsStatus(job.steps, this._.onUpdate, fromStepIndex);
 
         for (const step of job.steps) {
-          if (fromStepIndex && stepIndex <= fromStepIndex) {
+          if (fromStepIndex && stepIndex < fromStepIndex) {
             stepIndex++;
             continue;
           }
