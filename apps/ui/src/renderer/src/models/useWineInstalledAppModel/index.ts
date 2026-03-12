@@ -129,38 +129,25 @@ export const useWineInstalledAppModel = () => {
     (wineInstalledApps, appName) =>
       wineInstalledApps?.find((item) => item.name?.toLowerCase() == appName?.toLowerCase())
   );
-  const selectPipelineContainsErrors = createSelector(
-    [selectWineInstalledApp],
-    (wineInstalledApp) => {
-      const jobs = wineInstalledApp?.pipeline?.jobs || [];
-      let hasErrors = false;
-      for (const job of jobs) {
-        if (job.steps.some((item) => item.status === ProcessStatus.Error)) {
-          hasErrors = true;
-          break;
-        }
-      }
-      return hasErrors;
-    }
-  );
-  const selectPipelineIsPending = createSelector([selectWineInstalledApp], (wineInstalledApp) => {
+
+  const selectPipelineIsResumable = createSelector([selectWineInstalledApp], (wineInstalledApp) => {
     const jobs = wineInstalledApp?.pipeline?.jobs || [];
-    let isPending = false;
+    let isResumable = false;
     for (const job of jobs) {
-      if (job.steps.some((item) => item.status === ProcessStatus.Pending)) {
-        isPending = true;
+      if (
+        job.steps.some(
+          (item) =>
+            item.status === ProcessStatus.Pending ||
+            item.status === ProcessStatus.Error ||
+            item.status === ProcessStatus.Cancelled
+        )
+      ) {
+        isResumable = true;
         break;
       }
     }
-    return isPending;
+    return isResumable;
   });
-
-  const selectPipelineIsResumable = createSelector(
-    [selectPipelineContainsErrors, selectPipelineIsPending],
-    (containsErrors, isPending) => {
-      return containsErrors || isPending;
-    }
-  );
 
   return {
     loaders: state.loaders,
@@ -172,8 +159,6 @@ export const useWineInstalledAppModel = () => {
     selectWineInstalledAppState,
     selectWineInstalledApps,
     selectWineInstalledApp,
-    selectPipelineContainsErrors,
-    selectPipelineIsPending,
     selectPipelineIsResumable
   };
 };
