@@ -10,11 +10,10 @@ import { useRefresh } from '@utils/useRefresh';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, ContentsClass, sleep, Stack } from 'reactjs-shared-ui';
+import { Box, Button, ContentsClass, Stack } from 'reactjs-shared-ui';
 
 export const AppPipeline: React.FC = () => {
   const [running, setRunning] = useState(false);
-  const [stopping, setStopping] = useState(false);
   const { signal, refresh } = useRefresh();
   const { appName } = useParams();
   const queryParam = useQueryParam();
@@ -29,7 +28,6 @@ export const AppPipeline: React.FC = () => {
 
   const runWineAppPipeline: AppPipelineContextType['runWineAppPipeline'] = async (args) => {
     try {
-      setStopping(false);
       setRunning(true);
       if (appName === undefined) throw new Error(`Invalid application name`);
       await wineAppPipelineModel.runWineAppPipeline({
@@ -42,14 +40,6 @@ export const AppPipeline: React.FC = () => {
     } finally {
       setRunning(false);
     }
-  };
-
-  const killPipeline = async () => {
-    setStopping(true);
-    await wineAppPipelineModel.killWineAppPipeline();
-    await sleep(200);
-    await wineAppPipelineModel.loadWineAppPipeline(appName);
-    setStopping(false);
   };
 
   useEffect(() => {
@@ -98,10 +88,9 @@ export const AppPipeline: React.FC = () => {
           <>
             {status === ProcessStatus.InProgress ? (
               <Button
-                disabled={stopping}
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
-                onClick={killPipeline}
+                onClick={() => wineAppPipelineModel.stopWineAppPipeline(appName)}
               >
                 Stop
               </Button>

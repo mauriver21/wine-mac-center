@@ -123,7 +123,6 @@ export const useWineAppPipelineModel = () => {
   const runWineAppPipeline = async (args: WineAppArgs) => {
     try {
       const { appName, fromJobIndex, fromStepIndex } = args;
-      if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
       // Required delay for config.json be ready when loading wine pipeline.
       await sleep(200);
       const pipeline = await loadWineAppPipeline(appName);
@@ -137,6 +136,19 @@ export const useWineAppPipelineModel = () => {
   };
 
   const killWineAppPipeline = () => context.killWineAppPipeline();
+
+  const stopWineAppPipeline = async (appName: string | undefined) => {
+    try {
+      loadingDialog.open({ message: 'Stopping wine app setup...' });
+      await killWineAppPipeline();
+      await sleep(200);
+      await loadWineAppPipeline(appName);
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      loadingDialog.close();
+    }
+  };
 
   const clearWineAppPipeline = () => {
     dispatch({
@@ -164,6 +176,7 @@ export const useWineAppPipelineModel = () => {
     dispatchPatch,
     updateAppConfig,
     scaffoldWineApp,
+    stopWineAppPipeline,
     loadWineAppPipeline,
     selectWineAppPipelineStatus
   };
