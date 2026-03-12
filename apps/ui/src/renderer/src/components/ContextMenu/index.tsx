@@ -5,9 +5,10 @@ import { useState } from 'react';
 
 export interface ContextMenuProps {
   menuItems?: Array<{ onClick?: () => void; label?: React.ReactNode }>;
+  disabled?: boolean;
 }
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({ menuItems }) => {
+export const ContextMenu: React.FC<ContextMenuProps> = ({ menuItems, disabled }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -28,6 +29,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({ menuItems }) => {
         color="secondary"
         title="More Options"
         onClick={onOpen}
+        disabled={disabled}
       >
         <Icon render={EllipsisVerticalIcon} />
       </Button>

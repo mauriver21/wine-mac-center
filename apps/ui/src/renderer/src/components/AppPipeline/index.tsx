@@ -13,7 +13,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, ContentsClass, sleep, Stack } from 'reactjs-shared-ui';
 
 export const AppPipeline: React.FC = () => {
-  const [resuming, setResuming] = useState(false);
+  const [running, setRunning] = useState(false);
   const [stopping, setStopping] = useState(false);
   const { signal, refresh } = useRefresh();
   const { appName } = useParams();
@@ -30,7 +30,7 @@ export const AppPipeline: React.FC = () => {
   const runWineAppPipeline: AppPipelineContextType['runWineAppPipeline'] = async (args) => {
     try {
       setStopping(false);
-      setResuming(true);
+      setRunning(true);
       if (appName === undefined) throw new Error(`Invalid application name`);
       await wineAppPipelineModel.runWineAppPipeline({
         appName,
@@ -40,7 +40,7 @@ export const AppPipeline: React.FC = () => {
     } catch (error) {
       appModel.dispatchError(error);
     } finally {
-      setResuming(false);
+      setRunning(false);
     }
   };
 
@@ -76,7 +76,7 @@ export const AppPipeline: React.FC = () => {
   }, [wineAppPipelineStatus?.jobs?.length]);
 
   return (
-    <AppPipelineContext.Provider value={{ runWineAppPipeline }}>
+    <AppPipelineContext.Provider value={{ runWineAppPipeline, running }}>
       <ConfigLayout
         signal={signal}
         mainTitle={appName}
@@ -107,7 +107,7 @@ export const AppPipeline: React.FC = () => {
               </Button>
             ) : (
               <Button
-                disabled={resuming}
+                disabled={running}
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
                 onClick={() => navigate('/apps')}
@@ -117,7 +117,7 @@ export const AppPipeline: React.FC = () => {
             )}
             {status === ProcessStatus.Cancelled ? (
               <Button
-                disabled={resuming}
+                disabled={running}
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
                 onClick={() => runWineAppPipeline()}

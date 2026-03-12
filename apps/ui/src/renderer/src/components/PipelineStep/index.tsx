@@ -15,7 +15,7 @@ export interface PipelineStepProps {
 }
 
 export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, stepIndex }) => {
-  const { runWineAppPipeline } = useAppPipelineContext();
+  const { runWineAppPipeline, running } = useAppPipelineContext();
   const [show, setShow] = useState(false);
   const output =
     step.output
@@ -58,6 +58,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
             <StatusBox status={step.status} />
           </Stack>
           <ContextMenu
+            disabled={running}
             menuItems={[
               {
                 label: 'Run pipeline from here.',
