@@ -135,16 +135,30 @@ export const useWineInstalledAppModel = () => {
       const jobs = wineInstalledApp?.pipeline?.jobs || [];
       let hasErrors = false;
       for (const job of jobs) {
-        if (
-          job.steps.some(
-            (item) => item.status === ProcessStatus.Error || item.status === ProcessStatus.Pending
-          )
-        ) {
+        if (job.steps.some((item) => item.status === ProcessStatus.Error)) {
           hasErrors = true;
           break;
         }
       }
       return hasErrors;
+    }
+  );
+  const selectPipelineIsPending = createSelector([selectWineInstalledApp], (wineInstalledApp) => {
+    const jobs = wineInstalledApp?.pipeline?.jobs || [];
+    let isPending = false;
+    for (const job of jobs) {
+      if (job.steps.some((item) => item.status === ProcessStatus.Pending)) {
+        isPending = true;
+        break;
+      }
+    }
+    return isPending;
+  });
+
+  const selectPipelineIsResumable = createSelector(
+    [selectPipelineContainsErrors, selectPipelineIsPending],
+    (containsErrors, isPending) => {
+      return containsErrors || isPending;
     }
   );
 
@@ -158,6 +172,8 @@ export const useWineInstalledAppModel = () => {
     selectWineInstalledAppState,
     selectWineInstalledApps,
     selectWineInstalledApp,
-    selectPipelineContainsErrors
+    selectPipelineContainsErrors,
+    selectPipelineIsPending,
+    selectPipelineIsResumable
   };
 };

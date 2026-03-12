@@ -7,6 +7,7 @@ import { Card, Stack, Body1, ContentsClass, Box, Icon } from 'reactjs-shared-ui'
 import { Code } from 'reactjs-shared-ui/syntax-highlighter';
 import { ContextMenu } from '@components/ContextMenu';
 import { useAppPipelineContext } from '@hooks/useAppPipelineContext';
+import { PipelineAction } from '@constants/enums';
 
 export interface PipelineStepProps {
   step: WineAppStep;
@@ -15,7 +16,7 @@ export interface PipelineStepProps {
 }
 
 export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, stepIndex }) => {
-  const { runWineAppPipeline, running } = useAppPipelineContext();
+  const { runWineAppPipeline, running, action } = useAppPipelineContext();
   const [show, setShow] = useState(false);
   const output =
     step.output
@@ -57,17 +58,21 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
             </Body1>
             <StatusBox status={step.status} />
           </Stack>
-          <ContextMenu
-            disabled={running}
-            menuItems={[
-              {
-                label: 'Run pipeline from here.',
-                onClick: () => {
-                  runWineAppPipeline({ fromJobIndex: jobIndex, fromStepIndex: stepIndex });
+          {action === PipelineAction.RESUME ? (
+            <ContextMenu
+              disabled={running}
+              menuItems={[
+                {
+                  label: 'Run pipeline from here.',
+                  onClick: () => {
+                    runWineAppPipeline({ fromJobIndex: jobIndex, fromStepIndex: stepIndex });
+                  }
                 }
-              }
-            ]}
-          />
+              ]}
+            />
+          ) : (
+            <></>
+          )}
         </Stack>
       </Stack>
       {show ? (

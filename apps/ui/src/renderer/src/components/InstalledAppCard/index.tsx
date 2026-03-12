@@ -26,8 +26,8 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
   const wineAppConfig = useSelector((state: RootState) =>
     wineAppModel.selectWineAppConfig(state, appName, ConfigOrigin.INSTALLED_APP)
   );
-  const pipelineContainsErrors = useSelector((state: RootState) =>
-    wineInstalledAppModel.selectPipelineContainsErrors(state, appName)
+  const pipelineIsResumable = useSelector((state: RootState) =>
+    wineInstalledAppModel.selectPipelineIsResumable(state, appName)
   );
   const { navigateToAppConfig, navigateToAppPipeline, navigateToAppLauncher } = useNavigateApp();
   const [artWorkSrc, setArtWorkSrc] = useState(wineAppConfig?.artworkURL);
@@ -98,8 +98,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
               onClick={() => navigateToAppLauncher(appName)}
             />
           )}
-          {installedWineApp?.pipeline?.status == ProcessStatus.Cancelled ||
-          pipelineContainsErrors ? (
+          {pipelineIsResumable ? (
             <AppCardButton
               title="Installation pending"
               icon={Pending}

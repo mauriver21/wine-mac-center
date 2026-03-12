@@ -76,7 +76,7 @@ export const AppPipeline: React.FC = () => {
   }, [wineAppPipelineStatus?.jobs?.length]);
 
   return (
-    <AppPipelineContext.Provider value={{ runWineAppPipeline, running }}>
+    <AppPipelineContext.Provider value={{ runWineAppPipeline, running, action }}>
       <ConfigLayout
         signal={signal}
         mainTitle={appName}
