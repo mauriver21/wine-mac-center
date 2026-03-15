@@ -1,10 +1,17 @@
 import { app } from 'electron';
 import { exec } from '../exec';
 
-export const quitApp = (
+export const quitApp = async (
   _: Electron.IpcMainInvokeEvent,
   callbackCmd: string = '',
 ) => {
-  app.quit();
-  callbackCmd && exec(_, callbackCmd);
+  try {
+    if (callbackCmd) {
+      await exec(_, callbackCmd);
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    app.quit();
+  }
 };

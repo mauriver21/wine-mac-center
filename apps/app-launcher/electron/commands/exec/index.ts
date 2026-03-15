@@ -4,7 +4,7 @@ export const exec = async (_: Electron.IpcMainInvokeEvent, cmd: string) => {
   return new Promise<{ stdOut: string; stdErr: string }>((resolve, reject) => {
     nodeExec(cmd, (error, stdOut, stdErr) => {
       if (error) {
-        reject(error);
+        reject({ stdOut, stdErr, error });
       } else {
         resolve({ stdOut, stdErr });
       }
