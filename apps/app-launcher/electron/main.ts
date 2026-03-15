@@ -23,6 +23,7 @@ import {
   quitApp,
   spawn,
   writeFile,
+  setWindowTitle,
 } from './commands';
 import { singleton } from './singleton';
 
@@ -68,6 +69,7 @@ ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
 ipcMain.handle(ElectronApi.ShowItemInFolder, showItemInFolder);
 ipcMain.handle(ElectronApi.RenameDirectory, renameDirectory);
 ipcMain.handle(ElectronApi.QuitApp, quitApp);
+ipcMain.handle(ElectronApi.SetWindowTitle, setWindowTitle);
 
 let isQuitting = false;
 
@@ -78,6 +80,7 @@ const WINDOW_DIMENSIONS = {
 
 function createWindow() {
   singleton.mainWindow = new BrowserWindow({
+    title: '',
     width: WINDOW_DIMENSIONS.width,
     height: WINDOW_DIMENSIONS.height,
     minWidth: WINDOW_DIMENSIONS.width,

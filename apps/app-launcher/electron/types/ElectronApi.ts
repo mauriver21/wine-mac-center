@@ -25,4 +25,5 @@ export enum ElectronApi {
   ShowItemInFolder = 'show-item-in-folder',
   QuitApp = 'quit-app',
   OnAppClose = 'on-app-close',
+  SetWindowTitle = 'set-window-title',
 }

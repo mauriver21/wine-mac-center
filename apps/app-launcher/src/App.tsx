@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as Launcher } from 'ui/app-launcher';
 import { addAppEventListener } from '@utils/addAppEventListener';
@@ -6,6 +6,7 @@ import { removeAppEventListener } from '@utils/removeAppEventListener';
 import { useEnv } from 'ui/public-api';
 import { ElectronApi } from 'electron/types';
 import { quitApp as baseQuitApp } from '@utils/quitApp';
+import { setWindowTitle } from '@utils/setWindowTitle';
 
 export const App = () => {
   const ref = useRef({ quitAppListenerId: '' });
@@ -30,6 +31,10 @@ export const App = () => {
       );
     }
   };
+
+  useLayoutEffect(() => {
+    setWindowTitle(env.get().APP_NAME);
+  }, []);
 
   useEffect(() => {
     import.meta.env.PROD && navigate('/');

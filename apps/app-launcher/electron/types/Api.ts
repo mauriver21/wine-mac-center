@@ -50,4 +50,5 @@ export type Api = {
     eventName: ElectronApi.OnAppClose,
     listenerId: string,
   ) => void;
+  setWindowTitle: (title: string) => void;
 };

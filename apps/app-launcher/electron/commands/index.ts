@@ -11,6 +11,7 @@ export * from './readDirectory';
 export * from './readFileAsString';
 export * from './removeDirectory';
 export * from './renameDirectory';
+export * from './setWindowTitle';
 export * from './showItemInFolder';
 export * from './showOpenDialog';
 export * from './spawn';

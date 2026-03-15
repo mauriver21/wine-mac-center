@@ -80,6 +80,8 @@ const api: RendererApi = {
   renameDirectory: (...args) =>
     ipcRenderer.invoke(ElectronApi.RenameDirectory, ...args),
   quitApp: (...args) => ipcRenderer.invoke(ElectronApi.QuitApp, ...args),
+  setWindowTitle: (...args) =>
+    ipcRenderer.invoke(ElectronApi.SetWindowTitle, ...args),
   addEventListener: (
     eventName: ElectronApi.OnAppClose,
     callback: () => void,
