@@ -6,7 +6,11 @@ mountDiskImage() {
         return 1
     fi
 
-    hdiutil mount "$DISK_IMAGE"
+    if hdiutil info | grep -Fq "$DISK_IMAGE"; then
+        echo "Image already mounted"
+    else
+        hdiutil mount "$DISK_IMAGE"
+    fi
 }
 
 mountDiskImage "$@"
