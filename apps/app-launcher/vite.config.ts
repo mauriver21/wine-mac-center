@@ -5,6 +5,7 @@ import electron from 'vite-plugin-electron/simple';
 import react from '@vitejs/plugin-react';
 import EnvironmentPlugin from 'vite-plugin-environment';
 
+// Built with https://electron-vite.github.io/
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
