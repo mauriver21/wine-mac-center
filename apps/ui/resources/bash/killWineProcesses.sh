@@ -1,9 +1,7 @@
-killWineProcesses() {  
-  if [[ -n "$1" ]]; then
-    WINE_APP_PREFIX_PATH="$1"
-  fi
-
-  WINEPREFIX="$WINE_APP_PREFIX_PATH" wineserver -k
+killWineProcesses() {
+  PATH="$WINE_APP_BIN_PATH:$PATH" \
+  WINEPREFIX="$WINE_APP_PREFIX_PATH" \
+  wineserver -k
 }
 
 killWineProcesses "$@"

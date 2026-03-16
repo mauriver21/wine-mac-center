@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { App as Launcher } from 'ui/app-launcher';
 import { addAppEventListener } from '@utils/addAppEventListener';
@@ -7,21 +7,29 @@ import { useEnv, WineApp } from 'ui/public-api';
 import { ElectronApi } from 'electron/types';
 import { quitApp as baseQuitApp } from '@utils/quitApp';
 import { setWindowTitle } from '@utils/setWindowTitle';
+import { useRefresh } from '@hooks/useRefresh';
 
 export const App = () => {
-  const ref = useRef<{ quitAppListenerId: string; wineApp?: WineApp }>({
+  const ref = useRef<{ quitAppListenerId: string }>({
     quitAppListenerId: '',
   });
+  const [wineApp, setWineApp] = useState<WineApp>();
   const navigate = useNavigate();
   const env = useEnv();
-  const { SCRIPTS_PATH } = env.get();
+  const { refresh, signal } = useRefresh();
+  const { quitAppWhenLauncherIsClosed = false } =
+    wineApp?.getAppConfig().launcherConfig || {};
 
-  const quitApp = () => {
-    const WINE_APP_PREFIX_PATH =
-      ref.current.wineApp?.getWineEnv().WINE_APP_PREFIX_PATH || '';
-    baseQuitApp(
-      `"${SCRIPTS_PATH}/killWineProcesses.sh" "${WINE_APP_PREFIX_PATH}"`,
-    );
+  const quitApp = async () => {
+    if (quitAppWhenLauncherIsClosed) {
+      try {
+        await wineApp?.execScript('killWineProcesses');
+      } catch (error) {
+        console.error(error);
+      } finally {
+        baseQuitApp();
+      }
+    }
   };
 
   const onQuitAppWhenLauncherIsClosed = (flag: boolean) => {
@@ -46,24 +54,24 @@ export const App = () => {
     import.meta.env.PROD && navigate('/');
   }, []);
 
+  useEffect(() => {
+    onQuitAppWhenLauncherIsClosed(quitAppWhenLauncherIsClosed);
+  }, [signal]);
+
   return (
     <Launcher
       onInitialized={({ wineApp, runExe }) => {
-        ref.current.wineApp = wineApp;
-        const { runMainExeOnStartup, quitAppWhenLauncherIsClosed = false } =
-          wineApp.getAppConfig().launcherConfig || {};
+        setWineApp(wineApp);
 
-        if (runMainExeOnStartup) {
+        if (wineApp.getAppConfig().launcherConfig?.runMainExeOnStartup) {
           runExe();
         }
 
-        onQuitAppWhenLauncherIsClosed(quitAppWhenLauncherIsClosed);
+        refresh();
       }}
       onUpdateAppLauncherConfig={({ wineApp }) => {
-        const { quitAppWhenLauncherIsClosed = false } =
-          wineApp.getAppConfig().launcherConfig || {};
-
-        onQuitAppWhenLauncherIsClosed(quitAppWhenLauncherIsClosed);
+        setWineApp(wineApp);
+        refresh();
       }}
     />
   );

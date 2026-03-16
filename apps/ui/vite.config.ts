@@ -37,6 +37,7 @@ export default defineConfig(() => {
           'src/renderer/src/public-api',
           'src/renderer/src/store',
           'src/renderer/src/hooks/useEnv',
+          'src/renderer/src/interfaces/BashScript.ts',
           'src/renderer/src/interfaces/WineApp.ts',
           'src/renderer/src/interfaces/WineAppConfig.ts',
           'src/renderer/src/interfaces/SpawnProcessArgs.ts',

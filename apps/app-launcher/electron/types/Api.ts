@@ -41,7 +41,7 @@ export type Api = {
   buildPlist: (obj: plist.PlistValue) => Promise<string>;
   showItemInFolder: (fullPath: string) => Promise<void>;
   renameDirectory: (from: string, to: string) => Promise<void>;
-  quitApp: (callbackCmd?: string) => Promise<void>;
+  quitApp: () => Promise<void>;
   addEventListener: (
     eventName: ElectronApi.OnAppClose,
     callback: () => void,
