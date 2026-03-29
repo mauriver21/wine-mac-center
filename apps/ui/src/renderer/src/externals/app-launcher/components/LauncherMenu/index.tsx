@@ -51,7 +51,7 @@ export const LauncherMenu: React.FC = () => {
           onClick={runExe}
         >
           <Icon color="text.secondary" render={PlayCircle} />{' '}
-          <Body1 fontWeight={500}>Start Game</Body1>
+          <Body1 fontWeight={500}>Run Application</Body1>
         </Button>
       </Stack>
     </Box>
