@@ -37,6 +37,7 @@ import { useQueryParam } from '@hooks/useQueryParam';
 import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { blobUrlToFile } from '@utils/blobUrlToFile';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
+import { Rocket } from '@mui/icons-material';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -136,6 +137,31 @@ export const PipelineScript: React.FC = () => {
           />
         </Box>
       </>
+    </CardItem>,
+    <CardItem icon={Rocket} label="Launcher Settings">
+      <Grid container>
+        <Grid item xs={12}>
+          <Checkbox
+            control={form.control}
+            name="launcherConfig.runMainExeOnStartup"
+            label="Start the app automatically on startup"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Checkbox
+            control={form.control}
+            name="launcherConfig.preventMonitorFromBecomingInactive"
+            label="Prevent the monitor from becoming inactive"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Checkbox
+            control={form.control}
+            name="launcherConfig.quitAppWhenLauncherIsClosed"
+            label="Quit app when launcher is closed"
+          />
+        </Grid>
+      </Grid>
     </CardItem>,
     <CardItem icon={PlayCircleIcon} label="Installation Script">
       <Stack spacing={2}>

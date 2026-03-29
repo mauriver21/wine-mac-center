@@ -79,10 +79,6 @@ export const Scripts: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    wineAppConfigModel.listAll();
-  }, []);
-
   return (
     <ScriptsContext.Provider value={{ setAppName, setOpenConfirmRemoveScript }}>
       <Box display="grid" gridTemplateRows="auto 1fr">

@@ -56,6 +56,13 @@ export const useSchema = () => {
       message: 'File exceeds 4000kb',
       test: (file) => fileMaxSize(file, 4000000)
     }),
+    launcherConfig: schema
+      .object({
+        runMainExeOnStartup: schema.boolean().optional(),
+        preventMonitorFromBecomingInactive: schema.boolean().optional(),
+        quitAppWhenLauncherIsClosed: schema.boolean().optional()
+      })
+      .optional(),
     pipelineScripts: schema
       .array(
         schema.object({

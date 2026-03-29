@@ -39,7 +39,8 @@ export const useWineAppConfigApiClient = () => {
         version: data.winetricks?.version || DEFAULT_WINETRICKS_VERSION
       },
       executables: [{ main: true, path: '', flags: '' }],
-      pipelineScripts: data.pipelineScripts
+      pipelineScripts: data.pipelineScripts,
+      launcherConfig: data.launcherConfig
     };
 
     await writeFile(`${SCRIPT_PATH}/index.json`, JSON.stringify(config));
