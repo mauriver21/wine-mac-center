@@ -20,6 +20,7 @@ export const WinetricksModule: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
   const { wineApp, loading, setLoading } = useWineAppContext() || {};
+  const config = wineApp?.getAppConfig();
 
   return (
     <Card>
@@ -29,7 +30,16 @@ export const WinetricksModule: React.FC = () => {
             <Icon strokeWidth={0} size={34} render={SparklesIcon} pr={1} />
             <H6 className={ContentsClass.ItemTitle}>Winetricks</H6>
           </Stack>
-          <WinetricksSelector disabled={loading} name="winetricksVerbs" control={form.control} />
+          <WinetricksSelector
+            winetricksVersionSelectProps={{
+              control: form.control,
+              name: 'winetricksVersion',
+              value: config?.winetricks?.version
+            }}
+            disabled={loading}
+            name="winetricksVerbs"
+            control={form.control}
+          />
           <Stack width="100%" pt={1} alignItems="flex-end">
             <Button
               title={`Run Winetricks`}

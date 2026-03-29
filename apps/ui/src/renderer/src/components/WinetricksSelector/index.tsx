@@ -10,13 +10,17 @@ import { Winetricks } from '@interfaces/Winetricks';
 import { Chip, IconButton } from '@mui/material';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
+import {
+  WinetricksVersionSelect,
+  WinetricksVersionSelectProps
+} from '@components/WinetricksVersionSelect';
 
 export interface WinetricksSelectorProps extends FieldProps {
   name?: string;
   disabled?: boolean;
   value?: string[];
   showSelectedVerbs?: boolean;
-  version?: string;
+  winetricksVersionSelectProps?: WinetricksVersionSelectProps;
 }
 
 const CATEGORIES = [
@@ -36,14 +40,16 @@ const DEFAULT_EXPANDED_STATE = {
 
 export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
   name = '',
-  version = DEFAULT_WINETRICKS_VERSION,
   control,
   fieldOptions,
   value,
   disabled,
-  showSelectedVerbs
+  showSelectedVerbs,
+  winetricksVersionSelectProps = {}
 }) => {
   const winetrickModel = useWinetrickModel();
+  const { value: winetricksVersion } = winetricksVersionSelectProps;
+  const [version, setVersion] = useState(winetricksVersion || DEFAULT_WINETRICKS_VERSION);
   const [filters, setFilters] = useState({ verb: '' });
   const [expandedState, setExpandedState] = useState(DEFAULT_EXPANDED_STATE);
   const { loaders } = useSelector(winetrickModel.selectWinetrickState);
@@ -58,12 +64,24 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
   return (
     <SkeletonLoader loading={loaders.listingAll}>
       <Stack spacing={1}>
-        <SearchField
-          disabled={disabled}
-          onChange={(event) => {
-            setFilters({ verb: event.target.value });
-          }}
-        />
+        <Grid container columnGap={1} justifyContent="space-between">
+          <Grid item xs={7.8}>
+            <SearchField
+              disabled={disabled}
+              onChange={(event) => {
+                setFilters({ verb: event.target.value });
+              }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <WinetricksVersionSelect
+              disabled={disabled}
+              value={version}
+              onChange={(event) => setVersion(event.target.value as string)}
+              {...winetricksVersionSelectProps}
+            />
+          </Grid>
+        </Grid>
         <Field
           control={control}
           fieldOptions={fieldOptions}
