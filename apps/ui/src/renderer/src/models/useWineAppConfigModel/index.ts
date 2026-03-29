@@ -170,6 +170,9 @@ export const useWineAppConfigModel = () => {
       (_: RootState, _name: string | undefined, origin: ConfigOrigin | undefined) => origin
     ],
     (wineAppConfigs, name, origin) => {
+      if (origin === ConfigOrigin.ALL) {
+        return wineAppConfigs?.find((item) => item.name == name);
+      }
       return wineAppConfigs?.find((item) => item.name == name && item.origin == origin);
     }
   );

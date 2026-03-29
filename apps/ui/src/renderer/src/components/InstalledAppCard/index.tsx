@@ -3,7 +3,6 @@ import { Body1, Box, Card, CardProps, Image } from 'reactjs-shared-ui';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
 import { Folder, Launch, Pending } from '@mui/icons-material';
-import { getAppArtwork } from '@utils/getAppArtwork';
 import { RootState } from '@interfaces/RootState';
 import { useEffect, useState } from 'react';
 import { useNavigateApp } from '@hooks/useNavigateApp';
@@ -24,7 +23,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
     wineInstalledAppModel.selectWineInstalledApp(state, appName)
   );
   const wineAppConfig = useSelector((state: RootState) =>
-    wineAppModel.selectWineAppConfig(state, appName, ConfigOrigin.INSTALLED_APP)
+    wineAppModel.selectWineAppConfig(state, appName, ConfigOrigin.ALL)
   );
   const pipelineIsResumable = useSelector((state: RootState) =>
     wineInstalledAppModel.selectPipelineIsResumable(state, appName)
@@ -34,14 +33,11 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
   const [noArtWork, setNoArtWork] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      if (wineAppConfig?.iconURL === undefined) {
-        const artWork = await getAppArtwork(installedWineApp?.appPath);
-        setNoArtWork(!artWork);
-        setArtWorkSrc(artWork || defaultArtwork);
-      }
-    })();
-  }, [installedWineApp?.artworkURL]);
+    if (wineAppConfig?.artworkURL === undefined) {
+      setNoArtWork(true);
+      setArtWorkSrc(defaultArtwork);
+    }
+  }, [wineAppConfig?.artworkURL]);
 
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>

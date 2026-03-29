@@ -57,10 +57,6 @@ export const WineInstalledAppsList: React.FC = () => {
     wineInstalledAppModel.selectWineInstalledApps(state, filters)
   );
 
-  useEffect(() => {
-    wineInstalledAppModel.listAll();
-  }, []);
-
   return (
     <Box display="grid" gridTemplateRows="auto 1fr">
       <Stack direction="row" spacing={1} pt={2} px={3} justifyContent="space-between">
