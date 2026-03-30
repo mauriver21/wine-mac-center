@@ -238,7 +238,7 @@ export const useWineAppConfigApiClient = () => {
       launcherImgFile && (await saveScriptLauncherImageFile(name, launcherImgFile));
     }
 
-    return config;
+    return await readScriptFile(name);
   };
 
   const remove = async (appName: string) => {
