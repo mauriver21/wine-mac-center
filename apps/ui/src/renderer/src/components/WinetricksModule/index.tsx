@@ -20,7 +20,6 @@ export const WinetricksModule: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
   const { wineApp, loading, setLoading } = useWineAppContext() || {};
-  const config = wineApp?.getAppConfig();
 
   return (
     <Card>
@@ -33,8 +32,7 @@ export const WinetricksModule: React.FC = () => {
           <WinetricksSelector
             winetricksVersionSelectProps={{
               control: form.control,
-              name: 'winetricksVersion',
-              value: config?.winetricks?.version
+              name: 'winetricksVersion'
             }}
             disabled={loading}
             name="winetricksVerbs"
@@ -56,7 +54,10 @@ export const WinetricksModule: React.FC = () => {
                 setLoading?.(true);
 
                 if (verbsString) {
-                  await wineApp?.winetrick({ verb: verbsString, version: '20260125' }, spawnLog);
+                  await wineApp?.winetrick(
+                    { verb: verbsString, version: form.watch('winetricksVersion') },
+                    spawnLog
+                  );
                   form.reset();
                   setLoading?.(false);
                 } else {
