@@ -221,16 +221,15 @@ export const useWineAppConfigApiClient = () => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${originalAppName}`;
     const NEW_SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${name}`;
     const changedScriptName = name !== originalAppName;
-    let config: WineAppConfig | undefined;
 
     if (await dirExists(SCRIPT_PATH)) {
       if (changedScriptName) {
         if ((await dirExists(NEW_SCRIPT_PATH)) === false) {
           await renameDirectory(SCRIPT_PATH, NEW_SCRIPT_PATH);
-          config = await writeScript({ ...rest, name });
+          await writeScript({ ...rest, name });
         }
       } else {
-        config = await writeScript({ ...rest, name });
+        await writeScript({ ...rest, name });
       }
 
       iconFile && (await saveScriptIconFile(name, iconFile));

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { Box, Button, Icon, SkeletonLoader, Stack } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
 import { VirtuosoGrid } from 'react-virtuoso';
