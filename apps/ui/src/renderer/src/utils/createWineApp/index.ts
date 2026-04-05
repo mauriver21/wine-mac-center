@@ -403,6 +403,13 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   };
 
   /**
+   * Run update wine app.
+   */
+  const updateWineApp = (processArgs?: SpawnProcessArgs) => {
+    return spawnScript('updateWineApp', '', processArgs);
+  };
+
+  /**
    * Run regedit.
    */
   const regedit = (processArgs?: SpawnProcessArgs) => {
@@ -576,6 +583,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     saveMainExecutablePath,
     updateMainExecutableFlags,
     updateAppLauncherConfig,
-    writeAppConfig
+    writeAppConfig,
+    updateWineApp
   };
 };

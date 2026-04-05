@@ -21,6 +21,7 @@ export type BashScript =
   | 'runExecutable'
   | 'remove'
   | 'copy'
+  | 'updateWineApp'
   | 'wine'
   | 'wineboot'
   | 'winecfg'
