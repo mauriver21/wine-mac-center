@@ -25,7 +25,7 @@ export const IconInput: React.FC<IconInputProps> = ({
 }) => {
   const inputRef = useRef<HTMLDivElement>(null);
   const [fileName, setFileName] = useState('');
-  const [artWorkSrc, setIconSrc] = useState('');
+  const [iconSrc, setIconSrc] = useState('');
   const [noIcon, setNoIcon] = useState(false);
 
   const getSrcPath = () => {
@@ -106,7 +106,7 @@ export const IconInput: React.FC<IconInputProps> = ({
         <Image
           width="100%"
           height="100%"
-          src={artWorkSrc}
+          src={iconSrc}
           style={{
             objectFit: 'cover',
             maxWidth: '100%'
