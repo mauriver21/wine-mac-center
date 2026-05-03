@@ -1,0 +1,27 @@
+{
+  "name": "Age of Empires Definitive Edition",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": true,
+  "setupExecutableURL": "",
+  "engineVersion": "WS12WineSikarugir10.0_3",
+  "winetricks": { "verbs": ["steam"], "version": "20260125" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "steamAppId": "1017900",
+      "installDirName": "AoEDE",
+      "operation": "DOWNLOAD_STEAM_APP",
+      "name": "Download Steam App"
+    },
+    {
+      "mainExePath": "/Program Files (x86)/Steam/steam.exe",
+      "operation": "SET_MAIN_EXE",
+      "exeFlags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 1017900",
+      "name": "Set main exe"
+    }
+  ],
+  "launcherConfig": {
+    "quitAppWhenLauncherIsClosed": true,
+    "runMainExeOnStartup": true
+  }
+}

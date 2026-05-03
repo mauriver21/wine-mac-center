@@ -1,0 +1,26 @@
+{
+  "name": "Omno",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": true,
+  "setupExecutableURL": "",
+  "engineVersion": "WS12WineCX64Bit23.7.1-2",
+  "winetricks": {
+    "verbs": ["steam", "dotnet48", "vcrun2019", "xinput"],
+    "version": "20240105"
+  },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "steamAppId": "969760",
+      "installDirName": "Omno",
+      "operation": "DOWNLOAD_STEAM_APP",
+      "name": "Download Steam App"
+    },
+    {
+      "mainExePath": "/Program Files (x86)/Steam/steam.exe",
+      "operation": "SET_MAIN_EXE",
+      "exeFlags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 969760",
+      "name": "Set main exe"
+    }
+  ]
+}

@@ -1,12 +1,26 @@
 [
+  { "name": "Age of Empires Definitive Edition", "origin": "CLOUD" },
+  { "name": "Age of Empires II DE", "origin": "CLOUD" },
   { "name": "Age of Mythology Extended Edition", "origin": "CLOUD" },
+  { "name": "Age of Mythology Gold Edition", "origin": "CLOUD" },
+  { "name": "Bejeweled 3", "origin": "CLOUD" },
+  { "name": "Blur", "origin": "CLOUD" },
   { "name": "Deep Rock Galactic", "origin": "CLOUD" },
+  { "name": "Duck Game", "origin": "CLOUD" },
   { "name": "Finale Notepad", "origin": "CLOUD" },
+  { "name": "Halo Custom Edition", "origin": "CLOUD" },
   { "name": "Heavy Weapon Deluxe", "origin": "CLOUD" },
   { "name": "Left 4 Dead 2", "origin": "CLOUD" },
   { "name": "Looney Tunes Sheep Raider", "origin": "CLOUD" },
   { "name": "Mega Man 2.5D", "origin": "CLOUD" },
+  { "name": "Need For Speed Carbon", "origin": "CLOUD" },
+  { "name": "Nitronic Rush", "origin": "CLOUD" },
+  { "name": "Omno", "origin": "CLOUD" },
   { "name": "Ricochet Infinity", "origin": "CLOUD" },
+  { "name": "Spelunky 2", "origin": "CLOUD" },
   { "name": "Steam", "origin": "CLOUD" },
-  { "name": "Blur", "origin": "CLOUD" }
+  { "name": "Steam DX9", "origin": "CLOUD" },
+  { "name": "Steam Sikarugirl", "origin": "CLOUD" },
+  { "name": "Trine 4", "origin": "CLOUD" },
+  { "name": "Zuma Deluxe", "origin": "CLOUD" }
 ]

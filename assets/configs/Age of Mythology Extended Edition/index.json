@@ -1,17 +1,10 @@
 {
   "name": "Age of Mythology Extended Edition",
-  "origin": "CLOUD",
-  "winetricks": { "verbs": ["steam", "msxml4"] },
-  "engineVersion": "WS11WineCX64Bit23.6.0",
+  "origin": "SCRIPTS",
   "dxvkEnabled": true,
-  "setupExecutableURL": "{{Steam}}",
-  "setupExecutablePath": "{{Steam}}",
-  "executables": [
-    {
-      "main": true,
-      "path": "/drive_c/Program Files (x86)/Steam/steam.exe",
-      "flags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 266840"
-    }
-  ],
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit23.6.0",
+  "winetricks": { "verbs": ["steam", "msxml4"], "version": "20260125" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
   "pipelineScripts": []
 }

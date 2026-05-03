@@ -1,5 +1,5 @@
 {
-  "name": "Steam",
+  "name": "Age of Empires II DE",
   "origin": "SCRIPTS",
   "dxvkEnabled": true,
   "setupExecutableURL": "",
@@ -8,11 +8,16 @@
   "executables": [{ "main": true, "path": "", "flags": "" }],
   "pipelineScripts": [
     {
+      "steamAppId": "813780",
+      "installDirName": "AoE2DE",
+      "operation": "DOWNLOAD_STEAM_APP",
+      "name": "Download Steam App"
+    },
+    {
       "mainExePath": "/Program Files (x86)/Steam/steam.exe",
       "operation": "SET_MAIN_EXE",
-      "exeFlags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox",
+      "exeFlags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 813780",
       "name": "Set main exe"
     }
-  ],
-  "launcherConfig": {}
+  ]
 }

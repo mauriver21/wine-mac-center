@@ -1,0 +1,49 @@
+{
+  "name": "Age of Mythology Gold Edition",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit21.2.0",
+  "winetricks": { "verbs": ["vcrun6"], "version": "20240105" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://archive.org/download/aom-pc-redump/AOM-PC-REDUMP/Age%20of%20Mythology%20-%20Gold%20Edition%20%28Europe%29%20%28En%2CFr%2CDe%2CEs%2CIt%29.zip",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "path": "Age of Mythology - Gold Edition (Europe) (En,Fr,De,Es,It).zip",
+      "operation": "DECOMPRESS",
+      "name": "Extract File"
+    },
+    {
+      "diskImagePath": "Age of Mythology - Gold Edition (Europe) (En,Fr,De,Es,It).iso",
+      "operation": "MOUNT_DISK_IMAGE",
+      "name": "Mount disk image"
+    },
+    {
+      "exePath": "/AOM_D1/AOM/UK/Install.exe",
+      "baseExePath": "/Volumes",
+      "operation": "RUN_WINDOWS_EXE",
+      "name": "Run Windows Exe"
+    },
+    {
+      "exePath": "/AOM_D1/AOMX/UK/Install.exe",
+      "baseExePath": "/Volumes",
+      "operation": "RUN_WINDOWS_EXE",
+      "name": "Run Windows Exe"
+    },
+    {
+      "mainExePath": "Program Files (x86)/Microsoft Games/Age of Mythology/aomx.exe",
+      "operation": "SET_MAIN_EXE",
+      "exeFlags": "xres=1920 yres=1080",
+      "name": "Set main exe"
+    }
+  ],
+  "launcherConfig": {
+    "quitAppWhenLauncherIsClosed": true,
+    "runMainExeOnStartup": false
+  }
+}

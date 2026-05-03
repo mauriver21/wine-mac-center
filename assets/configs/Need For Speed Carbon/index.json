@@ -1,0 +1,56 @@
+{
+  "name": "Need For Speed Carbon",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit21.2.0",
+  "winetricks": { "verbs": ["dinput8"], "version": "20240105" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://dn710101.ca.archive.org/0/items/nfscarbon_202412/NFSCARBON.iso",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "diskImagePath": "/NFSCARBON.iso",
+      "operation": "MOUNT_DISK_IMAGE",
+      "name": "Mount disk image"
+    },
+    {
+      "exePath": "/NFS Carbon/Need For Speed - Carbon/Setup.exe",
+      "baseExePath": "/Volumes",
+      "operation": "RUN_WINDOWS_EXE",
+      "name": "Run Windows Exe"
+    },
+    {
+      "mainExePath": "/Program Files (x86)/Mr DJ/Need for Speed Carbon Collectors Edition/NFSC.exe",
+      "operation": "SET_MAIN_EXE",
+      "name": "Set main exe"
+    },
+    {
+      "url": "https://github.com/ThirteenAG/WidescreenFixesPack/releases/download/nfsc/NFSCarbon.WidescreenFix.zip",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "path": "/NFSCarbon.WidescreenFix.zip",
+      "operation": "DECOMPRESS",
+      "name": "Extract File"
+    },
+    {
+      "from": "/NFSCarbon.WidescreenFix/dinput8.dll",
+      "target": "/Program Files (x86)/Mr DJ/Need for Speed Carbon Collectors Edition",
+      "operation": "COPY",
+      "name": "Copy file"
+    },
+    {
+      "from": "/NFSCarbon.WidescreenFix/scripts",
+      "target": "/Program Files (x86)/Mr DJ/Need for Speed Carbon Collectors Edition",
+      "operation": "COPY",
+      "name": "Copy file"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "Nitronic Rush",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS12WineCX64Bit23.7.1-2",
+  "winetricks": { "verbs": [], "version": "20240105" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://dn710200.ca.archive.org/0/items/nitronic-rush/NitronicRush_setup_20121221.2.exe",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "exePath": "/NitronicRush_setup_20121221.2.exe",
+      "baseExePath": "$HOME/Wine/assets/downloads",
+      "operation": "RUN_WINDOWS_EXE",
+      "name": "Run Windows Exe"
+    },
+    {
+      "mainExePath": "/Program Files (x86)/Digipen/Nitronic Rush/NitronicRush.exe",
+      "operation": "SET_MAIN_EXE",
+      "name": "Set main exe"
+    }
+  ],
+  "launcherConfig": {
+    "quitAppWhenLauncherIsClosed": true,
+    "runMainExeOnStartup": true
+  }
+}

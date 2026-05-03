@@ -1,0 +1,27 @@
+{
+  "name": "Trine 4",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": true,
+  "setupExecutableURL": "",
+  "engineVersion": "WS12WineSikarugir10.0_3",
+  "winetricks": { "verbs": ["steam"], "version": "20260125" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "mainExePath": "/Program Files (x86)/Steam/steam.exe",
+      "operation": "SET_MAIN_EXE",
+      "exeFlags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 690640",
+      "name": "Set main exe"
+    },
+    {
+      "steamAppId": "690640",
+      "installDirName": "Trine 4 The Nightmare Prince",
+      "operation": "DOWNLOAD_STEAM_APP",
+      "name": "Download Steam App"
+    }
+  ],
+  "launcherConfig": {
+    "quitAppWhenLauncherIsClosed": true,
+    "runMainExeOnStartup": true
+  }
+}
