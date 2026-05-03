@@ -27,6 +27,13 @@ extract() {
         *.tar|*.zip|*.rar)
             tar -xf "$FROM" -C "$TARGET" &
             ;;
+        *.7z)
+            if ! command -v 7z >/dev/null 2>&1; then
+                echo "Error: 7z not found. Install with: brew install p7zip"
+                return 1
+            fi
+            7z x "$FROM" -o"$TARGET" -y &
+            ;;
         *.bin)
             if ! command -v unar >/dev/null 2>&1; then
                 echo "Error: unar not found. Install with: brew install unar"
