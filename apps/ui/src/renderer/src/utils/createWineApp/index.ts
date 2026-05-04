@@ -171,7 +171,10 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
 
       if (file === undefined) throw new Error('No icon file provided');
 
-      writeBinaryFile(`${WINE_ENV.WINE_APP_RESOURCES_PATH}/${FileName.CFBundleIconFile}`, file);
+      const ICON_PATH = `${WINE_ENV.WINE_APP_RESOURCES_PATH}/${FileName.CFBundleIconFile}`;
+      writeBinaryFile(ICON_PATH, file);
+      const result = await execScript('imageToIcns', `"${ICON_PATH}"`);
+      console.log(result);
     } catch (error) {
       console.error(error);
     }

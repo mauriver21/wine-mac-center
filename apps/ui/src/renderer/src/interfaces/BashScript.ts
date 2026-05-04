@@ -7,6 +7,7 @@ export type BashScript =
   | 'killPids'
   | 'killWinetricks'
   | 'killWineProcesses'
+  | 'imageToIcns'
   | 'copyWindowsApplication'
   | 'scaffoldApp'
   | 'extract'

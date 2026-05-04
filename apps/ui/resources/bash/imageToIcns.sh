@@ -9,9 +9,9 @@ if [ -z "$1" ]; then
 fi
 
 INPUT_IMAGE="$1"
-OUTPUT_ICNS="${2:-icon.icns}"
-
-ICONSET_DIR="icon.iconset"
+BASE_DIR="$(dirname "$INPUT_IMAGE")"
+ICONSET_DIR="$BASE_DIR/icon.iconset"
+OUTPUT_ICNS="${2:-$BASE_DIR/icon.icns}"
 
 # Clean previous iconset
 rm -rf "$ICONSET_DIR"
