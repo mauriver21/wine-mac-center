@@ -74,9 +74,7 @@ export const createEnv = (args?: {
           ? pathJoin(ENV.APPLICATION_PATH, 'Contents/Resources')
           : pathJoin(ENV.DIRNAME, 'resources');
       default:
-        return standaloneApp
-          ? pathJoin(ENV.APPLICATION_PATH, 'Contents/Resources')
-          : pathJoin(ENV.DIRNAME, '..');
+        return standaloneApp ? pathJoin(ENV.APPLICATION_PATH, 'Contents/Resources') : ENV.DIRNAME;
     }
   };
 
