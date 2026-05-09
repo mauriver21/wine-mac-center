@@ -59,7 +59,8 @@ function createWindow(): void {
     title: 'Wine Mac Center',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      devTools: process.env.VITE_APP_ENV === 'development',
+      // devTools: process.env.VITE_APP_ENV === 'development',
+      devTools: true,
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: false,

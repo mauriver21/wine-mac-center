@@ -1,3 +1,5 @@
+cd "$(dirname "$0")"
+
 if [ "$#" -ne 2 ]; then
     echo "Missing arguments file and target"    
     exit 1
@@ -8,7 +10,7 @@ DEST="$2"
 
 PARTS_DIR=$(dirname "$ARCHIVE")
 
-7z x -y "$ARCHIVE" -o"$DEST" &
+./7z x -y "$ARCHIVE" -o"$DEST" &
 PID=$!
 echo "[PIDS_START]$PID[PIDS_END]"
 wait "$PID"

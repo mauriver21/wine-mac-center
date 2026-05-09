@@ -50,7 +50,7 @@ export const useWineEngineApiClient = () => {
 
     return new Promise((resolve, reject) => {
       spawnProcess(
-        `${SCRIPTS_PATH}/joinWineEngine.sh "${engineTmpFolder}/${fileNamePart}" "${WINE_ENGINES_PATH}"`,
+        `"${SCRIPTS_PATH}/joinWineEngine.sh" "${engineTmpFolder}/${fileNamePart}" "${WINE_ENGINES_PATH}"`,
         {
           ...spawnLog,
           onExit: (data) => {
