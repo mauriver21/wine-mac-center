@@ -1,15 +1,27 @@
+import { EnvContext } from '@contexts/EnvContext';
 import { createEnv } from '@utils/createEnv';
-import { EnvContext } from '@utils/useEnv';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export interface EnvProviderProps {
   children?: React.ReactNode;
+  standaloneApp?: boolean;
+  development?: boolean;
+  APPLICATION_PATH_OVERRIDE?: string;
 }
 
-export const EnvProvider: React.FC<EnvProviderProps> = ({ children }) => {
+export const EnvProvider: React.FC<EnvProviderProps> = ({
+  children,
+  standaloneApp,
+  development = false,
+  APPLICATION_PATH_OVERRIDE
+}) => {
   const [initializing, setInitializing] = useState(true);
+  const [isDev] = useState(development);
 
-  const { init, ...env } = createEnv();
+  const { init, ...env } = useMemo(
+    () => createEnv({ standaloneApp, APPLICATION_PATH_OVERRIDE }),
+    []
+  );
 
   useEffect(() => {
     (async () => {
@@ -20,8 +32,8 @@ export const EnvProvider: React.FC<EnvProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <EnvContext.Provider value={env}>
-      {initializing ? 'Initializing...' : children}
+    <EnvContext.Provider value={{ ...env, isDev }}>
+      {initializing ? <></> : children}
     </EnvContext.Provider>
   );
 };

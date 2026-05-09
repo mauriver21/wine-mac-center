@@ -1,18 +1,16 @@
 import { combineReducers as combineStates } from '@reduxjs/toolkit';
-import { appState } from '../appState';
-import { wineAppState } from '../wineAppState';
-import { wineInstalledAppState } from '../wineInstalledAppState';
-import { wineAppConfigState } from '../wineAppConfigState';
-import { wineAppPipelineState } from '../wineAppPipelineState';
-import { winetrickState } from '../winetrickState';
-import { wineEngineState } from '../wineEngineState';
+import { appState } from '@states/appState';
+import { wineInstalledAppState } from '@states/wineInstalledAppState';
+import { wineAppConfigState } from '@states/wineAppConfigState';
+import { wineAppPipelineState } from '@states/wineAppPipelineState';
+import { winetrickState } from '@states/winetrickState';
+import { wineEngineState } from '@states/wineEngineState';
 
 export const rootState = combineStates({
   appState,
-  wineAppState,
   wineAppConfigState,
   wineAppPipelineState,
   wineInstalledAppState,
   winetrickState,
-  wineEngineState,
+  wineEngineState
 });

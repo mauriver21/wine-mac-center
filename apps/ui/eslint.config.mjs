@@ -38,6 +38,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': 'off',
       'no-async-promise-executor': 'off',
       'no-useless-catch': 'off',
+      '@typescript-eslint/no-empty-interface': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       'no-extra-boolean-cast': 'off',
       'react/jsx-key': 'off'

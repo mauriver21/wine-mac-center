@@ -10,6 +10,7 @@ import { WineInstalledApp } from '@interfaces/WineInstalledApp';
 import { WineInstalledAppAction } from '@interfaces/WineInstalledAppAction';
 import { useAppModel } from '@models/useAppModel';
 import { objectMatchCriteria } from '@utils/objectMatchCriteria';
+import { ProcessStatus } from '@constants/enums';
 
 export const useWineInstalledAppModel = () => {
   const [state, setState] = useState({
@@ -31,9 +32,9 @@ export const useWineInstalledAppModel = () => {
     }
   };
 
-  const runApp = async (appId?: string) => {
+  const runApp = async (appName?: string) => {
     try {
-      const wineInstalledApp = selectWineInstalledAppById(store.getState(), appId);
+      const wineInstalledApp = selectWineInstalledApp(store.getState(), appName);
 
       if (wineInstalledApp === undefined) {
         throw new Error('No installed app found.');
@@ -49,9 +50,9 @@ export const useWineInstalledAppModel = () => {
     }
   };
 
-  const killApp = async (appId?: string) => {
+  const killApp = async (appName: string) => {
     try {
-      const wineInstalledApp = selectWineInstalledAppById(store.getState(), appId);
+      const wineInstalledApp = selectWineInstalledApp(store.getState(), appName);
 
       if (wineInstalledApp === undefined) {
         throw new Error('No installed app found.');
@@ -96,7 +97,6 @@ export const useWineInstalledAppModel = () => {
     ],
     (wineInstalledAppState, filters) => {
       let wineInstalledApps = wineInstalledAppState.wineInstalledApps;
-
       const { criteria, order } = filters || {};
 
       if (criteria) {
@@ -117,27 +117,37 @@ export const useWineInstalledAppModel = () => {
         );
       }
 
-      return wineInstalledApps?.map((item) => ({
-        ...item,
-        realAppName: item.appPath.split('/').pop()?.replace(/\.app/, '')
-      }));
+      return wineInstalledApps;
     }
   );
-  const selectWineInstalledAppById = createSelector(
-    [(state: RootState) => selectWineInstalledApps(state), (_: RootState, id?: string) => id],
-    (wineInstalledApps, id) => wineInstalledApps?.find((item) => item.id == id)
-  );
 
-  const selectWineInstalledAppByRealName = createSelector(
+  const selectWineInstalledApp = createSelector(
     [
       (state: RootState) => selectWineInstalledApps(state),
-      (_: RootState, realAppName?: string | null) => realAppName
+      (_: RootState, appName?: string | null) => appName
     ],
-    (wineInstalledApps, realAppName) =>
-      wineInstalledApps?.find(
-        (item) => item.realAppName?.toLowerCase() == realAppName?.toLowerCase()
-      )
+    (wineInstalledApps, appName) =>
+      wineInstalledApps?.find((item) => item.name?.toLowerCase() == appName?.toLowerCase())
   );
+
+  const selectPipelineIsResumable = createSelector([selectWineInstalledApp], (wineInstalledApp) => {
+    const jobs = wineInstalledApp?.pipeline?.jobs || [];
+    let isResumable = false;
+    for (const job of jobs) {
+      if (
+        job.steps.some(
+          (item) =>
+            item.status === ProcessStatus.Pending ||
+            item.status === ProcessStatus.Error ||
+            item.status === ProcessStatus.Cancelled
+        )
+      ) {
+        isResumable = true;
+        break;
+      }
+    }
+    return isResumable;
+  });
 
   return {
     loaders: state.loaders,
@@ -148,7 +158,7 @@ export const useWineInstalledAppModel = () => {
     dispatchPatch,
     selectWineInstalledAppState,
     selectWineInstalledApps,
-    selectWineInstalledAppById,
-    selectWineInstalledAppByRealName
+    selectWineInstalledApp,
+    selectPipelineIsResumable
   };
 };

@@ -1,29 +1,21 @@
 import { ArtWorkInput } from '@components/ArtWorkInput';
-import { IconInput } from '@components/IconInput';
-import { useEffect, useState } from 'react';
-import {
-  Grid,
-  Stack,
-  Icon,
-  H6,
-  ContentsClass,
-  TextField,
-  CardContent,
-  Card,
-  Body1
-} from 'reactjs-ui-core';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
-import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
-import { FilePathInput } from '@components/FilePathInput';
 import { Button } from '@components/Button';
 import { FileFilter } from '@constants/enums';
+import { FilePathInput } from '@components/FilePathInput';
+import { Grid, Stack, Icon, H6, ContentsClass, CardContent, Card, Body1 } from 'reactjs-shared-ui';
+import { IconInput } from '@components/IconInput';
+import { TextField } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useWineAppContext } from '@hooks/useWineAppContext';
+import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
+import { spawnLog } from '@utils/spawnLog';
 
 export interface ExecutableConfigModuleProps {
-  realAppName: string | undefined;
+  appName: string | undefined;
 }
 
-export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ realAppName }) => {
-  const { wineApp, loading, setLoading, refresh, signal } = useAppConfigContext() || {};
+export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ appName }) => {
+  const { wineApp, loading, setLoading, refresh, signal } = useWineAppContext() || {};
   const [driveCPath, setDriveCPath] = useState<string>('');
   const [mainExecutablePath, setMainExecutablePath] = useState<string>('');
   const [mainExecutableFlags, setMainExecutableFlags] = useState<string>('');
@@ -41,7 +33,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
 
   const runExe = async () => {
     setLoading?.(true);
-    await wineApp?.runMainExe();
+    await wineApp?.runMainExe(spawnLog);
     setLoading?.(false);
   };
 
@@ -52,10 +44,8 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
   }, [appConfig?.name]);
 
   useEffect(() => {
-    (async () => {
-      wineApp && setDriveCPath(wineApp.getWineEnv().WINE_APP_DRIVE_C_PATH);
-    })();
-  }, [appConfig?.id]);
+    wineApp && setDriveCPath(wineApp.getWineEnv().WINE_APP_DRIVE_C_PATH);
+  }, [appConfig?.name]);
 
   return (
     <Card>
@@ -81,7 +71,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                     onInput={async (path) => {
                       setMainExecutablePath(path);
                       setLoading?.(true);
-                      await wineApp?.updateMainExecutablePath?.(path);
+                      await wineApp?.saveMainExecutablePath?.({ path });
                       setLoading?.(false);
                     }}
                     disabled={!Boolean(mainExecutablePath)}
@@ -104,7 +94,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                     refreshImage={signal}
                     appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
                     onInput={async (file) => {
-                      file && wineApp?.setupAppIcon({ appIconFile: await file?.arrayBuffer() });
+                      file && wineApp?.saveAppIcon({ appIconFile: await file?.arrayBuffer() });
                       refresh?.();
                     }}
                   />
@@ -115,11 +105,11 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                   type="app"
                   refreshImage={signal}
                   onInput={async (file) => {
-                    file && wineApp?.setupAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
+                    file && wineApp?.saveAppArtwork({ appArtWorkFile: await file?.arrayBuffer() });
                     refresh?.();
                   }}
                   appPath={wineApp?.getWineEnv()?.WINE_APP_PATH}
-                  realAppName={realAppName}
+                  appName={appName}
                 />
               </Grid>
               <Grid item xs={12}>

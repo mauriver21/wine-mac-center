@@ -1,5 +1,5 @@
 import { FaceFrownIcon } from '@heroicons/react/24/solid';
-import { Body1, Box, H5, Icon, Stack } from 'reactjs-ui-core';
+import { Body1, Box, H5, Icon, Stack } from 'reactjs-shared-ui';
 import { useParams } from 'react-router-dom';
 import { Button } from '@components/Button';
 import { useNavigateApp } from '@hooks/useNavigateApp';

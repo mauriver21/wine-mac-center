@@ -9,12 +9,14 @@ export enum ProcessStatus {
 export enum ExitCode {
   SuccessfulExecution = 0,
   Error = 1,
+  PermissionsError = 126,
   ImproperCommand = 2
 }
 
 export enum FileName {
+  ElectronAsar = 'app.asar',
   CFBundleExecutable = 'winemacapp',
-  CFBundleIconFile = 'winemacapp.icns'
+  CFBundleIconFile = 'icon.png'
 }
 
 export const FileFilter = {
@@ -22,7 +24,27 @@ export const FileFilter = {
   WindowsExecutables: [{ extensions: ['exe', 'msi', 'bat', 'cmd'], name: 'executables' }]
 };
 
-export enum WineAppMode {
-  Create = 'Create',
-  Update = 'Update'
+export enum ScriptOperation {
+  DOWNLOAD = 'DOWNLOAD',
+  DECOMPRESS = 'DECOMPRESS',
+  COPY = 'COPY',
+  REMOVE = 'REMOVE',
+  RUN_WINDOWS_EXE = 'RUN_WINDOWS_EXE',
+  SET_MAIN_EXE = 'SET_MAIN_EXE',
+  MOUNT_DISK_IMAGE = 'MOUNT_DISK_IMAGE',
+  UNMOUNT_DISK_IMAGE = 'UNMOUNT_DISK_IMAGE',
+  DOWNLOAD_STEAM_APP = 'DOWNLOAD_STEAM_APP'
+}
+
+export enum ConfigOrigin {
+  CLOUD = 'CLOUD',
+  SCRIPTS = 'SCRIPTS',
+  INSTALLED_APP = 'INSTALLED_APP',
+  ALL_EXCEPT_INSTALLED_APP = 'ALL_EXCEPT_INSTALLED_APP',
+  ALL = 'ALL'
+}
+
+export enum PipelineAction {
+  RUN = 'RUN',
+  RESUME = 'RESUME'
 }

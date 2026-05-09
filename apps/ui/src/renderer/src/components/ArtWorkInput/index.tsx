@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Body1, Box, Image, TextField } from 'reactjs-ui-core';
-import { Field, TextFieldProps } from 'reactjs-ui-form-fields';
+import { Body1, Box, Image } from 'reactjs-shared-ui';
+import { Field, TextField, TextFieldProps } from 'reactjs-shared-ui/forms';
 import { openFile } from '@utils/openFile';
 import { FileFilter } from '@constants/enums';
 import { getAppArtwork as baseGetAppArtwork } from '@utils/getAppArtwork';
@@ -10,7 +10,7 @@ export type ArtWorkInputProps = Pick<TextFieldProps, 'control' | 'name' | 'field
   dialogText?: string;
   onInput?: (file: File | undefined) => void;
   value?: string;
-  realAppName: string | undefined;
+  appName: string | undefined;
   refreshImage?: number;
 } & ({ type: 'app'; appPath: string | undefined } | { type: 'image'; imgSrc: string | undefined });
 
@@ -21,7 +21,7 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
   name,
   value = '',
   dialogText = 'Select file',
-  realAppName = '',
+  appName = '',
   refreshImage,
   ...rest
 }) => {
@@ -125,7 +125,7 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
             justifyContent="center"
           >
             <Body1 textAlign="center" p={1} fontWeight={500} fontSize={12}>
-              {realAppName}
+              {appName}
             </Body1>
           </Box>
         ) : (

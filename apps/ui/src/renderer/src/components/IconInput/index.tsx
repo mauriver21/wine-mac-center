@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Body1, Box, Image, TextField } from 'reactjs-ui-core';
-import { Field, TextFieldProps } from 'reactjs-ui-form-fields';
+import { Body1, Box, Image } from 'reactjs-shared-ui';
+import { Field, TextField, TextFieldProps } from 'reactjs-shared-ui/forms';
 import { openFile } from '@utils/openFile';
 import { FileFilter } from '@constants/enums';
 import { getAppIcon as baseGetAppIcon } from '@utils/getAppIcon';
@@ -25,7 +25,7 @@ export const IconInput: React.FC<IconInputProps> = ({
 }) => {
   const inputRef = useRef<HTMLDivElement>(null);
   const [fileName, setFileName] = useState('');
-  const [artWorkSrc, setIconSrc] = useState('');
+  const [iconSrc, setIconSrc] = useState('');
   const [noIcon, setNoIcon] = useState(false);
 
   const getSrcPath = () => {
@@ -106,7 +106,7 @@ export const IconInput: React.FC<IconInputProps> = ({
         <Image
           width="100%"
           height="100%"
-          src={artWorkSrc}
+          src={iconSrc}
           style={{
             objectFit: 'cover',
             maxWidth: '100%'

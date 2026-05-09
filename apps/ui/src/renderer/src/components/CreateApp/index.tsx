@@ -9,27 +9,26 @@ import {
   H6,
   Stack,
   TableOfContents
-} from 'reactjs-ui-core';
-import { v4 as uuid } from 'uuid';
-import { useNavigate } from 'react-router-dom';
+} from 'reactjs-shared-ui';
 import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
-import { TextField, Checkbox, useForm, Select } from 'reactjs-ui-form-fields';
+import { TextField, Checkbox, useForm, Select } from 'reactjs-shared-ui/forms';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { FilePathInput } from '@components/FilePathInput';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { WinetricksSelector } from '@components/WinetricksSelector';
-import { FileFilter, WineAppMode } from '@constants/enums';
+import { ConfigOrigin, FileFilter, PipelineAction } from '@constants/enums';
 import {
   CpuChipIcon,
   PencilSquareIcon,
   PlayCircleIcon,
   SparklesIcon
 } from '@heroicons/react/24/solid';
-import { CreateAppCardItem } from '@components/CreateAppCardItem';
+import { CardItem } from '@components/CardItem';
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { blobToURL } from '@utils/blobToURL';
 import { IconInput } from '@components/IconInput';
+import { useNavigateApp } from '@hooks/useNavigateApp';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -38,7 +37,7 @@ export const CreateApp: React.FC = () => {
   const form = useForm(schema);
   const wineAppPipelineModel = useWineAppPipelineModel();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  const navigate = useNavigate();
+  const { navigateToAppPipeline, navigateToApps } = useNavigateApp();
   const [artworkSrc, setArtWorkSrc] = useState('');
   const [iconSrc, setIconSrc] = useState('');
 
@@ -49,13 +48,13 @@ export const CreateApp: React.FC = () => {
   };
 
   const modules = [
-    <CreateAppCardItem icon={PencilSquareIcon} label="Application Name">
+    <CardItem icon={PencilSquareIcon} label="Application Name">
       <TextField autoComplete="off" control={form.control} name="name" label="Application Name" />
-    </CreateAppCardItem>,
-    <CreateAppCardItem icon={CpuChipIcon} label="Wine Engine">
+    </CardItem>,
+    <CardItem icon={CpuChipIcon} label="Wine Engine">
       <WineEnginesSelect fullWidth control={form.control} name="engineVersion" />
-    </CreateAppCardItem>,
-    <CreateAppCardItem icon={PlayCircleIcon} label="Setup Executable">
+    </CardItem>,
+    <CardItem icon={PlayCircleIcon} label="Setup Executable">
       <Grid container>
         <Grid item xs={9.5}>
           <Stack spacing={1.5}>
@@ -107,15 +106,15 @@ export const CreateApp: React.FC = () => {
             name="artworkFile"
             type="image"
             imgSrc={artworkSrc}
-            realAppName={'No Artwork'}
+            appName={'No Artwork'}
             onInput={async (file) => {
               file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
             }}
           />
         </Grid>
       </Grid>
-    </CreateAppCardItem>,
-    <CreateAppCardItem icon={SparklesIcon} label="Winetricks">
+    </CardItem>,
+    <CardItem icon={SparklesIcon} label="Winetricks">
       <Grid container>
         <Grid item xs={4}>
           <Checkbox control={form.control} name="dxvkEnabled" label="Enable DXVK" />
@@ -123,44 +122,50 @@ export const CreateApp: React.FC = () => {
         <Grid item xs={4}>
           <Checkbox control={form.control} name="useWinetricks" label="Use Winetricks" />
         </Grid>
-
         <Grid mt={1} item xs={12}>
           <WinetricksSelector
             disabled={!Boolean(form.watch('useWinetricks'))}
             control={form.control}
             name="winetricksVerbs"
+            winetricksVersionSelectProps={{
+              control: form.control,
+              name: 'winetricksVersion'
+            }}
           />
         </Grid>
       </Grid>
-    </CreateAppCardItem>
+    </CardItem>
   ];
 
   const submit = async (data: FormSchema) => {
+    const origin = ConfigOrigin.INSTALLED_APP;
     const {
       name,
-      dxvkEnabled,
-      engineVersion,
-      setupExecutablePath,
       appFolderPath,
-      useWinetricks,
-      winetricksVerbs
+      artworkFile,
+      iconFile,
+      useWinetricks: _,
+      winetricksVerbs = [],
+      winetricksVersion,
+      ...rest
     } = data;
-    wineAppPipelineModel.runWineAppPipelineByAppConfig(
+    await wineAppPipelineModel.scaffoldWineApp(
       {
-        id: uuid(),
-        name,
-        dxvkEnabled,
-        engineVersion,
-        setupExecutablePath,
-        appFolderPath,
-        iconFile: await data.iconFile?.arrayBuffer(),
-        artworkFile: await data.artworkFile?.arrayBuffer(),
-        winetricks: useWinetricks ? { verbs: [...(winetricksVerbs || [])] } : undefined
+        appName: data.name,
+        config: {
+          name,
+          appFolderPath,
+          artworkFile: await artworkFile?.arrayBuffer(),
+          iconFile: await iconFile?.arrayBuffer(),
+          origin,
+          winetricks: { verbs: winetricksVerbs, version: winetricksVersion },
+          ...rest
+        },
+        origin
       },
-      { mode: WineAppMode.Create }
+      (appName) => navigateToAppPipeline(appName, { origin, action: PipelineAction.RUN })
     );
     reset();
-    navigate(`/app-pipeline/${name}`);
   };
 
   return (
@@ -191,7 +196,7 @@ export const CreateApp: React.FC = () => {
               <Button
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
-                onClick={() => navigate('/apps')}
+                onClick={navigateToApps}
               >
                 Back
               </Button>

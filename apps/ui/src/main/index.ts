@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { app, shell, BrowserWindow, ipcMain } from 'electron';
+import { app, shell, BrowserWindow, ipcMain, globalShortcut } from 'electron';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { ElectronApi } from '../types/ElectronApi';
 import { singleton } from './singleton';
@@ -13,13 +13,16 @@ import {
   pathJoin,
   readBinaryFile,
   readDirectory,
+  removeDirectory,
   readFileAsString,
   showOpenDialog,
   spawn,
   unwatchDirs,
   watchDirs,
   writeBinaryFile,
-  writeFile
+  writeFile,
+  showItemInFolder,
+  renameDirectory
 } from './commands';
 import icon from '../../resources/icon.png?asset';
 
@@ -39,6 +42,11 @@ ipcMain.handle(ElectronApi.ShowOpenDialog, showOpenDialog);
 ipcMain.handle(ElectronApi.WatchDirs, watchDirs);
 ipcMain.handle(ElectronApi.UnwatchDirs, unwatchDirs);
 ipcMain.handle(ElectronApi.BuildPlist, buildPlist);
+ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
+ipcMain.handle(ElectronApi.ShowItemInFolder, showItemInFolder);
+ipcMain.handle(ElectronApi.RenameDirectory, renameDirectory);
+
+let isQuitting = false;
 
 function createWindow(): void {
   singleton.mainWindow = new BrowserWindow({
@@ -51,8 +59,7 @@ function createWindow(): void {
     title: 'Wine Mac Center',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      // devTools: process.env.VITE_APP_ENV === 'development',
-      devTools: true,
+      devTools: process.env.VITE_APP_ENV === 'development',
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: false,
@@ -62,6 +69,7 @@ function createWindow(): void {
   });
 
   const { mainWindow } = singleton;
+
   mainWindow.webContents.openDevTools();
   mainWindow.on('ready-to-show', () => {
     mainWindow.show();
@@ -87,9 +95,6 @@ app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron');
 
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
@@ -99,11 +104,41 @@ app.whenReady().then(() => {
 
   createWindow();
 
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  app.on('did-become-active', () => {
+    if (!singleton.becameActive) {
+      mainWindow?.webContents.closeDevTools();
+      singleton.becameActive = true;
+    }
   });
+
+  app.on('activate', function () {
+    mainWindow?.show();
+  });
+
+  globalShortcut.register('Cmd+Alt+I', () => {
+    mainWindow?.webContents?.toggleDevTools();
+  });
+
+  const { mainWindow } = singleton;
+  mainWindow?.on('close', (event) => {
+    if (!isQuitting) {
+      event.preventDefault();
+
+      if (mainWindow?.isFullScreen()) {
+        mainWindow.setFullScreen(false);
+      }
+
+      if (mainWindow?.isMaximized()) {
+        mainWindow.unmaximize();
+      }
+
+      mainWindow?.hide();
+    }
+  });
+});
+
+app.on('before-quit', () => {
+  isQuitting = true;
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

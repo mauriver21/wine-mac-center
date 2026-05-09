@@ -1,5 +1,6 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { Icon, TextField, TextFieldProps } from 'reactjs-ui-core';
+import { Icon } from 'reactjs-shared-ui';
+import { TextField, TextFieldProps } from 'reactjs-shared-ui/forms';
 
 export type SearchFieldProps = TextFieldProps & {};
 
@@ -8,7 +9,7 @@ export const SearchField: React.FC<SearchFieldProps> = (props) => {
     <TextField
       autoComplete="off"
       InputProps={{
-        startAdornment: <Icon pr={1} render={MagnifyingGlassIcon} />,
+        startAdornment: <Icon pr={1} render={MagnifyingGlassIcon} />
       }}
       placeholder="Search..."
       {...props}

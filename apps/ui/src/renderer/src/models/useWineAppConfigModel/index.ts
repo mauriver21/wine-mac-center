@@ -1,51 +1,112 @@
 import { useState } from 'react';
+import { WineAppConfigActionType as ActionType } from '@constants/actionTypes';
 import { Dispatch, createSelector } from '@reduxjs/toolkit';
-import { store } from '@store';
 import { useDispatch } from 'react-redux';
+import { store } from '@store';
 import { useWineAppConfigApiClient } from '@api-clients/useWineAppConfigApiClient';
 import { RootState } from '@interfaces/RootState';
-import { WineAppConfigItem } from '@interfaces/WineAppConfigItem';
-import { WineAppConfigActionType as ActionType } from '@constants/actionTypes';
+import { SortDirection } from '@interfaces/SortDirection';
 import { WineAppConfigAction } from '@interfaces/WineAppConfigAction';
 import { useAppModel } from '@models/useAppModel';
-import { useWineAppModel } from '@models/useWineAppModel';
-import { useWineEngineModel } from '@models/useWineEngineModel';
+import { objectMatchCriteria } from '@utils/objectMatchCriteria';
+import { WineAppConfig } from '@interfaces/WineAppConfig';
+import { ConfigOrigin } from '@constants/enums';
+import { WineAppArgs } from '@interfaces/WineAppArgs';
 
 export const useWineAppConfigModel = () => {
   const [state, setState] = useState({
-    loaders: { reading: false }
+    loaders: { listingAll: false }
   });
   const appModel = useAppModel();
-  const wineAppModel = useWineAppModel();
-  const wineEngineModel = useWineEngineModel();
   const wineAppConfigApiClient = useWineAppConfigApiClient();
   const dispatch = useDispatch<Dispatch<WineAppConfigAction>>();
 
-  const read = async (appId?: string) => {
+  const downloadScript = async (appName: string) => {
     try {
-      const wineApp = wineAppModel.selectWineApp(store.getState(), appId);
-      dispatchLoader({ reading: true });
-
-      if (wineApp === undefined) {
-        throw new Error('Application not found.');
-      }
-
-      const wineAppConfig = await wineAppConfigApiClient.read(wineApp.scriptUrl);
-
-      const engineURLs = wineEngineModel.findEngineURLs(wineAppConfig.engineVersion);
-
-      dispatchPatch({ ...wineAppConfig, engineURLs });
+      await wineAppConfigApiClient.downloadScript(appName);
     } catch (error) {
       appModel.dispatchError(error);
-    } finally {
-      dispatchLoader({ reading: false });
     }
   };
 
-  const dispatchPatch = (wineAppConfig: WineAppConfigItem) => {
+  const create = async (data: WineAppConfig) => {
+    try {
+      const config = await wineAppConfigApiClient.create(data);
+      dispatchSave(config);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
+
+  const update = async (data: WineAppConfig & { originalAppName: string }) => {
+    try {
+      const config = await wineAppConfigApiClient.update(data);
+      if (config === undefined) throw new Error('App config not found.');
+      dispatchSave(config);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
+
+  const read = async (args: WineAppArgs, options?: { throwError?: boolean }) => {
+    try {
+      const config = await wineAppConfigApiClient.read(args);
+      if (config === undefined) throw new Error('App config not found.');
+      dispatchSave(config);
+      return config;
+    } catch (error) {
+      if (options?.throwError) {
+        throw error;
+      } else {
+        appModel.dispatchError(error);
+      }
+      return;
+    }
+  };
+
+  const listAll = async () => {
+    try {
+      const wineAppConfigs = selectWineAppsConfigs(store.getState());
+      !wineAppConfigs?.length && dispatchLoader({ listingAll: true });
+      dispatchListAll(await wineAppConfigApiClient.listAll());
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      dispatchLoader({ listingAll: false });
+    }
+  };
+
+  const remove = async (appName: string) => {
+    try {
+      await wineAppConfigApiClient.remove(appName);
+      dispatchRemove(appName);
+    } catch (error) {
+      appModel.dispatchError(error);
+    }
+  };
+
+  const dispatchListAll = (wineAppsConfigs: WineAppConfig[]) => {
     dispatch({
-      type: ActionType.PATCH,
-      wineAppConfig
+      type: ActionType.LIST_ALL,
+      wineAppsConfigs
+    });
+  };
+  const dispatchSave = (wineAppConfig: WineAppConfig) => {
+    const {
+      iconFile: _,
+      artworkFile: __,
+      launcherImgFile: ___,
+      ...restWineAppConfig
+    } = wineAppConfig;
+    dispatch({
+      type: ActionType.SAVE,
+      wineAppConfig: restWineAppConfig
+    });
+  };
+  const dispatchRemove = (appName: string) => {
+    dispatch({
+      type: ActionType.REMOVE,
+      appName
     });
   };
   const dispatchLoader = (loaders: Partial<(typeof state)['loaders']>) => {
@@ -54,20 +115,80 @@ export const useWineAppConfigModel = () => {
 
   const selectWineAppConfigState = (state: RootState) => state.wineAppConfigState;
   const selectWineAppsConfigs = createSelector(
-    [selectWineAppConfigState],
-    (wineAppConfigState) => wineAppConfigState.wineAppsConfigs
+    [
+      selectWineAppConfigState,
+      (
+        _: RootState,
+        filters?: { criteria?: string; order?: SortDirection; origin?: ConfigOrigin }
+      ) => filters
+    ],
+    (wineAppConfigState, filters) => {
+      let wineAppsConfigs = wineAppConfigState.wineAppsConfigs;
+
+      const { criteria, order, origin } = filters || {};
+
+      if (origin && origin !== ConfigOrigin.ALL_EXCEPT_INSTALLED_APP) {
+        wineAppsConfigs = wineAppsConfigs?.filter((item) => item.origin == origin);
+      }
+
+      if (criteria) {
+        wineAppsConfigs = wineAppsConfigs?.filter((item) =>
+          objectMatchCriteria(item, criteria, ['name'])
+        );
+      }
+
+      if (order === 'asc' || order === undefined) {
+        wineAppsConfigs = [...(wineAppsConfigs || [])]?.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+      }
+
+      if (order === 'desc') {
+        wineAppsConfigs = [...(wineAppsConfigs || [])]?.sort((a, b) =>
+          b.name.localeCompare(a.name)
+        );
+      }
+
+      return wineAppsConfigs;
+    }
+  );
+  const selectIsDownloadedScript = createSelector(
+    [
+      (state: RootState) => selectWineAppsConfigs(state),
+      (_: RootState, name: string | undefined) => name
+    ],
+    (wineAppConfigs, name) => {
+      return wineAppConfigs?.find(
+        (item) => item.name == name && item.origin == ConfigOrigin.SCRIPTS
+      );
+    }
   );
   const selectWineAppConfig = createSelector(
-    [selectWineAppsConfigs, (_: RootState, appConfigId?: string) => appConfigId],
-    (wineAppConfigs, appConfigId) => wineAppConfigs?.find((item) => item.id == appConfigId)
+    [
+      (state: RootState) => selectWineAppsConfigs(state),
+      (_: RootState, name: string | undefined) => name,
+      (_: RootState, _name: string | undefined, origin: ConfigOrigin | undefined) => origin
+    ],
+    (wineAppConfigs, name, origin) => {
+      if (origin === ConfigOrigin.ALL) {
+        return wineAppConfigs?.find((item) => item.name == name);
+      }
+      return wineAppConfigs?.find((item) => item.name == name && item.origin == origin);
+    }
   );
 
   return {
     loaders: state.loaders,
+    create,
+    update,
+    listAll,
     read,
-    dispatchPatch,
+    remove,
+    downloadScript,
+    dispatchListAll,
     selectWineAppConfigState,
     selectWineAppsConfigs,
-    selectWineAppConfig
+    selectWineAppConfig,
+    selectIsDownloadedScript
   };
 };

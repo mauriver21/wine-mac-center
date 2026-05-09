@@ -1,9 +1,14 @@
-import { AppIcon, HomeIcon } from '@assets/icons';
-// import { Cog8ToothIcon } from '@heroicons/react/24/solid';
+import { AppIcon } from '@assets/icons';
+import {
+  Cog8ToothIcon
+  // EyeIcon
+} from '@heroicons/react/24/solid';
 import { MenuItem } from '@interfaces/MenuItem';
+import { PlayCircleOutline } from '@mui/icons-material';
 
 export const SIDEBAR_MENU: MenuItem[] = [
-  { text: 'Home', route: 'home', icon: HomeIcon },
-  { text: 'Apps', route: 'apps', icon: AppIcon }
-  // { text: 'Test', route: 'test', icon: Cog8ToothIcon }
+  { text: 'Apps', route: 'apps', icon: AppIcon },
+  { text: 'Scripts', route: 'scripts', icon: PlayCircleOutline },
+  { text: 'Settings', route: 'settings', icon: Cog8ToothIcon }
+  // { text: 'Test', route: 'test', icon: EyeIcon }
 ];

@@ -55,12 +55,15 @@ const api: RendererApi = {
   dirExists: (...args) => ipcRenderer.invoke(ElectronApi.DirExists, ...args),
   readBinaryFile: (...args) => ipcRenderer.invoke(ElectronApi.ReadBinaryFile, ...args),
   createDirectory: (...args) => ipcRenderer.invoke(ElectronApi.CreateDirectory, ...args),
+  removeDirectory: (...args) => ipcRenderer.invoke(ElectronApi.RemoveDirectory, ...args),
   readFileAsString: (...args) => ipcRenderer.invoke(ElectronApi.ReadFileAsString, ...args),
   writeBinaryFile: (...args) => ipcRenderer.invoke(ElectronApi.WriteBinaryFile, ...args),
   showOpenDialog: (...args) => ipcRenderer.invoke(ElectronApi.ShowOpenDialog, ...args),
   watchDirs: (...args) => ipcRenderer.invoke(ElectronApi.WatchDirs, ...args),
   unwatchDirs: (...args) => ipcRenderer.invoke(ElectronApi.UnwatchDirs, ...args),
-  buildPlist: (...args) => ipcRenderer.invoke(ElectronApi.BuildPlist, ...args)
+  buildPlist: (...args) => ipcRenderer.invoke(ElectronApi.BuildPlist, ...args),
+  showItemInFolder: (...args) => ipcRenderer.invoke(ElectronApi.ShowItemInFolder, ...args),
+  renameDirectory: (...args) => ipcRenderer.invoke(ElectronApi.RenameDirectory, ...args)
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

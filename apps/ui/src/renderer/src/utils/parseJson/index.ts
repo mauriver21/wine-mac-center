@@ -1,4 +1,4 @@
-export const parseJson = <T = any>(value: any) => {
+export const parseJson = <T = any>(value: any): T | undefined => {
   if (typeof value === 'object') return value as T;
 
   let parsedData: T | undefined;

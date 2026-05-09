@@ -3,138 +3,152 @@ import { Dispatch, createSelector } from '@reduxjs/toolkit';
 import { store } from '@store';
 import { useWineAppPipeline } from '@hocs/withWineAppPipelineProvider';
 import { RootState } from '@interfaces/RootState';
-import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppPipelineAction } from '@interfaces/WineAppPipelineAction';
-import { WineAppPipelineStatusItem } from '@interfaces/WineAppPipelineStatusItem';
+import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { useAppModel } from '@models/useAppModel';
-import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
-import { useWineAppModel } from '@models/useWineAppModel';
-import { useWineEngineModel } from '@models/useWineEngineModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-import { WineAppMode } from '@constants/enums';
+import { sleep } from 'reactjs-shared-ui';
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { createWineApp } from '@utils/createWineApp';
+import { appExists } from '@utils/appExists';
+import { WineAppArgs } from '@interfaces/WineAppArgs';
+import { ConfigOrigin } from '@constants/enums';
+import { WineAppConfig } from '@interfaces/WineAppConfig';
+import { buildUniqueAppName } from '@utils/buildUniqueAppName';
+import { useLoadingDialog } from '@hooks/useLoadingDialog';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
-  const wineAppModel = useWineAppModel();
+  const loadingDialog = useLoadingDialog();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const wineAppConfigModel = useWineAppConfigModel();
-  const wineEngineModel = useWineEngineModel();
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
   const dispatch = useDispatch<Dispatch<WineAppPipelineAction>>();
 
-  const runWineAppPipelineByAppConfigId = async (
-    appConfigId: string | undefined,
-    options: { mode: WineAppMode }
-  ) => {
-    try {
-      const wineApp = wineAppModel.selectWineApp(store.getState(), appConfigId);
-      const wineAppConfig = wineAppConfigModel.selectWineAppConfig(store.getState(), appConfigId);
-
-      if (wineApp === undefined || wineAppConfig === undefined) {
-        throw Error('Wine application config not found.');
+  const resolveWineAppConfig = async (args: WineAppArgs) => {
+    switch (args.origin) {
+      case ConfigOrigin.CLOUD: {
+        return wineAppConfigModel.read(args);
       }
+      case ConfigOrigin.SCRIPTS:
+      default: {
+        return wineAppConfigModel.selectWineAppConfig(store.getState(), args.appName, args.origin);
+      }
+    }
+  };
 
-      await runWineAppPipelineByAppConfig(
-        {
-          ...wineAppConfig,
-          id: wineAppConfig.id,
-          name: wineApp.name,
-          iconURL: wineApp.iconURL
-        },
-        { mode: options.mode }
-      );
+  const updateAppConfig = async (args: { appName: string | undefined; config: WineAppConfig }) => {
+    const { appName, config } = args;
+    try {
+      if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
+      if ((await appExists(appName)) === false) throw new Error(`${appName} doesn't exists.`);
+      const wineApp = await createWineApp(appName);
+      await wineApp.writeAppConfig(config);
     } catch (error) {
       appModel.dispatchError(error);
     }
   };
 
-  const loadWineAppPipelineByAppName = async (appName: string, options: { mode: WineAppMode }) => {
-    const installedWineApp = wineInstalledAppModel.selectWineInstalledAppByRealName(
-      store.getState(),
-      appName
-    );
-    const appConfig = installedWineApp?.pipeline?.appConfig;
-
+  const scaffoldWineApp = async (args: WineAppArgs, onScaffolded: (appName: string) => void) => {
     try {
-      if (appConfig === undefined) throw Error('Wine application config not found.');
-      return await loadWineAppPipelineByAppConfig(
-        { ...appConfig, name: appName },
-        {
-          mode: options.mode
-        }
+      loadingDialog.open({ message: 'Preparing Wine App...' });
+
+      let { appName, config } = args;
+      const originalAppName = appName;
+
+      if (args.origin === undefined) throw new Error(`Origin is not defined`);
+      if (appName === undefined || appName === '') throw new Error(`Invalid app name: ${appName}`);
+      appName = await buildUniqueAppName(appName);
+
+      if (args.origin !== ConfigOrigin.INSTALLED_APP) {
+        config = await resolveWineAppConfig({ ...args, appName: originalAppName });
+      }
+
+      if (config === undefined) throw new Error(`App config for ${appName} not found.`);
+      config = { ...config, name: appName };
+
+      const wineApp = await createWineApp(appName, config);
+      await new Promise<WineAppConfig>((resolve) =>
+        wineApp.scaffold(
+          {
+            appIconURL: config?.iconURL,
+            appArtWorkURL: config?.artworkURL,
+            launcherImgURL: config?.launcherImgURL,
+            appIconFile: config?.iconFile,
+            appArtWorkFile: config?.artworkFile,
+            launcherImgFile: config?.launcherImgFile
+          },
+          {
+            onExit: () => {
+              resolve(config);
+            }
+          }
+        )
       );
+
+      loadingDialog.close();
+      onScaffolded(appName);
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      loadingDialog.close();
+    }
+  };
+
+  const loadWineAppPipeline = async (appName: string | undefined) => {
+    try {
+      if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
+
+      const pipeline = await createWineAppPipeline({
+        appName,
+        debug: true,
+        outputEveryMs: 1000
+      });
+
+      const { jobs, status } = await pipeline.readPipelineConfig();
+      dispatchPatch({ jobs, status, pipelineId: pipeline.id });
+
+      pipeline.onUpdate((pipelineStatus) => {
+        dispatchPatch({ ...pipelineStatus });
+      });
+
+      return pipeline;
     } catch (error) {
       appModel.dispatchError(error);
       return;
     }
   };
 
-  const loadWineAppPipelineByAppConfig = async (
-    appConfig: Omit<WineAppConfig, 'engineURLs'> & {
-      engineURLs?: string[];
-      name: string;
-    },
-    options: { mode: WineAppMode }
-  ) => {
-    let config = {
-      ...appConfig,
-      engineURLs: [...(appConfig.engineURLs || [])]
-    };
-
-    if (!config.engineURLs.length) {
-      config = {
-        ...appConfig,
-        engineURLs: wineEngineModel.findEngineURLs(appConfig.engineVersion)
-      };
-    }
-
-    const iconFile = config.iconFile;
-
-    const pipeline = await createWineAppPipeline({
-      appConfig: { ...config, iconFile },
-      debug: true,
-      outputEveryMs: 1000,
-      mode: options.mode
-    });
-
-    dispatchPatch({
-      ...pipeline.getInitialStatus(),
-      appConfigId: appConfig.id
-    });
-
-    pipeline.onUpdate((pipelineStatus) => {
-      dispatchPatch({ ...pipelineStatus, appConfigId: appConfig.id });
-    });
-
-    return pipeline;
-  };
-
-  const runWineAppPipelineByAppName = async (appName: string, options: { mode: WineAppMode }) => {
+  const runWineAppPipeline = async (args: WineAppArgs) => {
     try {
-      const pipeline = await loadWineAppPipelineByAppName(appName, { mode: options.mode });
-      pipeline?.run();
+      const { appName, fromJobIndex, fromStepIndex } = args;
+      // Required delay for config.json be ready when loading wine pipeline.
+      await sleep(200);
+      const pipeline = await loadWineAppPipeline(appName);
+      const promise = pipeline?.run({ fromJobIndex, fromStepIndex });
+      await sleep(200);
+      wineInstalledAppModel.listAll();
+      await promise;
     } catch (error) {
       appModel.dispatchError(error);
     }
   };
 
-  const runWineAppPipelineByAppConfig = async (
-    appConfig: Omit<WineAppConfig, 'engineURLs'> & {
-      engineURLs?: string[];
-      name: string;
-    },
-    options: { mode: WineAppMode }
-  ) => {
+  const killWineAppPipeline = () => context.killWineAppPipeline();
+
+  const stopWineAppPipeline = async (appName: string | undefined) => {
     try {
-      const pipeline = await loadWineAppPipelineByAppConfig(appConfig, { mode: options.mode });
-      pipeline.run();
+      loadingDialog.open({ message: 'Stopping wine app setup...' });
+      await killWineAppPipeline();
+      await sleep(200);
+      await loadWineAppPipeline(appName);
     } catch (error) {
       appModel.dispatchError(error);
+    } finally {
+      loadingDialog.close();
     }
   };
-
-  const killWineAppPipeline = (id: string | undefined) => context.killWineAppPipeline(id);
 
   const clearWineAppPipeline = () => {
     dispatch({
@@ -142,7 +156,7 @@ export const useWineAppPipelineModel = () => {
     });
   };
 
-  const dispatchPatch = (pipelineStatus: WineAppPipelineStatusItem) => {
+  const dispatchPatch = (pipelineStatus: WineAppPipelineStatus) => {
     dispatch({
       type: ActionType.PATCH,
       pipelineStatus
@@ -154,33 +168,16 @@ export const useWineAppPipelineModel = () => {
     [selectWineAppPipelineState],
     (wineAppPipelineState) => wineAppPipelineState.pipelineStatus
   );
-  const selectWineAppPipelineMeta = createSelector(
-    [selectWineAppPipelineStatus],
-    (wineAppPipeline) => {
-      return {
-        wineApp: wineAppModel.selectWineApp(store.getState(), wineAppPipeline?.appConfigId),
-        wineAppConfig: wineAppConfigModel.selectWineAppConfig(
-          store.getState(),
-          wineAppPipeline?.appConfigId
-        )
-      };
-    }
-  );
-  const selectWineAppPipelineWithMeta = createSelector(
-    [selectWineAppPipelineStatus, selectWineAppPipelineMeta],
-    (wineAppsPipeline, meta) => ({ ...wineAppsPipeline, meta })
-  );
 
   return {
-    loadWineAppPipelineByAppName,
-    runWineAppPipelineByAppConfig,
-    runWineAppPipelineByAppConfigId,
-    runWineAppPipelineByAppName,
+    runWineAppPipeline,
     killWineAppPipeline,
     clearWineAppPipeline,
     dispatchPatch,
-    selectWineAppPipelineStatus,
-    selectWineAppPipelineMeta,
-    selectWineAppPipelineWithMeta
+    updateAppConfig,
+    scaffoldWineApp,
+    stopWineAppPipeline,
+    loadWineAppPipeline,
+    selectWineAppPipelineStatus
   };
 };

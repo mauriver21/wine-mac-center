@@ -1,11 +1,11 @@
 import React from 'react';
 import { BaseModule } from '@components/BaseModule';
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/solid';
-import { Body1 } from 'reactjs-ui-core';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import { Body1 } from 'reactjs-shared-ui';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 
 export const ControlPanelModule: React.FC = () => {
-  const { wineApp, setLoading } = useAppConfigContext() || {};
+  const { wineApp, setLoading } = useWineAppContext() || {};
 
   return (
     <BaseModule

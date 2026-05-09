@@ -6,11 +6,11 @@ import { useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
 
 export const App = () => {
-  const { navigateToHome } = useNavigateApp();
+  const { navigateToScripts } = useNavigateApp();
 
   useEffect(() => {
     if (isIntegration() || isProduction()) {
-      navigateToHome();
+      navigateToScripts();
     }
   }, []);
 

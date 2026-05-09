@@ -1,7 +1,8 @@
+import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { fileMaxSize } from '@utils/fileMaxSize';
 import { useMemo } from 'react';
-import { schema, Schema } from 'reactjs-ui-form-fields';
+import { schema, Schema } from 'reactjs-shared-ui/forms';
 
 export type FormSchema = Pick<
   WineAppConfig,
@@ -11,6 +12,7 @@ export type FormSchema = Pick<
   iconFile?: File;
   useWinetricks: boolean;
   winetricksVerbs?: Array<string>;
+  winetricksVersion: string;
 };
 
 export const useSchema = () => {
@@ -18,7 +20,7 @@ export const useSchema = () => {
     () =>
       schema.object({
         name: schema.string().required(),
-        engineVersion: schema.string().required(),
+        engineVersion: schema.string().required().default(''),
         dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(true),
         iconFile: schema.mixed<File>().test({
           name: 'fileSize',
@@ -38,6 +40,7 @@ export const useSchema = () => {
           .string()
           .when('installBy', { is: 'path', then: (schema) => schema.required() }),
         useWinetricks: schema.bool().required().default(false),
+        winetricksVersion: schema.string().required().default(DEFAULT_WINETRICKS_VERSION),
         winetricksVerbs: schema
           .array()
           .when('useWinetricks', {

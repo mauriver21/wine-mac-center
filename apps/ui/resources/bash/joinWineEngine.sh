@@ -3,11 +3,15 @@ if [ "$#" -ne 2 ]; then
     exit 1
 fi
 
-directory_path=$(dirname "$1")
+ARCHIVE="$1"
+DEST="$2"
 
-7z x -y "$1" -o"$2" &
+PARTS_DIR=$(dirname "$ARCHIVE")
+
+7z x -y "$ARCHIVE" -o"$DEST" &
 PID=$!
-echo "[PID_START]$PID[PID_END]"
-rm -rf "$directory_path" &
+echo "[PIDS_START]$PID[PIDS_END]"
+wait "$PID"
+rm -rf "$PARTS_DIR" &
 PID=$!
-echo "[PID_START]$PID[PID_END]"
+echo "[PIDS_START]$PID[PIDS_END]"

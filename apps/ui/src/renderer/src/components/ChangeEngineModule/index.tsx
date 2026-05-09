@@ -1,12 +1,21 @@
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { ExitCode } from '@constants/enums';
 import { CpuChipIcon } from '@heroicons/react/24/solid';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 import { useEffect, useState } from 'react';
-import { Stack, Icon, H6, ContentsClass, Button, Body1, CardContent, Card } from 'reactjs-ui-core';
+import {
+  Stack,
+  Icon,
+  H6,
+  ContentsClass,
+  Button,
+  Body1,
+  CardContent,
+  Card
+} from 'reactjs-shared-ui';
 
 export const ChangeEngineModule: React.FC = () => {
-  const { wineApp, loading, setLoading } = useAppConfigContext() || {};
+  const { wineApp, loading, setLoading } = useWineAppContext() || {};
   const [engineVersion, setEngineVersion] = useState<string>('');
   const appConfig = wineApp?.getAppConfig();
 
@@ -43,10 +52,10 @@ export const ChangeEngineModule: React.FC = () => {
   };
 
   useEffect(() => {
-    if (appConfig?.name) {
+    if (appConfig?.engineVersion) {
       setEngineVersion(appConfig?.engineVersion);
     }
-  }, [appConfig?.name]);
+  }, [appConfig?.engineVersion]);
 
   return (
     <Card>

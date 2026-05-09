@@ -16,9 +16,9 @@ export default defineConfig({
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
-        'reactjs-ui-core.css': resolve(
+        'reactjs-shared-ui.css': resolve(
           __dirname,
-          'node_modules/reactjs-ui-core/dist/reactjs-ui-core.css'
+          'node_modules/reactjs-shared-ui/dist/reactjs-shared-ui.css'
         )
       }
     },

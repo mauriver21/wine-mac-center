@@ -1,50 +1,43 @@
-import { Body1, Box, Button, Card, CardProps, Icon, Image } from 'reactjs-ui-core';
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { AppCardButton } from '@components/AppCardButton';
+import { Body1, Box, Card, CardProps, Image } from 'reactjs-shared-ui';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
+import { Folder, Launch, Pending } from '@mui/icons-material';
 import { RootState } from '@interfaces/RootState';
-import { useWineAppModel } from '@models/useWineAppModel';
+import { useEffect, useState } from 'react';
+import { useNavigateApp } from '@hooks/useNavigateApp';
+import { useSelector } from 'react-redux';
+import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-import { getAppArtwork } from '@utils/getAppArtwork';
 import defaultArtwork from '@assets/imgs/header.jpg';
-import { useNavigate } from 'react-router-dom';
-import { ProcessStatus } from '@constants/enums';
+import { showItemInFolder } from '@utils/showItemInFolder';
 
 export interface InstalledAppCardProps extends CardProps {
-  realAppName?: string;
+  appName?: string;
 }
 
-export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName, ...rest }) => {
+export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...rest }) => {
   const wineInstalledAppModel = useWineInstalledAppModel();
-  const wineAppModel = useWineAppModel();
+  const wineAppModel = useWineAppConfigModel();
   const installedWineApp = useSelector((state: RootState) =>
-    wineInstalledAppModel.selectWineInstalledAppByRealName(state, realAppName)
+    wineInstalledAppModel.selectWineInstalledApp(state, appName)
   );
-  const wineApp = useSelector((state: RootState) =>
-    wineAppModel.selectWineApp(state, installedWineApp?.configId)
+  const wineAppConfig = useSelector((state: RootState) =>
+    wineAppModel.selectWineAppConfig(state, appName, ConfigOrigin.ALL)
   );
-  const [artWorkSrc, setArtWorkSrc] = useState(wineApp?.imgSrc);
+  const pipelineIsResumable = useSelector((state: RootState) =>
+    wineInstalledAppModel.selectPipelineIsResumable(state, appName)
+  );
+  const { navigateToAppConfig, navigateToAppPipeline, navigateToAppLauncher } = useNavigateApp();
+  const [artWorkSrc, setArtWorkSrc] = useState(wineAppConfig?.artworkURL);
   const [noArtWork, setNoArtWork] = useState(false);
-  const navigate = useNavigate();
-
-  const navigateToAppConfig = () => {
-    navigate(`/app-config/${installedWineApp?.realAppName}`);
-  };
-
-  const navigateToAppPipeline = () => {
-    navigate(`/app-pipeline?realAppName=${installedWineApp?.realAppName}`);
-  };
 
   useEffect(() => {
-    (async () => {
-      if (wineApp?.imgSrc === undefined) {
-        const artWork = await getAppArtwork(installedWineApp?.appPath);
-        setNoArtWork(!artWork);
-        setArtWorkSrc(artWork || defaultArtwork);
-      }
-    })();
-  }, [installedWineApp?.appPath]);
+    if (wineAppConfig?.artworkURL === undefined) {
+      setNoArtWork(true);
+      setArtWorkSrc(defaultArtwork);
+    }
+  }, [wineAppConfig?.artworkURL]);
 
   return (
     <Card sx={{ width: 200, height: 300, borderRadius: 2 }} {...rest}>
@@ -79,34 +72,45 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ realAppName,
           >
             {noArtWork ? (
               <Body1 textAlign="center" p={1} fontWeight={500}>
-                {installedWineApp?.realAppName}
+                {appName}
               </Body1>
             ) : (
               <></>
             )}
           </Box>
         </Box>
-        <Box display="flex" justifyContent="end">
-          {installedWineApp?.pipeline?.status == ProcessStatus.Pending ? (
-            <Button
-              sx={{ borderRadius: 2 }}
-              equalSize={40}
-              color="secondary"
+        <Box display="flex" justifyContent="end" gap={1}>
+          <AppCardButton
+            title="Reveal in Finder"
+            icon={Folder}
+            onClick={() => {
+              installedWineApp?.appPath && showItemInFolder(installedWineApp.appPath);
+            }}
+          />
+          {installedWineApp?.pipeline?.status == ProcessStatus.Success && (
+            <AppCardButton
+              title="Open Launcher"
+              icon={Launch}
+              onClick={() => navigateToAppLauncher(appName)}
+            />
+          )}
+          {pipelineIsResumable ? (
+            <AppCardButton
               title="Installation pending"
-              onClick={navigateToAppPipeline}
-            >
-              <Icon color="warning.main" strokeWidth={2} render={ExclamationTriangleIcon} />
-            </Button>
+              icon={Pending}
+              onClick={() =>
+                navigateToAppPipeline(appName, {
+                  origin: ConfigOrigin.INSTALLED_APP,
+                  action: PipelineAction.RESUME
+                })
+              }
+            />
           ) : (
-            <Button
-              sx={{ borderRadius: 2 }}
-              equalSize={40}
-              color="secondary"
+            <AppCardButton
               title="Configure App"
-              onClick={navigateToAppConfig}
-            >
-              <Icon render={Cog6ToothIcon} />
-            </Button>
+              icon={Cog6ToothIcon}
+              onClick={() => navigateToAppConfig(appName)}
+            />
           )}
         </Box>
       </Box>

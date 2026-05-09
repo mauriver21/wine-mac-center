@@ -1,183 +1,124 @@
-import { StatusBox } from '@components/StatusBox';
-import { ProcessStatus, WineAppMode } from '@constants/enums';
+import { PipelineStep } from '@components/PipelineStep';
+import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
+import { AppPipelineContext, AppPipelineContextType } from '@contexts/AppPipelineContext';
 import { useQueryParam } from '@hooks/useQueryParam';
-import { RootState } from '@interfaces/RootState';
+import { ConfigLayout } from '@layouts/ConfigLayout';
+import { useAppModel } from '@models/useAppModel';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
-import { alpha } from '@mui/material';
-import { useEffect, useRef } from 'react';
+import { useRefresh } from '@utils/useRefresh';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Body1,
-  Box,
-  Button,
-  Card,
-  ContentsArea,
-  ContentsAreaHandle,
-  ContentsClass,
-  H6,
-  Stack,
-  TableOfContents
-} from 'reactjs-ui-core';
+import { Box, Button, ContentsClass, Stack } from 'reactjs-shared-ui';
 
 export const AppPipeline: React.FC = () => {
+  const [running, setRunning] = useState(false);
+  const { signal, refresh } = useRefresh();
+  const { appName } = useParams();
   const queryParam = useQueryParam();
-  const appConfigId = queryParam.get('appConfigId');
-  const realAppName = queryParam.get('realAppName');
-  const { realAppName: realAppNameParam } = useParams();
+  const appModel = useAppModel();
+  const origin = queryParam.get('origin') as ConfigOrigin;
+  const action = queryParam.get('action') as PipelineAction;
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
-  const wineAppPipeline = useSelector((state: RootState) =>
-    wineAppPipelineModel.selectWineAppPipelineWithMeta(state)
-  );
-  const contentsAreaRef = useRef<ContentsAreaHandle>(null);
-  contentsAreaRef.current?.refreshTableOfContents();
-  const installedApp = useSelector((state: RootState) =>
-    installedAppModel.selectWineInstalledAppByRealName(state, realAppName)
-  );
-  const pipelineStatus = installedApp?.pipeline?.status;
+  const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
+  const status = wineAppPipelineStatus?.status;
 
-  useEffect(() => {
-    appConfigId &&
-      wineAppPipelineModel.runWineAppPipelineByAppConfigId(appConfigId, {
-        mode: WineAppMode.Create
+  const runWineAppPipeline: AppPipelineContextType['runWineAppPipeline'] = async (args) => {
+    try {
+      setRunning(true);
+      if (appName === undefined) throw new Error(`Invalid application name`);
+      await wineAppPipelineModel.runWineAppPipeline({
+        appName,
+        origin: ConfigOrigin.INSTALLED_APP,
+        ...args
       });
-  }, [appConfigId]);
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      setRunning(false);
+    }
+  };
 
   useEffect(() => {
-    realAppName &&
-      wineAppPipelineModel.loadWineAppPipelineByAppName(realAppName, { mode: WineAppMode.Update });
-  }, [realAppName]);
+    if (appName) {
+      switch (action) {
+        case PipelineAction.RUN:
+          wineAppPipelineModel.runWineAppPipeline({ appName, origin });
+          break;
+        case PipelineAction.RESUME:
+          wineAppPipelineModel.loadWineAppPipeline(appName);
+          break;
+        default:
+          break;
+      }
+    }
+  }, [appName]);
 
   useEffect(() => {
     installedAppModel.listAll();
-  }, [wineAppPipeline.status]);
+  }, [status]);
+
+  useEffect(() => {
+    refresh();
+  }, [wineAppPipelineStatus?.jobs?.length]);
 
   return (
-    <Box display="grid" overflow="auto">
-      <ContentsArea
-        ref={contentsAreaRef}
-        style={{
-          height: '100%',
-          display: 'grid',
-          overflow: 'auto',
-          gridTemplateRows: 'auto 1fr'
-        }}
-      >
-        <Box>
-          <Box
-            p={2}
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            sx={{
-              boxShadow: (theme) => `inset 0 -1px ${theme.palette.secondary.main}`
-            }}
-          >
-            <H6 color="text.secondary" fontWeight={500}>
-              {realAppNameParam || realAppName || wineAppPipeline.meta.wineApp?.name}
-            </H6>
-          </Box>
-          <Box
-            sx={{
-              height: '1px',
-              boxShadow: (theme) => `inset 0 1px ${theme.palette.secondary.light}`
-            }}
-          ></Box>
-        </Box>
-        <Box display="grid" overflow="auto" gridTemplateRows="1fr auto">
-          <Box display="grid" gridTemplateColumns="1fr 250px" overflow="auto">
-            <Box
-              overflow="auto"
-              display="grid"
-              gridTemplateRows="1fr auto"
-              sx={{
-                '&::-webkit-scrollbar-thumb': {
-                  backgroundColor: (theme) => alpha(theme.palette?.secondary.dark, 0.3)
-                }
-              }}
-            >
-              <Box p={2} overflow="auto">
-                {wineAppPipeline.jobs?.map?.((item) => (
-                  <Stack alignItems="center" key={item.name} spacing={2}>
-                    {item?.steps?.map((step, index) => (
-                      <Box key={index} width="100%" maxWidth={800} className={ContentsClass.Item}>
-                        <Card key={index}>
-                          <Stack spacing={1}>
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              justifyContent="space-between"
-                              p={1}
-                            >
-                              <Body1
-                                className={ContentsClass.ItemTitle}
-                                fontWeight={500}
-                                color="text.secondary"
-                              >
-                                {step.name}
-                              </Body1>
-                              <StatusBox status={step.status} />
-                            </Stack>
-                          </Stack>
-                        </Card>
-                      </Box>
-                    ))}
-                  </Stack>
+    <AppPipelineContext.Provider value={{ runWineAppPipeline, running, action }}>
+      <ConfigLayout
+        signal={signal}
+        mainTitle={appName}
+        showBack={false}
+        contentSlot={
+          <Box p={2} overflow="auto">
+            {wineAppPipelineStatus?.jobs?.map?.((item, jobIndex) => (
+              <Stack alignItems="center" key={item.name} spacing={2}>
+                {item?.steps?.map((step, stepIndex) => (
+                  <Box key={stepIndex} width="100%" maxWidth={800} className={ContentsClass.Item}>
+                    <PipelineStep jobIndex={jobIndex} stepIndex={stepIndex} step={step} />
+                  </Box>
                 ))}
-              </Box>
-              <Stack
-                borderTop={(theme) => `1px solid ${theme.palette.secondary.light}`}
-                p={2}
-                direction="row"
-                spacing={1}
-                justifyContent="flex-end"
-              >
-                {wineAppPipeline.status === ProcessStatus.InProgress ? (
-                  <Button
-                    sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-                    color="secondary"
-                    onClick={() =>
-                      wineAppPipelineModel.killWineAppPipeline(wineAppPipeline.pipelineId)
-                    }
-                  >
-                    Stop
-                  </Button>
-                ) : (
-                  <Button
-                    sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-                    color="secondary"
-                    onClick={() => navigate('/apps')}
-                  >
-                    Close
-                  </Button>
-                )}
-                {pipelineStatus === ProcessStatus.Pending ? (
-                  <Button
-                    sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
-                    color="secondary"
-                    onClick={() => {
-                      realAppName &&
-                        wineAppPipelineModel.runWineAppPipelineByAppName(realAppName, {
-                          mode: WineAppMode.Update
-                        });
-                    }}
-                  >
-                    Resume
-                  </Button>
-                ) : (
-                  <></>
-                )}
               </Stack>
-            </Box>
-            <Box borderLeft={(theme) => `1px solid ${theme.palette.secondary.light}`}>
-              <TableOfContents pt={1} />
-            </Box>
+            ))}
           </Box>
-        </Box>
-      </ContentsArea>
-    </Box>
+        }
+        actionsSlot={
+          <>
+            {status === ProcessStatus.InProgress ? (
+              <Button
+                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                color="secondary"
+                onClick={() => wineAppPipelineModel.stopWineAppPipeline(appName)}
+              >
+                Stop
+              </Button>
+            ) : (
+              <Button
+                disabled={running}
+                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                color="secondary"
+                onClick={() => navigate('/apps')}
+              >
+                Close
+              </Button>
+            )}
+            {status === ProcessStatus.Cancelled ? (
+              <Button
+                disabled={running}
+                sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
+                color="secondary"
+                onClick={() => runWineAppPipeline()}
+              >
+                Resume
+              </Button>
+            ) : (
+              <></>
+            )}
+          </>
+        }
+      />
+    </AppPipelineContext.Provider>
   );
 };

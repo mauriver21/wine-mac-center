@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useWineAppContext } from '@pages/Test';
 import { Code } from '@components/Code';
-import { findOutputPID } from '@utils/findOutputPID';
+import { findOutputPids } from '@utils/findOutputPids';
 
 const ENGINES_URLS = {
   'WS11WineCX64Bit23.6.0': [
@@ -14,7 +14,7 @@ const ENGINES_URLS = {
 
 export const DownloadEngine: React.FC = () => {
   const { wineApp } = useWineAppContext();
-  const [pid, setPid] = useState(0);
+  const [pids, setPids] = useState('');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();
 
@@ -25,8 +25,8 @@ export const DownloadEngine: React.FC = () => {
     await wineApp.downloadWineEngine(ENGINES_URLS[ENGINE_VERSION], ENGINE_VERSION, {
       onStdOut: (data) => {
         console.log(data);
-        const pid = findOutputPID(data);
-        pid && setPid(pid);
+        const pids = findOutputPids(data);
+        pids && setPids(pids);
         setData(data);
       },
       onStdErr: (data) => {
@@ -43,7 +43,7 @@ export const DownloadEngine: React.FC = () => {
         <h3>Download Engine</h3>
         <hr />
       </div>
-      <p>PID: {pid}</p>
+      <p>PIDS: {pids}</p>
       <button disabled={loading} onClick={downloadEngine}>
         {loading ? 'Downloading' : 'Download'} Engine
       </button>

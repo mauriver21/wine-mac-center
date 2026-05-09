@@ -1,0 +1,39 @@
+import { CardItem } from '@components/CardItem';
+import { useWineAppContext } from '@hooks/useWineAppContext';
+import { TravelExplore } from '@mui/icons-material';
+import { TextField } from '@mui/material';
+import { useMemo } from 'react';
+import { Stack } from 'reactjs-shared-ui';
+
+export const AppEnvVariables: React.FC = () => {
+  const { wineApp } = useWineAppContext() || {};
+  const envPaths = useMemo(() => {
+    let envPaths: Array<{ path: string; name: string }> = [];
+    for (const [key, value] of Object.entries(wineApp?.getWineEnv() || {})) {
+      envPaths = [...envPaths, { path: value, name: key }];
+    }
+
+    return envPaths;
+  }, [wineApp]);
+
+  return (
+    <CardItem
+      cardProps={{ sx: { overflow: 'auto' } }}
+      icon={TravelExplore}
+      label="App Environment Variables"
+    >
+      <Stack spacing={2}>
+        {envPaths.map(({ name, path }) => (
+          <TextField
+            InputProps={{
+              readOnly: true,
+              sx: { bgcolor: 'secondary.main' }
+            }}
+            label={name}
+            value={path}
+          />
+        ))}
+      </Stack>
+    </CardItem>
+  );
+};

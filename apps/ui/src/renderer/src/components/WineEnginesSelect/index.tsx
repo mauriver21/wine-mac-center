@@ -1,7 +1,7 @@
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Select, SelectProps } from 'reactjs-ui-form-fields';
+import { Select, SelectProps } from 'reactjs-shared-ui/forms';
 
 export type WineEnginesSelectProps = SelectProps;
 

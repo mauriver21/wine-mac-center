@@ -1,4 +1,4 @@
-import { Body2, Box, BoxProps } from 'reactjs-ui-core';
+import { Body2, Box, BoxProps } from 'reactjs-shared-ui';
 import { useMemo } from 'react';
 import { PROCESS_STATUS_COLORS } from '@constants/colors';
 import { ProcessStatus } from '@constants/enums';

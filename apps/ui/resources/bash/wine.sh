@@ -15,8 +15,8 @@ wine() {
     EXE_DIR=$(dirname "$EXE_PATH")
     EXE_FILE=$(basename "$EXE_PATH")
 
-    cd "$EXE_DIR" || exit 1
-    "$WINE_APP_SCRIPTS_PATH/wineEnv.sh" "$WINE_ARCH" "$EXE_FILE" "$EXE_FLAGS"
+    cd "$EXE_DIR" || exit 1    
+    "$WINE_APP_SCRIPTS_PATH/wineEnv.sh" "$WINE_ARCH" "$EXE_FILE" $EXE_FLAGS &
     script_pid=$!
     wait $script_pid
 

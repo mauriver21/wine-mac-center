@@ -1,4 +1,4 @@
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 import React from 'react';
 import {
   Box,
@@ -10,7 +10,7 @@ import {
   H6,
   Button,
   Body1
-} from 'reactjs-ui-core';
+} from 'reactjs-shared-ui';
 
 export interface BaseModuleProps {
   icon: React.FC;
@@ -20,7 +20,7 @@ export interface BaseModuleProps {
 }
 
 export const BaseModule: React.FC<BaseModuleProps> = ({ icon, label, description, method }) => {
-  const { wineApp, loading } = useAppConfigContext() || {};
+  const { wineApp, loading } = useWineAppContext() || {};
 
   return (
     <Card>

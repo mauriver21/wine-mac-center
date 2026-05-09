@@ -1,14 +1,15 @@
 import { createContext, useContext, useRef, useState } from 'react';
 import { createWineAppPipeline as baseCreateWineAppPipeline } from '@utils/createWineAppPipeline';
-import { Body1, Dialog, Stack } from 'reactjs-ui-core';
+import { Body1, Dialog, Stack } from 'reactjs-shared-ui';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
 import { FilePathInput } from '@components/FilePathInput';
 import { FileFilter } from '@constants/enums';
+import { useSteamCli } from '@hooks/useSteamCli';
 
 export type WineAppPipelineContextType = {
   createWineAppPipeline: typeof baseCreateWineAppPipeline;
-  findWineAppPipeline: (id: string | undefined) => WineAppPipeline | undefined;
-  killWineAppPipeline: (id: string | undefined) => void;
+  getWineAppPipeline: () => WineAppPipeline | undefined;
+  killWineAppPipeline: () => Promise<void | undefined>;
 };
 
 export const WineAppPipelineContext = createContext<WineAppPipelineContextType>({} as any);
@@ -17,13 +18,14 @@ export const useWineAppPipeline = () => useContext(WineAppPipelineContext);
 export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
   return (props: T & JSX.IntrinsicAttributes) => {
     const [openSelectExecutableDialog, setOpenSelectExecutableDialog] = useState(false);
+    const steamCli = useSteamCli();
 
     const store = useRef<{
-      pipelines: Array<WineAppPipeline>;
+      pipeline: WineAppPipeline | undefined;
       mainExePath: string;
       intervalId?: NodeJS.Timeout;
       driveCPath: string;
-    }>({ pipelines: [], mainExePath: '', driveCPath: '' });
+    }>({ pipeline: undefined, mainExePath: '', driveCPath: '' });
 
     const mainExecutableSelection = () => {
       return new Promise<string>((resolve) => {
@@ -53,26 +55,22 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
           resetMainExecutable();
           setOpenSelectExecutableDialog(false);
           return mainExe;
-        }
+        },
+        clients: { steamCli }
       });
 
-      store.current.pipelines.push(pipeline);
+      store.current.pipeline = pipeline;
       return pipeline;
     };
 
-    const findWineAppPipeline = (id: string | undefined) =>
-      store.current.pipelines.find((item) => item.id === id);
-
-    const killWineAppPipeline = (id: string | undefined) => {
-      const foundPipeline = findWineAppPipeline(id);
-      foundPipeline?.kill();
-    };
+    const getWineAppPipeline = () => store.current.pipeline;
+    const killWineAppPipeline = async () => getWineAppPipeline()?.kill();
 
     return (
       <WineAppPipelineContext.Provider
         value={{
           createWineAppPipeline,
-          findWineAppPipeline,
+          getWineAppPipeline,
           killWineAppPipeline
         }}
       >

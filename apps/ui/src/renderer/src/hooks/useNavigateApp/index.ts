@@ -1,11 +1,9 @@
+import { ConfigOrigin, PipelineAction } from '@constants/enums';
+import { buildUrl } from '@utils/buildUrl';
 import { useNavigate } from 'react-router-dom';
 
 export const useNavigateApp = () => {
   const navigate = useNavigate();
-
-  const navigateToAppPipeline = (appConfigId: string | undefined) => {
-    navigate(`/app-pipeline?appConfigId=${appConfigId}`);
-  };
 
   const navigateToHome = () => {
     navigate('/home');
@@ -15,14 +13,49 @@ export const useNavigateApp = () => {
     navigate('/apps');
   };
 
-  const navigateToAppNotFound = (realAppName: string) => {
-    navigate(`/app-not-found/${realAppName}`);
+  const navigateToAppNotFound = (appName: string) => {
+    navigate(`/app-not-found/${appName}`);
+  };
+
+  const navigateToScripts = () => {
+    navigate(`/scripts`);
+  };
+
+  const navigateToScript = (appName?: string, options?: { copyScript?: boolean }) => {
+    if (appName && options?.copyScript) {
+      navigate(buildUrl('/script', { appNameToCopy: appName }));
+    } else if (appName) {
+      navigate(`/script/${appName}`);
+    } else {
+      navigate(`/script`);
+    }
+  };
+
+  const navigateToAppLauncher = (appName: string | undefined) => {
+    navigate(`/app-launcher/${appName}`);
+  };
+
+  const navigateToAppPipeline = (
+    appName: string | undefined,
+    params: { origin: ConfigOrigin | undefined; action: PipelineAction }
+  ) => {
+    navigate(
+      buildUrl(`/app-pipeline/${appName}`, { origin: params.origin, action: params.action })
+    );
+  };
+
+  const navigateToAppConfig = (appName: string | undefined) => {
+    navigate(`/app-config/${appName}`);
   };
 
   return {
     navigateToAppPipeline,
     navigateToApps,
     navigateToAppNotFound,
-    navigateToHome
+    navigateToHome,
+    navigateToScripts,
+    navigateToScript,
+    navigateToAppConfig,
+    navigateToAppLauncher
   };
 };

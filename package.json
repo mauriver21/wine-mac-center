@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "ui:build:mac": "pnpm --filter ui build:mac",
-    "ui:bump-patch-version": "pnpm --filter ui bump-patch-version"
+    "app-launcher:build": "pnpm --filter app-launcher build",
+    "build": "pnpm app-launcher:build && pnpm ui:build:mac"
   },
   "keywords": [],
   "author": "Mauricio Rivera",

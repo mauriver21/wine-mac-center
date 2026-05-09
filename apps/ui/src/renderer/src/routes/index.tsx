@@ -4,37 +4,46 @@ import { CreateApp } from '@components/CreateApp';
 import { NotFoundApp } from '@components/NotFoundApp';
 import { MainLayout } from '@layouts/MainLayout';
 import { SimpleLayout } from '@layouts/SimpleLayout';
-import { Apps } from '@pages/Apps';
-import { Home } from '@pages/Home';
+import { InstalledApps } from '@pages/InstalledApps';
 import { Settings } from '@pages/Settings';
-import { Tasks } from '@pages/Tasks';
+import { Scripts } from '@pages/Scripts';
 import { Test } from '@pages/Test';
 import { RouteObject } from 'react-router-dom';
+import { PipelineScript } from '@components/PipelineScript';
+import { AppLauncher } from '@components/AppLauncher';
 
 export const routes: RouteObject[] = [
   {
     path: '/',
     element: <MainLayout />,
     children: [
-      { index: true, element: <Home /> },
-      { path: 'home', element: <Home /> },
-      { path: 'apps', element: <Apps /> },
-      { path: 'settings', element: <Settings /> },
-      { path: 'tasks', element: <Tasks /> },
+      { index: true, element: <InstalledApps /> },
+      { path: 'apps', element: <InstalledApps /> },
+      { path: 'scripts', element: <Scripts /> },
       { path: 'test', element: <Test /> }
     ]
   },
   {
+    path: '/settings',
+    element: <SimpleLayout />,
+    children: [{ index: true, element: <Settings /> }]
+  },
+  {
     path: '/app-config',
     element: <SimpleLayout />,
-    children: [{ path: ':realAppName', element: <AppConfig /> }]
+    children: [{ path: ':appName', element: <AppConfig /> }]
+  },
+  {
+    path: '/app-launcher',
+    element: <SimpleLayout />,
+    children: [{ path: ':appName/*', element: <AppLauncher /> }]
   },
   {
     path: '/app-pipeline',
     element: <SimpleLayout />,
     children: [
       { index: true, element: <AppPipeline /> },
-      { path: ':realAppName', element: <AppPipeline /> }
+      { path: ':appName', element: <AppPipeline /> }
     ]
   },
   {
@@ -45,6 +54,14 @@ export const routes: RouteObject[] = [
   {
     path: '/app-not-found',
     element: <SimpleLayout />,
-    children: [{ path: ':realAppName', element: <NotFoundApp /> }]
+    children: [{ path: ':appName', element: <NotFoundApp /> }]
+  },
+  {
+    path: '/script',
+    element: <SimpleLayout />,
+    children: [
+      { index: true, element: <PipelineScript /> },
+      { path: ':appName', element: <PipelineScript /> }
+    ]
   }
 ];

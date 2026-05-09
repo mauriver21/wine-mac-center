@@ -1,5 +1,5 @@
-import React, { forwardRef, useEffect, useState } from 'react';
-import { Box, Button, Icon, SkeletonLoader, Stack } from 'reactjs-ui-core';
+import React, { forwardRef, useState } from 'react';
+import { Box, Button, Icon, SkeletonLoader, Stack } from 'reactjs-shared-ui';
 import { useSelector } from 'react-redux';
 import { VirtuosoGrid } from 'react-virtuoso';
 import { PlusIcon } from '@heroicons/react/24/solid';
@@ -57,10 +57,6 @@ export const WineInstalledAppsList: React.FC = () => {
     wineInstalledAppModel.selectWineInstalledApps(state, filters)
   );
 
-  useEffect(() => {
-    wineInstalledAppModel.listAll();
-  }, []);
-
   return (
     <Box display="grid" gridTemplateRows="auto 1fr">
       <Stack direction="row" spacing={1} pt={2} px={3} justifyContent="space-between">
@@ -105,10 +101,7 @@ export const WineInstalledAppsList: React.FC = () => {
           data={wineInstalledApps}
           components={{ List, Item }}
           itemContent={(_, installedWineApp) => (
-            <InstalledAppCard
-              key={installedWineApp.realAppName}
-              realAppName={installedWineApp.realAppName}
-            />
+            <InstalledAppCard key={installedWineApp.name} appName={installedWineApp.name} />
           )}
         />
       </SkeletonLoader>

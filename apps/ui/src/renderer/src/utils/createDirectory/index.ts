@@ -1,1 +1,1 @@
-export const createDirectory = async (dirPath: string) => window.api.createDirectory(dirPath);
+export const createDirectory = window.api.createDirectory;

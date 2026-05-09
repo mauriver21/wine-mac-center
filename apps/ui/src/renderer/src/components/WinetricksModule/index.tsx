@@ -1,15 +1,25 @@
 import React from 'react';
 import { WinetricksSelector } from '@components/WinetricksSelector';
 import { SparklesIcon } from '@heroicons/react/24/solid';
-import { Stack, Icon, H6, ContentsClass, Button, Body1, Card, CardContent } from 'reactjs-ui-core';
-import { useAppConfigContext } from '@hooks/useAppConfigContext';
+import {
+  Stack,
+  Icon,
+  H6,
+  ContentsClass,
+  Button,
+  Body1,
+  Card,
+  CardContent
+} from 'reactjs-shared-ui';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 import { useSchema, FormSchema } from './useSchema';
-import { useForm } from 'reactjs-ui-form-fields';
+import { useForm } from 'reactjs-shared-ui/forms';
+import { spawnLog } from '@utils/spawnLog';
 
 export const WinetricksModule: React.FC = () => {
   const schema = useSchema();
   const form = useForm(schema);
-  const { wineApp, loading, setLoading } = useAppConfigContext() || {};
+  const { wineApp, loading, setLoading } = useWineAppContext() || {};
 
   return (
     <Card>
@@ -19,7 +29,15 @@ export const WinetricksModule: React.FC = () => {
             <Icon strokeWidth={0} size={34} render={SparklesIcon} pr={1} />
             <H6 className={ContentsClass.ItemTitle}>Winetricks</H6>
           </Stack>
-          <WinetricksSelector disabled={loading} name="winetricksVerbs" control={form.control} />
+          <WinetricksSelector
+            winetricksVersionSelectProps={{
+              control: form.control,
+              name: 'winetricksVersion'
+            }}
+            disabled={loading}
+            name="winetricksVerbs"
+            control={form.control}
+          />
           <Stack width="100%" pt={1} alignItems="flex-end">
             <Button
               title={`Run Winetricks`}
@@ -36,7 +54,10 @@ export const WinetricksModule: React.FC = () => {
                 setLoading?.(true);
 
                 if (verbsString) {
-                  await wineApp?.winetrick(verbsString);
+                  await wineApp?.winetrick(
+                    { verb: verbsString, version: form.watch('winetricksVersion') },
+                    spawnLog
+                  );
                   form.reset();
                   setLoading?.(false);
                 } else {

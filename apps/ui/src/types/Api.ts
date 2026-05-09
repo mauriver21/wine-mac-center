@@ -1,6 +1,6 @@
 import plist from 'plist';
 import { dialog } from 'electron';
-import { PathOrFileDescriptor } from 'fs';
+import { MakeDirectoryOptions, PathOrFileDescriptor, RmDirOptions } from 'fs';
 import { WatchDirEvent } from './WatchDirEvent';
 
 export type Api = {
@@ -19,7 +19,8 @@ export type Api = {
   readDirectory: (dirPath: string) => Promise<string[]>;
   dirExists: (dirPath: string) => Promise<boolean>;
   readBinaryFile: (filePath: string) => Promise<Buffer>;
-  createDirectory: (dirPath: string) => Promise<void>;
+  createDirectory: (dirPath: string, options?: MakeDirectoryOptions) => Promise<void>;
+  removeDirectory: (dirPath: string, options?: RmDirOptions) => Promise<void>;
   readFileAsString: (filePath: string) => Promise<string>;
   writeBinaryFile: (filePath: string, arrayBuffer: ArrayBuffer) => Promise<void>;
   showOpenDialog: typeof dialog.showOpenDialog;
@@ -31,4 +32,6 @@ export type Api = {
   subscribeToWatchDirs: (callback: (event: WatchDirEvent) => void) => void;
   unsubscribeFromWatchDirs: (listenerId: string) => void;
   buildPlist: (obj: plist.PlistValue) => Promise<string>;
+  showItemInFolder: (fullPath: string) => Promise<void>;
+  renameDirectory: (from: string, to: string) => Promise<void>;
 };

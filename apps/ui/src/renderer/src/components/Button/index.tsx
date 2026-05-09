@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button as BaseButton, ButtonProps as BaseButtonProps } from 'reactjs-ui-core';
+import { Button as BaseButton, ButtonProps as BaseButtonProps } from 'reactjs-shared-ui';
 
 export interface ButtonProps extends BaseButtonProps {}
 

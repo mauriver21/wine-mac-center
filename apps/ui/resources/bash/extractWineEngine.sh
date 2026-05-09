@@ -1,4 +1,7 @@
 rm -rf "$WINE_APP_ENGINE_PATH/"*;
-tar -xf "$WINE_ENGINES_PATH/$WINE_ENGINE_VERSION.tar.7z" -C "$WINE_APP_PATH" -v;
+tar -xf "$WINE_ENGINES_PATH/$WINE_ENGINE_VERSION.tar.7z" -C "$WINE_APP_PATH" -v &
+PID=$!
+echo "[PIDS_START]$PID[PIDS_END]"
+wait "$PID"
 mv "$WINE_APP_PATH/wswine.bundle/"* "$WINE_APP_ENGINE_PATH";
 rm -rf "$WINE_APP_PATH/wswine.bundle";
