@@ -1,1 +1,58 @@
-{"name":"Halo Custom Edition","origin":"SCRIPTS","dxvkEnabled":false,"setupExecutableURL":"","engineVersion":"WS11WineCX64Bit21.2.0","winetricks":{"verbs":["vcrun6"],"version":"20260125"},"executables":[{"main":true,"path":"","flags":""}],"pipelineScripts":[{"url":"https://ia800807.us.archive.org/23/items/halo-custom-edition-v-1.10/Halo Custom Edition v1.10.7z","downloadName":"","operation":"DOWNLOAD","name":"Download setup executable"},{"path":"Halo Custom Edition v1.10.7z","operation":"DECOMPRESS","name":"Extract File"},{"from":"Halo Custom Edition","target":"/Program Files (x86)/Halo Custom Edition","operation":"COPY","name":"Copy file"},{"url":"https://mauriver21.github.io/wine-mac-center/assets/downloadables/patches/Halo Custom Edition/haloce.exe","downloadName":"","operation":"DOWNLOAD","name":"Download setup executable"},{"url":"https://mauriver21.github.io/wine-mac-center/assets/downloadables/patches/Halo Custom Edition/haloceded.exe","downloadName":"","operation":"DOWNLOAD","name":"Download setup executable"},{"from":"haloce.exe","target":"/Program Files (x86)/Halo Custom Edition/haloce.exe","operation":"COPY","name":"Copy file"},{"from":"haloceded.exe","target":"/Program Files (x86)/Halo Custom Edition/haloceded.exe","operation":"COPY","name":"Copy file"},{"mainExePath":"/Program Files (x86)/Halo Custom Edition/haloce.exe","operation":"SET_MAIN_EXE","name":"Set main exe"}],"launcherConfig":{}}
+{
+  "name": "Halo Custom Edition",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit21.2.0",
+  "winetricks": { "verbs": ["vcrun6"], "version": "20260125" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://ia800807.us.archive.org/23/items/halo-custom-edition-v-1.10/Halo Custom Edition v1.10.7z",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "path": "Halo Custom Edition v1.10.7z",
+      "operation": "DECOMPRESS",
+      "name": "Extract File"
+    },
+    {
+      "from": "Halo Custom Edition v1.10/Halo Custom Edition",
+      "target": "/Program Files (x86)/Halo Custom Edition",
+      "operation": "COPY",
+      "name": "Copy file"
+    },
+    {
+      "url": "https://mauriver21.github.io/wine-mac-center/assets/downloadables/patches/Halo Custom Edition/haloce.exe",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "url": "https://mauriver21.github.io/wine-mac-center/assets/downloadables/patches/Halo Custom Edition/haloceded.exe",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "from": "haloce.exe",
+      "target": "/Program Files (x86)/Halo Custom Edition/haloce.exe",
+      "operation": "COPY",
+      "name": "Copy file"
+    },
+    {
+      "from": "haloceded.exe",
+      "target": "/Program Files (x86)/Halo Custom Edition/haloceded.exe",
+      "operation": "COPY",
+      "name": "Copy file"
+    },
+    {
+      "mainExePath": "/Program Files (x86)/Halo Custom Edition/haloce.exe",
+      "operation": "SET_MAIN_EXE",
+      "name": "Set main exe"
+    }
+  ],
+  "launcherConfig": {}
+}
