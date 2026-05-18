@@ -228,7 +228,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
         fileNamePart = fileNamePart || fileName;
 
         if (!(await dirExists(engineTmpFolder))) {
-          createDirectory(engineTmpFolder);
+          createDirectory(engineTmpFolder, { recursive: true });
         }
 
         const file = await downloadFile(url);

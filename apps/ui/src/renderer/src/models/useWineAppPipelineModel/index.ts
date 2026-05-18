@@ -17,12 +17,14 @@ import { ConfigOrigin } from '@constants/enums';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { useLoadingDialog } from '@hooks/useLoadingDialog';
+import { useWineEngineModel } from '@models/useWineEngineModel';
 
 export const useWineAppPipelineModel = () => {
   const appModel = useAppModel();
   const loadingDialog = useLoadingDialog();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const wineAppConfigModel = useWineAppConfigModel();
+  const wineEngineModel = useWineEngineModel();
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
   const dispatch = useDispatch<Dispatch<WineAppPipelineAction>>();
 
@@ -50,6 +52,23 @@ export const useWineAppPipelineModel = () => {
     }
   };
 
+  const resolveEngineURLs = (engineVersion: string | undefined) => {
+    const wineEnginesDownloadables = wineEngineModel.selectWineEnginesDownloadables(
+      store.getState()
+    );
+    const wineEngineDownloadables = wineEnginesDownloadables?.find(
+      (item) => item.version == engineVersion
+    );
+
+    const engineURLs = wineEngineDownloadables?.urls;
+
+    if (engineURLs === undefined) {
+      throw new Error('No engine URLs found.');
+    }
+
+    return engineURLs;
+  };
+
   const scaffoldWineApp = async (args: WineAppArgs, onScaffolded: (appName: string) => void) => {
     try {
       loadingDialog.open({ message: 'Preparing Wine App...' });
@@ -57,16 +76,29 @@ export const useWineAppPipelineModel = () => {
       let { appName, config } = args;
       const originalAppName = appName;
 
-      if (args.origin === undefined) throw new Error(`Origin is not defined`);
-      if (appName === undefined || appName === '') throw new Error(`Invalid app name: ${appName}`);
+      if (args.origin === undefined) {
+        throw new Error(`Origin is not defined`);
+      }
+
+      if (appName === undefined || appName === '') {
+        throw new Error(`Invalid app name: ${appName}`);
+      }
+
       appName = await buildUniqueAppName(appName);
 
       if (args.origin !== ConfigOrigin.INSTALLED_APP) {
         config = await resolveWineAppConfig({ ...args, appName: originalAppName });
       }
 
-      if (config === undefined) throw new Error(`App config for ${appName} not found.`);
+      if (config === undefined) {
+        throw new Error(`App config for ${appName} not found.`);
+      }
+
       config = { ...config, name: appName };
+
+      if (config?.engineURLs === undefined) {
+        config = { ...config, engineURLs: resolveEngineURLs(config?.engineVersion) };
+      }
 
       const wineApp = await createWineApp(appName, config);
       await new Promise<WineAppConfig>((resolve) =>
