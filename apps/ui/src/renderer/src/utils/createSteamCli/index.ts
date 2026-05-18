@@ -27,7 +27,7 @@ export const createSteamCli = (options: {
     return spawnProcess(`"${SCRIPTS_PATH}/runSteamCMD.sh" ${cmd}`, args);
   };
 
-  const steamCliExists = () => {
+  const isInstalled = () => {
     return fileExists(`${CLIENTS_PATH}/steam/steamcmd.sh`);
   };
 
@@ -37,7 +37,7 @@ export const createSteamCli = (options: {
   ) => {
     const { userName, password } = credentials;
 
-    if (!(await steamCliExists())) {
+    if (!(await isInstalled())) {
       await install();
     }
 
@@ -79,5 +79,5 @@ export const createSteamCli = (options: {
     return spawnProcess(`"${SCRIPTS_PATH}/killPids.sh" "${pids}"`, args);
   };
 
-  return { install, login, downloadSteamApp, killPids };
+  return { install, login, downloadSteamApp, killPids, isInstalled };
 };

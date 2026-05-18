@@ -18,8 +18,10 @@ import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { useLoadingDialog } from '@hooks/useLoadingDialog';
 import { useWineEngineModel } from '@models/useWineEngineModel';
+import { useSteamCli } from '@hooks/useSteamCli';
 
 export const useWineAppPipelineModel = () => {
+  const steamCli = useSteamCli();
   const appModel = useAppModel();
   const loadingDialog = useLoadingDialog();
   const wineInstalledAppModel = useWineInstalledAppModel();
@@ -69,6 +71,10 @@ export const useWineAppPipelineModel = () => {
     return engineURLs;
   };
 
+  const isSteamApplication = (config: WineAppConfig) => {
+    return config.winetricks?.verbs.some((item) => item == 'steam');
+  };
+
   const scaffoldWineApp = async (args: WineAppArgs, onScaffolded: (appName: string) => void) => {
     try {
       loadingDialog.open({ message: 'Preparing Wine App...' });
@@ -100,6 +106,12 @@ export const useWineAppPipelineModel = () => {
         config = { ...config, engineURLs: resolveEngineURLs(config?.engineVersion) };
       }
 
+      if (isSteamApplication(config) && !(await steamCli.isInstalled())) {
+        loadingDialog.updateMessage('Installing Steam client...');
+        await steamCli.install();
+      }
+
+      loadingDialog.updateMessage('Creating Wine App...');
       const wineApp = await createWineApp(appName, config);
       await new Promise<WineAppConfig>((resolve) =>
         wineApp.scaffold(

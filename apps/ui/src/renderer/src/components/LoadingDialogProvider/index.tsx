@@ -20,8 +20,12 @@ export const LoadingDialogProvider: React.FC<LoadingDialogProviderProps> = ({ ch
     setDialogState((prev) => ({ ...prev, open: false }));
   };
 
+  const updateMessage = (message: string) => {
+    setDialogState((prev) => ({ ...prev, message }));
+  };
+
   return (
-    <LoadingDialogContext.Provider value={{ open, close }}>
+    <LoadingDialogContext.Provider value={{ open, close, updateMessage }}>
       <LoadingDialog {...dialogState} />
       {children}
     </LoadingDialogContext.Provider>
