@@ -81,7 +81,6 @@ export const useWineAppConfigApiClient = () => {
     const urls = buildAppUrls({ appName, origin: ConfigOrigin.CLOUD });
     if (urls === undefined) throw Error('Failed to build app urls');
     const { data: appConfig } = await axios.get<WineAppConfig>(urls.scriptURL);
-    console.log(urls);
     if (appConfig?.name === undefined) throw Error('Failed to download script');
     let setupExecutableURL = appConfig.setupExecutableURL || '';
     let setupExecutablePath = appConfig.setupExecutablePath || '';
@@ -247,7 +246,6 @@ export const useWineAppConfigApiClient = () => {
 
   const downloadScript = async (appName: string) => {
     const { artworkURL, iconURL, ...rest } = await readCloudFile(appName);
-    console.log(rest);
     return create({
       ...rest,
       origin: ConfigOrigin.SCRIPTS,

@@ -80,7 +80,6 @@ export const useWineAppPipelineModel = () => {
       loadingDialog.open({ message: 'Preparing Wine App...' });
 
       let { appName, config } = args;
-      const originalAppName = appName;
 
       if (args.origin === undefined) {
         throw new Error(`Origin is not defined`);
@@ -90,7 +89,19 @@ export const useWineAppPipelineModel = () => {
         throw new Error(`Invalid app name: ${appName}`);
       }
 
+      const originalAppName = appName;
       appName = await buildUniqueAppName(appName);
+
+      if (args.origin === ConfigOrigin.CLOUD) {
+        const isDownloadedScript = wineAppConfigModel.selectIsDownloadedScript(
+          store.getState(),
+          originalAppName
+        );
+
+        if (!isDownloadedScript) {
+          await wineAppConfigModel.downloadScript(originalAppName);
+        }
+      }
 
       if (args.origin !== ConfigOrigin.INSTALLED_APP) {
         config = await resolveWineAppConfig({ ...args, appName: originalAppName });
