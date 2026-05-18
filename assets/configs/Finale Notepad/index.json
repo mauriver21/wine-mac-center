@@ -1,1 +1,23 @@
-{"name":"Finale Notepad","origin":"SCRIPTS","dxvkEnabled":false,"setupExecutableURL":"","engineVersion":"WS11WineCX64Bit23.6.0","winetricks":{"verbs":[],"version":"20240105"},"executables":[{"main":true,"path":"","flags":""}],"pipelineScripts":[{"url":"https://makemusic-downloads.makemusic.com/NotePad/2012/NotePad2012Win.exe","downloadName":"","operation":"DOWNLOAD","name":"Download setup executable"},{"exePath":"NotePad2012Win.exe","baseExePath":"$HOME/Wine/assets/downloads","operation":"RUN_WINDOWS_EXE","name":"Run Windows Exe"}]}
+{
+  "name": "Finale Notepad",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit23.6.0",
+  "winetricks": { "verbs": [], "version": "20240105" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://makemusic-downloads.makemusic.com/NotePad/2012/NotePad2012Win.exe",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "exePath": "NotePad2012Win.exe",
+      "baseExePath": "$HOME/Wine/assets/downloads",
+      "operation": "RUN_WINDOWS_EXE",
+      "name": "Run Windows Exe"
+    }
+  ]
+}

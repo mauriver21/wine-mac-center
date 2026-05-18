@@ -1,1 +1,45 @@
-{"name":"Ricochet Infinity","origin":"SCRIPTS","dxvkEnabled":false,"setupExecutableURL":"","engineVersion":"WS11WineCX64Bit21.2.0","winetricks":{"verbs":["cnc_ddraw"],"version":"20240105"},"executables":[{"main":true,"path":"","flags":""}],"pipelineScripts":[{"url":"https://archive.org/download/ricochetgames/Ricochet%20games.zip","downloadName":"","operation":"DOWNLOAD","name":"Download setup executable"},{"path":"Ricochet games.zip","operation":"DECOMPRESS","name":"Extract File"},{"exePath":"/Ricochet games/Ricochet Infinity/Ricochet.InfinitySetup.exe","baseExePath":"$HOME/Wine/assets/downloads","operation":"RUN_WINDOWS_EXE","name":"Run Windows Exe"},{"from":"/Ricochet games/Ricochet Infinity/crack/ReflexiveArcade/ReflexiveArcade.dll","target":"/Program Files (x86)/Ricochet Infinity/ReflexiveArcade/ReflexiveArcade.dll","operation":"COPY","name":"Copy file"},{"from":"/Ricochet games/Ricochet Infinity/crack/RicochetInfinity.exe","target":"/Program Files (x86)/Ricochet Infinity/RicochetInfinity.exe","operation":"COPY","name":"Copy file"},{"mainExePath":"/Program Files (x86)/Ricochet Infinity/RicochetInfinity.exe","operation":"SET_MAIN_EXE","name":"Set main exe"}]}
+{
+  "name": "Ricochet Infinity",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit21.2.0",
+  "winetricks": { "verbs": ["cnc_ddraw"], "version": "20240105" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://archive.org/download/ricochetgames/Ricochet%20games.zip",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "path": "Ricochet games.zip",
+      "operation": "DECOMPRESS",
+      "name": "Extract File"
+    },
+    {
+      "exePath": "/Ricochet games/Ricochet Infinity/Ricochet.InfinitySetup.exe",
+      "baseExePath": "$HOME/Wine/assets/downloads",
+      "operation": "RUN_WINDOWS_EXE",
+      "name": "Run Windows Exe"
+    },
+    {
+      "from": "/Ricochet games/Ricochet Infinity/crack/ReflexiveArcade/ReflexiveArcade.dll",
+      "target": "/Program Files (x86)/Ricochet Infinity/ReflexiveArcade/ReflexiveArcade.dll",
+      "operation": "COPY",
+      "name": "Copy file"
+    },
+    {
+      "from": "/Ricochet games/Ricochet Infinity/crack/RicochetInfinity.exe",
+      "target": "/Program Files (x86)/Ricochet Infinity/RicochetInfinity.exe",
+      "operation": "COPY",
+      "name": "Copy file"
+    },
+    {
+      "mainExePath": "/Program Files (x86)/Ricochet Infinity/RicochetInfinity.exe",
+      "operation": "SET_MAIN_EXE",
+      "name": "Set main exe"
+    }
+  ]
+}
