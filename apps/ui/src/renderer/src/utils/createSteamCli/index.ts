@@ -1,5 +1,6 @@
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { createEnv } from '@utils/createEnv';
+import { fileExists } from '@utils/fileExists';
 import { spawnProcess as baseSpawnProcess } from '@utils/spawnProcess';
 
 export const createSteamCli = (options: {
@@ -7,6 +8,7 @@ export const createSteamCli = (options: {
 }) => {
   const env = createEnv();
   const SCRIPTS_PATH = `${env.get().SCRIPTS_PATH}`;
+  const CLIENTS_PATH = `${env.get().CLIENTS_PATH}`;
 
   const s = (cmd: string) => {
     return `${env.getEnvExports()} ${cmd}`;
@@ -25,11 +27,20 @@ export const createSteamCli = (options: {
     return spawnProcess(`"${SCRIPTS_PATH}/runSteamCMD.sh" ${cmd}`, args);
   };
 
+  const steamCliExists = () => {
+    return fileExists(`${CLIENTS_PATH}/steam/steamcmd.sh`);
+  };
+
   const login = async (
     credentials: { userName: string; password: string },
     args?: SpawnProcessArgs
   ) => {
     const { userName, password } = credentials;
+
+    if (!(await steamCliExists())) {
+      await install();
+    }
+
     return new Promise((resolve, reject) => {
       runSteamCmd(`+login ${userName} ${password} +quit`, {
         onStdOut: (data) => {
