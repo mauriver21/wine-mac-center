@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 import { SearchField } from '@components/SearchField';
 import { SortDirectionSelect } from '@components/SortDirectionSelect';
 import { PlusIcon } from '@heroicons/react/24/solid';
@@ -78,6 +78,10 @@ export const Scripts: React.FC = () => {
       setRemovingScript(false);
     }
   };
+
+  useEffect(() => {
+    wineAppConfigModel.listAll();
+  }, []);
 
   return (
     <ScriptsContext.Provider value={{ setAppName, setOpenConfirmRemoveScript }}>

@@ -1,6 +1,10 @@
+import { SteamCredentialsDialog } from '@components/SteamCredentialsDialog';
 import { SteamGuardCodeDialog } from '@components/SteamGuardCodeDialog';
+import { EventName } from '@constants/enums';
 import { SteamCliContext } from '@contexts/SteamCliContext';
 import { useLocalState } from '@hooks/useLocalState';
+import { SteamCredentials } from '@interfaces/SteamCredentials';
+import { useAppModel } from '@models/useAppModel';
 import { createSteamCli } from '@utils/createSteamCli';
 import { findOutputPids } from '@utils/findOutputPids';
 import { useRefresh } from '@utils/useRefresh';
@@ -14,10 +18,17 @@ export interface SteamCliProviderProps {
 type DownloadSteamAppParams = Parameters<ReturnType<typeof createSteamCli>['downloadSteamApp']>;
 
 export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) => {
+  const appModel = useAppModel();
   const [openGuardCodeDialog, setOpenGuardCodeDialog] = useState(false);
+  const [openSteamCredentialsDialog, setOpenSteamCredentialsDialog] = useState(false);
   const { refresh } = useRefresh();
-  const { getState } = useLocalState('steamCredentials');
-  const refGuardCode = useRef<{ guardCode: string }>({ guardCode: '' });
+  const { getState, setState } = useLocalState('steamCredentials');
+  const ref = useRef<{
+    guardCode: string;
+    steamCredentials?: SteamCredentials | EventName.Cancelled;
+  }>({
+    guardCode: ''
+  });
   const { userName = '', password = '' } = getState() || {};
   const steamCli = useMemo(
     () => createSteamCli({ credentials: { userName, password } }),
@@ -25,7 +36,23 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   );
 
   const setGuardCode = (guardCode: string) => {
-    refGuardCode.current.guardCode = guardCode;
+    ref.current.guardCode = guardCode;
+  };
+
+  const setSteamCredentials = (
+    steamCredentials: SteamCredentials | undefined | EventName.Cancelled
+  ) => {
+    ref.current.steamCredentials = steamCredentials;
+  };
+
+  const login = async (credentials: SteamCredentials, options?: { throwError?: boolean }) => {
+    try {
+      await steamCli.login(credentials);
+      appModel.dispatchSuccessMessage('Login Success');
+    } catch (error) {
+      if (options?.throwError) throw error;
+      appModel.dispatchError(error);
+    }
   };
 
   const askSteamGuardCode = async (
@@ -35,7 +62,7 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   ) => {
     setGuardCode('');
     setOpenGuardCodeDialog(true);
-    const guardCode = await waitValue(refGuardCode.current, 'guardCode');
+    const guardCode = await waitValue(ref.current, 'guardCode');
     if (guardCode !== 'CANCELED') {
       steamCli.downloadSteamApp(
         { ...args, guardCode },
@@ -51,6 +78,39 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
       steamCli.killPids(prevPids);
     }
     setOpenGuardCodeDialog(false);
+  };
+
+  const loginCredentialsAreValid = async () => {
+    const credentials = getState();
+    if (credentials === undefined) return false;
+
+    try {
+      await login(credentials, { throwError: true });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const askSteamCredentials = async () => {
+    if (await loginCredentialsAreValid()) return;
+
+    setSteamCredentials(undefined);
+    setOpenSteamCredentialsDialog(true);
+
+    const steamCredentials = await waitValue(ref.current, 'steamCredentials');
+    if (steamCredentials && steamCredentials !== EventName.Cancelled) {
+      setState({ ...getState(), ...steamCredentials });
+      try {
+        await login(steamCredentials, { throwError: true });
+        setOpenSteamCredentialsDialog(false);
+      } catch (error) {
+        appModel.dispatchError(error);
+      }
+    } else {
+      setOpenSteamCredentialsDialog(false);
+      throw Error('No Steam credentials provided, unable to login.');
+    }
   };
 
   const downloadSteamApp: typeof steamCli.downloadSteamApp = (args, spawnArgs) => {
@@ -83,7 +143,19 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
           setGuardCode(eventName);
         }}
       />
-      <SteamCliContext.Provider value={{ ...steamCli, refresh, downloadSteamApp }}>
+      <SteamCredentialsDialog
+        open={openSteamCredentialsDialog}
+        setOpen={setOpenSteamCredentialsDialog}
+        onAccept={(credentials) => {
+          setState({ ...getState(), ...credentials });
+        }}
+        onCancel={(eventName) => {
+          setSteamCredentials(eventName);
+        }}
+      />
+      <SteamCliContext.Provider
+        value={{ ...steamCli, refresh, downloadSteamApp, askSteamCredentials, login }}
+      >
         {children}
       </SteamCliContext.Provider>
     </>

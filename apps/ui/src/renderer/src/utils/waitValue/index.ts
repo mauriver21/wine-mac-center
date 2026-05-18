@@ -1,8 +1,10 @@
-export const waitValue = <T extends { [key: string]: any }>(value: T, key: keyof T) => {
+export const waitValue = <T extends { [key: string]: any }, K extends keyof T>(
+  value: T,
+  key: K
+) => {
   let intervalId: NodeJS.Timeout;
-  return new Promise<T[keyof T]>((resolve) => {
+  return new Promise<T[K]>((resolve) => {
     intervalId = setInterval(() => {
-      console.log(value, key);
       if (value[key]) {
         clearInterval(intervalId);
         resolve(value[key]);

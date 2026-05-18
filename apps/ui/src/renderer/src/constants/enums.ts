@@ -48,3 +48,7 @@ export enum PipelineAction {
   RUN = 'RUN',
   RESUME = 'RESUME'
 }
+
+export enum EventName {
+  Cancelled = 'Cancelled'
+}

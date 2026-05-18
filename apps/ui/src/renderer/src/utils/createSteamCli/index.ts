@@ -1,4 +1,5 @@
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
+import { SteamCredentials } from '@interfaces/SteamCredentials';
 import { createEnv } from '@utils/createEnv';
 import { fileExists } from '@utils/fileExists';
 import { spawnProcess as baseSpawnProcess } from '@utils/spawnProcess';
@@ -31,10 +32,7 @@ export const createSteamCli = (options: {
     return fileExists(`${CLIENTS_PATH}/steam/steamcmd.sh`);
   };
 
-  const login = async (
-    credentials: { userName: string; password: string },
-    args?: SpawnProcessArgs
-  ) => {
+  const login = async (credentials: SteamCredentials, args?: SpawnProcessArgs) => {
     const { userName, password } = credentials;
 
     if (!(await isInstalled())) {
@@ -42,7 +40,7 @@ export const createSteamCli = (options: {
     }
 
     return new Promise((resolve, reject) => {
-      runSteamCmd(`+login ${userName} ${password} +quit`, {
+      runSteamCmd(`+login ${userName || 'NO_VALUE'} ${password || 'NO_VALUE'} +quit`, {
         onStdOut: (data) => {
           if (data.match(/ERROR/i)) {
             reject('Login Failed');

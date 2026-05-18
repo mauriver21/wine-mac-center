@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { Button } from '@components/Button';
-import { DialogProps, Dialog, Stack, Body1, Icon, H5 } from 'reactjs-shared-ui';
-import { TextField } from '@mui/material';
+import { DialogProps, Dialog, Stack, Icon, H5 } from 'reactjs-shared-ui';
+import { TextField, TextFieldProps } from '@mui/material';
 import { SteamIcon } from '@assets/icons/24/outline/SteamIcon';
+import { SteamCredentials } from '@interfaces/SteamCredentials';
 import { EventName } from '@constants/enums';
 
-export interface SteamGuardCodeDialogProps extends DialogProps {
+export interface SteamCredentialsDialogProps extends DialogProps {
   loading?: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onAccept: (guardCode: string) => void;
+  onAccept: (credentials: SteamCredentials) => void;
   onCancel: (eventName: EventName.Cancelled) => void;
 }
 
-export const SteamGuardCodeDialog: React.FC<SteamGuardCodeDialogProps> = ({
+export const SteamCredentialsDialog: React.FC<SteamCredentialsDialogProps> = ({
   setOpen,
   disableEscapeKeyDown,
   disableBackdropClick,
@@ -21,7 +22,11 @@ export const SteamGuardCodeDialog: React.FC<SteamGuardCodeDialogProps> = ({
   onCancel,
   ...rest
 }) => {
-  const [guardCode, setGuardCode] = useState('');
+  const [credentials, setCredentials] = useState<SteamCredentials>({ userName: '', password: '' });
+
+  const onChangeCredentials: TextFieldProps['onChange'] = ({ currentTarget: { name, value } }) => {
+    setCredentials({ ...credentials, [name]: value });
+  };
 
   return (
     <Dialog
@@ -42,14 +47,11 @@ export const SteamGuardCodeDialog: React.FC<SteamGuardCodeDialogProps> = ({
           <Stack direction="row" alignItems="center" spacing={1}>
             <Icon render={SteamIcon} size={48} />
             <H5 color="text.secondary" fontWeight={500}>
-              Steam Guard
+              Steam Credentials
             </H5>
           </Stack>
-          <Body1 fontWeight={500}>
-            It looks like you’re trying to sign in from a new device. Please check your email and
-            enter the Steam Guard code to access your account.
-          </Body1>
-          <TextField label="Guard Code" onChange={(event) => setGuardCode(event.target.value)} />
+          <TextField label="User Name" onChange={onChangeCredentials} />
+          <TextField label="Password" onChange={onChangeCredentials} />
         </Stack>
         <Stack spacing={1} direction="row" justifyContent="flex-end">
           <Button
@@ -64,7 +66,7 @@ export const SteamGuardCodeDialog: React.FC<SteamGuardCodeDialogProps> = ({
           <Button
             disabled={loading}
             onClick={() => {
-              onAccept(guardCode);
+              onAccept(credentials);
               setOpen(false);
             }}
           >
