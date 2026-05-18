@@ -8,6 +8,7 @@ import { useAppModel } from '@models/useAppModel';
 import { TextField, TextFieldProps } from '@mui/material';
 import { Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
+import { useConfigLayout } from '@hooks/useConfigLayout';
 
 export interface SteamCredentialsProps {
   developer?: boolean;
@@ -23,6 +24,7 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
   }) => {
     setState({ ...getState(), [name]: value });
   };
+  const { setLoading } = useConfigLayout();
 
   const steamLogin = async () => {
     setLoggingIn(true);
@@ -36,6 +38,10 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
       setLoggingIn(false);
     }
   };
+
+  useEffect(() => {
+    setLoading(loggingIn);
+  }, [loggingIn]);
 
   useEffect(() => {
     return () => {
