@@ -29,7 +29,6 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
   const steamLogin = async () => {
     setLoggingIn(true);
     const { userName = '', password = '' } = getState() || {};
-    await steamCli.login({ userName, password });
     try {
       await steamCli.login({ userName, password });
       appModel.dispatchSuccessMessage('Login Success');
