@@ -9,6 +9,7 @@ import { TextField, TextFieldProps } from '@mui/material';
 import { Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
 import { useConfigLayout } from '@hooks/useConfigLayout';
+import { spawnLog } from '@utils/spawnLog';
 
 export interface SteamCredentialsProps {
   developer?: boolean;
@@ -30,7 +31,7 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
     setLoggingIn(true);
     const { userName = '', password = '' } = getState() || {};
     try {
-      await steamCli.login({ userName, password });
+      await steamCli.login({ userName, password }, spawnLog);
       appModel.dispatchSuccessMessage('Login Success');
     } catch (error) {
       appModel.dispatchError(error);

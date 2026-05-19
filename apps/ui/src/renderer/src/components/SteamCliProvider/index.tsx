@@ -43,6 +43,10 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   };
 
   const login = async (credentials: SteamCredentials, spawnArgs?: SpawnProcessArgs) => {
+    if (!(await steamCli.isInstalled())) {
+      await steamCli.install(spawnArgs);
+    }
+
     let steamGuardFailed = false;
 
     await steamCli.login(credentials, {
