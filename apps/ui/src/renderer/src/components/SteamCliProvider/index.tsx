@@ -51,18 +51,15 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
 
     await steamCli.login(credentials, {
       onStdOut: (data) => {
-        const pids = findOutputPids(data);
         if (data.includes('Steam Guard')) {
           askSteamGuardCode({
-            prevPids: pids,
-            onSuccess: ({ prevPids, guardCode }) => {
+            onSuccess: ({ guardCode }) => {
               steamCli.login(
                 { ...credentials, guardCode },
                 {
                   ...spawnArgs,
                   onExit: (data) => {
                     spawnArgs?.onExit?.(data);
-                    steamCli.killPids(prevPids);
                   }
                 }
               );
@@ -86,8 +83,8 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   };
 
   const askSteamGuardCode = async (args: {
-    prevPids: string;
-    onSuccess?: (params: { guardCode: string; prevPids: string }) => void;
+    prevPids?: string;
+    onSuccess?: (params: { guardCode: string; prevPids?: string }) => void;
     onCanceled?: () => void;
   }) => {
     const { prevPids, onSuccess, onCanceled } = args;
@@ -97,7 +94,7 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
     if (guardCode !== 'CANCELED') {
       onSuccess?.({ guardCode, prevPids });
     } else if (guardCode === 'CANCELED') {
-      steamCli.killPids(prevPids);
+      prevPids && steamCli.killPids(prevPids);
       onCanceled?.();
     }
     setOpenGuardCodeDialog(false);
@@ -152,7 +149,7 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
                   ...spawnArgs,
                   onExit: (data) => {
                     spawnArgs?.onExit?.(data);
-                    steamCli.killPids(prevPids);
+                    prevPids && steamCli.killPids(prevPids);
                   }
                 }
               );

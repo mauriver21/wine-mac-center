@@ -216,10 +216,18 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     }
   };
 
-  const downloadWineEngine = async (urls: string[], version: string, args?: SpawnProcessArgs) => {
+  const downloadWineEngine = async (
+    urls: string[],
+    version: string,
+    spawnArgs?: SpawnProcessArgs
+  ) => {
     try {
+      spawnArgs?.onStdOut?.(`Wine Engine Download Started`);
+
       const engineTmpFolder = `${WINE_ENV.WINE_TMP_PATH}/${version.trim() || 'NO_VERSION'}`;
       let fileNamePart = '';
+
+      let percent = 0;
 
       for (const url of urls) {
         const fileName = url.split('/').pop();
@@ -231,14 +239,19 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
           createDirectory(engineTmpFolder, { recursive: true });
         }
 
-        const file = await downloadFile(url);
+        const file = await downloadFile(url, (args) => {
+          if (percent !== args.percent) {
+            percent = percent + args.percent / urls.length;
+            spawnArgs?.onStdOut?.(`${percent}%`);
+          }
+        });
         await writeBinaryFile(`${WINE_ENV.WINE_TMP_PATH}/${version}/${fileName}`, file);
       }
 
       return spawnScript(
         'joinWineEngine',
         `${engineTmpFolder}/${fileNamePart} ${WINE_ENV.WINE_ENGINES_PATH}`,
-        args
+        spawnArgs
       );
     } catch (error) {
       console.error(error);

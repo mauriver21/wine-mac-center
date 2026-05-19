@@ -123,10 +123,13 @@ export const useWineAppPipelineModel = () => {
         await steamCli.install(spawnLog);
       }
 
-      loadingDialog.updateMessage('Checking Steam credentials...');
-      await steamCli.askSteamCredentials(spawnLog);
+      if (isSteamApplication(config)) {
+        loadingDialog.updateMessage('Checking Steam credentials...');
+        await steamCli.askSteamCredentials(spawnLog);
+      }
 
       loadingDialog.updateMessage('Creating Wine App...');
+
       const wineApp = await createWineApp(appName, config);
       await new Promise<WineAppConfig>((resolve) =>
         wineApp.scaffold(
