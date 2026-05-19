@@ -1,6 +1,6 @@
 {
   "name": "ui",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "productName": "Wine Mac Center",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",

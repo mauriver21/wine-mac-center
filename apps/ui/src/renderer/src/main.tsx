@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider } from 'reactjs-shared-ui';
+import { I18nProvider } from 'reactjs-shared-ui/i18next';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '@store';
@@ -13,27 +14,30 @@ import 'reactjs-shared-ui/styles.css';
 import './main.css';
 import { SteamCliProvider } from '@components/SteamCliProvider';
 import { LoadingDialogProvider } from '@components/LoadingDialogProvider';
+import * as resources from '@i18n/translations';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ThemeProvider>
-    <Provider store={store}>
-      <NotificationsProvider>
-        <EnvProvider>
-          <SteamCliProvider>
-            <DirsWatcherProvider>
-              <WineAppPipelineProvider>
-                <BrowserRouter>
-                  <AppSetup>
-                    <LoadingDialogProvider>
-                      <App />
-                    </LoadingDialogProvider>
-                  </AppSetup>
-                </BrowserRouter>
-              </WineAppPipelineProvider>
-            </DirsWatcherProvider>
-          </SteamCliProvider>
-        </EnvProvider>
-      </NotificationsProvider>
-    </Provider>
-  </ThemeProvider>
+  <I18nProvider language="en" resources={resources}>
+    <ThemeProvider>
+      <Provider store={store}>
+        <NotificationsProvider>
+          <EnvProvider>
+            <SteamCliProvider>
+              <DirsWatcherProvider>
+                <WineAppPipelineProvider>
+                  <BrowserRouter>
+                    <AppSetup>
+                      <LoadingDialogProvider>
+                        <App />
+                      </LoadingDialogProvider>
+                    </AppSetup>
+                  </BrowserRouter>
+                </WineAppPipelineProvider>
+              </DirsWatcherProvider>
+            </SteamCliProvider>
+          </EnvProvider>
+        </NotificationsProvider>
+      </Provider>
+    </ThemeProvider>
+  </I18nProvider>
 );
