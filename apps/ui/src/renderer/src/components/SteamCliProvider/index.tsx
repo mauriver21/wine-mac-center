@@ -47,7 +47,7 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
       await steamCli.install(spawnArgs);
     }
 
-    let steamGuardFailed = false;
+    let steamGuardCanceled = false;
 
     await steamCli.login(credentials, {
       onStdOut: (data) => {
@@ -55,9 +55,20 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
         if (data.includes('Steam Guard')) {
           askSteamGuardCode({
             prevPids: pids,
-            onCanceled: ({ prevPids }) => {
-              steamCli.killPids(prevPids);
-              steamGuardFailed = true;
+            onSuccess: ({ prevPids, guardCode }) => {
+              steamCli.login(
+                { ...credentials, guardCode },
+                {
+                  ...spawnArgs,
+                  onExit: (data) => {
+                    spawnArgs?.onExit?.(data);
+                    steamCli.killPids(prevPids);
+                  }
+                }
+              );
+            },
+            onCanceled: () => {
+              steamGuardCanceled = true;
             }
           });
         }
@@ -71,21 +82,23 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
       }
     });
 
-    if (steamGuardFailed) throw new Error('Steam guard failed');
+    if (steamGuardCanceled) throw new Error('Steam guard canceled');
   };
 
   const askSteamGuardCode = async (args: {
     prevPids: string;
-    onCanceled?: (params: { guardCode: string; prevPids: string }) => void;
+    onSuccess?: (params: { guardCode: string; prevPids: string }) => void;
+    onCanceled?: () => void;
   }) => {
-    const { prevPids, onCanceled } = args;
+    const { prevPids, onSuccess, onCanceled } = args;
     setGuardCode('');
     setOpenGuardCodeDialog(true);
     const guardCode = await waitValue(ref.current, 'guardCode');
     if (guardCode !== 'CANCELED') {
-      onCanceled?.({ guardCode, prevPids });
+      onSuccess?.({ guardCode, prevPids });
     } else if (guardCode === 'CANCELED') {
       steamCli.killPids(prevPids);
+      onCanceled?.();
     }
     setOpenGuardCodeDialog(false);
   };
@@ -132,7 +145,7 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
         if (data.includes('Steam Guard')) {
           askSteamGuardCode({
             prevPids: pids,
-            onCanceled: ({ prevPids, guardCode }) => {
+            onSuccess: ({ prevPids, guardCode }) => {
               steamCli.downloadSteamApp(
                 { ...args, guardCode },
                 {

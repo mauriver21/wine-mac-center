@@ -33,14 +33,22 @@ export const createSteamCli = (options: {
   };
 
   const login = async (credentials: SteamCredentials, args?: SpawnProcessArgs) => {
-    const { userName, password } = credentials;
+    const { userName, password, guardCode } = credentials;
 
     if (!(await isInstalled())) {
       await install();
     }
 
+    const steamCmdArgs = [
+      ...(guardCode ? [`+set_steam_guard_code ${guardCode}`] : []),
+      `+login ${userName || 'NO_VALUE'} ${password || 'NO_VALUE'}`,
+      '+quit'
+    ];
+
+    const steamCmd = steamCmdArgs.join(' ');
+
     return new Promise((resolve, reject) => {
-      runSteamCmd(`+login ${userName || 'NO_VALUE'} ${password || 'NO_VALUE'} +quit`, {
+      runSteamCmd(steamCmd, {
         onStdOut: (data) => {
           if (data.match(/ERROR/i)) {
             reject('Login Failed');
