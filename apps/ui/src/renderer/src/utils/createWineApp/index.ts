@@ -227,9 +227,10 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
       const engineTmpFolder = `${WINE_ENV.WINE_TMP_PATH}/${version.trim() || 'NO_VERSION'}`;
       let fileNamePart = '';
 
-      let percent = 0;
+      let totalPercent = 0;
 
       for (const url of urls) {
+        let percent = 0;
         const fileName = url.split('/').pop();
 
         if (!fileName) throw new Error('Invalid engine file name');
@@ -239,12 +240,16 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
           createDirectory(engineTmpFolder, { recursive: true });
         }
 
+        let currentPercent: number | undefined = undefined;
         const file = await downloadFile(url, (args) => {
-          if (percent !== args.percent) {
-            percent = percent + args.percent / urls.length;
-            spawnArgs?.onStdOut?.(`${percent}%`);
+          if (currentPercent !== args.percent) {
+            currentPercent = args.percent;
+            percent = args.percent / urls.length;
+            spawnArgs?.onStdOut?.(`${totalPercent + percent}%`);
           }
         });
+
+        totalPercent = totalPercent + percent;
         await writeBinaryFile(`${WINE_ENV.WINE_TMP_PATH}/${version}/${fileName}`, file);
       }
 
