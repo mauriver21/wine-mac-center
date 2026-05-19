@@ -10,6 +10,7 @@ import {
   Stack,
   TableOfContents
 } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { alpha } from '@mui/material';
 import { FormSchema, useSchema } from './useSchema';
 import { TextField, Checkbox, useForm, Select } from 'reactjs-shared-ui/forms';
@@ -33,6 +34,7 @@ import { useNavigateApp } from '@hooks/useNavigateApp';
 const ITEM_STYLE = { px: '20px !important' };
 
 export const CreateApp: React.FC = () => {
+  const { t } = useI18n();
   const schema = useSchema();
   const form = useForm(schema);
   const wineAppPipelineModel = useWineAppPipelineModel();
@@ -48,31 +50,36 @@ export const CreateApp: React.FC = () => {
   };
 
   const modules = [
-    <CardItem icon={PencilSquareIcon} label="Application Name">
-      <TextField autoComplete="off" control={form.control} name="name" label="Application Name" />
+    <CardItem icon={PencilSquareIcon} label={t('applicationName')}>
+      <TextField
+        autoComplete="off"
+        control={form.control}
+        name="name"
+        label={t('applicationName')}
+      />
     </CardItem>,
-    <CardItem icon={CpuChipIcon} label="Wine Engine">
+    <CardItem icon={CpuChipIcon} label={t('wineEngine')}>
       <WineEnginesSelect fullWidth control={form.control} name="engineVersion" />
     </CardItem>,
-    <CardItem icon={PlayCircleIcon} label="Setup Executable">
+    <CardItem icon={PlayCircleIcon} label={t('setupExecutable')}>
       <Grid container>
         <Grid item xs={9.5}>
           <Stack spacing={1.5}>
             <Select
-              label="Install By"
+              label={t('installBy')}
               name="installBy"
               control={form.control}
               options={[
-                { value: 'executable', label: 'Setup Executable' },
-                { value: 'folder', label: 'Copying Application Folder' }
+                { value: 'executable', label: t('setupExecutableOption') },
+                { value: 'folder', label: t('copyingApplicationFolder') }
               ]}
             />
             {form.watch('installBy') === 'executable' ? (
               <FilePathInput
                 control={form.control}
                 filters={FileFilter.WindowsExecutables}
-                noSelectedFileLabel="Select Setup Executable"
-                selectedFileLabel="Change Setup Executable"
+                noSelectedFileLabel={t('selectSetupExecutable')}
+                selectedFileLabel={t('changeSetupExecutable')}
                 name="setupExecutablePath"
               />
             ) : (
@@ -82,8 +89,8 @@ export const CreateApp: React.FC = () => {
               <FilePathInput
                 control={form.control}
                 properties={['openDirectory']}
-                noSelectedFileLabel="Select Folder Path"
-                selectedFileLabel="Change Folder Path"
+                noSelectedFileLabel={t('selectFolderPath')}
+                selectedFileLabel={t('changeFolderPath')}
                 name="appFolderPath"
               />
             ) : (
@@ -106,7 +113,7 @@ export const CreateApp: React.FC = () => {
             name="artworkFile"
             type="image"
             imgSrc={artworkSrc}
-            appName={'No Artwork'}
+            appName={t('noArtwork')}
             onInput={async (file) => {
               file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
             }}
@@ -114,13 +121,13 @@ export const CreateApp: React.FC = () => {
         </Grid>
       </Grid>
     </CardItem>,
-    <CardItem icon={SparklesIcon} label="Winetricks">
+    <CardItem icon={SparklesIcon} label={t('winetricks')}>
       <Grid container>
         <Grid item xs={4}>
-          <Checkbox control={form.control} name="dxvkEnabled" label="Enable DXVK" />
+          <Checkbox control={form.control} name="dxvkEnabled" label={t('enableDXVK')} />
         </Grid>
         <Grid item xs={4}>
-          <Checkbox control={form.control} name="useWinetricks" label="Use Winetricks" />
+          <Checkbox control={form.control} name="useWinetricks" label={t('useWinetricks')} />
         </Grid>
         <Grid mt={1} item xs={12}>
           <WinetricksSelector
@@ -191,7 +198,7 @@ export const CreateApp: React.FC = () => {
               }}
             >
               <H6 color="text.secondary" fontWeight={500}>
-                Create App
+                {t('createApp')}
               </H6>
               <Button
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}

@@ -6,6 +6,7 @@ import { useWineEngineModel } from '@models/useWineEngineModel';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Icon, Stack } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { TextField } from 'reactjs-shared-ui/forms';
 import { showItemInFolder } from '@utils/showItemInFolder';
 import { IconButton } from '@components/IconButton';
@@ -15,6 +16,7 @@ import { useEnv } from '@hooks/useEnv';
 export interface DownloadWineEnginesProps {}
 
 export const DownloadWineEngines: React.FC<DownloadWineEnginesProps> = () => {
+  const { t } = useI18n();
   const env = useEnv();
   const { WINE_ENGINES_PATH } = env.get();
   const [downloadQueue, setDownloadQueue] = useState<string[]>([]);
@@ -36,7 +38,7 @@ export const DownloadWineEngines: React.FC<DownloadWineEnginesProps> = () => {
   }, [downloadQueue.length]);
 
   return (
-    <CardItem icon={CpuChipIcon} label="Wine Engines">
+    <CardItem icon={CpuChipIcon} label={t('wineEngines')}>
       <Stack spacing={2}>
         {wineEnginesDownloadables?.map((item, key) => {
           const isDownloaded = wineEngines?.includes(item.version);
@@ -58,13 +60,13 @@ export const DownloadWineEngines: React.FC<DownloadWineEnginesProps> = () => {
                     <Icon
                       className="downloaded-icon"
                       pr={1}
-                      title="Engine Downloaded"
+                      title={t('engineDownloaded')}
                       color="success.main"
                       render={CheckIcon}
                     />
                     <IconButton
                       className="engine-location"
-                      title="Open Location"
+                      title={t('openLocation')}
                       onClick={() => showEngineLocation(item.version)}
                     >
                       <Icon render={Folder} />

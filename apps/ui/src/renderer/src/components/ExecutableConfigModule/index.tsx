@@ -3,6 +3,7 @@ import { Button } from '@components/Button';
 import { FileFilter } from '@constants/enums';
 import { FilePathInput } from '@components/FilePathInput';
 import { Grid, Stack, Icon, H6, ContentsClass, CardContent, Card, Body1 } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { IconInput } from '@components/IconInput';
 import { TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -15,6 +16,7 @@ export interface ExecutableConfigModuleProps {
 }
 
 export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ appName }) => {
+  const { t } = useI18n();
   const { wineApp, loading, setLoading, refresh, signal } = useWineAppContext() || {};
   const [driveCPath, setDriveCPath] = useState<string>('');
   const [mainExecutablePath, setMainExecutablePath] = useState<string>('');
@@ -54,7 +56,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
           <Grid item xs={12}>
             <Stack direction="row" minWidth={210} pb={1}>
               <Icon strokeWidth={0} size={34} render={PlayIcon} pr={1} />
-              <H6 className={ContentsClass.ItemTitle}>Executable Config</H6>
+              <H6 className={ContentsClass.ItemTitle}>{t('executableConfig')}</H6>
             </Stack>
           </Grid>
           <Grid item xs={12}>
@@ -63,8 +65,8 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                 <Stack spacing={1.5}>
                   <FilePathInput
                     relativeToDriveC
-                    noSelectedFileLabel="Select Executable"
-                    selectedFileLabel="Change Executable"
+                    noSelectedFileLabel={t('selectExecutable')}
+                    selectedFileLabel={t('changeExecutable')}
                     defaultPath={driveCPath}
                     filters={FileFilter.WindowsExecutables}
                     value={mainExecutablePath}
@@ -77,7 +79,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                     disabled={!Boolean(mainExecutablePath)}
                   />
                   <TextField
-                    label="Exe flags"
+                    label={t('exeFlags')}
                     value={mainExecutableFlags}
                     onChange={(event) => {
                       const flags = event.currentTarget.value;

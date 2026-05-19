@@ -1,5 +1,6 @@
 import { Body2, Box, BoxProps } from 'reactjs-shared-ui';
 import { useMemo } from 'react';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { PROCESS_STATUS_COLORS } from '@constants/colors';
 import { ProcessStatus } from '@constants/enums';
 
@@ -11,15 +12,16 @@ export const StatusBox: React.FC<StatusBoxProps> = ({
   status = ProcessStatus.Pending,
   ...rest
 }) => {
+  const { t } = useI18n();
   const TEXTS: Record<ProcessStatus, string> = useMemo(
     () => ({
-      cancelled: 'Cancelled',
-      error: 'Error',
-      inProgress: 'In progress',
-      pending: 'Pending',
-      success: 'Success'
+      cancelled: t('cancelled'),
+      error: t('error'),
+      inProgress: t('inProgress'),
+      pending: t('pending'),
+      success: t('success')
     }),
-    []
+    [t]
   );
 
   return (

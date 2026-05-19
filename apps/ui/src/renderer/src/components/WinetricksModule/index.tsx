@@ -11,12 +11,14 @@ import {
   Card,
   CardContent
 } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import { useSchema, FormSchema } from './useSchema';
 import { useForm } from 'reactjs-shared-ui/forms';
 import { spawnLog } from '@utils/spawnLog';
 
 export const WinetricksModule: React.FC = () => {
+  const { t } = useI18n();
   const schema = useSchema();
   const form = useForm(schema);
   const { wineApp, loading, setLoading } = useWineAppContext() || {};
@@ -40,7 +42,7 @@ export const WinetricksModule: React.FC = () => {
           />
           <Stack width="100%" pt={1} alignItems="flex-end">
             <Button
-              title={`Run Winetricks`}
+              title={t('runWinetricks')}
               disabled={wineApp === undefined || loading}
               color="secondary"
               sx={{

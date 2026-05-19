@@ -5,6 +5,7 @@ import { CardItem } from '@components/CardItem';
 import { useLocalState } from '@hooks/useLocalState';
 import { useSteamCli } from '@hooks/useSteamCli';
 import { useAppModel } from '@models/useAppModel';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { TextField, TextFieldProps } from '@mui/material';
 import { Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
@@ -16,6 +17,7 @@ export interface SteamCredentialsProps {
 }
 
 export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer }) => {
+  const { t } = useI18n();
   const [loggingIn, setLoggingIn] = useState(false);
   const steamCli = useSteamCli();
   const appModel = useAppModel();
@@ -32,7 +34,7 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
     const { userName = '', password = '' } = getState() || {};
     try {
       await steamCli.login({ userName, password }, spawnLog);
-      appModel.dispatchSuccessMessage('Login Success');
+      appModel.dispatchSuccessMessage(t('loginSuccess'));
     } catch (error) {
       appModel.dispatchError(error);
     } finally {
@@ -51,7 +53,7 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
   }, []);
 
   return (
-    <CardItem icon={SteamIcon} label="Steam Credentials">
+    <CardItem icon={SteamIcon} label={t('steamCredentials')}>
       <Stack spacing={2}>
         <Stack spacing={2}>
           <TextField
@@ -59,7 +61,7 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
             value={getState()?.userName}
             autoComplete="off"
             name="userName"
-            label="User Name"
+            label={t('userName')}
           />
           <TextField
             onChange={onChangeSteamCredentials}
@@ -67,12 +69,12 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
             autoComplete="off"
             name="password"
             type="password"
-            label="Password"
+            label={t('password')}
           />
         </Stack>
         <Stack direction="row" spacing={2} justifyContent="flex-end">
           <Button disabled={loggingIn} onClick={steamLogin}>
-            Check Login
+            {t('checkLogin')}
           </Button>
         </Stack>
         {developer && <SteamCliDeveloper />}

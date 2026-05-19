@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Button } from 'reactjs-shared-ui';
 import { Field, TextField, TextFieldProps } from 'reactjs-shared-ui/forms';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { InputAdornment } from '@mui/material';
 import { showOpenDialog } from '@utils/showOpenDialog';
 import { getRelativeDriveCPath } from '@utils/getRelativeDriveCPath';
@@ -27,18 +28,19 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
   value,
   noSelectedFileLabel,
   selectedFileLabel,
-  dialogText = 'Select file',
+  dialogText,
   filters,
   properties,
   defaultPath,
   relativeToDriveC,
   ...rest
 }) => {
+  const { t } = useI18n();
   const [filePath, setFilePath] = useState('');
 
   const selectFile = async () => {
     const result = await showOpenDialog({
-      title: dialogText,
+      title: dialogText || t('selectFile'),
       filters,
       properties,
       defaultPath
@@ -76,8 +78,8 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
                       type="button"
                     >
                       {filePath
-                        ? selectedFileLabel || 'Change File'
-                        : noSelectedFileLabel || 'Select File'}
+                        ? selectedFileLabel || t('changeFile')
+                        : noSelectedFileLabel || t('selectFileButton')}
                     </Button>
                   </Box>
                 </InputAdornment>

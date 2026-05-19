@@ -9,6 +9,7 @@ import { SearchField } from '@components/SearchField';
 import { SortDirectionSelect } from '@components/SortDirectionSelect';
 import { RootState } from '@interfaces/RootState';
 import { useNavigate } from 'react-router-dom';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -56,6 +57,7 @@ export const WineInstalledAppsList: React.FC = () => {
   const wineInstalledApps = useSelector((state: RootState) =>
     wineInstalledAppModel.selectWineInstalledApps(state, filters)
   );
+  const { t } = useI18n();
 
   useEffect(() => {
     wineInstalledAppModel.listAll();
@@ -95,7 +97,7 @@ export const WineInstalledAppsList: React.FC = () => {
             onClick={() => navigate('/create-app')}
           >
             <Icon pr={1} strokeWidth={3} color="primary.main" render={PlusIcon} />
-            Create App
+            {t('createApp')}
           </Button>
         </Stack>
       </Stack>

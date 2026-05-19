@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Button } from 'reactjs-shared-ui';
 import { Field, TextField, TextFieldProps } from 'reactjs-shared-ui/forms';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { InputAdornment } from '@mui/material';
 import { openFile } from '@utils/openFile';
 
@@ -24,10 +25,11 @@ export const FileInput: React.FC<FileInputProps> = ({
   value = '',
   noSelectedFileLabel,
   selectedFileLabel,
-  dialogText = 'Select file',
+  dialogText,
   filters = undefined,
   ...rest
 }) => {
+  const { t } = useI18n();
   const [fileName, setFileName] = useState('');
 
   useEffect(() => {
@@ -52,8 +54,8 @@ export const FileInput: React.FC<FileInputProps> = ({
                 <Box pr={2}>
                   <Button type="button">
                     {fileName
-                      ? selectedFileLabel || 'Change File'
-                      : noSelectedFileLabel || 'Select File'}
+                      ? selectedFileLabel || t('changeFile')
+                      : noSelectedFileLabel || t('selectFileButton')}
                   </Button>
                 </Box>
               </InputAdornment>
@@ -61,7 +63,7 @@ export const FileInput: React.FC<FileInputProps> = ({
           }}
           value={fileName}
           onClick={async () => {
-            const { file, fileName } = await openFile(dialogText, { filters });
+            const { file, fileName } = await openFile(dialogText || t('selectFile'), { filters });
             setFileName(fileName);
             onInput({ target: { value: file } });
             onInputProp?.(file);

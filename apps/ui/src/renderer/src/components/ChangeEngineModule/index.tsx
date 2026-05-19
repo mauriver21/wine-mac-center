@@ -2,6 +2,7 @@ import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { ExitCode } from '@constants/enums';
 import { CpuChipIcon } from '@heroicons/react/24/solid';
 import { useWineAppContext } from '@hooks/useWineAppContext';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { useEffect, useState } from 'react';
 import {
   Stack,
@@ -15,6 +16,7 @@ import {
 } from 'reactjs-shared-ui';
 
 export const ChangeEngineModule: React.FC = () => {
+  const { t } = useI18n();
   const { wineApp, loading, setLoading } = useWineAppContext() || {};
   const [engineVersion, setEngineVersion] = useState<string>('');
   const appConfig = wineApp?.getAppConfig();
@@ -63,7 +65,7 @@ export const ChangeEngineModule: React.FC = () => {
         <Stack spacing={1.5}>
           <Stack direction="row" minWidth={210} pb={1}>
             <Icon strokeWidth={0} size={34} render={CpuChipIcon} pr={1} />
-            <H6 className={ContentsClass.ItemTitle}>Change Engine</H6>
+            <H6 className={ContentsClass.ItemTitle}>{t('changeEngine')}</H6>
           </Stack>
           <WineEnginesSelect
             value={engineVersion}
@@ -71,7 +73,7 @@ export const ChangeEngineModule: React.FC = () => {
           />
           <Stack width="100%" pt={1} alignItems="flex-end">
             <Button
-              title={`Run Change Engine`}
+              title={t('runChangeEngine')}
               disabled={wineApp === undefined || loading}
               color="secondary"
               sx={{

@@ -1,4 +1,5 @@
 import { useWineAppContext } from '@hooks/useWineAppContext';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import React from 'react';
 import {
   Box,
@@ -20,6 +21,7 @@ export interface BaseModuleProps {
 }
 
 export const BaseModule: React.FC<BaseModuleProps> = ({ icon, label, description, method }) => {
+  const { t } = useI18n();
   const { wineApp, loading } = useWineAppContext() || {};
 
   return (
@@ -34,7 +36,7 @@ export const BaseModule: React.FC<BaseModuleProps> = ({ icon, label, description
             <Box pr={2}>{description}</Box>
           </Stack>
           <Button
-            title={`Run ${label}`}
+            title={t('run', { label })}
             disabled={wineApp === undefined || loading}
             color="secondary"
             sx={{
@@ -44,7 +46,7 @@ export const BaseModule: React.FC<BaseModuleProps> = ({ icon, label, description
             }}
             onClick={() => method?.()}
           >
-            <Body1>Run</Body1>
+            <Body1>{t('run')}</Body1>
           </Button>
         </Stack>
       </CardContent>

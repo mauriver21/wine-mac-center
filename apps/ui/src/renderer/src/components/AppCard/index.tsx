@@ -1,4 +1,5 @@
 import { Body1, Box, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 import { useSelector } from 'react-redux';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
@@ -24,6 +25,7 @@ export interface AppCardProps extends CardProps {
 }
 
 export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest }) => {
+  const { t } = useI18n();
   const scriptsContext = useScriptsContext();
   const { navigateToScript } = useNavigateApp();
   const wineAppConfigModel = useWineAppConfigModel();
@@ -119,10 +121,10 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
           </Box>
         </Box>
         <Box display="flex" justifyContent="end" alignItems="center" gap={1}>
-          <AppCardButton title="Run Script" onClick={runPipeline} icon={PlayCircleIcon} />
+          <AppCardButton title={t('runScript')} onClick={runPipeline} icon={PlayCircleIcon} />
           {origin === ConfigOrigin.CLOUD && !isDownloadedScript && (
             <AppCardButton
-              title="Download Script"
+              title={t('downloadScript')}
               onClick={() => wineAppConfigModel.downloadScript(appName)}
               icon={ArrowDownCircleIcon}
             />
@@ -130,7 +132,7 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
           {origin === ConfigOrigin.SCRIPTS && (
             <>
               <AppCardButton
-                title="Configure Script"
+                title={t('configureScript')}
                 onClick={() => navigateToScript(appName)}
                 icon={Cog6ToothIcon}
               />
