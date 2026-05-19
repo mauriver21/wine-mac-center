@@ -5,6 +5,7 @@ import { TextField, TextFieldProps } from '@mui/material';
 import { SteamIcon } from '@assets/icons/24/outline/SteamIcon';
 import { SteamCredentials } from '@interfaces/SteamCredentials';
 import { EventName } from '@constants/enums';
+import { useLocalState } from '@hooks/useLocalState';
 
 export interface SteamCredentialsDialogProps extends DialogProps {
   loading?: boolean;
@@ -22,7 +23,12 @@ export const SteamCredentialsDialog: React.FC<SteamCredentialsDialogProps> = ({
   onCancel,
   ...rest
 }) => {
-  const [credentials, setCredentials] = useState<SteamCredentials>({ userName: '', password: '' });
+  const { getState } = useLocalState('steamCredentials');
+  const [credentials, setCredentials] = useState<SteamCredentials>({
+    userName: '',
+    password: '',
+    ...getState()
+  });
 
   const onChangeCredentials: TextFieldProps['onChange'] = ({ currentTarget: { name, value } }) => {
     setCredentials({ ...credentials, [name]: value });
@@ -50,8 +56,19 @@ export const SteamCredentialsDialog: React.FC<SteamCredentialsDialogProps> = ({
               Steam Credentials
             </H5>
           </Stack>
-          <TextField label="User Name" onChange={onChangeCredentials} />
-          <TextField label="Password" onChange={onChangeCredentials} />
+          <TextField
+            name="userName"
+            value={credentials.userName}
+            label="User Name"
+            onChange={onChangeCredentials}
+          />
+          <TextField
+            name="password"
+            value={credentials.password}
+            label="Password"
+            type="password"
+            onChange={onChangeCredentials}
+          />
         </Stack>
         <Stack spacing={1} direction="row" justifyContent="flex-end">
           <Button

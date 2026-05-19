@@ -6,7 +6,7 @@ import { createContext } from 'react';
 type SteamCli = ReturnType<typeof createSteamCli> & {
   login: (credentials: SteamCredentials, args?: SpawnProcessArgs) => Promise<unknown>;
   refresh: () => void;
-  askSteamCredentials: () => Promise<void>;
+  askSteamCredentials: (spawnArgs: SpawnProcessArgs) => Promise<void>;
 };
 
 export const SteamCliContext = createContext<SteamCli>({} as any);

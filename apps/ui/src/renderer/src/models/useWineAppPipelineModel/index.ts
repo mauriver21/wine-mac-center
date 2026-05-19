@@ -19,6 +19,7 @@ import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { useLoadingDialog } from '@hooks/useLoadingDialog';
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { useSteamCli } from '@hooks/useSteamCli';
+import { spawnLog } from '@utils/spawnLog';
 
 export const useWineAppPipelineModel = () => {
   const steamCli = useSteamCli();
@@ -119,11 +120,11 @@ export const useWineAppPipelineModel = () => {
 
       if (isSteamApplication(config) && !(await steamCli.isInstalled())) {
         loadingDialog.updateMessage('Installing Steam client...');
-        await steamCli.install();
+        await steamCli.install(spawnLog);
       }
 
       loadingDialog.updateMessage('Checking Steam credentials...');
-      await steamCli.askSteamCredentials();
+      await steamCli.askSteamCredentials(spawnLog);
 
       loadingDialog.updateMessage('Creating Wine App...');
       const wineApp = await createWineApp(appName, config);

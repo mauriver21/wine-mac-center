@@ -4,6 +4,7 @@ import { SteamCliDeveloper } from '@components/SteamCliDeveloper';
 import { CardItem } from '@components/CardItem';
 import { useLocalState } from '@hooks/useLocalState';
 import { useSteamCli } from '@hooks/useSteamCli';
+import { useAppModel } from '@models/useAppModel';
 import { TextField, TextFieldProps } from '@mui/material';
 import { Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
@@ -16,6 +17,7 @@ export interface SteamCredentialsProps {
 export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer }) => {
   const [loggingIn, setLoggingIn] = useState(false);
   const steamCli = useSteamCli();
+  const appModel = useAppModel();
   const { getState, setState } = useLocalState('steamCredentials');
   const onChangeSteamCredentials: TextFieldProps['onChange'] = ({
     currentTarget: { name, value }
@@ -28,7 +30,14 @@ export const SteamCredentials: React.FC<SteamCredentialsProps> = ({ developer })
     setLoggingIn(true);
     const { userName = '', password = '' } = getState() || {};
     await steamCli.login({ userName, password });
-    setLoggingIn(false);
+    try {
+      await steamCli.login({ userName, password });
+      appModel.dispatchSuccessMessage('Login Success');
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      setLoggingIn(false);
+    }
   };
 
   useEffect(() => {
