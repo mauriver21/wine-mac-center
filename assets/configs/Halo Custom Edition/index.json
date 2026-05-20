@@ -3,7 +3,7 @@
   "origin": "SCRIPTS",
   "dxvkEnabled": false,
   "setupExecutableURL": "",
-  "engineVersion": "WS11WineCX64Bit21.2.0",
+  "engineVersion": "WS11WineCX64Bit23.6.0",
   "winetricks": { "verbs": ["vcrun6"], "version": "20260125" },
   "executables": [{ "main": true, "path": "", "flags": "" }],
   "pipelineScripts": [
