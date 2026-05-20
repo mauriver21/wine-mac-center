@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { ConfigLayoutContext } from '@contexts/ConfigLayoutContext';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { useRefresh } from '@utils/useRefresh';
+import './index.css';
 
 export interface ConfigLayoutProps {
   mainTitle: string | undefined;
