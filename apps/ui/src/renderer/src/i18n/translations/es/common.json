@@ -137,5 +137,17 @@
   "commandLineDescription": "Inicia un símbolo del sistema similar al de Windows para ejecutar comandos y scripts en Wine.",
   "controlPanel": "Panel de control",
   "controlPanelDescription": "Abre el Panel de control de Wine para ajustar configuraciones como fuentes y programas instalados.",
-  "updateAppDescription": "Actualiza la aplicación con sus scripts y dependencias más recientes."
+  "updateAppDescription": "Actualiza la aplicación con sus scripts y dependencias más recientes.",
+  "Create wine app": "Crear aplicación Wine",
+  "Downloading wine engine": "Descargando motor de Wine",
+  "Extracting wine engine": "Extrayendo motor de Wine",
+  "Generating wine prefix": "Generando prefijo de Wine",
+  "Enabling DXVK": "Habilitando DXVK",
+  "Downloading setup executable": "Descargando ejecutable de instalación",
+  "Running setup executable": "Ejecutando ejecutable de instalación",
+  "Copying windows application": "Copiando aplicación de Windows",
+  "Configuring app executable": "Configurando ejecutable de la aplicación",
+  "No output to display": "No hay salida para mostrar",
+  "Download setup executable": "Descargar ejecutable del instalador",
+  "Run Windows Exe": "Correr Windows Exe"
 }

@@ -8,6 +8,7 @@ import { Code } from 'reactjs-shared-ui/syntax-highlighter';
 import { ContextMenu } from '@components/ContextMenu';
 import { useAppPipelineContext } from '@hooks/useAppPipelineContext';
 import { PipelineAction } from '@constants/enums';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface PipelineStepProps {
   step: WineAppStep;
@@ -16,6 +17,7 @@ export interface PipelineStepProps {
 }
 
 export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, stepIndex }) => {
+  const { t } = useI18n();
   const { runWineAppPipeline, running, action } = useAppPipelineContext();
   const [show, setShow] = useState(false);
   const output =
@@ -54,7 +56,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
             p={1}
           >
             <Body1 className={ContentsClass.ItemTitle} fontWeight={500} color="text.secondary">
-              {step.name}
+              {t(step.name)}
             </Body1>
             <StatusBox status={step.status} />
           </Stack>
@@ -82,7 +84,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
           }}
           type="content"
           language="bash"
-          code={Boolean(output) ? output : 'No output to display'}
+          code={Boolean(output) ? output : t('No output to display')}
         />
       ) : (
         <></>
