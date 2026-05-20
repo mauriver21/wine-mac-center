@@ -17,7 +17,7 @@ import { LoadingDialogProvider } from '@components/LoadingDialogProvider';
 import * as resources from '@i18n/translations';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <I18nProvider language="en" resources={resources}>
+  <I18nProvider language="es" resources={resources}>
     <ThemeProvider>
       <Provider store={store}>
         <NotificationsProvider>
