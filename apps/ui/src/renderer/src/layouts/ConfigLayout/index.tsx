@@ -11,6 +11,7 @@ import {
 import { alpha } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ConfigLayoutContext } from '@contexts/ConfigLayoutContext';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface ConfigLayoutProps {
   mainTitle: string | undefined;
@@ -29,6 +30,7 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
   showBack = true,
   signal
 }) => {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const [loading, setLoading] = useState(false);
@@ -68,7 +70,7 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
                 color="secondary"
                 onClick={() => navigate(-1)}
               >
-                Back
+                {t('back')}
               </Button>
             ) : (
               <></>

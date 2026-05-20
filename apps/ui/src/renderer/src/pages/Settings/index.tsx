@@ -3,15 +3,17 @@ import { EnvPaths } from '@components/EnvPaths';
 import { SteamCredentials } from '@components/SteamCredentials';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const Settings: React.FC = () => {
+  const { t } = useI18n();
   const modules = [<EnvPaths />, <DownloadWineEngines />, <SteamCredentials />];
 
   return (
     <ConfigLayout
-      mainTitle="Settings"
+      mainTitle={t('settings')}
       contentSlot={
         <Stack
           overflow="auto"

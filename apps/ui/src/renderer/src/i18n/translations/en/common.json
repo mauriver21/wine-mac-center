@@ -80,5 +80,10 @@
   "sortZA": "Sort Z-A",
   "localConfigs": "Local Configs",
   "cloudConfigs": "Cloud Configs",
-  "createScript": "Create Script"
+  "createScript": "Create Script",
+  "apps": "Apps",
+  "scripts": "Scripts",
+  "settings": "Settings",
+  "downloadEngine": "Download Engine",
+  "back": "Back"
 }

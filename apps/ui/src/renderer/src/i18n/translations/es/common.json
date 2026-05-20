@@ -80,5 +80,10 @@
   "sortZA": "Ordenar Z-A",
   "localConfigs": "Configs Locales",
   "cloudConfigs": "Configs Remotas",
-  "createScript": "Create Script"
+  "createScript": "Create Script",
+  "apps": "Aplicaciones",
+  "scripts": "Scripts",
+  "settings": "Preferencias",
+  "downloadEngine": "Descargar Motor",
+  "back": "Volver"
 }

@@ -6,6 +6,7 @@ import { WineEngineDownloadable } from '@interfaces/WineEngineDownloadable';
 import { useAppModel } from '@models/useAppModel';
 import { useWineEngineApiClient } from '@api-clients/useWineEngineApiClient';
 import { useConfigLayout } from '@hooks/useConfigLayout';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface DownloadEngineButtonProps extends Omit<IconButtonProps, 'children' | 'title'> {
   wineEngineDownloadable: WineEngineDownloadable;
@@ -18,6 +19,7 @@ export const DownloadEngineButton: React.FC<DownloadEngineButtonProps> = ({
   onClick: onClickProp,
   ...rest
 }) => {
+  const { t } = useI18n();
   const [downloading, setDownloading] = useState(false);
   const configLayout = useConfigLayout();
   const appModel = useAppModel();
@@ -47,7 +49,7 @@ export const DownloadEngineButton: React.FC<DownloadEngineButtonProps> = ({
   }, [downloading]);
 
   return (
-    <IconButton title="Download Engine" onClick={onClick} disabled={downloading} {...rest}>
+    <IconButton title={t('downloadEngine')} onClick={onClick} disabled={downloading} {...rest}>
       {downloading ? (
         <CircularProgress style={{ width: 20, height: 20 }} />
       ) : (

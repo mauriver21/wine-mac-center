@@ -5,6 +5,7 @@ import { IconButton, TextField } from '@mui/material';
 import { showItemInFolder } from '@utils/showItemInFolder';
 import { useMemo } from 'react';
 import { CardProps, Icon, Stack } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface EnvPathsProps {
   developer?: boolean;
@@ -12,6 +13,7 @@ export interface EnvPathsProps {
 }
 
 export const EnvPaths: React.FC<EnvPathsProps> = ({ developer, cardProps = {} }) => {
+  const { t } = useI18n();
   const env = useEnv();
   const isDev = developer ?? (env.isDev || false);
   const envPaths = useMemo(() => {
@@ -33,7 +35,7 @@ export const EnvPaths: React.FC<EnvPathsProps> = ({ developer, cardProps = {} })
     <CardItem
       cardProps={{ sx: { overflow: 'auto', ...cardPropsSx }, ...restCardProps }}
       icon={TravelExplore}
-      label="Environment Paths"
+      label={t('environmentPaths')}
     >
       <Stack spacing={2}>
         {envPaths.map(({ name, path }, index) => (
@@ -43,7 +45,7 @@ export const EnvPaths: React.FC<EnvPathsProps> = ({ developer, cardProps = {} })
               readOnly: true,
               sx: { bgcolor: 'secondary.main' },
               endAdornment: (
-                <IconButton title="Open Location" onClick={() => showItemInFolder(path)}>
+                <IconButton title={t('openLocation')} onClick={() => showItemInFolder(path)}>
                   <Icon render={Folder} />
                 </IconButton>
               )
