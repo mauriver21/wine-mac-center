@@ -12,8 +12,10 @@ import { objectMatchCriteria } from '@utils/objectMatchCriteria';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { ConfigOrigin } from '@constants/enums';
 import { WineAppArgs } from '@interfaces/WineAppArgs';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const useWineAppConfigModel = () => {
+  const { t } = useI18n();
   const [state, setState] = useState({
     loaders: { listingAll: false }
   });
@@ -41,7 +43,7 @@ export const useWineAppConfigModel = () => {
   const update = async (data: WineAppConfig & { originalAppName: string }) => {
     try {
       const config = await wineAppConfigApiClient.update(data);
-      if (config === undefined) throw new Error('App config not found.');
+      if (config === undefined) throw new Error(t('appConfigNotFound'));
       dispatchSave(config);
     } catch (error) {
       appModel.dispatchError(error);
@@ -51,7 +53,7 @@ export const useWineAppConfigModel = () => {
   const read = async (args: WineAppArgs, options?: { throwError?: boolean }) => {
     try {
       const config = await wineAppConfigApiClient.read(args);
-      if (config === undefined) throw new Error('App config not found.');
+      if (config === undefined) throw new Error(t('appConfigNotFound'));
       dispatchSave(config);
       return config;
     } catch (error) {

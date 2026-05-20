@@ -61,5 +61,18 @@
   "pending": "Pending",
   "success": "Success",
   "changeArtwork": "Change ArtWork",
-  "winetricksVersion": "Winetricks Version"
+  "winetricksVersion": "Winetricks Version",
+  "appConfigNotFound": "App config not found.",
+  "preparingWineApp": "Preparing Wine App...",
+  "originIsNotDefined": "Origin is not defined",
+  "invalidAppName": "Invalid app name: {appName}",
+  "appNameNotExists": "{appName} doesn't exists.",
+  "noEngineUrlsFound": "No engine URLs found.",
+  "appConfigForAppNotFound": "App config for {appName} not found.",
+  "installingSteamClient": "Installing Steam client...",
+  "checkingSteamCredentials": "Checking Steam credentials...",
+  "creatingWineApp": "Creating Wine App...",
+  "stoppingWineAppSetup": "Stopping wine app setup...",
+  "noInstalledAppFound": "No installed app found.",
+  "noAppRunning": "No app running."
 }

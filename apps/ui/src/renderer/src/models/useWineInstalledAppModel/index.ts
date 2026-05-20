@@ -11,8 +11,10 @@ import { WineInstalledAppAction } from '@interfaces/WineInstalledAppAction';
 import { useAppModel } from '@models/useAppModel';
 import { objectMatchCriteria } from '@utils/objectMatchCriteria';
 import { ProcessStatus } from '@constants/enums';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const useWineInstalledAppModel = () => {
+  const { t } = useI18n();
   const [state, setState] = useState({
     loaders: { listingAll: false }
   });
@@ -37,7 +39,7 @@ export const useWineInstalledAppModel = () => {
       const wineInstalledApp = selectWineInstalledApp(store.getState(), appName);
 
       if (wineInstalledApp === undefined) {
-        throw new Error('No installed app found.');
+        throw new Error(t('noInstalledAppFound'));
       }
 
       const process = await wineInstalledAppApiClient.runApp(wineInstalledApp.appPath);
@@ -55,11 +57,11 @@ export const useWineInstalledAppModel = () => {
       const wineInstalledApp = selectWineInstalledApp(store.getState(), appName);
 
       if (wineInstalledApp === undefined) {
-        throw new Error('No installed app found.');
+        throw new Error(t('noInstalledAppFound'));
       }
 
       if (wineInstalledApp.pid === undefined) {
-        throw new Error('No app running.');
+        throw new Error(t('noAppRunning'));
       }
 
       await wineInstalledAppApiClient.killApp(wineInstalledApp.pid);

@@ -20,8 +20,10 @@ import { useLoadingDialog } from '@hooks/useLoadingDialog';
 import { useWineEngineModel } from '@models/useWineEngineModel';
 import { useSteamCli } from '@hooks/useSteamCli';
 import { spawnLog } from '@utils/spawnLog';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const useWineAppPipelineModel = () => {
+  const { t } = useI18n();
   const steamCli = useSteamCli();
   const appModel = useAppModel();
   const loadingDialog = useLoadingDialog();
@@ -46,8 +48,8 @@ export const useWineAppPipelineModel = () => {
   const updateAppConfig = async (args: { appName: string | undefined; config: WineAppConfig }) => {
     const { appName, config } = args;
     try {
-      if (appName === undefined) throw new Error(`Invalid app name: ${appName}`);
-      if ((await appExists(appName)) === false) throw new Error(`${appName} doesn't exists.`);
+      if (appName === undefined) throw new Error(t('invalidAppName', { appName }));
+      if ((await appExists(appName)) === false) throw new Error(t('appNameNotExists', { appName }));
       const wineApp = await createWineApp(appName);
       await wineApp.writeAppConfig(config);
     } catch (error) {
@@ -66,7 +68,7 @@ export const useWineAppPipelineModel = () => {
     const engineURLs = wineEngineDownloadables?.urls;
 
     if (engineURLs === undefined) {
-      throw new Error('No engine URLs found.');
+      throw new Error(t('noEngineUrlsFound'));
     }
 
     return engineURLs;
@@ -78,16 +80,16 @@ export const useWineAppPipelineModel = () => {
 
   const scaffoldWineApp = async (args: WineAppArgs, onScaffolded: (appName: string) => void) => {
     try {
-      loadingDialog.open({ message: 'Preparing Wine App...' });
+      loadingDialog.open({ message: t('preparingWineApp') });
 
       let { appName, config } = args;
 
       if (args.origin === undefined) {
-        throw new Error(`Origin is not defined`);
+        throw new Error(t('originIsNotDefined'));
       }
 
       if (appName === undefined || appName === '') {
-        throw new Error(`Invalid app name: ${appName}`);
+        throw new Error(t('invalidAppName', { appName }));
       }
 
       const originalAppName = appName;
@@ -109,7 +111,7 @@ export const useWineAppPipelineModel = () => {
       }
 
       if (config === undefined) {
-        throw new Error(`App config for ${appName} not found.`);
+        throw new Error(t('appConfigForAppNotFound', { appName }));
       }
 
       config = { ...config, name: appName };
@@ -119,16 +121,16 @@ export const useWineAppPipelineModel = () => {
       }
 
       if (isSteamApplication(config) && !(await steamCli.isInstalled())) {
-        loadingDialog.updateMessage('Installing Steam client...');
+        loadingDialog.updateMessage(t('installingSteamClient'));
         await steamCli.install(spawnLog);
       }
 
       if (isSteamApplication(config)) {
-        loadingDialog.updateMessage('Checking Steam credentials...');
+        loadingDialog.updateMessage(t('checkingSteamCredentials'));
         await steamCli.askSteamCredentials(spawnLog);
       }
 
-      loadingDialog.updateMessage('Creating Wine App...');
+      loadingDialog.updateMessage(t('creatingWineApp'));
 
       const wineApp = await createWineApp(appName, config);
       await new Promise<WineAppConfig>((resolve) =>
@@ -201,7 +203,7 @@ export const useWineAppPipelineModel = () => {
 
   const stopWineAppPipeline = async (appName: string | undefined) => {
     try {
-      loadingDialog.open({ message: 'Stopping wine app setup...' });
+      loadingDialog.open({ message: t('stoppingWineAppSetup') });
       await killWineAppPipeline();
       await sleep(200);
       await loadWineAppPipeline(appName);
