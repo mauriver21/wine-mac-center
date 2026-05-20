@@ -1,9 +1,11 @@
 import { LanguagesSelect } from '@components/LanguagesSelect';
 import { GlobeAltIcon } from '@heroicons/react/24/solid';
+import { useConfigLayout } from '@hooks/useConfigLayout';
 import { Card, CardContent, ContentsClass, H6, Icon, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const Languages: React.FC = () => {
+  const { refresh } = useConfigLayout();
   const { t } = useI18n();
 
   return (
@@ -16,7 +18,11 @@ export const Languages: React.FC = () => {
               <H6 className={ContentsClass.ItemTitle}>{t('language')}</H6>
             </Stack>
           </Stack>
-          <LanguagesSelect />
+          <LanguagesSelect
+            onChange={() => {
+              refresh();
+            }}
+          />
         </Stack>
       </CardContent>
     </Card>

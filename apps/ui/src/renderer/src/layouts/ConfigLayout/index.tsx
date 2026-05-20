@@ -12,6 +12,7 @@ import { alpha } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ConfigLayoutContext } from '@contexts/ConfigLayoutContext';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { useRefresh } from '@utils/useRefresh';
 
 export interface ConfigLayoutProps {
   mainTitle: string | undefined;
@@ -28,19 +29,20 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
   actionsSlot,
   showTableOfContents = true,
   showBack = true,
-  signal
+  signal: signalProp
 }) => {
   const { t } = useI18n();
+  const { refresh, signal } = useRefresh();
   const navigate = useNavigate();
   const contentsAreaRef = useRef<ContentsAreaHandle>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     contentsAreaRef.current?.refreshTableOfContents();
-  }, [signal]);
+  }, [signalProp, signal]);
 
   return (
-    <ConfigLayoutContext.Provider value={{ setLoading }}>
+    <ConfigLayoutContext.Provider value={{ setLoading, refresh }}>
       <Box display="grid" overflow="auto">
         <ContentsArea
           ref={contentsAreaRef}
