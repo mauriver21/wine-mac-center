@@ -4,6 +4,6 @@ export type LocalStorage =
       data: { userName: string; password: string };
     }
   | {
-      key: 'language';
-      data: { language: string };
+      key: 'lang';
+      data: { lang: string };
     };

@@ -15,14 +15,14 @@ export const LanguagesSelect: React.FC<LanguagesSelectProps> = ({
   ...rest
 }) => {
   const { t, getLanguage, changeLanguage } = useI18n();
-  const { setState, getState } = useLocalState('language');
-  const [value, setValue] = useState(getState()?.language || getLanguage());
+  const { setState, getState } = useLocalState('lang');
+  const [value, setValue] = useState(getState()?.lang || getLanguage());
 
   const onChange: SelectProps['onChange'] = (event) => {
-    const language = (event.target as HTMLInputElement).value as Language;
-    changeLanguage(language);
-    setState({ language });
-    onChangeProp?.(language);
+    const lang = (event.target as HTMLInputElement).value as Language;
+    changeLanguage(lang);
+    setState({ lang });
+    onChangeProp?.(lang);
   };
 
   useEffect(() => {
