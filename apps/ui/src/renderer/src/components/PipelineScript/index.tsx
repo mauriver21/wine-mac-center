@@ -361,12 +361,12 @@ export const PipelineScript: React.FC = () => {
                     <TextField
                       control={form.control}
                       name={`pipelineScripts.${index}.steamAppId`}
-                      label="Application Id"
+                      label={t('applicationId')}
                     />
                     <TextField
                       control={form.control}
                       name={`pipelineScripts.${index}.installDirName`}
-                      label="Install Dir Name"
+                      label={t('installDirName')}
                     />
                   </>
                 )}
@@ -388,7 +388,7 @@ export const PipelineScript: React.FC = () => {
             {
               path: item.path || '',
               operation: item.operation,
-              name: 'Extract File'
+              name: t('extractFile')
             }
           ];
           break;
@@ -399,7 +399,7 @@ export const PipelineScript: React.FC = () => {
               exePath: item.exePath || '',
               baseExePath: item.baseExePath || '',
               operation: item.operation,
-              name: 'Run Windows Exe'
+              name: t('runWindowsExe')
             }
           ];
           break;
@@ -410,7 +410,7 @@ export const PipelineScript: React.FC = () => {
               url: item.url || '',
               downloadName: '',
               operation: item.operation,
-              name: 'Download setup executable'
+              name: t('downloadSetupExecutable')
             }
           ];
           break;
@@ -421,7 +421,7 @@ export const PipelineScript: React.FC = () => {
               from: item.from || '',
               target: item.target || '',
               operation: item.operation,
-              name: 'Copy file'
+              name: t('copyFile')
             }
           ];
           break;
@@ -432,7 +432,7 @@ export const PipelineScript: React.FC = () => {
               mainExePath: item.mainExePath || '',
               operation: item.operation,
               exeFlags: item.exeFlags,
-              name: 'Set main exe'
+              name: t('setMainExe')
             }
           ];
           break;
@@ -442,7 +442,7 @@ export const PipelineScript: React.FC = () => {
             {
               diskImagePath: item.diskImagePath || '',
               operation: item.operation,
-              name: 'Mount disk image'
+              name: t('mountDiskImage')
             }
           ];
           break;
@@ -452,7 +452,7 @@ export const PipelineScript: React.FC = () => {
             {
               removePath: item.removePath || '',
               operation: item.operation,
-              name: 'Remove file or folder'
+              name: t('removeFileOrFolder')
             }
           ];
           break;
@@ -463,7 +463,7 @@ export const PipelineScript: React.FC = () => {
               steamAppId: item.steamAppId || '',
               installDirName: item.installDirName || '',
               operation: item.operation,
-              name: 'Download Steam App'
+              name: t('downloadSteamApp')
             }
           ];
           break;
@@ -570,8 +570,8 @@ export const PipelineScript: React.FC = () => {
   };
 
   const mainTitle = () => {
-    if (appNameToCopy) return `Copy Script`;
-    return appConfig?.name ? `${appConfig?.name} Script` : `Create Script`;
+    if (appNameToCopy) return t('copyScript');
+    return appConfig?.name ? `${appConfig?.name} ${t('script')}` : t('createScript');
   };
 
   useEffect(() => {
@@ -614,7 +614,7 @@ export const PipelineScript: React.FC = () => {
         }
         actionsSlot={
           <Button disabled={loading || form.isInvalid()} type="submit">
-            Save
+            {t('save')}
           </Button>
         }
       />

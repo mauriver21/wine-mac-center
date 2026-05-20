@@ -113,5 +113,14 @@
   "toPathExample": "/tu/ruta/relativa/destino",
   "downloadsPath": "Ruta de Descargas",
   "executablePath": "Ruta del Ejecutable",
-  "diskImagePath": "Ruta de Imagen de Disco"
+  "diskImagePath": "Ruta de Imagen de Disco",
+  "applicationId": "Id de la Aplicación",
+  "installDirName": "Directorio de instalación",
+  "extractFile": "Extraer Archivo",
+  "downloadSetupExecutable": "Descargar ejecutable del instalador",
+  "copyFile": "Copiar Archivo",
+  "removeFileOrFolder": "Remover archivo o carpeta",
+  "save": "Guardar",
+  "script": "Script",
+  "copyScript": "Copiar Script"
 }

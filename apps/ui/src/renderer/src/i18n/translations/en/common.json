@@ -113,5 +113,14 @@
   "toPathExample": "/your/relative/target/path",
   "downloadsPath": "Downloads Path",
   "executablePath": "Executable Path",
-  "diskImagePath": "Disk Image Path"
+  "diskImagePath": "Disk Image Path",
+  "applicationId": "Application Id",
+  "installDirName": "Install Dir Name",
+  "extractFile": "Extract File",
+  "downloadSetupExecutable": "Download setup executable",
+  "copyFile": "Copy File",
+  "removeFileOrFolder": "Remove file or folder",
+  "save": "Save",
+  "script": "Script",
+  "copyScript": "Copy Script"
 }
