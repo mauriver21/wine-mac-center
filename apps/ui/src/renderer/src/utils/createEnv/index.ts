@@ -53,6 +53,7 @@ export const createEnv = (args?: {
   };
 
   const resolveApplicationPath = async () => {
+    console.log(ENV.DIRNAME);
     return standaloneApp ? await pathJoin(ENV.DIRNAME, '../..') : '';
   };
 

@@ -35,13 +35,13 @@ export const LauncherSettings: React.FC = () => {
             label={t('startAppOnStartup')}
           />
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Checkbox
             control={form.control}
             name="preventMonitorFromBecomingInactive"
             label={t('preventMonitorInactive')}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <Checkbox
             control={form.control}

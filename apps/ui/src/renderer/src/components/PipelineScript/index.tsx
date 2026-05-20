@@ -140,32 +140,32 @@ export const PipelineScript: React.FC = () => {
         </Box>
       </>
     </CardItem>,
-    <CardItem icon={Rocket} label="Launcher Settings">
+    <CardItem icon={Rocket} label={t('launcherSettings')}>
       <Grid container>
         <Grid item xs={12}>
           <Checkbox
             control={form.control}
             name="launcherConfig.runMainExeOnStartup"
-            label="Start the app automatically on startup"
+            label={t('startAppOnStartup')}
           />
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Checkbox
             control={form.control}
             name="launcherConfig.preventMonitorFromBecomingInactive"
-            label="Prevent the monitor from becoming inactive"
+            label={t('preventMonitorInactive')}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <Checkbox
             control={form.control}
             name="launcherConfig.quitAppWhenLauncherIsClosed"
-            label="Quit app when launcher is closed"
+            label={t('quitAppWhenLauncherClosed')}
           />
         </Grid>
       </Grid>
     </CardItem>,
-    <CardItem icon={PlayCircleIcon} label="Installation Script">
+    <CardItem icon={PlayCircleIcon} label={t('installationScript')}>
       <Stack spacing={2}>
         {fields.map((field, index) => {
           const operation = form.watch(`pipelineScripts.${index}.operation`);
@@ -242,21 +242,21 @@ export const PipelineScript: React.FC = () => {
                   control={form.control}
                   name={`pipelineScripts.${index}.operation`}
                   options={[
-                    { value: ScriptOperation.DOWNLOAD, label: 'Download File' },
-                    { value: ScriptOperation.COPY, label: 'Copy' },
-                    { value: ScriptOperation.DECOMPRESS, label: 'Extract' },
-                    { value: ScriptOperation.REMOVE, label: 'Remove' },
-                    { value: ScriptOperation.RUN_WINDOWS_EXE, label: 'Run Windows EXE' },
-                    { value: ScriptOperation.SET_MAIN_EXE, label: 'Set Main EXE' },
-                    { value: ScriptOperation.MOUNT_DISK_IMAGE, label: 'Mount Disk Image' },
-                    { value: ScriptOperation.DOWNLOAD_STEAM_APP, label: 'Download Steam App' }
+                    { value: ScriptOperation.DOWNLOAD, label: t('downloadFile') },
+                    { value: ScriptOperation.COPY, label: t('copy') },
+                    { value: ScriptOperation.DECOMPRESS, label: t('extract') },
+                    { value: ScriptOperation.REMOVE, label: t('remove') },
+                    { value: ScriptOperation.RUN_WINDOWS_EXE, label: t('runWindowsExe') },
+                    { value: ScriptOperation.SET_MAIN_EXE, label: t('setMainExe') },
+                    { value: ScriptOperation.MOUNT_DISK_IMAGE, label: t('mountDiskImage') },
+                    { value: ScriptOperation.DOWNLOAD_STEAM_APP, label: t('downloadSteamApp') }
                   ]}
                 />
                 {operation === ScriptOperation.DOWNLOAD && (
                   <TextField
                     control={form.control}
                     name={`pipelineScripts.${index}.url`}
-                    label="File URL"
+                    label={t('fileURL')}
                   />
                 )}
                 {operation === ScriptOperation.COPY && (
@@ -267,8 +267,8 @@ export const PipelineScript: React.FC = () => {
                       InputProps={{
                         startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
                       }}
-                      label="From Path"
-                      placeholder="/your/relative/path"
+                      label={t('fromPath')}
+                      placeholder={t('fromPathExample')}
                     />
                     <TextField
                       control={form.control}
@@ -276,8 +276,8 @@ export const PipelineScript: React.FC = () => {
                       InputProps={{
                         startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
                       }}
-                      label="To Path"
-                      placeholder="/your/relative/app/target/path"
+                      label={t('toPath')}
+                      placeholder={t('toPathExample')}
                     />
                   </>
                 )}
@@ -288,8 +288,8 @@ export const PipelineScript: React.FC = () => {
                     InputProps={{
                       startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
                     }}
-                    label="To Path"
-                    placeholder="/your/relative/app/remove/path"
+                    label={t('path')}
+                    placeholder={t('pathExample')}
                   />
                 )}
                 {operation === ScriptOperation.DECOMPRESS && (
@@ -299,8 +299,8 @@ export const PipelineScript: React.FC = () => {
                     InputProps={{
                       startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
                     }}
-                    label="From Path"
-                    placeholder="/your/relative/path"
+                    label={t('downloadsPath')}
+                    placeholder={t('fromPathExample')}
                   />
                 )}
                 {operation === ScriptOperation.SET_MAIN_EXE && (
@@ -311,13 +311,13 @@ export const PipelineScript: React.FC = () => {
                       InputProps={{
                         startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
                       }}
-                      label="Set Main Exe"
-                      placeholder="/your/relative/path"
+                      label={t('setMainExe')}
+                      placeholder={t('toPathExample')}
                     />
                     <TextField
                       control={form.control}
                       name={`pipelineScripts.${index}.exeFlags`}
-                      label="Exe Flags"
+                      label={t('exeFlags')}
                     />
                   </>
                 )}
@@ -325,7 +325,7 @@ export const PipelineScript: React.FC = () => {
                   <TextField
                     control={form.control}
                     name={`pipelineScripts.${index}.exePath`}
-                    label="Executable Path"
+                    label={t('executablePath')}
                     InputProps={{
                       startAdornment: (
                         <Box mr={2}>
@@ -352,8 +352,8 @@ export const PipelineScript: React.FC = () => {
                     InputProps={{
                       startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
                     }}
-                    label="Disk Image Path"
-                    placeholder="/your/relative/path"
+                    label={t('diskImagePath')}
+                    placeholder={t('relativePathExample')}
                   />
                 )}
                 {operation === ScriptOperation.DOWNLOAD_STEAM_APP && (
