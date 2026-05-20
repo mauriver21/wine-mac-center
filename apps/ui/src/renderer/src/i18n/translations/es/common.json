@@ -74,5 +74,11 @@
   "creatingWineApp": "Creando aplicación Wine...",
   "stoppingWineAppSetup": "Deteniendo configuración de la aplicación Wine...",
   "noInstalledAppFound": "No se encontró ninguna aplicación instalada.",
-  "noAppRunning": "No hay ninguna aplicación en ejecución."
+  "noAppRunning": "No hay ninguna aplicación en ejecución.",
+  "unableToReadAppConfig": "No se puede leer la configuración de la aplicación, el nombre de la aplicación no está definido",
+  "sortAZ": "Ordenar A-Z",
+  "sortZA": "Ordenar Z-A",
+  "localConfigs": "Configs Locales",
+  "cloudConfigs": "Configs Remotas",
+  "createScript": "Create Script"
 }

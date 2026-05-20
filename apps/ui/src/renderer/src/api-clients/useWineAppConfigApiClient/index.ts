@@ -21,10 +21,12 @@ import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { renameDirectory } from '@utils/renameDirectory';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { blobUrlToFile } from '@utils/blobUrlToFile';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
   const WINE_SCRIPTS_PATH = env.get().WINE_SCRIPTS_PATH;
+  const { t } = useI18n();
 
   const writeScript = async (data: WineAppConfig) => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
@@ -142,7 +144,7 @@ export const useWineAppConfigApiClient = () => {
 
   const read = async (args: WineAppArgs) => {
     if (args.appName === undefined) {
-      throw new Error('Unable to read app config, application name is not defined');
+      throw new Error(t('unableToReadAppConfig'));
     }
 
     switch (args.origin) {

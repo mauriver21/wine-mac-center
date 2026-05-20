@@ -74,5 +74,11 @@
   "creatingWineApp": "Creating Wine App...",
   "stoppingWineAppSetup": "Stopping wine app setup...",
   "noInstalledAppFound": "No installed app found.",
-  "noAppRunning": "No app running."
+  "noAppRunning": "No app running.",
+  "unableToReadAppConfig": "Unable to read app config, application name is not defined",
+  "sortAZ": "Sort A-Z",
+  "sortZA": "Sort Z-A",
+  "localConfigs": "Local Configs",
+  "cloudConfigs": "Cloud Configs",
+  "createScript": "Create Script"
 }

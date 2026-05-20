@@ -15,6 +15,7 @@ import { ConfigOriginSelect } from '@components/ConfigOriginSelect';
 import { ConfirmationDialog } from '@components/ConfirmationDialog';
 import { useAppModel } from '@models/useAppModel';
 import { ScriptsContext } from '@contexts/ScriptsContext';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 interface ListProps extends React.HTMLAttributes<HTMLDivElement> {}
 interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -53,6 +54,7 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
 );
 
 export const Scripts: React.FC = () => {
+  const { t } = useI18n();
   const [openConfirmRemoveScript, setOpenConfirmRemoveScript] = useState(false);
   const [appName, setAppName] = useState<string>();
   const [removingScript, setRemovingScript] = useState(false);
@@ -135,7 +137,7 @@ export const Scripts: React.FC = () => {
               onClick={() => navigateToScript()}
             >
               <Icon pr={1} strokeWidth={3} color="primary.main" render={PlusIcon} />
-              Create Script
+              {t('createScript')}
             </Button>
           </Stack>
         </Stack>
