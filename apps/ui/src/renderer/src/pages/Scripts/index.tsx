@@ -73,7 +73,7 @@ export const Scripts: React.FC = () => {
 
   const removeScript = async () => {
     if (appName === undefined || appName === '') {
-      appModel.dispatchError(`Application name is not defined`);
+      appModel.dispatchError(t('applicationNameIsNotDefined'));
     } else {
       setRemovingScript(true);
       await wineAppConfigModel.remove(appName);

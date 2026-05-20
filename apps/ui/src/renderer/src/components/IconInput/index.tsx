@@ -5,6 +5,7 @@ import { openFile } from '@utils/openFile';
 import { FileFilter } from '@constants/enums';
 import { getAppIcon as baseGetAppIcon } from '@utils/getAppIcon';
 import defaultAppIcon from '@assets/imgs/header.jpg';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export type IconInputProps = Pick<TextFieldProps, 'control' | 'name' | 'fieldOptions'> & {
   dialogText?: string;
@@ -23,6 +24,7 @@ export const IconInput: React.FC<IconInputProps> = ({
   refreshImage,
   ...rest
 }) => {
+  const { t } = useI18n();
   const inputRef = useRef<HTMLDivElement>(null);
   const [fileName, setFileName] = useState('');
   const [iconSrc, setIconSrc] = useState('');
@@ -125,7 +127,7 @@ export const IconInput: React.FC<IconInputProps> = ({
             justifyContent="center"
           >
             <Body1 textAlign="center" p={1} fontWeight={500}>
-              No Icon
+              {t('noIcon')}
             </Body1>
           </Box>
         ) : (

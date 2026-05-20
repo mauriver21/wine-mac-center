@@ -33,7 +33,7 @@
   "changeSetupExecutable": "Cambiar ejecutable de instalación",
   "selectFolderPath": "Seleccionar ruta de carpeta",
   "changeFolderPath": "Cambiar ruta de carpeta",
-  "noArtwork": "Sin artwork",
+  "noArtwork": "Sin Artwork",
   "winetricks": "Winetricks",
   "enableDXVK": "Habilitar DXVK",
   "useWinetricks": "Usar Winetricks",
@@ -80,7 +80,7 @@
   "sortZA": "Ordenar Z-A",
   "localConfigs": "Configs Locales",
   "cloudConfigs": "Configs Remotas",
-  "createScript": "Create Script",
+  "createScript": "Crear Script",
   "apps": "Aplicaciones",
   "scripts": "Scripts",
   "settings": "Preferencias",
@@ -88,5 +88,10 @@
   "back": "Volver",
   "language": "Lenguaje",
   "en": "Inglés",
-  "es": "Español"
+  "es": "Español",
+  "applicationNameIsNotDefined": "El nombre de la aplicación no está definido",
+  "scriptDetails": "Detalles del Script",
+  "style": "Estilo",
+  "noIcon": "Sin Icono",
+  "noLauncherImage": "Sin Imagen de Launcher"
 }

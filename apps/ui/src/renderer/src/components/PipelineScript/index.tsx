@@ -38,10 +38,12 @@ import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { blobUrlToFile } from '@utils/blobUrlToFile';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { Rocket } from '@mui/icons-material';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const PipelineScript: React.FC = () => {
+  const { t } = useI18n();
   const { appName: appNameParam } = useParams();
   const params = useQueryParam();
   const appNameToCopy = params.get('appNameToCopy') || '';
@@ -69,24 +71,24 @@ export const PipelineScript: React.FC = () => {
   const insertBefore = (index: number) => insert(index, DEFAULT_PIPELINE_SCRIPT);
 
   const modules = [
-    <CardItem icon={PencilSquareIcon} label="Script Details">
+    <CardItem icon={PencilSquareIcon} label={t('scriptDetails')}>
       <Stack spacing={2}>
         <TextField
           autoComplete="off"
           control={form.control}
           name="appName"
-          label="Application Name"
+          label={t('applicationName')}
         />
       </Stack>
     </CardItem>,
-    <CardItem icon={CpuChipIcon} label="Wine Engine">
+    <CardItem icon={CpuChipIcon} label={t('wineEngine')}>
       <WineEnginesSelect fullWidth control={form.control} name="engineVersion" />
     </CardItem>,
     <CardItem icon={SparklesIcon} label="Winetricks">
       <Grid container>
         <Grid item xs={12}>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Checkbox control={form.control} name="dxvkEnabled" label="Enable DXVK" />
+            <Checkbox control={form.control} name="dxvkEnabled" label={t('enableDXVK')} />
           </Stack>
         </Grid>
         <Grid mt={1} item xs={12}>
@@ -102,7 +104,7 @@ export const PipelineScript: React.FC = () => {
         </Grid>
       </Grid>
     </CardItem>,
-    <CardItem icon={PaintBrushIcon} label="Style">
+    <CardItem icon={PaintBrushIcon} label={t('style')}>
       <>
         <Divider />
         <Box pt={2} display="flex" gap={4} justifyContent="center">
@@ -120,7 +122,7 @@ export const PipelineScript: React.FC = () => {
             name="artworkFile"
             type="image"
             imgSrc={artworkSrc}
-            appName={'No Artwork'}
+            appName={t('noArtwork')}
             onInput={async (file) => {
               file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
             }}
@@ -130,7 +132,7 @@ export const PipelineScript: React.FC = () => {
             name="launcherImgFile"
             type="image"
             imgSrc={launcherImgSrc}
-            appName={'No Launcher Image'}
+            appName={t('noLauncherImage')}
             onInput={async (file) => {
               file && setLauncherImgSrc(blobToURL(await file?.arrayBuffer()));
             }}
