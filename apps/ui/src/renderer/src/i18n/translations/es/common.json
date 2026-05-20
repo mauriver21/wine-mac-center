@@ -122,5 +122,20 @@
   "removeFileOrFolder": "Remover archivo o carpeta",
   "save": "Guardar",
   "script": "Script",
-  "copyScript": "Copiar Script"
+  "copyScript": "Copiar Script",
+  "removeScript": "Remover Script",
+  "stop": "Detener",
+  "resume": "Continuar",
+  "openLauncher": "Abrir Lanzador",
+  "installationPending": "Instalación pendiente",
+  "configureApp": "Configurar Aplicación",
+  "wineConfigDescription": "Abre la herramienta de configuración de Wine para establecer la versión de Windows, unidades, bibliotecas y configuraciones de audio.",
+  "registryEditor": "Editor del Registro",
+  "registryEditorDescription": "Inicia el Editor del Registro de Wine para ver y modificar el registro similar al de Windows.",
+  "taskManagerDescription": "Abre el Administrador de tareas de Wine para supervisar y gestionar los procesos de Wine en ejecución.",
+  "commandLine": "Línea de comandos",
+  "commandLineDescription": "Inicia un símbolo del sistema similar al de Windows para ejecutar comandos y scripts en Wine.",
+  "controlPanel": "Panel de control",
+  "controlPanelDescription": "Abre el Panel de control de Wine para ajustar configuraciones como fuentes y programas instalados.",
+  "updateAppDescription": "Actualiza la aplicación con sus scripts y dependencias más recientes."
 }

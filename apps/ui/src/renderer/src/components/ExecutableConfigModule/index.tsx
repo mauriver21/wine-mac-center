@@ -127,7 +127,7 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                       border: (theme) => `1px solid ${theme.palette.primary.main}`
                     }}
                   >
-                    <Body1>Run</Body1>
+                    <Body1>{t('run')}</Body1>
                   </Button>
                 </Stack>
               </Grid>

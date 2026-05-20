@@ -13,9 +13,7 @@ export const TaskManagerModule: React.FC = () => {
     <BaseModule
       label={t('taskManager')}
       icon={RectangleStackIcon}
-      description={
-        <Body1>Opens Wine&apos;s Task Manager to monitor and manage running Wine processes.</Body1>
-      }
+      description={<Body1>{t('taskManagerDescription')}</Body1>}
       method={() => {
         setLoading?.(true);
         wineApp?.taskmgr({

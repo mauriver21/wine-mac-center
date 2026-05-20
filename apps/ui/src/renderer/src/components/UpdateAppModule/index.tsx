@@ -14,7 +14,7 @@ export const UpdateAppModule: React.FC = () => {
     <BaseModule
       label={t('updateApp')}
       icon={ArrowPathIcon}
-      description={<Body1>Updates the application with its latest scripts and dependencies.</Body1>}
+      description={<Body1>{t('updateAppDescription')}</Body1>}
       method={() => {
         setLoading?.(true);
         wineApp?.updateWineApp({

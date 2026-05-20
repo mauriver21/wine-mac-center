@@ -141,13 +141,13 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
                   ...(origin === ConfigOrigin.SCRIPTS
                     ? [
                         {
-                          label: 'Copy Script',
+                          label: t('copyScript'),
                           onClick: () => {
                             navigateToScript(appName, { copyScript: true });
                           }
                         },
                         {
-                          label: 'Remove Script',
+                          label: t('removeScript'),
                           onClick: () => {
                             scriptsContext?.setAppName(appName);
                             scriptsContext?.setOpenConfirmRemoveScript(true);

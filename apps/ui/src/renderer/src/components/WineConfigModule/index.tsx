@@ -13,12 +13,7 @@ export const WineConfigModule: React.FC = () => {
     <BaseModule
       label={t('wineConfig')}
       icon={Cog6ToothIcon}
-      description={
-        <Body1>
-          Opens Wine&apos;s configuration tool to set Windows version, drives, libraries, and audio
-          settings.
-        </Body1>
-      }
+      description={<Body1>{t('wineConfigDescription')}</Body1>}
       method={() => {
         setLoading?.(true);
         wineApp?.winecfg({

@@ -7,6 +7,7 @@ import { useAppModel } from '@models/useAppModel';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { useRefresh } from '@utils/useRefresh';
+import { t } from 'i18next';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -92,7 +93,7 @@ export const AppPipeline: React.FC = () => {
                 color="secondary"
                 onClick={() => wineAppPipelineModel.stopWineAppPipeline(appName)}
               >
-                Stop
+                {t('stop')}
               </Button>
             ) : (
               <Button
@@ -101,7 +102,7 @@ export const AppPipeline: React.FC = () => {
                 color="secondary"
                 onClick={() => navigate('/apps')}
               >
-                Close
+                {t('close')}
               </Button>
             )}
             {status === ProcessStatus.Cancelled ? (
@@ -111,7 +112,7 @@ export const AppPipeline: React.FC = () => {
                 color="secondary"
                 onClick={() => runWineAppPipeline()}
               >
-                Resume
+                {t('resume')}
               </Button>
             ) : (
               <></>

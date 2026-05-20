@@ -11,12 +11,14 @@ import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import defaultArtwork from '@assets/imgs/header.jpg';
 import { showItemInFolder } from '@utils/showItemInFolder';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface InstalledAppCardProps extends CardProps {
   appName?: string;
 }
 
 export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...rest }) => {
+  const { t } = useI18n();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const wineAppModel = useWineAppConfigModel();
   const installedWineApp = useSelector((state: RootState) =>
@@ -81,7 +83,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
         </Box>
         <Box display="flex" justifyContent="end" gap={1}>
           <AppCardButton
-            title="Reveal in Finder"
+            title={t('revealInFinder')}
             icon={Folder}
             onClick={() => {
               installedWineApp?.appPath && showItemInFolder(installedWineApp.appPath);
@@ -89,14 +91,14 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
           />
           {installedWineApp?.pipeline?.status == ProcessStatus.Success && (
             <AppCardButton
-              title="Open Launcher"
+              title={t('openLauncher')}
               icon={Launch}
               onClick={() => navigateToAppLauncher(appName)}
             />
           )}
           {pipelineIsResumable ? (
             <AppCardButton
-              title="Installation pending"
+              title={t('installationPending')}
               icon={Pending}
               onClick={() =>
                 navigateToAppPipeline(appName, {
@@ -107,7 +109,7 @@ export const InstalledAppCard: React.FC<InstalledAppCardProps> = ({ appName, ...
             />
           ) : (
             <AppCardButton
-              title="Configure App"
+              title={t('configureApp')}
               icon={Cog6ToothIcon}
               onClick={() => navigateToAppConfig(appName)}
             />

@@ -83,7 +83,7 @@ export const ChangeEngineModule: React.FC = () => {
               }}
               onClick={changeWineEngine}
             >
-              <Body1>Run</Body1>
+              <Body1>{t('run')}</Body1>
             </Button>
           </Stack>
         </Stack>

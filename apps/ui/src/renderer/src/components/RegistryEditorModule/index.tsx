@@ -3,19 +3,17 @@ import { BaseModule } from '@components/BaseModule';
 import { RegeditIcon } from '@assets/icons';
 import { Body1 } from 'reactjs-shared-ui';
 import { useWineAppContext } from '@hooks/useWineAppContext';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const RegistryEditorModule: React.FC = () => {
+  const { t } = useI18n();
   const { wineApp, setLoading } = useWineAppContext() || {};
 
   return (
     <BaseModule
-      label="Registry Editor"
+      label={t('registryEditor')}
       icon={RegeditIcon}
-      description={
-        <Body1>
-          Launches Wine&apos;s Registry Editor to view and modify the Windows-like registry.
-        </Body1>
-      }
+      description={<Body1>{t('registryEditorDescription')}</Body1>}
       method={() => {
         setLoading?.(true);
         wineApp?.regedit({

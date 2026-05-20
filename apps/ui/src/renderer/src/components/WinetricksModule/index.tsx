@@ -29,7 +29,7 @@ export const WinetricksModule: React.FC = () => {
         <Stack spacing={1}>
           <Stack direction="row" minWidth={210} pb={1}>
             <Icon strokeWidth={0} size={34} render={SparklesIcon} pr={1} />
-            <H6 className={ContentsClass.ItemTitle}>Winetricks</H6>
+            <H6 className={ContentsClass.ItemTitle}>{t('winetricks')}</H6>
           </Stack>
           <WinetricksSelector
             winetricksVersionSelectProps={{
@@ -67,7 +67,7 @@ export const WinetricksModule: React.FC = () => {
                 }
               }}
             >
-              <Body1>Run</Body1>
+              <Body1>{t('run')}</Body1>
             </Button>
           </Stack>
         </Stack>
