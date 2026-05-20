@@ -1,5 +1,6 @@
 import { DownloadWineEngines } from '@components/DownloadWineEngines';
 import { EnvPaths } from '@components/EnvPaths';
+import { Languages } from '@components/Languages';
 import { SteamCredentials } from '@components/SteamCredentials';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
@@ -9,7 +10,7 @@ const ITEM_STYLE = { px: '20px !important' };
 
 export const Settings: React.FC = () => {
   const { t } = useI18n();
-  const modules = [<EnvPaths />, <DownloadWineEngines />, <SteamCredentials />];
+  const modules = [<Languages />, <EnvPaths />, <DownloadWineEngines />, <SteamCredentials />];
 
   return (
     <ConfigLayout

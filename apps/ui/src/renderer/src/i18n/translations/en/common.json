@@ -85,5 +85,8 @@
   "scripts": "Scripts",
   "settings": "Settings",
   "downloadEngine": "Download Engine",
-  "back": "Back"
+  "back": "Back",
+  "language": "Language",
+  "en": "English",
+  "es": "Spanish"
 }

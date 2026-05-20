@@ -85,5 +85,8 @@
   "scripts": "Scripts",
   "settings": "Preferencias",
   "downloadEngine": "Descargar Motor",
-  "back": "Volver"
+  "back": "Volver",
+  "language": "Lenguaje",
+  "en": "Inglés",
+  "es": "Español"
 }
