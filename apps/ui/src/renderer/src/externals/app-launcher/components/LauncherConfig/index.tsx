@@ -33,7 +33,7 @@ export const LauncherConfig: React.FC = () => {
 
   return (
     <ConfigLayout
-      mainTitle="Launcher Config"
+      mainTitle={t('launcherConfig')}
       contentSlot={
         <Stack
           spacing={1}

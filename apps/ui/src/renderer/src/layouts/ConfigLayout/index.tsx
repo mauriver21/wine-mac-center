@@ -63,9 +63,13 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
               boxShadow: (theme) => `inset 0 -1px ${theme.palette.secondary.main}`
             }}
           >
-            <H6 color="text.secondary" fontWeight={500}>
-              {mainTitle}
-            </H6>
+            {mainTitle ? (
+              <H6 color="text.secondary" fontWeight={500}>
+                {t(mainTitle)}
+              </H6>
+            ) : (
+              <></>
+            )}
             {showBack ? (
               <Button
                 disabled={loading}

@@ -154,5 +154,8 @@
   "create": "Create",
   "appConfiguration": "App Configuration",
   "envVariables": "Environment Variables",
-  "runApplication": "Run Application"
+  "runApplication": "Run Application",
+  "open": "Open",
+  "launcherConfig": "Launcher Configuration",
+  "Environment": "Environment"
 }

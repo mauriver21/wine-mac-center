@@ -152,7 +152,10 @@
   "Run Windows Exe": "Correr Windows Exe",
   "runPipelineFromHere": "Ejecutar pipeline desde aquí.",
   "create": "Crear",
-  "appConfiguration": "Configuración de la App",
+  "appConfiguration": "Configuración del App",
   "envVariables": "Variables de Entorno",
-  "runApplication": "Correr Aplicación"
+  "runApplication": "Correr Aplicación",
+  "open": "Abrir",
+  "launcherConfig": "Configuración del Lanzador",
+  "Environment": "Ambiente"
 }

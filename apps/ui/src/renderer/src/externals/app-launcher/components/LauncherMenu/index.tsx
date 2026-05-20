@@ -39,7 +39,7 @@ export const LauncherMenu: React.FC = () => {
       )}
       <Stack spacing={2} position="absolute" top={30} right={30}>
         <Button
-          title="Launcher Configuration"
+          title={t('launcherConfig')}
           sx={{ p: 0.5, minWidth: 0, borderRadius: 4 }}
           onClick={navigateToLauncherConfig}
         >
