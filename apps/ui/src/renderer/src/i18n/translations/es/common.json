@@ -149,5 +149,7 @@
   "Configuring app executable": "Configurando ejecutable de la aplicación",
   "No output to display": "No hay salida para mostrar",
   "Download setup executable": "Descargar ejecutable del instalador",
-  "Run Windows Exe": "Correr Windows Exe"
+  "Run Windows Exe": "Correr Windows Exe",
+  "runPipelineFromHere": "Ejecutar pipeline desde aquí.",
+  "create": "Crear"
 }

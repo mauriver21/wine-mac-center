@@ -65,7 +65,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
               disabled={running}
               menuItems={[
                 {
-                  label: 'Run pipeline from here.',
+                  label: t('runPipelineFromHere'),
                   onClick: () => {
                     runWineAppPipeline({ fromJobIndex: jobIndex, fromStepIndex: stepIndex });
                   }

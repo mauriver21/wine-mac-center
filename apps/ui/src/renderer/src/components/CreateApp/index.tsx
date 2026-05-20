@@ -205,7 +205,7 @@ export const CreateApp: React.FC = () => {
                 color="secondary"
                 onClick={navigateToApps}
               >
-                Back
+                {t('back')}
               </Button>
             </Box>
             <Box
@@ -260,7 +260,7 @@ export const CreateApp: React.FC = () => {
                   disabled={form.isInvalid()}
                   type="submit"
                 >
-                  Create
+                  {t('create')}
                 </Button>
               </Stack>
             </Box>
