@@ -1,5 +1,6 @@
 import { Button } from '@components/Button';
 import { Card, CardContent, Stack, Icon, H6, ContentsClass } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface LauncherConfigItemProps {
   icon: React.FC;
@@ -8,6 +9,8 @@ export interface LauncherConfigItemProps {
 }
 
 export const LauncherConfigItem: React.FC<LauncherConfigItemProps> = ({ label, icon, method }) => {
+  const { t } = useI18n();
+
   return (
     <Card>
       <CardContent>
@@ -18,7 +21,7 @@ export const LauncherConfigItem: React.FC<LauncherConfigItemProps> = ({ label, i
               <H6 className={ContentsClass.ItemTitle}>{label}</H6>
             </Stack>
           </Stack>
-          <Button onClick={method}>Open</Button>
+          <Button onClick={method}>{t('open')}</Button>
         </Stack>
       </CardContent>
     </Card>

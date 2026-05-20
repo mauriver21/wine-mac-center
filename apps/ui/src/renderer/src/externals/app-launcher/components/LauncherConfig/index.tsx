@@ -6,22 +6,24 @@ import { TravelExplore } from '@mui/icons-material';
 import { Cog8ToothIcon } from '@heroicons/react/24/solid';
 import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
 import { LauncherSettings } from '@components/LauncherSettings';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const LauncherConfig: React.FC = () => {
+  const { t } = useI18n();
   const { navigateToAppConfig, navigateToEnvPath } = useNavigateApp();
 
   const modules = useMemo(
     () => [
       <LauncherSettings />,
       <LauncherConfigItem
-        label="App Configuration"
+        label={t('appConfiguration')}
         icon={Cog8ToothIcon}
         method={navigateToAppConfig}
       />,
       <LauncherConfigItem
-        label="Environment Variables"
+        label={t('envVariables')}
         icon={TravelExplore}
         method={navigateToEnvPath}
       />

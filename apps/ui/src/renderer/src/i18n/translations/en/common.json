@@ -151,5 +151,8 @@
   "Download setup executable": "Download setup executable",
   "Run Windows Exe": "Run Windows Exe",
   "runPipelineFromHere": "Run pipeline from here.",
-  "create": "Create"
+  "create": "Create",
+  "appConfiguration": "App Configuration",
+  "envVariables": "Environment Variables",
+  "runApplication": "Run Application"
 }

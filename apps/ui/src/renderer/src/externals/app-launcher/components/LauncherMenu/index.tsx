@@ -7,8 +7,10 @@ import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import LauncherBg from '@app-launcher/assets/imgs/launcher-bg.png';
 import { useResolveAppName } from '@hooks/useResolveAppName';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const LauncherMenu: React.FC = () => {
+  const { t } = useI18n();
   const { urls, runExe, runningMainExe } = useWineAppContext();
   const { navigateToLauncherConfig } = useNavigateApp();
   const backgroundImage = urls?.launcherImgURL || LauncherBg;
@@ -51,7 +53,7 @@ export const LauncherMenu: React.FC = () => {
           onClick={runExe}
         >
           <Icon color="text.secondary" render={PlayCircle} />{' '}
-          <Body1 fontWeight={500}>Run Application</Body1>
+          <Body1 fontWeight={500}>{t('runApplication')}</Body1>
         </Button>
       </Stack>
     </Box>

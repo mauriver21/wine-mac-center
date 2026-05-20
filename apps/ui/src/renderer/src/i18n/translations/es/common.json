@@ -151,5 +151,8 @@
   "Download setup executable": "Descargar ejecutable del instalador",
   "Run Windows Exe": "Correr Windows Exe",
   "runPipelineFromHere": "Ejecutar pipeline desde aquí.",
-  "create": "Crear"
+  "create": "Crear",
+  "appConfiguration": "Configuración de la App",
+  "envVariables": "Variables de Entorno",
+  "runApplication": "Correr Aplicación"
 }
