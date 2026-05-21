@@ -3,7 +3,7 @@ import { useTestContext } from '..';
 import { createWineApp } from '@utils/createWineApp';
 import { TextField } from 'reactjs-shared-ui/forms';
 import { Button } from '@components/Button';
-import { ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
 
 export const InitApp: React.FC = () => {
   const { setWineApp } = useTestContext();
@@ -18,17 +18,21 @@ export const InitApp: React.FC = () => {
   };
 
   return (
-    <Stack spacing={1}>
-      <H6 className={ContentsClass.ItemTitle}>Init Wine App</H6>
-      <TextField
-        disabled={loading}
-        label="Application name"
-        value={appName}
-        onChange={(event) => setAppName(event.currentTarget.value)}
-      />
-      <Button disabled={loading} onClick={start}>
-        {loading ? 'Initializing' : 'Init'} App
-      </Button>
-    </Stack>
+    <Card>
+      <CardContent>
+        <Stack spacing={1}>
+          <H6 className={ContentsClass.ItemTitle}>Init Wine App</H6>
+          <TextField
+            disabled={loading}
+            label="Application name"
+            value={appName}
+            onChange={(event) => setAppName(event.currentTarget.value)}
+          />
+          <Button disabled={loading} onClick={start}>
+            {loading ? 'Initializing' : 'Init'} App
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };
