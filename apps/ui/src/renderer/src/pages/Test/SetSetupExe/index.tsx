@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useWineAppContext } from '..';
+import { useTestContext } from '..';
 import { TextField } from 'reactjs-shared-ui/forms';
 
 /**
@@ -10,7 +10,7 @@ import { TextField } from 'reactjs-shared-ui/forms';
  */
 
 export const SetSetupExe: React.FC = () => {
-  const { wineApp } = useWineAppContext();
+  const { wineApp } = useTestContext();
   const configuredSetupExecutablePath = wineApp.getAppConfig().setupExecutablePath || '';
   const [setupExecutablePath, setSetupExecutablePath] = useState(
     configuredSetupExecutablePath || ''

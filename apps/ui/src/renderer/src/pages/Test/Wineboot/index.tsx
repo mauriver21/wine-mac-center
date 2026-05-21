@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useWineAppContext } from '..';
+import { useTestContext } from '..';
 import { Code } from '@components/Code';
 
 export const Wineboot: React.FC = () => {
-  const { wineApp } = useWineAppContext();
+  const { wineApp } = useTestContext();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();
 

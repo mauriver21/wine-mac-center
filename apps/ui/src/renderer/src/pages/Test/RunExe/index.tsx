@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useWineAppContext } from '..';
+import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { TextField } from 'reactjs-shared-ui/forms';
 
 export const RunExe: React.FC = () => {
-  const { wineApp } = useWineAppContext();
+  const { wineApp } = useTestContext();
   const [loading, setLoading] = useState(false);
   const [exePath, setExePath] = useState('');
   const [data, setData] = useState<any>();

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useWineAppContext } from '@pages/Test';
+import { useTestContext } from '@pages/Test';
 import { Code } from '@components/Code';
 import { findOutputPids } from '@utils/findOutputPids';
 
@@ -13,7 +13,7 @@ const ENGINES_URLS = {
 };
 
 export const DownloadEngine: React.FC = () => {
-  const { wineApp } = useWineAppContext();
+  const { wineApp } = useTestContext();
   const [pids, setPids] = useState('');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();

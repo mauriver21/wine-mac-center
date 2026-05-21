@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useWineAppContext } from '..';
+import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { useEnv } from '@hooks/useEnv';
 
 export const MountDiskImage: React.FC = () => {
-  const { wineApp } = useWineAppContext();
+  const { wineApp } = useTestContext();
   const env = useEnv();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();

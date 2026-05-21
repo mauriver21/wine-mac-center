@@ -1,20 +1,18 @@
-export interface CodeProps {
-  content: string;
-  label?: string;
-}
+import { Code as BaseCode, CodeProps as BaseCodeProps } from 'reactjs-shared-ui/syntax-highlighter';
 
-export const Code: React.FC<CodeProps> = ({ content, label }) => (
-  <div style={{ margin: '17px 0px' }}>
-    {label ? <label>Output:</label> : <></>}
-    <pre
-      style={{
-        border: '1px solid gray',
-        background: '#d6d6d6',
+export type CodeProps = BaseCodeProps;
+
+export const Code: React.FC<CodeProps> = (props) => (
+  <BaseCode
+    sx={{
+      '& > pre': {
         minHeight: 40,
-        width: '100%'
-      }}
-    >
-      <code>{JSON.stringify(content, null, 2)}</code>
-    </pre>
-  </div>
+        maxHeight: 200,
+        overflowY: 'auto',
+        overflowX: 'hidden !important'
+      }
+    }}
+    language="bash"
+    {...props}
+  />
 );

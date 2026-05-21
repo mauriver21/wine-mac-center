@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Code } from '@components/Code';
-import { useWineAppContext } from '..';
+import { useTestContext } from '..';
 
 export const EnableDxvk: React.FC = () => {
-  const { wineApp } = useWineAppContext();
+  const { wineApp } = useTestContext();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();
 

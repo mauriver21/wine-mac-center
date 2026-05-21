@@ -13,6 +13,10 @@ export const useNavigateApp = () => {
     navigate('/apps');
   };
 
+  const navigateToTest = () => {
+    navigate('/test');
+  };
+
   const navigateToAppNotFound = (appName: string) => {
     navigate(`/app-not-found/${appName}`);
   };
@@ -51,6 +55,7 @@ export const useNavigateApp = () => {
   return {
     navigateToAppPipeline,
     navigateToApps,
+    navigateToTest,
     navigateToAppNotFound,
     navigateToHome,
     navigateToScripts,

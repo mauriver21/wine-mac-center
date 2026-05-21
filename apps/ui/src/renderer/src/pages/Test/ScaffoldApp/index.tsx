@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Button, Stack } from 'reactjs-shared-ui';
-import { useWineAppContext } from '@pages/Test';
+import { Body2, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { useTestContext } from '@pages/Test';
 import { Code } from '@components/Code';
 import { findOutputPids } from '@utils/findOutputPids';
 import { TextField } from 'reactjs-shared-ui/forms';
+import { Button } from '@components/Button';
 
 export const ScaffoldApp: React.FC = () => {
-  const { wineApp } = useWineAppContext();
+  const { wineApp } = useTestContext();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>();
   const [pids, setPids] = useState('');
@@ -32,11 +33,8 @@ export const ScaffoldApp: React.FC = () => {
 
   return (
     <Stack spacing={2}>
-      <div style={{ marginBottom: 10 }}>
-        <h3>Scaffold App</h3>
-        <hr />
-      </div>
-      <p>PIDS: {pids}</p>
+      <H6 className={ContentsClass.ItemTitle}>Scaffold App</H6>
+      <Body2>PIDS: {pids ? pids : 'No pids available'}</Body2>
       <TextField
         InputProps={{ readOnly: true }}
         label="Application name"
@@ -55,7 +53,7 @@ export const ScaffoldApp: React.FC = () => {
       <Button disabled={loading} onClick={scaffoldApp}>
         {loading ? 'Scaffolding' : 'Scaffold'} App
       </Button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
+      <Code type="content" code={JSON.stringify(data, null, 2)} />
     </Stack>
   );
 };

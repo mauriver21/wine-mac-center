@@ -24,6 +24,7 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "start": "electron-vite preview",
     "dev": "cross-env VITE_APP_ENV=development electron-vite dev",
+    "dev:test": "cross-env VITE_APP_ENV=test electron-vite dev",
     "dev:integration": "cross-env VITE_APP_ENV=integration electron-vite dev",
     "build": "npm run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",

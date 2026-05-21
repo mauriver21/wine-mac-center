@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useWineAppContext } from '..';
+import { useTestContext } from '..';
 import { Select, TextField } from 'reactjs-shared-ui/forms';
 
 export const BundleApp: React.FC = () => {
-  const { wineApp } = useWineAppContext();
+  const { wineApp } = useTestContext();
   const [executables, setExecutables] = useState<Array<{ value: string; label: string }>>([]);
   const [loading, setLoading] = useState(false);
   const [exePath, setExePath] = useState('');
