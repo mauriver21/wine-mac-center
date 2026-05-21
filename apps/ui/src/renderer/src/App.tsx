@@ -1,18 +1,23 @@
 import { useNavigateApp } from '@hooks/useNavigateApp';
+import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { routes } from '@routes';
 import { isIntegration } from '@utils/isIntegration';
 import { isProduction } from '@utils/isProduction';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useRoutes } from 'react-router-dom';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const App = () => {
-  const { navigateToScripts } = useNavigateApp();
+  const wineInstalledAppModel = useWineInstalledAppModel();
+  const wineInstalledApps = useSelector(wineInstalledAppModel.selectWineInstalledApps);
+  const { navigateToScripts, navigateToApps } = useNavigateApp();
+
   useI18n();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isIntegration() || isProduction()) {
-      navigateToScripts();
+      wineInstalledApps?.length ? navigateToApps() : navigateToScripts();
     }
   }, []);
 
