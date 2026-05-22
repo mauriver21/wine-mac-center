@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { TextField } from 'reactjs-shared-ui/forms';
-import { ContentsClass } from 'reactjs-shared-ui';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Button } from '@components/Button';
 
 export const RunExe: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -26,21 +27,22 @@ export const RunExe: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 10 }}>
-        <h3 className={ContentsClass.ItemTitle}>RunExe</h3>
-        <hr />
-      </div>
-      <TextField
-        disabled={loading}
-        label="Exe Path"
-        value={exePath}
-        onChange={(event) => setExePath(event.currentTarget.value)}
-      />
-      <button disabled={loading || !Boolean(exePath)} onClick={runExe}>
-        RunExe
-      </button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>RunExe</H6>
+          <TextField
+            disabled={loading}
+            label="Exe Path"
+            value={exePath}
+            onChange={(event) => setExePath(event.currentTarget.value)}
+          />
+          <Button disabled={loading || !Boolean(exePath)} onClick={runExe}>
+            RunExe
+          </Button>
+          <Code type="content" code={JSON.stringify(data, null, 2)} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

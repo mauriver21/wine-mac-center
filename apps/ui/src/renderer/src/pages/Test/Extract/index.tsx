@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { useEnv } from '@hooks/useEnv';
-import { ContentsClass } from 'reactjs-shared-ui';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Button } from '@components/Button';
 
 export const Extract: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -29,15 +30,16 @@ export const Extract: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 10 }}>
-        <h3 className={ContentsClass.ItemTitle}>Extract</h3>
-        <hr />
-      </div>
-      <button disabled={loading} onClick={extract}>
-        {loading ? 'Extracting' : 'Extract'}
-      </button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>Extract</H6>
+          <Button disabled={loading} onClick={extract}>
+            {loading ? 'Extracting' : 'Extract'}
+          </Button>
+          <Code type="content" code={JSON.stringify(data, null, 2)} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

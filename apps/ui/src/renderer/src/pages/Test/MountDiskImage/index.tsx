@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { useEnv } from '@hooks/useEnv';
-import { ContentsClass } from 'reactjs-shared-ui';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Button } from '@components/Button';
 
 export const MountDiskImage: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -43,18 +44,21 @@ export const MountDiskImage: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 10 }}>
-        <h3 className={ContentsClass.ItemTitle}>Mount Image</h3>
-        <hr />
-      </div>
-      <button style={{ marginRight: 10 }} disabled={loading} onClick={mountDiskImage}>
-        {loading ? 'Mounting Image' : 'Mount Image'}
-      </button>
-      <button disabled={loading} onClick={unmountVolume}>
-        {loading ? 'Unmounting Image' : 'Unmount Image'}
-      </button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>Mount Image</H6>
+          <Stack spacing={2} direction="row">
+            <Button style={{ marginRight: 10 }} disabled={loading} onClick={mountDiskImage}>
+              {loading ? 'Mounting Image' : 'Mount Image'}
+            </Button>
+            <Button disabled={loading} onClick={unmountVolume}>
+              {loading ? 'Unmounting Image' : 'Unmount Image'}
+            </Button>
+          </Stack>
+          <Code type="content" code={JSON.stringify(data, null, 2)} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

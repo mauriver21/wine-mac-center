@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTestContext } from '..';
 import { Select, TextField } from 'reactjs-shared-ui/forms';
-import { ContentsClass } from 'reactjs-shared-ui';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Button } from '@components/Button';
 
 export const BundleApp: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -30,19 +31,20 @@ export const BundleApp: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <div style={{ marginBottom: 10 }}>
-        <h3 className={ContentsClass.ItemTitle}>Bundle App</h3>
-        <hr />
-      </div>
-      <Select
-        options={executables}
-        onChange={(event) => setExePath(event.target.value as string)}
-      />
-      <TextField onChange={(event) => setFlags(event.currentTarget.value)} />
-      <button disabled={loading} onClick={bundleApp}>
-        Bundle App
-      </button>
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>Bundle App</H6>
+          <Select
+            options={executables}
+            onChange={(event) => setExePath(event.target.value as string)}
+          />
+          <TextField onChange={(event) => setFlags(event.currentTarget.value)} />
+          <Button disabled={loading} onClick={bundleApp}>
+            Bundle App
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

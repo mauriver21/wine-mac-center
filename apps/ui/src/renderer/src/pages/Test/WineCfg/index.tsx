@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Code } from '@components/Code';
 import { useTestContext } from '..';
 import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Button } from '@components/Button';
 
 export const WineCfg: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -25,10 +26,10 @@ export const WineCfg: React.FC = () => {
     <Card>
       <CardContent>
         <Stack spacing={2}>
-          <H6 className={ContentsClass.ItemTitle}>EnableDxvk</H6>
-          <button disabled={loading} onClick={bundleApp}>
+          <H6 className={ContentsClass.ItemTitle}>Winecfg</H6>
+          <Button disabled={loading} onClick={bundleApp}>
             winecfg
-          </button>
+          </Button>
           <Code type="content" code={JSON.stringify(data, null, 2)} />
         </Stack>
       </CardContent>
