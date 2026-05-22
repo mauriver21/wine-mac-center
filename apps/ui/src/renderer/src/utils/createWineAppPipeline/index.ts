@@ -241,7 +241,7 @@ export const createWineAppPipeline = async (options: {
         return wineApp.spawnScript('extract', `"${from}" "${target}"`, spawnProcessArgs);
       }
       case ScriptOperation.COPY: {
-        const from = `${WINE_DOWNLOADS_PATH}/${parsePath(args.from)}`;
+        const from = `/${parsePath(args.baseFromPath || WINE_DOWNLOADS_PATH)}/${parsePath(args.from)}`;
         const target = `${appEnv.WINE_APP_DRIVE_C_PATH}/${parsePath(args.target)}`;
         return wineApp.spawnScript('copy', `"${from}" "${target}"`, spawnProcessArgs);
       }

@@ -265,7 +265,21 @@ export const PipelineScript: React.FC = () => {
                       control={form.control}
                       name={`pipelineScripts.${index}.from`}
                       InputProps={{
-                        startAdornment: <Chip label={WINE_DOWNLOADS_PATH} sx={{ mr: 1 }} />
+                        startAdornment: (
+                          <Box mr={2}>
+                            <Select
+                              control={form.control}
+                              name={`pipelineScripts.${index}.baseFromPath`}
+                              sx={{ height: 34 }}
+                              options={[
+                                { value: WINE_DOWNLOADS_PATH, label: WINE_DOWNLOADS_PATH },
+                                { value: DRIVE_C_PATH, label: DRIVE_C_PATH },
+                                { value: VOLUMES_PATH, label: VOLUMES_PATH }
+                              ]}
+                              value={WINE_DOWNLOADS_PATH}
+                            />
+                          </Box>
+                        )
                       }}
                       label={t('fromPath')}
                       placeholder={t('fromPathExample')}
@@ -418,6 +432,7 @@ export const PipelineScript: React.FC = () => {
           result = [
             ...result,
             {
+              baseFromPath: item.baseFromPath || '',
               from: item.from || '',
               target: item.target || '',
               operation: item.operation,

@@ -115,6 +115,10 @@ export const useSchema = () => {
             is: ScriptOperation.COPY,
             then: (schema) => schema.required()
           }),
+          baseFromPath: schema.string().when('operation', {
+            is: ScriptOperation.COPY,
+            then: (schema) => schema.required()
+          }),
           target: schema.string().when('operation', {
             is: ScriptOperation.COPY,
             then: (schema) => schema.required()

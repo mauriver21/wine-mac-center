@@ -16,6 +16,7 @@ export type PipelineScript =
   | {
       name: string;
       operation: ScriptOperation.COPY;
+      baseFromPath: string;
       from: string;
       target: string;
       verbs?: string;

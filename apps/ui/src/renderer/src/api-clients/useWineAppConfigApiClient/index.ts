@@ -79,7 +79,7 @@ export const useWineAppConfigApiClient = () => {
     }
   };
 
-  const readCloudFile = async (appName: string) => {
+  const readCloudFile = async (appName: string): Promise<WineAppConfig> => {
     const urls = buildAppUrls({ appName, origin: ConfigOrigin.CLOUD });
     if (urls === undefined) throw Error('Failed to build app urls');
     const { data: appConfig } = await axios.get<WineAppConfig>(urls.scriptURL);
@@ -92,6 +92,7 @@ export const useWineAppConfigApiClient = () => {
       ...appConfig,
       iconURL: urls.iconURL,
       artworkURL: urls.artworkURL,
+      launcherImgURL: urls.launcherImgURL,
       setupExecutableURL,
       setupExecutablePath
     };
@@ -247,14 +248,18 @@ export const useWineAppConfigApiClient = () => {
   };
 
   const downloadScript = async (appName: string) => {
-    const { artworkURL, iconURL, ...rest } = await readCloudFile(appName);
+    const { artworkURL, iconURL, launcherImgURL, ...rest } = await readCloudFile(appName);
+
     return create({
       ...rest,
       origin: ConfigOrigin.SCRIPTS,
       ...(artworkURL
         ? { artworkFile: await (await blobUrlToFile(artworkURL, '')).arrayBuffer() }
         : {}),
-      ...(iconURL ? { iconFile: await (await blobUrlToFile(iconURL, '')).arrayBuffer() } : {})
+      ...(iconURL ? { iconFile: await (await blobUrlToFile(iconURL, '')).arrayBuffer() } : {}),
+      ...(launcherImgURL
+        ? { launcherImgFile: await (await blobUrlToFile(launcherImgURL, '')).arrayBuffer() }
+        : {})
     });
   };
 
