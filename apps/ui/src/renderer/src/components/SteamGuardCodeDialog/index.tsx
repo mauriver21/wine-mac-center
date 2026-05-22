@@ -4,6 +4,7 @@ import { DialogProps, Dialog, Stack, Body1, Icon, H5 } from 'reactjs-shared-ui';
 import { TextField } from '@mui/material';
 import { SteamIcon } from '@assets/icons/24/outline/SteamIcon';
 import { EventName } from '@constants/enums';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface SteamGuardCodeDialogProps extends DialogProps {
   loading?: boolean;
@@ -21,6 +22,7 @@ export const SteamGuardCodeDialog: React.FC<SteamGuardCodeDialogProps> = ({
   onCancel,
   ...rest
 }) => {
+  const { t } = useI18n();
   const [guardCode, setGuardCode] = useState('');
 
   return (
@@ -42,14 +44,13 @@ export const SteamGuardCodeDialog: React.FC<SteamGuardCodeDialogProps> = ({
           <Stack direction="row" alignItems="center" spacing={1}>
             <Icon render={SteamIcon} size={48} />
             <H5 color="text.secondary" fontWeight={500}>
-              Steam Guard
+              {t('steamGuard')}
             </H5>
           </Stack>
           <Body1 fontWeight={500}>
-            It looks like you’re trying to sign in from a new device. Please check your email and
-            enter the Steam Guard code to access your account.
+            {t('steamGuardPrompt')}
           </Body1>
-          <TextField label="Guard Code" onChange={(event) => setGuardCode(event.target.value)} />
+          <TextField label={t('guardCode')} onChange={(event) => setGuardCode(event.target.value)} />
         </Stack>
         <Stack spacing={1} direction="row" justifyContent="flex-end">
           <Button
@@ -59,7 +60,7 @@ export const SteamGuardCodeDialog: React.FC<SteamGuardCodeDialogProps> = ({
               setOpen(false);
             }}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             disabled={loading}
@@ -68,10 +69,11 @@ export const SteamGuardCodeDialog: React.FC<SteamGuardCodeDialogProps> = ({
               setOpen(false);
             }}
           >
-            Accept
+            {t('accept')}
           </Button>
         </Stack>
       </Stack>
     </Dialog>
   );
 };
+

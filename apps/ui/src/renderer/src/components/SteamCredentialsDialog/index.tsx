@@ -6,6 +6,7 @@ import { SteamIcon } from '@assets/icons/24/outline/SteamIcon';
 import { SteamCredentials } from '@interfaces/SteamCredentials';
 import { EventName } from '@constants/enums';
 import { useLocalState } from '@hooks/useLocalState';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface SteamCredentialsDialogProps extends DialogProps {
   loading?: boolean;
@@ -23,6 +24,7 @@ export const SteamCredentialsDialog: React.FC<SteamCredentialsDialogProps> = ({
   onCancel,
   ...rest
 }) => {
+  const { t } = useI18n();
   const { getState } = useLocalState('steamCredentials');
   const [credentials, setCredentials] = useState<SteamCredentials>({
     userName: '',
@@ -53,19 +55,19 @@ export const SteamCredentialsDialog: React.FC<SteamCredentialsDialogProps> = ({
           <Stack direction="row" alignItems="center" spacing={1}>
             <Icon render={SteamIcon} size={48} />
             <H5 color="text.secondary" fontWeight={500}>
-              Steam Credentials
+              {t('steamCredentials')}
             </H5>
           </Stack>
           <TextField
             name="userName"
             value={credentials.userName}
-            label="User Name"
+            label={t('userName')}
             onChange={onChangeCredentials}
           />
           <TextField
             name="password"
             value={credentials.password}
-            label="Password"
+            label={t('password')}
             type="password"
             onChange={onChangeCredentials}
           />
@@ -78,7 +80,7 @@ export const SteamCredentialsDialog: React.FC<SteamCredentialsDialogProps> = ({
               setOpen(false);
             }}
           >
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             disabled={loading}
@@ -87,10 +89,11 @@ export const SteamCredentialsDialog: React.FC<SteamCredentialsDialogProps> = ({
               setOpen(false);
             }}
           >
-            Accept
+            {t('accept')}
           </Button>
         </Stack>
       </Stack>
     </Dialog>
   );
 };
+

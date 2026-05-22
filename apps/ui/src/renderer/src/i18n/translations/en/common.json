@@ -157,5 +157,10 @@
   "runApplication": "Run Application",
   "open": "Open",
   "launcherConfig": "Launcher Configuration",
-  "Environment": "Environment"
+  "Environment": "Environment",
+  "accept": "Accept",
+  "confirmOperation": "Do you want to confirm this operation?",
+  "steamGuard": "Steam Guard",
+  "steamGuardPrompt": "It looks like you're trying to sign in from a new device. Please check your email and enter the Steam Guard code to access your account.",
+  "guardCode": "Guard Code"
 }

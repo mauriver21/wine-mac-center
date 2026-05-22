@@ -1,6 +1,7 @@
 import { Button } from '@components/Button';
 import React from 'react';
 import { DialogProps, Dialog, Stack, Body1 } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface ConfirmationDialogProps extends DialogProps {
   loading?: boolean;
@@ -16,6 +17,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   onAccept: onAcceptProp,
   ...rest
 }) => {
+  const { t } = useI18n();
   const close = () => setOpen(false);
 
   const onAccept = async () => {
@@ -33,17 +35,18 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     >
       <Stack direction="column" justifyContent="space-between" bgcolor="secondary.main" p={2}>
         <Body1 fontWeight={500} py={3}>
-          Do you want to confirm this operation?
+          {t('confirmOperation')}
         </Body1>
         <Stack spacing={1} direction="row" justifyContent="flex-end">
           <Button disabled={loading} onClick={onAccept}>
-            Accept
+            {t('accept')}
           </Button>
           <Button disabled={loading} onClick={close}>
-            Cancel
+            {t('cancel')}
           </Button>
         </Stack>
       </Stack>
     </Dialog>
   );
 };
+
