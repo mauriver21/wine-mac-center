@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { TextField } from 'reactjs-shared-ui/forms';
+import { ContentsClass } from 'reactjs-shared-ui';
 
 export const RunExe: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -27,7 +28,7 @@ export const RunExe: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: 10 }}>
-        <h3>RunExe</h3>
+        <h3 className={ContentsClass.ItemTitle}>RunExe</h3>
         <hr />
       </div>
       <TextField

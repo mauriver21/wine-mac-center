@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTestContext } from '..';
 import { Select, TextField } from 'reactjs-shared-ui/forms';
+import { ContentsClass } from 'reactjs-shared-ui';
 
 export const BundleApp: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -31,7 +32,7 @@ export const BundleApp: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: 10 }}>
-        <h3>Bundle App</h3>
+        <h3 className={ContentsClass.ItemTitle}>Bundle App</h3>
         <hr />
       </div>
       <Select

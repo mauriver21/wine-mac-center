@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTestContext } from '..';
 import { TextField } from 'reactjs-shared-ui/forms';
+import { Button, Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
 
 /**
  * Examples:
@@ -40,27 +41,27 @@ export const SetSetupExe: React.FC = () => {
   };
 
   return (
-    <div style={{ marginBottom: 10 }}>
-      <div style={{ marginBottom: 10 }}>
-        <h3>Set Setup Executable</h3>
-        <TextField
-          value={setupExecutablePath}
-          onChange={(event) => setSetupExecutablePath(event.target.value)}
-        />
-      </div>
-      <button disabled={loading || !Boolean(setupExecutablePath)} onClick={setSetupExe}>
-        Set Setup Exe
-      </button>
-      <div style={{ marginBottom: 10 }}>
-        <h3>Run Setup Executable</h3>
-        <hr />
-      </div>
-      <div>
-        <TextField InputProps={{ readOnly: true }} value={configuredSetupExecutablePath} />
-      </div>
-      <button disabled={loading || !Boolean(configuredSetupExecutablePath)} onClick={runSetupExe}>
-        Run Setup Executable
-      </button>
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>Set Setup Executable</H6>
+          <TextField
+            value={setupExecutablePath}
+            onChange={(event) => setSetupExecutablePath(event.target.value)}
+          />
+          <Button disabled={loading || !Boolean(setupExecutablePath)} onClick={setSetupExe}>
+            Set Setup Exe
+          </Button>
+          <H6>Run Setup Executable</H6>
+          <TextField InputProps={{ readOnly: true }} value={configuredSetupExecutablePath} />
+          <Button
+            disabled={loading || !Boolean(configuredSetupExecutablePath)}
+            onClick={runSetupExe}
+          >
+            Run Setup Executable
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

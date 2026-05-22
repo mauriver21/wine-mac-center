@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useTestContext } from '@pages/Test';
 import { Code } from '@components/Code';
 import { findOutputPids } from '@utils/findOutputPids';
-import { Body2, H6, Stack } from 'reactjs-shared-ui';
+import { Body2, Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
 import { useWineEngineModel } from '@models/useWineEngineModel';
@@ -41,19 +41,23 @@ export const DownloadEngine: React.FC = () => {
   };
 
   return (
-    <Stack spacing={2}>
-      <H6>Download Engine</H6>
-      <Body2>PIDS: {pids ? pids : 'No pids available'}</Body2>
-      <WineEnginesSelect
-        value={engineVersion}
-        onChange={(event) => {
-          setEngineVersion(event.target.value as string);
-        }}
-      />
-      <Button disabled={loading} onClick={downloadEngine}>
-        {loading ? 'Downloading' : 'Download'} Engine
-      </Button>
-      <Code type="content" code={JSON.stringify(data, null, 2)} />
-    </Stack>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>Download Engine</H6>
+          <Body2>PIDS: {pids ? pids : 'No pids available'}</Body2>
+          <WineEnginesSelect
+            value={engineVersion}
+            onChange={(event) => {
+              setEngineVersion(event.target.value as string);
+            }}
+          />
+          <Button disabled={loading} onClick={downloadEngine}>
+            {loading ? 'Downloading' : 'Download'} Engine
+          </Button>
+          <Code type="content" code={JSON.stringify(data, null, 2)} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

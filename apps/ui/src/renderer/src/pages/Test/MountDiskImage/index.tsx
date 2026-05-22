@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { useEnv } from '@hooks/useEnv';
+import { ContentsClass } from 'reactjs-shared-ui';
 
 export const MountDiskImage: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -44,7 +45,7 @@ export const MountDiskImage: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: 10 }}>
-        <h3>Mount Image</h3>
+        <h3 className={ContentsClass.ItemTitle}>Mount Image</h3>
         <hr />
       </div>
       <button style={{ marginRight: 10 }} disabled={loading} onClick={mountDiskImage}>

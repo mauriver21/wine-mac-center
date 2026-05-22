@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { WineEnginesSelect } from '@components/WineEnginesSelect';
+import { Button } from '@components/Button';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
 
 export const ExtractEngine: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -25,16 +27,17 @@ export const ExtractEngine: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 10 }}>
-        <h3>Extract Engine</h3>
-        <hr />
-      </div>
-      <WineEnginesSelect onChange={(event) => setEngineVersion(event.target.value as string)} />
-      <button disabled={loading || !Boolean(engineVersion)} onClick={extractEngine}>
-        {loading ? 'Extracting' : 'Extract'} Engine
-      </button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>Extract Engine</H6>
+          <WineEnginesSelect onChange={(event) => setEngineVersion(event.target.value as string)} />
+          <Button disabled={loading || !Boolean(engineVersion)} onClick={extractEngine}>
+            {loading ? 'Extracting' : 'Extract'} Engine
+          </Button>
+          <Code type="content" code={JSON.stringify(data, null, 2)} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

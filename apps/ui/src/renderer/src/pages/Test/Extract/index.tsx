@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { useEnv } from '@hooks/useEnv';
+import { ContentsClass } from 'reactjs-shared-ui';
 
 export const Extract: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -30,7 +31,7 @@ export const Extract: React.FC = () => {
   return (
     <div>
       <div style={{ marginBottom: 10 }}>
-        <h3>Extract</h3>
+        <h3 className={ContentsClass.ItemTitle}>Extract</h3>
         <hr />
       </div>
       <button disabled={loading} onClick={extract}>

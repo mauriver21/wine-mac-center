@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Code } from '@components/Code';
 import { useTestContext } from '..';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Button } from '@components/Button';
 
 export const EnableDxvk: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -24,15 +26,16 @@ export const EnableDxvk: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 10 }}>
-        <h3>EnableDxvk</h3>
-        <hr />
-      </div>
-      <button disabled={loading} onClick={enableDxvk}>
-        EnableDxvk
-      </button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>EnableDxvk</H6>
+          <Button disabled={loading} onClick={enableDxvk}>
+            EnableDxvk
+          </Button>
+          <Code type="content" code={JSON.stringify(data, null, 2)} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useTestContext } from '..';
 import { Code } from '@components/Code';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Button } from '@components/Button';
 
 export const Wineboot: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -34,18 +36,21 @@ export const Wineboot: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 10 }}>
-        <h3>Wineboot</h3>
-        <hr />
-      </div>
-      <button disabled={loading} onClick={wineboot}>
-        Wineboot
-      </button>
-      <button style={{ marginLeft: 10 }} disabled={loading} onClick={winebootU}>
-        Wineboot -u
-      </button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>Wineboot</H6>
+          <Stack direction="row" spacing={2}>
+            <Button disabled={loading} onClick={wineboot}>
+              Wineboot
+            </Button>
+            <Button style={{ marginLeft: 10 }} disabled={loading} onClick={winebootU}>
+              Wineboot -u
+            </Button>
+          </Stack>
+          <Code type="content" code={JSON.stringify(data, null, 2)} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };

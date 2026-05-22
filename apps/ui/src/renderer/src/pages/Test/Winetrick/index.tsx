@@ -3,6 +3,8 @@ import { useTestContext } from '..';
 import { Code } from '@components/Code';
 import { TextField } from 'reactjs-shared-ui/forms';
 import { spawnLog } from '@utils/spawnLog';
+import { Card, CardContent, ContentsClass, H6, Stack } from 'reactjs-shared-ui';
+import { Button } from '@components/Button';
 
 export const Winetrick: React.FC = () => {
   const { wineApp } = useTestContext();
@@ -44,23 +46,26 @@ export const Winetrick: React.FC = () => {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 10 }}>
-        <h3>Winetrick</h3>
-        <hr />
-      </div>
-      <TextField
-        disabled={loading}
-        label="Trick"
-        value={trick}
-        onChange={(event) => setTrick(event.currentTarget.value)}
-      />
-      <button disabled={loading || !Boolean(trick)} onClick={winetrick}>
-        Winetrick
-      </button>
-      <button onClick={killWinetrick}>Kill Winetrick</button>
-      <button onClick={forceKillWinetrick}>Force Kill Winetrick</button>
-      <Code label="Output" content={JSON.stringify(data, null, 2)} />
-    </div>
+    <Card>
+      <CardContent>
+        <Stack spacing={2}>
+          <H6 className={ContentsClass.ItemTitle}>Winetrick</H6>
+          <TextField
+            disabled={loading}
+            label="Trick"
+            value={trick}
+            onChange={(event) => setTrick(event.currentTarget.value)}
+          />
+          <Stack direction="row" spacing={2}>
+            <Button disabled={loading || !Boolean(trick)} onClick={winetrick}>
+              Winetrick
+            </Button>
+            <Button onClick={killWinetrick}>Kill Winetrick</Button>
+            <Button onClick={forceKillWinetrick}>Force Kill Winetrick</Button>
+          </Stack>
+          <Code type="content" code={JSON.stringify(data, null, 2)} />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 };
