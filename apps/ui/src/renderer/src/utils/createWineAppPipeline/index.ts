@@ -525,6 +525,16 @@ export const createWineAppPipeline = async (options: {
             continue;
           }
 
+          if (!store.killAllProcesses) {
+            await step.script({
+              onStdOut: (data, updateProcess) =>
+                this._.std(job.name, 'stdOut', step, data, updateProcess),
+              onStdErr: (data, updateProcess) =>
+                this._.std(job.name, 'stdErr', step, data, updateProcess),
+              onExit: (data) => this._.std(job.name, 'exit', step, data)
+            });
+          }
+
           if (store.killAllProcesses) {
             step.status = ProcessStatus.Cancelled;
             this._.onUpdate?.({
@@ -536,14 +546,6 @@ export const createWineAppPipeline = async (options: {
             savePipelineConfigJobStep(job.name, step);
             continue;
           }
-
-          await step.script({
-            onStdOut: (data, updateProcess) =>
-              this._.std(job.name, 'stdOut', step, data, updateProcess),
-            onStdErr: (data, updateProcess) =>
-              this._.std(job.name, 'stdErr', step, data, updateProcess),
-            onExit: (data) => this._.std(job.name, 'exit', step, data)
-          });
         }
       }
 
