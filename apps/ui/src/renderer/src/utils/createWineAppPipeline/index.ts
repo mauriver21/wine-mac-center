@@ -405,7 +405,7 @@ export const createWineAppPipeline = async (options: {
             id: uuid(),
             key: 'generatingWinePrefix',
             name: 'Generating wine prefix',
-            script: (args) => wineApp.wineboot('', args),
+            script: (args) => wineApp.wineboot('-u', args),
             status: ProcessStatus.Pending,
             output: ''
           },
