@@ -6,6 +6,7 @@ import { FilePathInput } from '@components/FilePathInput';
 import { FileFilter } from '@constants/enums';
 import { useSteamCli } from '@hooks/useSteamCli';
 import { createAria2cCli } from '@utils/createAria2cCli';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export type WineAppPipelineContextType = {
   createWineAppPipeline: typeof baseCreateWineAppPipeline;
@@ -18,6 +19,7 @@ export const useWineAppPipeline = () => useContext(WineAppPipelineContext);
 
 export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
   return (props: T & JSX.IntrinsicAttributes) => {
+    const { t } = useI18n();
     const [openSelectExecutableDialog, setOpenSelectExecutableDialog] = useState(false);
     const steamCli = useSteamCli();
     const aria2cCli = useMemo(() => createAria2cCli(), []);
@@ -85,7 +87,7 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
           open={openSelectExecutableDialog}
         >
           <Stack p={2} bgcolor="secondary.main" spacing={2}>
-            <Body1 color="text.secondary">Select the main executable</Body1>
+            <Body1 color="text.secondary">{t('selectTheMainExecutable')}</Body1>
             <FilePathInput
               filters={FileFilter.WindowsExecutables}
               defaultPath={store.current.driveCPath}

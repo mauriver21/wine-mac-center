@@ -12,7 +12,6 @@ import { sleep } from 'reactjs-shared-ui';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { createWineApp } from '@utils/createWineApp';
 import { appExists } from '@utils/appExists';
-import { WineAppArgs } from '@interfaces/WineAppArgs';
 import { ConfigOrigin } from '@constants/enums';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { buildUniqueAppName } from '@utils/buildUniqueAppName';
@@ -21,9 +20,12 @@ import { useWineEngineModel } from '@models/useWineEngineModel';
 import { useSteamCli } from '@hooks/useSteamCli';
 import { spawnLog } from '@utils/spawnLog';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { useRef } from 'react';
+import { waitValue } from '@utils/waitValue';
 
 export const useWineAppPipelineModel = () => {
   const { t } = useI18n();
+  const ref = useRef<{ pipelineFinished: boolean | undefined }>({ pipelineFinished: undefined });
   const steamCli = useSteamCli();
   const appModel = useAppModel();
   const loadingDialog = useLoadingDialog();
@@ -33,7 +35,14 @@ export const useWineAppPipelineModel = () => {
   const { createWineAppPipeline, ...context } = useWineAppPipeline();
   const dispatch = useDispatch<Dispatch<WineAppPipelineAction>>();
 
-  const resolveWineAppConfig = async (args: WineAppArgs) => {
+  const setPipelineFinished = (flag: boolean | undefined) => {
+    ref.current.pipelineFinished = flag;
+  };
+
+  const resolveWineAppConfig = async (args: {
+    origin: ConfigOrigin | undefined;
+    appName: string;
+  }) => {
     switch (args.origin) {
       case ConfigOrigin.CLOUD: {
         return wineAppConfigModel.read(args);
@@ -78,7 +87,10 @@ export const useWineAppPipelineModel = () => {
     return config.winetricks?.verbs.some((item) => item == 'steam');
   };
 
-  const scaffoldWineApp = async (args: WineAppArgs, onScaffolded: (appName: string) => void) => {
+  const scaffoldWineApp = async (
+    args: { origin: ConfigOrigin | undefined; appName: string | undefined; config?: WineAppConfig },
+    onScaffolded: (appName: string) => void
+  ) => {
     try {
       loadingDialog.open({ message: t('preparingWineApp') });
 
@@ -184,18 +196,40 @@ export const useWineAppPipelineModel = () => {
     }
   };
 
-  const runWineAppPipeline = async (args: WineAppArgs) => {
+  const resumeWineAppPipeline = async (args: {
+    appName: string | undefined;
+    fromJobIndex?: number;
+    fromStepIndex?: number;
+  }) => {
     try {
+      loadingDialog.open({ message: t('resumingAppPipeline') });
       const { appName, fromJobIndex, fromStepIndex } = args;
-      // Required delay for config.json be ready when loading wine pipeline.
-      await sleep(200);
       const pipeline = await loadWineAppPipeline(appName);
+      loadingDialog.close();
       const promise = pipeline?.run({ fromJobIndex, fromStepIndex });
       await sleep(200);
       wineInstalledAppModel.listAll();
       await promise;
     } catch (error) {
       appModel.dispatchError(error);
+    } finally {
+      setPipelineFinished(true);
+    }
+  };
+
+  const runWineAppPipeline = async (appName: string | undefined) => {
+    try {
+      // Required delay for config.json be ready when loading wine pipeline.
+      await sleep(200);
+      const pipeline = await loadWineAppPipeline(appName);
+      const promise = pipeline?.run();
+      await sleep(200);
+      wineInstalledAppModel.listAll();
+      await promise;
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      setPipelineFinished(true);
     }
   };
 
@@ -210,6 +244,8 @@ export const useWineAppPipelineModel = () => {
     } catch (error) {
       appModel.dispatchError(error);
     } finally {
+      await waitValue(ref.current, 'pipelineFinished');
+      setPipelineFinished(undefined);
       loadingDialog.close();
     }
   };
@@ -234,6 +270,7 @@ export const useWineAppPipelineModel = () => {
   );
 
   return {
+    resumeWineAppPipeline,
     runWineAppPipeline,
     killWineAppPipeline,
     clearWineAppPipeline,

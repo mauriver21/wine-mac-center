@@ -18,7 +18,7 @@ export interface PipelineStepProps {
 
 export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, stepIndex }) => {
   const { t } = useI18n();
-  const { runWineAppPipeline, running, action } = useAppPipelineContext();
+  const { resumeWineAppPipeline, running, action } = useAppPipelineContext();
   const [show, setShow] = useState(false);
   const output =
     step.output
@@ -67,7 +67,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
                 {
                   label: t('runPipelineFromHere'),
                   onClick: () => {
-                    runWineAppPipeline({ fromJobIndex: jobIndex, fromStepIndex: stepIndex });
+                    resumeWineAppPipeline({ fromJobIndex: jobIndex, fromStepIndex: stepIndex });
                   }
                 }
               ]}

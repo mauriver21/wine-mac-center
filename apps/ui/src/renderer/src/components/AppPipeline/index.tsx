@@ -1,25 +1,23 @@
 import { PipelineStep } from '@components/PipelineStep';
-import { ConfigOrigin, PipelineAction, ProcessStatus } from '@constants/enums';
+import { PipelineAction, ProcessStatus } from '@constants/enums';
 import { AppPipelineContext, AppPipelineContextType } from '@contexts/AppPipelineContext';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { ConfigLayout } from '@layouts/ConfigLayout';
-import { useAppModel } from '@models/useAppModel';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { useRefresh } from '@utils/useRefresh';
-import { t } from 'i18next';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, ContentsClass, Stack } from 'reactjs-shared-ui';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const AppPipeline: React.FC = () => {
+  const { t } = useI18n();
   const [running, setRunning] = useState(false);
   const { signal, refresh } = useRefresh();
   const { appName } = useParams();
   const queryParam = useQueryParam();
-  const appModel = useAppModel();
-  const origin = queryParam.get('origin') as ConfigOrigin;
   const action = queryParam.get('action') as PipelineAction;
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
@@ -27,27 +25,20 @@ export const AppPipeline: React.FC = () => {
   const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
   const status = wineAppPipelineStatus?.status;
 
-  const runWineAppPipeline: AppPipelineContextType['runWineAppPipeline'] = async (args) => {
-    try {
-      setRunning(true);
-      if (appName === undefined) throw new Error(`Invalid application name`);
-      await wineAppPipelineModel.runWineAppPipeline({
-        appName,
-        origin: ConfigOrigin.INSTALLED_APP,
-        ...args
-      });
-    } catch (error) {
-      appModel.dispatchError(error);
-    } finally {
-      setRunning(false);
-    }
+  const resumeWineAppPipeline: AppPipelineContextType['resumeWineAppPipeline'] = async (args) => {
+    setRunning(true);
+    await wineAppPipelineModel.resumeWineAppPipeline({
+      appName,
+      ...args
+    });
+    setRunning(false);
   };
 
   useEffect(() => {
     if (appName) {
       switch (action) {
         case PipelineAction.RUN:
-          wineAppPipelineModel.runWineAppPipeline({ appName, origin });
+          wineAppPipelineModel.runWineAppPipeline(appName);
           break;
         case PipelineAction.RESUME:
           wineAppPipelineModel.loadWineAppPipeline(appName);
@@ -67,7 +58,7 @@ export const AppPipeline: React.FC = () => {
   }, [wineAppPipelineStatus?.jobs?.length]);
 
   return (
-    <AppPipelineContext.Provider value={{ runWineAppPipeline, running, action }}>
+    <AppPipelineContext.Provider value={{ resumeWineAppPipeline, running, action }}>
       <ConfigLayout
         signal={signal}
         mainTitle={appName}
@@ -110,7 +101,7 @@ export const AppPipeline: React.FC = () => {
                 disabled={running}
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
-                onClick={() => runWineAppPipeline()}
+                onClick={() => resumeWineAppPipeline()}
               >
                 {t('resume')}
               </Button>

@@ -162,5 +162,7 @@
   "confirmOperation": "Do you want to confirm this operation?",
   "steamGuard": "Steam Guard",
   "steamGuardPrompt": "It looks like you're trying to sign in from a new device. Please check your email and enter the Steam Guard code to access your account.",
-  "guardCode": "Guard Code"
+  "guardCode": "Guard Code",
+  "selectTheMainExecutable": "Select the main executable",
+  "resumingAppPipeline": "Resuming app pipeline..."
 }

@@ -2,7 +2,7 @@ import { PipelineAction } from '@constants/enums';
 import { createContext } from 'react';
 
 export type AppPipelineContextType = {
-  runWineAppPipeline: (args?: {
+  resumeWineAppPipeline: (args?: {
     fromJobIndex?: number | undefined;
     fromStepIndex?: number | undefined;
   }) => Promise<void>;
