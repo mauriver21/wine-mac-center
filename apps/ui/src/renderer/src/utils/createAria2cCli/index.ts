@@ -43,6 +43,7 @@ export const createAria2cCli = () => {
     const cmdArgs = [
       `--dir="${dir}"`,
       `--split=${split}`,
+      `--max-connection-per-server=${split}`,
       `--summary-interval=${summaryInterval}`,
       `--continue=${resume}`,
       `--auto-file-renaming=${autoFileRenaming}`,
@@ -50,8 +51,10 @@ export const createAria2cCli = () => {
       `"${url}"`
     ];
 
+    const cmd = cmdArgs.join(' ');
+
     return new Promise<undefined>((resolve) => {
-      bin(cmdArgs.join(' '), {
+      bin(cmd, {
         ...args,
         onExit: (data) => {
           args?.onExit?.(data);
