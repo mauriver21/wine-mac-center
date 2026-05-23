@@ -23,16 +23,30 @@ export const createAria2cCli = () => {
       dir?: string;
       split?: number;
       summaryInterval?: number;
+      resume?: boolean;
+      autoFileRenaming?: boolean;
+      allowOverwrite?: boolean;
       url: string;
     },
     args?: SpawnProcessArgs
   ) => {
-    const { dir = WINE_DOWNLOADS_PATH, split = 16, summaryInterval = 1, url } = config;
+    const {
+      dir = WINE_DOWNLOADS_PATH,
+      split = 16,
+      summaryInterval = 1,
+      resume = true,
+      autoFileRenaming = false,
+      allowOverwrite = false,
+      url
+    } = config;
 
     const cmdArgs = [
       `--dir="${dir}"`,
       `--split=${split}`,
       `--summary-interval=${summaryInterval}`,
+      `--continue=${resume}`,
+      `--auto-file-renaming=${autoFileRenaming}`,
+      `--allow-overwrite=${allowOverwrite}`,
       `"${url}"`
     ];
 

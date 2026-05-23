@@ -215,26 +215,17 @@ export const createWineAppPipeline = async (options: {
       case ScriptOperation.DOWNLOAD: {
         spawnProcessArgs.onStdOut?.('-----');
         spawnProcessArgs.onStdOut?.('Download Started:');
-        const fileName = args.downloadName || args.url.split('/').pop() || '';
-        const target = `${WINE_DOWNLOADS_PATH}/${decodeURIComponent(fileName)}`;
-        const aria2Target = `${WINE_DOWNLOADS_PATH}/${decodeURIComponent(fileName)}.aria2`;
-
-        if ((await fileExists(target)) && !(await fileExists(aria2Target))) {
-          spawnProcessArgs.onStdOut?.('File already exists, skipping download.');
-        } else {
-          await aria2cCli?.download(
-            { url: args.url },
-            {
-              ...spawnProcessArgs,
-              onStdOut: (data) => {
-                updateCurrentProcess(data);
-                spawnProcessArgs?.onStdOut?.(data);
-              }
+        await aria2cCli?.download(
+          { url: args.url },
+          {
+            ...spawnProcessArgs,
+            onStdOut: (data) => {
+              updateCurrentProcess(data);
+              spawnProcessArgs?.onStdOut?.(data);
             }
-          );
-          spawnProcessArgs.onStdOut?.('Download Finished.');
-        }
-
+          }
+        );
+        spawnProcessArgs.onStdOut?.('Download Finished.');
         spawnProcessArgs.onExit?.(0);
         break;
       }
