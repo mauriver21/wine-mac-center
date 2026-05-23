@@ -153,7 +153,6 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
           ...args,
           ...spawnLog,
           onExit: async (data) => {
-            console.log(data);
             args?.onExit?.(data);
           }
         });
@@ -173,8 +172,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
 
       const ICON_PATH = `${WINE_ENV.WINE_APP_RESOURCES_PATH}/${FileName.CFBundleIconFile}`;
       writeBinaryFile(ICON_PATH, file);
-      const result = await execScript('imageToIcns', `"${ICON_PATH}"`);
-      console.log(result);
+      await execScript('imageToIcns', `"${ICON_PATH}"`);
     } catch (error) {
       console.error(error);
     }
