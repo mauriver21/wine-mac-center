@@ -12,6 +12,9 @@ killPids() {
     # Skip empty values
     [[ -z "$pid" ]] && continue
 
+    # Skip process group (0) and init process (1) to prevent killing the app or system processes
+    [[ "$pid" == "0" || "$pid" == "1" ]] && continue
+
     # Validate numeric PID
     if [[ ! "$pid" =~ ^[0-9]+$ ]]; then
       echo "Skipping invalid PID: $pid"

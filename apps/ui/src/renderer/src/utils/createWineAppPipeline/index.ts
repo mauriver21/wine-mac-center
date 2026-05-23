@@ -217,11 +217,21 @@ export const createWineAppPipeline = async (options: {
         spawnProcessArgs.onStdOut?.('Download Started:');
         const fileName = args.downloadName || args.url.split('/').pop() || '';
         const target = `${WINE_DOWNLOADS_PATH}/${decodeURIComponent(fileName)}`;
+        const aria2Target = `${WINE_DOWNLOADS_PATH}/${decodeURIComponent(fileName)}.aria2`;
 
-        if (await fileExists(target)) {
+        if ((await fileExists(target)) && !(await fileExists(aria2Target))) {
           spawnProcessArgs.onStdOut?.('File already exists, skipping download.');
         } else {
-          await aria2cCli?.download({ url: args.url }, spawnProcessArgs);
+          await aria2cCli?.download(
+            { url: args.url },
+            {
+              ...spawnProcessArgs,
+              onStdOut: (data) => {
+                updateCurrentProcess(data);
+                spawnProcessArgs?.onStdOut?.(data);
+              }
+            }
+          );
           spawnProcessArgs.onStdOut?.('Download Finished.');
         }
 
@@ -360,7 +370,7 @@ export const createWineAppPipeline = async (options: {
       }),
     kill: async () => {
       const pids = store.currentProcess.pids;
-      pids && (await wineApp.execScript('killPids', `${pids}`));
+      pids && pids !== '0' && (await wineApp.execScript('killPids', `${pids}`));
       store.killAllProcesses = true;
       savePipelineStatus(ProcessStatus.Cancelled);
       await writePipelineConfig();

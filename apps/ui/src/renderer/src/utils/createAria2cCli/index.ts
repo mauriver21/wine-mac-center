@@ -8,7 +8,10 @@ export const createAria2cCli = () => {
   const WINE_DOWNLOADS_PATH = `${env.get().WINE_DOWNLOADS_PATH}`;
 
   const bin = (cmd: string, spawnArgs?: SpawnProcessArgs) => {
-    return spawnProcess(`"${CLIENTS_PATH}/aria2c/aria2c" ${cmd}`, spawnArgs);
+    return spawnProcess(
+      `"${CLIENTS_PATH}/aria2c/aria2c" ${cmd} & PID=$!; echo "[PIDS_START]$PID[PIDS_END]"; wait $PID`,
+      spawnArgs
+    );
   };
 
   const help = (args?: SpawnProcessArgs) => {
@@ -33,12 +36,12 @@ export const createAria2cCli = () => {
       `"${url}"`
     ];
 
-    return new Promise<{ GID: string | undefined }>((resolve) => {
+    return new Promise<undefined>((resolve) => {
       bin(cmdArgs.join(' '), {
         ...args,
         onExit: (data) => {
           args?.onExit?.(data);
-          resolve({ GID: undefined });
+          resolve(undefined);
         }
       });
     });
