@@ -19,27 +19,27 @@
       "name": "Extract File"
     },
     {
-      "diskImagePath": "Age of Mythology - Gold Edition (Europe) (En,Fr,De,Es,It).iso",
+      "diskImagePath": "Age of Mythology - Gold Edition (Europe) (En,Fr,De,Es,It)/Age of Mythology - Gold Edition (Europe) (En,Fr,De,Es,It).iso",
       "operation": "MOUNT_DISK_IMAGE",
-      "name": "Mount disk image"
+      "name": "Mount Disk Image"
     },
     {
       "exePath": "/AOM_D1/AOM/UK/Install.exe",
       "baseExePath": "/Volumes",
       "operation": "RUN_WINDOWS_EXE",
-      "name": "Run Windows Exe"
+      "name": "Run Windows EXE"
     },
     {
       "exePath": "/AOM_D1/AOMX/UK/Install.exe",
       "baseExePath": "/Volumes",
       "operation": "RUN_WINDOWS_EXE",
-      "name": "Run Windows Exe"
+      "name": "Run Windows EXE"
     },
     {
       "mainExePath": "Program Files (x86)/Microsoft Games/Age of Mythology/aomx.exe",
       "operation": "SET_MAIN_EXE",
-      "exeFlags": "xres=1920 yres=1080",
-      "name": "Set main exe"
+      "exeFlags": "xres=800 yres=600",
+      "name": "Set Main EXE"
     }
   ],
   "launcherConfig": {
