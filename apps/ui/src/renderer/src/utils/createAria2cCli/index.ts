@@ -20,7 +20,6 @@ export const createAria2cCli = () => {
       dir?: string;
       split?: number;
       summaryInterval?: number;
-      enableRpc?: boolean;
       url: string;
     },
     args?: SpawnProcessArgs

@@ -1,10 +1,11 @@
-import { createContext, useContext, useRef, useState } from 'react';
+import { createContext, useContext, useMemo, useRef, useState } from 'react';
 import { createWineAppPipeline as baseCreateWineAppPipeline } from '@utils/createWineAppPipeline';
 import { Body1, Dialog, Stack } from 'reactjs-shared-ui';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
 import { FilePathInput } from '@components/FilePathInput';
 import { FileFilter } from '@constants/enums';
 import { useSteamCli } from '@hooks/useSteamCli';
+import { createAria2cCli } from '@utils/createAria2cCli';
 
 export type WineAppPipelineContextType = {
   createWineAppPipeline: typeof baseCreateWineAppPipeline;
@@ -19,6 +20,7 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
   return (props: T & JSX.IntrinsicAttributes) => {
     const [openSelectExecutableDialog, setOpenSelectExecutableDialog] = useState(false);
     const steamCli = useSteamCli();
+    const aria2cCli = useMemo(() => createAria2cCli(), []);
 
     const store = useRef<{
       pipeline: WineAppPipeline | undefined;
@@ -56,7 +58,7 @@ export const withWineAppPipelineProvider = <T,>(Component: React.FC<T>) => {
           setOpenSelectExecutableDialog(false);
           return mainExe;
         },
-        clients: { steamCli }
+        clients: { steamCli, aria2cCli }
       });
 
       store.current.pipeline = pipeline;

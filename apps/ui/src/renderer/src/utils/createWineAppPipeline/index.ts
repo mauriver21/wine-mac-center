@@ -12,17 +12,16 @@ import { clone } from '@utils/clone';
 import { createEnv } from '@utils/createEnv';
 import { createWineApp } from '@utils/createWineApp';
 import { dirExists } from '@utils/dirExists';
-import { downloadFile } from '@utils/downloadFile';
 import { fileExists } from '@utils/fileExists';
 import { readDirectory } from '@utils/readDirectory';
 import { readFileAsString } from '@utils/readFileAsString';
-import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { writeFile } from '@utils/writeFile';
 import { findOutputPids } from '@utils/findOutputPids';
 import { v4 as uuid } from 'uuid';
 import { parsePath } from '@utils/parsePath';
 import { getRelativeDriveCPath } from '@utils/getRelativeDriveCPath';
 import { createSteamCli } from '@utils/createSteamCli';
+import { createAria2cCli } from '@utils/createAria2cCli';
 
 export const createWineAppPipeline = async (options: {
   appName: string;
@@ -34,6 +33,7 @@ export const createWineAppPipeline = async (options: {
   }) => Promise<string>;
   clients?: {
     steamCli?: ReturnType<typeof createSteamCli>;
+    aria2cCli?: ReturnType<typeof createAria2cCli>;
   };
 }) => {
   const id = uuid();
@@ -51,7 +51,7 @@ export const createWineAppPipeline = async (options: {
     appFolderPath,
     pipelineScripts = []
   } = appConfig;
-  const { clients: { steamCli } = {} } = options;
+  const { clients: { steamCli, aria2cCli } = {} } = options;
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
   const WINETRICKS_VERSION = winetricks?.version || '20260125';
@@ -160,6 +160,7 @@ export const createWineAppPipeline = async (options: {
     for (const verb of verbs) {
       steps.push({
         id: uuid(),
+        key: `runningWinetrick`,
         name: `Running winetrick ${verb}`,
         script: (args: SpawnProcessArgs) =>
           wineApp.winetrick({ verb, version: WINETRICKS_VERSION }, args, winetricks?.options),
@@ -220,14 +221,7 @@ export const createWineAppPipeline = async (options: {
         if (await fileExists(target)) {
           spawnProcessArgs.onStdOut?.('File already exists, skipping download.');
         } else {
-          let percent: number | undefined = undefined;
-          const file = await downloadFile(args.url, (args) => {
-            if (percent !== args.percent) {
-              percent = args.percent;
-              spawnProcessArgs.onStdOut?.(`${percent}%`);
-            }
-          });
-          await writeBinaryFile(target, file);
+          await aria2cCli?.download({ url: args.url }, spawnProcessArgs);
           spawnProcessArgs.onStdOut?.('Download Finished.');
         }
 
@@ -295,6 +289,7 @@ export const createWineAppPipeline = async (options: {
         ...steps,
         {
           id: uuid(),
+          key: script.operation,
           name: script.name,
           output: '',
           status: ProcessStatus.Pending,
@@ -372,6 +367,7 @@ export const createWineAppPipeline = async (options: {
     },
     jobs: [
       {
+        key: 'createWineApp',
         name: 'Create wine app',
         steps: [
           ...(ENGINE_EXISTS
@@ -379,6 +375,7 @@ export const createWineAppPipeline = async (options: {
             : [
                 {
                   id: uuid(),
+                  key: 'downloadingWineEngine',
                   name: 'Downloading wine engine',
                   script: (args: SpawnProcessArgs) =>
                     wineApp.downloadWineEngine(engineURLs, engineVersion, args),
@@ -388,6 +385,7 @@ export const createWineAppPipeline = async (options: {
               ]),
           {
             id: uuid(),
+            key: 'extractingWineEngine',
             name: 'Extracting wine engine',
             script: (args) => wineApp.extractEngine(engineVersion, args),
             status: ProcessStatus.Pending,
@@ -395,6 +393,7 @@ export const createWineAppPipeline = async (options: {
           },
           {
             id: uuid(),
+            key: 'generatingWinePrefix',
             name: 'Generating wine prefix',
             script: (args) => wineApp.wineboot('', args),
             status: ProcessStatus.Pending,
@@ -404,6 +403,7 @@ export const createWineAppPipeline = async (options: {
             ? [
                 {
                   id: uuid(),
+                  key: 'enablingDXVK',
                   name: 'Enabling DXVK',
                   script: (args: SpawnProcessArgs) =>
                     wineApp.winetrick({ verb: 'dxvk1102', version: WINETRICKS_VERSION }, args),
@@ -417,6 +417,7 @@ export const createWineAppPipeline = async (options: {
             ? [
                 {
                   id: uuid(),
+                  key: 'downloadingSetupExecutable',
                   name: 'Downloading setup executable',
                   script: (args?: SpawnProcessArgs) =>
                     wineApp.setSetupExe(setupExecutableURL, args),
@@ -429,6 +430,7 @@ export const createWineAppPipeline = async (options: {
             ? [
                 {
                   id: uuid(),
+                  key: 'runningSetupExecutable',
                   name: 'Running setup executable',
                   script: (args?: SpawnProcessArgs) => {
                     const exePath = wineApp.getAppConfig().setupExecutablePath || '';
@@ -443,6 +445,7 @@ export const createWineAppPipeline = async (options: {
             ? [
                 {
                   id: uuid(),
+                  key: 'copyingWindowsApplication',
                   name: 'Copying windows application',
                   script: (args?: SpawnProcessArgs) => {
                     return wineApp.copyWindowsApplication(appFolderPath || '', args);
@@ -455,6 +458,7 @@ export const createWineAppPipeline = async (options: {
           ...buildPipelineStepsFromScripts(),
           {
             id: uuid(),
+            key: 'configuringAppExecutable',
             name: 'Configuring app executable',
             script: async (args?: SpawnProcessArgs) => {
               const appConfig = wineApp.getAppConfig();

@@ -3,6 +3,7 @@ import { WineAppStep } from '@interfaces/WineAppStep';
 import { PipelineScript } from '@interfaces/PipelineScript';
 
 export type WineAppJobWithScript = {
+  key: string;
   name: string;
   steps: Array<
     WineAppStep & {
