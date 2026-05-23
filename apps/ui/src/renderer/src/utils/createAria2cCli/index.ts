@@ -8,7 +8,7 @@ export const createAria2cCli = () => {
   const WINE_DOWNLOADS_PATH = `${env.get().WINE_DOWNLOADS_PATH}`;
 
   const bin = (cmd: string, spawnArgs?: SpawnProcessArgs) => {
-    return spawnProcess(`"${CLIENTS_PATH}/aria2c/bin" ${cmd}`, spawnArgs);
+    return spawnProcess(`"${CLIENTS_PATH}/aria2c/aria2c" ${cmd}`, spawnArgs);
   };
 
   const help = (args?: SpawnProcessArgs) => {
@@ -16,14 +16,33 @@ export const createAria2cCli = () => {
   };
 
   const download = (
-    config: { url: string; dir?: string; split?: number },
+    config: {
+      dir?: string;
+      split?: number;
+      summaryInterval?: number;
+      enableRpc?: boolean;
+      url: string;
+    },
     args?: SpawnProcessArgs
   ) => {
-    const { url, dir, split } = config;
+    const { dir = WINE_DOWNLOADS_PATH, split = 16, summaryInterval = 1, url } = config;
 
-    const cmdArgs = [`--dir="${dir || WINE_DOWNLOADS_PATH}"`, `--split=${split || 16}`, `"${url}"`];
+    const cmdArgs = [
+      `--dir="${dir}"`,
+      `--split=${split}`,
+      `--summary-interval=${summaryInterval}`,
+      `"${url}"`
+    ];
 
-    return bin(cmdArgs.join(' '), args);
+    return new Promise<{ GID: string | undefined }>((resolve) => {
+      bin(cmdArgs.join(' '), {
+        ...args,
+        onExit: (data) => {
+          args?.onExit?.(data);
+          resolve({ GID: undefined });
+        }
+      });
+    });
   };
 
   return { download, help };
