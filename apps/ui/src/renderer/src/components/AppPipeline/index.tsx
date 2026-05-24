@@ -22,8 +22,8 @@ export const AppPipeline: React.FC = () => {
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
-  const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineStatus);
-  const status = wineAppPipelineStatus?.status;
+  const wineAppPipelineConfig = useSelector(wineAppPipelineModel.selectWineAppPipelineConfig);
+  const status = wineAppPipelineConfig?.status;
 
   const resumeWineAppPipeline: AppPipelineContextType['resumeWineAppPipeline'] = async (args) => {
     setRunning(true);
@@ -31,6 +31,7 @@ export const AppPipeline: React.FC = () => {
       appName,
       ...args
     });
+    wineAppPipelineModel.loadWineAppPipeline(appName);
     setRunning(false);
   };
 
@@ -55,7 +56,7 @@ export const AppPipeline: React.FC = () => {
 
   useEffect(() => {
     refresh();
-  }, [wineAppPipelineStatus?.jobs?.length]);
+  }, [wineAppPipelineConfig?.jobs?.length]);
 
   return (
     <AppPipelineContext.Provider value={{ resumeWineAppPipeline, running, action }}>
@@ -65,7 +66,7 @@ export const AppPipeline: React.FC = () => {
         showBack={false}
         contentSlot={
           <Box p={2} overflow="auto">
-            {wineAppPipelineStatus?.jobs?.map?.((item, jobIndex) => (
+            {wineAppPipelineConfig?.jobs?.map?.((item, jobIndex) => (
               <Stack alignItems="center" key={item.name} spacing={2}>
                 {item?.steps?.map((step, stepIndex) => (
                   <Box key={stepIndex} width="100%" maxWidth={800} className={ContentsClass.Item}>

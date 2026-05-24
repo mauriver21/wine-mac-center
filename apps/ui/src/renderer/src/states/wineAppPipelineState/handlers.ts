@@ -1,19 +1,19 @@
 import { WineAppPipelineState } from '@interfaces/WineAppPipelineState';
 
 export const patch = (
-  pipelineStatus: WineAppPipelineState['pipelineStatus'],
+  pipelineStatus: WineAppPipelineState['pipelineConfig'],
   state: WineAppPipelineState
 ): WineAppPipelineState => {
   return {
     ...state,
-    pipelineStatus: {
-      ...state.pipelineStatus,
+    pipelineConfig: {
+      ...state.pipelineConfig,
       ...pipelineStatus
-    } as WineAppPipelineState['pipelineStatus']
+    } as WineAppPipelineState['pipelineConfig']
   };
 };
 
 export const remove = (state: WineAppPipelineState): WineAppPipelineState => ({
   ...state,
-  pipelineStatus: undefined
+  pipelineConfig: undefined
 });

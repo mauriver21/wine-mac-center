@@ -9,6 +9,8 @@ import { ContextMenu } from '@components/ContextMenu';
 import { useAppPipelineContext } from '@hooks/useAppPipelineContext';
 import { PipelineAction } from '@constants/enums';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { useSelector } from 'react-redux';
+import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 
 export interface PipelineStepProps {
   step: WineAppStep;
@@ -19,6 +21,8 @@ export interface PipelineStepProps {
 export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, stepIndex }) => {
   const { t } = useI18n();
   const { resumeWineAppPipeline, running, action } = useAppPipelineContext();
+  const wineAppPipelineModel = useWineAppPipelineModel();
+  const wineAppPipelineStatus = useSelector(wineAppPipelineModel.selectWineAppPipelineConfig);
   const [show, setShow] = useState(false);
   const output =
     step.output
@@ -28,6 +32,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
       .replace(/\[PID_START\].*?\[PID_END\]/g, '')
       .trim() || '\nNo output to display';
   const hasOutput = Boolean(step.output);
+  const lastStepIndex = wineAppPipelineStatus?.lastStepIndex;
 
   return (
     <Card>
@@ -60,7 +65,9 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
             </Body1>
             <StatusBox status={step.status} />
           </Stack>
-          {action === PipelineAction.RESUME ? (
+          {action === PipelineAction.RESUME &&
+          lastStepIndex !== undefined &&
+          stepIndex <= lastStepIndex ? (
             <ContextMenu
               disabled={running}
               menuItems={[

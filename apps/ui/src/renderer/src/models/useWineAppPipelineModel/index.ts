@@ -4,7 +4,6 @@ import { store } from '@store';
 import { useWineAppPipeline } from '@hocs/withWineAppPipelineProvider';
 import { RootState } from '@interfaces/RootState';
 import { WineAppPipelineAction } from '@interfaces/WineAppPipelineAction';
-import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { useAppModel } from '@models/useAppModel';
 import { WineAppPipelineActionType as ActionType } from '@constants/actionTypes';
 import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
@@ -22,6 +21,7 @@ import { spawnLog } from '@utils/spawnLog';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { useRef } from 'react';
 import { waitValue } from '@utils/waitValue';
+import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
 
 export const useWineAppPipelineModel = () => {
   const { t } = useI18n();
@@ -182,11 +182,11 @@ export const useWineAppPipelineModel = () => {
         outputEveryMs: 1000
       });
 
-      const { jobs, status } = await pipeline.readPipelineConfig();
-      dispatchPatch({ jobs, status, pipelineId: pipeline.id });
+      const pipelineConfig = await pipeline.readPipelineConfig();
+      dispatchPatch({ ...pipelineConfig, pipelineId: pipeline.id });
 
       pipeline.onUpdate((pipelineStatus) => {
-        dispatchPatch({ ...pipelineStatus });
+        dispatchPatch({ ...pipelineStatus, appConfig: pipelineConfig.appConfig });
       });
 
       return pipeline;
@@ -256,17 +256,17 @@ export const useWineAppPipelineModel = () => {
     });
   };
 
-  const dispatchPatch = (pipelineStatus: WineAppPipelineStatus) => {
+  const dispatchPatch = (pipelineConfig: WineAppPipelineConfig) => {
     dispatch({
       type: ActionType.PATCH,
-      pipelineStatus
+      pipelineConfig
     });
   };
 
   const selectWineAppPipelineState = (state: RootState) => state.wineAppPipelineState;
-  const selectWineAppPipelineStatus = createSelector(
+  const selectWineAppPipelineConfig = createSelector(
     [selectWineAppPipelineState],
-    (wineAppPipelineState) => wineAppPipelineState.pipelineStatus
+    (wineAppPipelineState) => wineAppPipelineState.pipelineConfig
   );
 
   return {
@@ -279,6 +279,6 @@ export const useWineAppPipelineModel = () => {
     scaffoldWineApp,
     stopWineAppPipeline,
     loadWineAppPipeline,
-    selectWineAppPipelineStatus
+    selectWineAppPipelineConfig
   };
 };

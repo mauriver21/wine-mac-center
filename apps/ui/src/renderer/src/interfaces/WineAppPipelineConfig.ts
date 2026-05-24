@@ -3,6 +3,7 @@ import { WineAppJob } from '@interfaces/WineAppJob';
 import { ProcessStatus } from '@constants/enums';
 
 export type WineAppPipelineConfig = {
+  pipelineId?: string;
   appConfig: WineAppConfig;
   jobs: Array<WineAppJob>;
   status: ProcessStatus;

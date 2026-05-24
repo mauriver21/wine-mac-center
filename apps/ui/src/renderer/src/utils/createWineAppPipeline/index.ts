@@ -6,7 +6,6 @@ import { WineAppJob } from '@interfaces/WineAppJob';
 import { WineAppJobWithScript } from '@interfaces/WineAppJobWithScript';
 import { WineAppPipeline } from '@interfaces/WineAppPipeline';
 import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
-import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { WineAppStep } from '@interfaces/WineAppStep';
 import { clone } from '@utils/clone';
 import { createEnv } from '@utils/createEnv';
@@ -71,8 +70,8 @@ export const createWineAppPipeline = async (options: {
     pipelineConfig = {
       ...pipelineConfig,
       ...(status ? { status } : {}),
-      lastJobIndex,
-      lastStepIndex
+      ...(lastJobIndex !== undefined ? { lastJobIndex } : {}),
+      ...(lastStepIndex !== undefined ? { lastStepIndex } : {})
     };
   };
 
@@ -184,7 +183,7 @@ export const createWineAppPipeline = async (options: {
 
   const resetJobStepsStatus = (
     steps: WineAppJobWithScript['steps'],
-    onUpdate: ((status: WineAppPipelineStatus) => void) | undefined,
+    onUpdate: ((status: WineAppPipelineConfig) => void) | undefined,
     fromStepIndex?: number
   ) => {
     let stepIndex = 0;
@@ -205,7 +204,10 @@ export const createWineAppPipeline = async (options: {
     onUpdate?.({
       pipelineId: id,
       jobs: pipeline.jobs,
-      status: ProcessStatus.Pending
+      status: ProcessStatus.Pending,
+      lastJobIndex: pipelineConfig.lastJobIndex,
+      lastStepIndex: pipelineConfig.lastStepIndex,
+      appConfig: pipelineConfig.appConfig
     });
   };
 
@@ -335,9 +337,8 @@ export const createWineAppPipeline = async (options: {
           step.status = ProcessStatus.Cancelled;
           savePipelineConfigJobStep(jobName, step);
           this.onUpdate?.({
-            pipelineId: id,
-            jobs: pipeline.jobs,
-            status: ProcessStatus.Cancelled
+            status: ProcessStatus.Cancelled,
+            ...pipeline.getUpdatedConfig()
           });
           return;
         }
@@ -349,9 +350,8 @@ export const createWineAppPipeline = async (options: {
         if (data === ExitCode.SuccessfulExecution) {
           step.status = ProcessStatus.Success;
           this.onUpdate?.({
-            pipelineId: id,
-            jobs: pipeline.jobs,
-            status: ProcessStatus.InProgress
+            status: ProcessStatus.InProgress,
+            ...pipeline.getUpdatedConfig()
           });
         }
 
@@ -364,13 +364,19 @@ export const createWineAppPipeline = async (options: {
         handleOutput(() => {
           options.debug && console.log(action, data, step.name);
           this.onUpdate?.({
-            pipelineId: id,
-            jobs: pipeline.jobs,
-            status: ProcessStatus.InProgress
+            status: ProcessStatus.InProgress,
+            ...pipeline.getUpdatedConfig()
           });
         });
       }
     },
+    getUpdatedConfig: () => ({
+      pipelineId: id,
+      jobs: pipeline.jobs,
+      lastJobIndex: pipelineConfig.lastJobIndex,
+      lastStepIndex: pipelineConfig.lastStepIndex,
+      appConfig: pipelineConfig.appConfig
+    }),
     readPipelineConfig,
     onUpdate(fn) {
       this._.onUpdate = (pipelineStatus) => fn(clone(pipelineStatus));
@@ -380,7 +386,10 @@ export const createWineAppPipeline = async (options: {
       clone({
         pipelineId: id,
         jobs: pipeline.jobs,
-        status: ProcessStatus.Cancelled
+        status: ProcessStatus.Cancelled,
+        lastJobIndex: pipelineConfig.lastJobIndex,
+        lastStepIndex: pipelineConfig.lastStepIndex,
+        appConfig: pipelineConfig.appConfig
       }),
     kill: async () => {
       const pids = store.currentProcess.pids;
@@ -563,28 +572,37 @@ export const createWineAppPipeline = async (options: {
         fromJobIndex = pipelineConfig.lastJobIndex,
         fromStepIndex = pipelineConfig.lastStepIndex
       } = args || {};
-      savePipelineStatus({ status: ProcessStatus.InProgress });
-      await writePipelineConfig();
+
       let jobIndex = 0;
-      savePipelineStatus({ lastJobIndex: jobIndex });
+      savePipelineStatus({ status: ProcessStatus.InProgress, lastJobIndex: jobIndex });
+      await writePipelineConfig();
 
       for (const job of pipeline.jobs) {
         let stepIndex = 0;
-        savePipelineStatus({ lastStepIndex: stepIndex });
 
         if (fromJobIndex && jobIndex < fromJobIndex) {
           jobIndex++;
           continue;
+        } else {
+          jobIndex++;
         }
 
         savePipelineJob(job);
         resetJobStepsStatus(job.steps, this._.onUpdate, fromStepIndex);
 
         for (const step of job.steps) {
+          if (pipelineConfig.status !== ProcessStatus.Cancelled) {
+            savePipelineStatus({ lastStepIndex: stepIndex });
+            await writePipelineConfig();
+          }
+
           if (fromStepIndex && stepIndex < fromStepIndex) {
             stepIndex++;
             continue;
+          } else {
+            stepIndex++;
           }
+
           if (step.status == ProcessStatus.Success) {
             continue;
           }
@@ -602,12 +620,12 @@ export const createWineAppPipeline = async (options: {
           if (store.killAllProcesses) {
             step.status = ProcessStatus.Cancelled;
             this._.onUpdate?.({
-              pipelineId: id,
-              jobs: pipeline.jobs,
-              status: ProcessStatus.Cancelled
+              status: ProcessStatus.Cancelled,
+              ...this.getUpdatedConfig()
             });
 
             savePipelineConfigJobStep(job.name, step);
+            savePipelineStatus({ status: ProcessStatus.Cancelled });
             continue;
           }
         }
@@ -615,9 +633,8 @@ export const createWineAppPipeline = async (options: {
 
       if (store.killAllProcesses === false) {
         this._.onUpdate?.({
-          pipelineId: id,
-          jobs: pipeline.jobs,
-          status: ProcessStatus.Success
+          status: ProcessStatus.Success,
+          ...this.getUpdatedConfig()
         });
         savePipelineStatus({ status: ProcessStatus.Success });
       }

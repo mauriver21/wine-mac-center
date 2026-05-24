@@ -5,7 +5,7 @@ import { WineAppPipelineState } from '@interfaces/WineAppPipelineState';
 export type WineAppPipelineAction =
   | {
       type: ActionType.PATCH;
-      pipelineStatus: Flatten<WineAppPipelineState['pipelineStatus']>;
+      pipelineConfig: Flatten<WineAppPipelineState['pipelineConfig']>;
     }
   | {
       type: ActionType.REMOVE;

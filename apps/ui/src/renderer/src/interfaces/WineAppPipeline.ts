@@ -1,12 +1,12 @@
 import { SpawnProcessArgs, UpdateProcess } from '@interfaces/SpawnProcessArgs';
 import { WineAppJobWithScript } from '@interfaces/WineAppJobWithScript';
-import { WineAppPipelineStatus } from '@interfaces/WineAppPipelineStatus';
 import { WineAppStep } from '@interfaces/WineAppStep';
 import { WineAppPipelineConfig } from '@interfaces/WineAppPipelineConfig';
+import { WineAppConfig } from '@interfaces/WineAppConfig';
 
 export type WineAppPipeline = {
   _: {
-    onUpdate?: (status: WineAppPipelineStatus) => void;
+    onUpdate?: (status: WineAppPipelineConfig) => void;
     std: (
       jobName: string,
       action: 'stdOut' | 'stdErr' | 'exit',
@@ -20,10 +20,17 @@ export type WineAppPipeline = {
     ) => void;
   };
   id: string;
-  onUpdate: (fn: (status: WineAppPipelineStatus) => void) => void;
-  getInitialStatus: () => WineAppPipelineStatus;
+  onUpdate: (fn: (status: WineAppPipelineConfig) => void) => void;
+  getInitialStatus: () => WineAppPipelineConfig;
   jobs: WineAppJobWithScript[];
   run: (args?: { fromJobIndex?: number; fromStepIndex?: number }) => Promise<void>;
   kill: () => Promise<void>;
   readPipelineConfig: () => Promise<WineAppPipelineConfig>;
+  getUpdatedConfig: () => {
+    pipelineId: string;
+    jobs: WineAppJobWithScript[];
+    lastJobIndex: number | undefined;
+    lastStepIndex: number | undefined;
+    appConfig: WineAppConfig;
+  };
 };
