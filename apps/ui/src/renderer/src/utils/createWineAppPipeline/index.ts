@@ -62,8 +62,18 @@ export const createWineAppPipeline = async (options: {
     status: ProcessStatus.Pending
   };
 
-  const savePipelineStatus = (status: ProcessStatus) => {
-    pipelineConfig = { ...pipelineConfig, status };
+  const savePipelineStatus = (args: {
+    status?: ProcessStatus;
+    lastJobIndex?: number;
+    lastStepIndex?: number;
+  }) => {
+    const { status, lastJobIndex, lastStepIndex } = args;
+    pipelineConfig = {
+      ...pipelineConfig,
+      ...(status ? { status } : {}),
+      lastJobIndex,
+      lastStepIndex
+    };
   };
 
   const savePipelineJob = (job: WineAppJob) => {
@@ -377,7 +387,7 @@ export const createWineAppPipeline = async (options: {
       pids && pids !== '0' && (await wineApp.execScript('killPids', `${pids}`));
       store.killAllProcesses = true;
       state.runningWine && (await wineApp.execScript('killWineProcesses', `${pids}`));
-      savePipelineStatus(ProcessStatus.Cancelled);
+      savePipelineStatus({ status: ProcessStatus.Cancelled });
       await writePipelineConfig();
     },
     jobs: [
@@ -549,13 +559,19 @@ export const createWineAppPipeline = async (options: {
       }
     ],
     async run(args?: { fromJobIndex?: number; fromStepIndex?: number }) {
-      const { fromJobIndex, fromStepIndex } = args || {};
-      savePipelineStatus(ProcessStatus.InProgress);
+      const {
+        fromJobIndex = pipelineConfig.lastJobIndex,
+        fromStepIndex = pipelineConfig.lastStepIndex
+      } = args || {};
+      savePipelineStatus({ status: ProcessStatus.InProgress });
       await writePipelineConfig();
       let jobIndex = 0;
+      savePipelineStatus({ lastJobIndex: jobIndex });
 
       for (const job of pipeline.jobs) {
         let stepIndex = 0;
+        savePipelineStatus({ lastStepIndex: stepIndex });
+
         if (fromJobIndex && jobIndex < fromJobIndex) {
           jobIndex++;
           continue;
@@ -603,7 +619,7 @@ export const createWineAppPipeline = async (options: {
           jobs: pipeline.jobs,
           status: ProcessStatus.Success
         });
-        savePipelineStatus(ProcessStatus.Success);
+        savePipelineStatus({ status: ProcessStatus.Success });
       }
 
       await writePipelineConfig();

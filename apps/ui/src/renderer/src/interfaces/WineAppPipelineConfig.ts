@@ -6,4 +6,6 @@ export type WineAppPipelineConfig = {
   appConfig: WineAppConfig;
   jobs: Array<WineAppJob>;
   status: ProcessStatus;
+  lastJobIndex?: number;
+  lastStepIndex?: number;
 };

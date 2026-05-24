@@ -5,4 +5,6 @@ export type WineAppPipelineStatus = {
   pipelineId: string;
   status: ProcessStatus;
   jobs: WineAppJob[];
+  lastJobIndex?: number;
+  lastStepIndex?: number;
 };
