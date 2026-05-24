@@ -55,7 +55,7 @@ export const createWineAppPipeline = async (options: {
   const appEnv = wineApp.getWineEnv();
   const PIPELINE_CONFIG_JSON_PATH = `${appEnv.WINE_APP_DATA_PATH}/pipeline.json`;
   const WINETRICKS_VERSION = winetricks?.version || '20260125';
-
+  let state = { runningWine: false };
   let pipelineConfig: WineAppPipelineConfig = {
     appConfig,
     jobs: [],
@@ -248,7 +248,20 @@ export const createWineAppPipeline = async (options: {
         const exePath = `/${parsePath(args.baseExePath)}/${parsePath(args.exePath)}`
           .replace('$HOME', env.get().HOME)
           .replace('$WINE_APP_PREFIX_PATH', appEnv.WINE_APP_PREFIX_PATH);
-        return wineApp.runExe(`${exePath}`, spawnProcessArgs);
+        return wineApp.runExe(`${exePath}`, {
+          onStdOut: (data) => {
+            state.runningWine = true;
+            spawnProcessArgs?.onStdOut?.(data);
+          },
+          onStdErr: (data) => {
+            state.runningWine = true;
+            spawnProcessArgs?.onStdErr?.(data);
+          },
+          onExit: (data) => {
+            state.runningWine = false;
+            spawnProcessArgs?.onExit?.(data);
+          }
+        });
       }
       case ScriptOperation.SET_MAIN_EXE: {
         const mainExePath = getRelativeDriveCPath(
@@ -363,6 +376,7 @@ export const createWineAppPipeline = async (options: {
       const pids = store.currentProcess.pids;
       pids && pids !== '0' && (await wineApp.execScript('killPids', `${pids}`));
       store.killAllProcesses = true;
+      state.runningWine && (await wineApp.execScript('killWineProcesses', `${pids}`));
       savePipelineStatus(ProcessStatus.Cancelled);
       await writePipelineConfig();
     },
@@ -396,7 +410,21 @@ export const createWineAppPipeline = async (options: {
             id: uuid(),
             key: 'generatingWinePrefix',
             name: 'Generating wine prefix',
-            script: (args) => wineApp.wineboot('-u', args),
+            script: (args) =>
+              wineApp.wineboot('-u', {
+                onStdOut: (data) => {
+                  state.runningWine = true;
+                  args?.onStdOut?.(data);
+                },
+                onStdErr: (data) => {
+                  state.runningWine = true;
+                  args?.onStdErr?.(data);
+                },
+                onExit: (data) => {
+                  state.runningWine = false;
+                  args?.onExit?.(data);
+                }
+              }),
             status: ProcessStatus.Pending,
             output: ''
           },
@@ -407,7 +435,23 @@ export const createWineAppPipeline = async (options: {
                   key: 'enablingDXVK',
                   name: 'Enabling DXVK',
                   script: (args: SpawnProcessArgs) =>
-                    wineApp.winetrick({ verb: 'dxvk1102', version: WINETRICKS_VERSION }, args),
+                    wineApp.winetrick(
+                      { verb: 'dxvk1102', version: WINETRICKS_VERSION },
+                      {
+                        onStdOut: (data) => {
+                          state.runningWine = true;
+                          args?.onStdOut?.(data);
+                        },
+                        onStdErr: (data) => {
+                          state.runningWine = true;
+                          args?.onStdErr?.(data);
+                        },
+                        onExit: (data) => {
+                          state.runningWine = false;
+                          args?.onExit?.(data);
+                        }
+                      }
+                    ),
                   status: ProcessStatus.Pending,
                   output: ''
                 }
@@ -435,7 +479,20 @@ export const createWineAppPipeline = async (options: {
                   name: 'Running setup executable',
                   script: (args?: SpawnProcessArgs) => {
                     const exePath = wineApp.getAppConfig().setupExecutablePath || '';
-                    return wineApp.runExe(exePath, args);
+                    return wineApp.runExe(exePath, {
+                      onStdOut: (data) => {
+                        state.runningWine = true;
+                        args?.onStdOut?.(data);
+                      },
+                      onStdErr: (data) => {
+                        state.runningWine = true;
+                        args?.onStdErr?.(data);
+                      },
+                      onExit: (data) => {
+                        state.runningWine = false;
+                        args?.onExit?.(data);
+                      }
+                    });
                   },
                   status: ProcessStatus.Pending,
                   output: ''
