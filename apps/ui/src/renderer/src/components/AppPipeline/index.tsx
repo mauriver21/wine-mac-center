@@ -18,7 +18,7 @@ export const AppPipeline: React.FC = () => {
   const { signal, refresh } = useRefresh();
   const { appName } = useParams();
   const queryParam = useQueryParam();
-  const action = queryParam.get('action') as PipelineAction;
+  const [action, setAction] = useState<PipelineAction>(queryParam.get('action') as PipelineAction);
   const wineAppPipelineModel = useWineAppPipelineModel();
   const installedAppModel = useWineInstalledAppModel();
   const navigate = useNavigate();
@@ -83,7 +83,10 @@ export const AppPipeline: React.FC = () => {
               <Button
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
-                onClick={() => wineAppPipelineModel.stopWineAppPipeline(appName)}
+                onClick={() => {
+                  setAction(PipelineAction.RESUME);
+                  wineAppPipelineModel.stopWineAppPipeline(appName);
+                }}
               >
                 {t('stop')}
               </Button>

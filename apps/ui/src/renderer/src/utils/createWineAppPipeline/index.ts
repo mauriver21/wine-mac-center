@@ -625,7 +625,6 @@ export const createWineAppPipeline = async (options: {
             });
 
             savePipelineConfigJobStep(job.name, step);
-            savePipelineStatus({ status: ProcessStatus.Cancelled });
             continue;
           }
         }
