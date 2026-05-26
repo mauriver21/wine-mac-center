@@ -30,7 +30,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
       .replace(/^\n/g, '\n')
       .replace(/0$/g, '')
       .replace(/\[PID_START\].*?\[PID_END\]/g, '')
-      .trim() || '\nNo output to display';
+      .trim() || `\n${t('noOutputToDisplay')}`;
   const hasOutput = Boolean(step.output);
   const lastStepIndex = wineAppPipelineStatus?.lastStepIndex;
 
@@ -61,7 +61,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
             p={1}
           >
             <Body1 className={ContentsClass.ItemTitle} fontWeight={500} color="text.secondary">
-              {t(step.name)}
+              {t(step.key, step.keyArgs)}
             </Body1>
             <StatusBox status={step.status} />
           </Stack>

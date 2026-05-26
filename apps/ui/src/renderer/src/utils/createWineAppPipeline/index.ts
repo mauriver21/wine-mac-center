@@ -170,6 +170,7 @@ export const createWineAppPipeline = async (options: {
       steps.push({
         id: uuid(),
         key: `runningWinetrick`,
+        keyArgs: { verb },
         name: `Running winetrick ${verb}`,
         script: (args: SpawnProcessArgs) =>
           wineApp.winetrick({ verb, version: WINETRICKS_VERSION }, args, winetricks?.options),
@@ -421,6 +422,7 @@ export const createWineAppPipeline = async (options: {
           {
             id: uuid(),
             key: 'extractingWineEngine',
+            keyArgs: { engineVersion },
             name: 'Extracting wine engine',
             script: (args) => wineApp.extractEngine(engineVersion, args),
             status: ProcessStatus.Pending,
