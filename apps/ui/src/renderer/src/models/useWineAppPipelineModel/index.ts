@@ -11,7 +11,7 @@ import { sleep } from 'reactjs-shared-ui';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { createWineApp } from '@utils/createWineApp';
 import { appExists } from '@utils/appExists';
-import { ConfigOrigin, ProcessStatus } from '@constants/enums';
+import { ConfigOrigin } from '@constants/enums';
 import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { useLoadingDialog } from '@hooks/useLoadingDialog';
@@ -186,7 +186,6 @@ export const useWineAppPipelineModel = () => {
       dispatchPatch({ ...pipelineConfig, pipelineId: pipeline.id });
 
       pipeline.onUpdate((pipelineStatus) => {
-        pipelineStatus.status === ProcessStatus.Cancelled && console.log('XXXX', pipelineStatus);
         dispatchPatch({ ...pipelineStatus, appConfig: pipelineConfig.appConfig });
       });
 

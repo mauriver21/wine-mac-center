@@ -331,7 +331,7 @@ export const createWineAppPipeline = async (options: {
 
   const pipeline: WineAppPipeline = {
     _: {
-      async std(jobName, action, step, data, updateProcess) {
+      std(jobName, action, step, data, updateProcess) {
         if (store.killAllProcesses) {
           updateProcess?.('exit');
           step.status = ProcessStatus.Cancelled;
@@ -357,6 +357,7 @@ export const createWineAppPipeline = async (options: {
 
         if (data === ExitCode.Error || data === ExitCode.PermissionsError) {
           step.status = ProcessStatus.Error;
+          savePipelineStatus({ status: ProcessStatus.Error });
         }
 
         savePipelineConfigJobStep(jobName, step);
@@ -591,7 +592,10 @@ export const createWineAppPipeline = async (options: {
         resetJobStepsStatus(job.steps, this._.onUpdate, fromStepIndex);
 
         for (const step of job.steps) {
-          if (pipelineConfig.status !== ProcessStatus.Cancelled) {
+          if (
+            pipelineConfig.status !== ProcessStatus.Cancelled &&
+            pipelineConfig.status !== ProcessStatus.Error
+          ) {
             savePipelineStatus({ lastStepIndex: stepIndex });
             await writePipelineConfig();
           }
@@ -601,6 +605,10 @@ export const createWineAppPipeline = async (options: {
             continue;
           } else {
             stepIndex++;
+          }
+
+          if (pipelineConfig.status === ProcessStatus.Error) {
+            await this.kill();
           }
 
           if (step.status == ProcessStatus.Success) {
@@ -613,7 +621,9 @@ export const createWineAppPipeline = async (options: {
                 this._.std(job.name, 'stdOut', step, data, updateProcess),
               onStdErr: (data, updateProcess) =>
                 this._.std(job.name, 'stdErr', step, data, updateProcess),
-              onExit: (data) => this._.std(job.name, 'exit', step, data)
+              onExit: (data) => {
+                this._.std(job.name, 'exit', step, data);
+              }
             });
           }
 

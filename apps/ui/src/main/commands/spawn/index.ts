@@ -37,8 +37,13 @@ export const spawn = (
 
     child.on('exit', async (code) => {
       mainWindow?.webContents.send(ElectronApi.SpawnExit, code);
-      processMap.delete(processId);
-      resolve({ pid: child.pid });
+    });
+
+    child.once('close', async () => {
+      setTimeout(() => {
+        processMap.delete(processId);
+        resolve({ pid: child.pid });
+      }, 100);
     });
   });
 };
