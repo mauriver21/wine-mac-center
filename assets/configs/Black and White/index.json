@@ -35,6 +35,11 @@
       "target": "/Program Files (x86)/Lionhead Studios Ltd/Black & White/runblack.exe",
       "operation": "COPY",
       "name": "Copy File"
+    },
+    {
+      "mainExePath": "/Program Files (x86)/Lionhead Studios Ltd/Black & White/runblack.exe",
+      "operation": "SET_MAIN_EXE",
+      "name": "Set main exe"
     }
   ],
   "launcherConfig": {}
