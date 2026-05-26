@@ -10,6 +10,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CpuChipIcon,
+  MagnifyingGlassIcon,
   PaintBrushIcon,
   PencilSquareIcon,
   PlayCircleIcon,
@@ -39,6 +40,7 @@ import { blobUrlToFile } from '@utils/blobUrlToFile';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { Rocket } from '@mui/icons-material';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { MultiTextField } from '@components/MultiTextField';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -83,6 +85,9 @@ export const PipelineScript: React.FC = () => {
     </CardItem>,
     <CardItem icon={CpuChipIcon} label={t('wineEngine')}>
       <WineEnginesSelect fullWidth control={form.control} name="engineVersion" />
+    </CardItem>,
+    <CardItem icon={MagnifyingGlassIcon} label={t('searchLabels')}>
+      <MultiTextField />
     </CardItem>,
     <CardItem icon={SparklesIcon} label="Winetricks">
       <Grid container>

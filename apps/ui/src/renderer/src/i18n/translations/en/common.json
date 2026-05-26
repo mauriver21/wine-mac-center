@@ -164,5 +164,6 @@
   "noOutputToDisplay": "No output to display",
   "runningWinetrick": "Running winetrick {{verb}}",
   "configuringAppExecutable": "Configuring the app executable",
-  "generatingWinePrefix": "Generating wine prefix"
+  "generatingWinePrefix": "Generating wine prefix",
+  "searchLabels": "Search labels"
 }

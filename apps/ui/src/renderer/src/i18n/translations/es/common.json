@@ -164,5 +164,6 @@
   "noOutputToDisplay": "No hay salida para mostrar",
   "runningWinetrick": "Ejecutando winetrick {{verb}}",
   "configuringAppExecutable": "Configurando el ejecutable de la aplicación",
-  "generatingWinePrefix": "Generando prefijo de wine"
+  "generatingWinePrefix": "Generando prefijo de wine",
+  "searchLabels": "Etiquetas de búsqueda"
 }
