@@ -163,6 +163,6 @@
   "DOWNLOAD_STEAM_APP": "Descargar aplicación de Steam",
   "noOutputToDisplay": "No hay salida para mostrar",
   "runningWinetrick": "Ejecutando winetrick {{verb}}",
-  "configuringAppExecutable": "Configurando el ejecutable de la aplicación...",
+  "configuringAppExecutable": "Configurando el ejecutable de la aplicación",
   "generatingWinePrefix": "Generando prefijo de wine"
 }
