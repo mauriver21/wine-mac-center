@@ -7,6 +7,7 @@ import { Cog8ToothIcon } from '@heroicons/react/24/solid';
 import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
 import { LauncherSettings } from '@components/LauncherSettings';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { Languages } from '@components/Languages';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -16,6 +17,7 @@ export const LauncherConfig: React.FC = () => {
 
   const modules = useMemo(
     () => [
+      <Languages />,
       <LauncherSettings />,
       <LauncherConfigItem
         label={t('appConfiguration')}
