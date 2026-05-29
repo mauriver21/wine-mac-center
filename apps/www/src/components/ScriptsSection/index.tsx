@@ -6,11 +6,10 @@ export const ScriptsSection: React.FC = () => (
   <Stack spacing={3}>
     <Stack p={2} spacing={2}>
       <H5 textAlign="center" fontWeight="bold">
-        Biblioteca Online de Scripts Wine.
+        Biblioteca Online de Scripts.
       </H5>
       <Body1 textAlign="center">
-        Descarga de scripts abiertos a la comunidad para instalar aplicaciones
-        con Wine.
+        Descarga de scripts abiertos a la comunidad para instalar aplicaciones.
       </Body1>
       <Box>
         <Image src={AppCards} />
@@ -25,7 +24,7 @@ export const ScriptsSection: React.FC = () => (
           <H4 component="span" color="info" fontWeight="bold">
             Crea tus propios scripts
           </H4>{' '}
-          para automatizar la instalación de aplicaciones con Wine.
+          para automatizar la instalación de aplicaciones.
         </H4>
         <Body1>
           Gestiona fácilmente Wine Engines, ejecuta comandos de Winetricks,

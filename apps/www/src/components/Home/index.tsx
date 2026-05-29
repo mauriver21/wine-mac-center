@@ -1,13 +1,15 @@
 import type React from 'react';
-import { Box } from 'reactjs-shared-ui';
+import { Stack } from 'reactjs-shared-ui';
 import { MainSection } from '@components/MainSection';
 import { ScriptsSection } from '@components/ScriptsSection';
+import { WineConfigSection } from '@components/WineConfigSection';
 
 export const Home: React.FC = () => {
   return (
-    <Box>
+    <Stack spacing={4}>
       <MainSection />
       <ScriptsSection />
-    </Box>
+      <WineConfigSection />
+    </Stack>
   );
 };
