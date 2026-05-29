@@ -1,3 +1,6 @@
+import { routes } from '@routes';
+import { useRoutes } from 'react-router-dom';
+
 export const App = () => {
-  return <></>;
+  return useRoutes(routes);
 };
