@@ -10,7 +10,9 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
   return (
     <Box display="grid" gridTemplateRows="auto 1fr">
       <MainHeader />
-      <Outlet />
+      <Box display="grid" maxWidth={1080} marginX="auto">
+        <Outlet />
+      </Box>
     </Box>
   );
 };
