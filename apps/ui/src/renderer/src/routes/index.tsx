@@ -19,18 +19,14 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, element: <InstalledApps /> },
       { path: 'apps', element: <InstalledApps /> },
-      { path: 'scripts', element: <Scripts /> }
+      { path: 'scripts', element: <Scripts /> },
+      { path: 'settings', element: <Settings /> }
     ]
   },
   {
     path: '/test',
     element: <SimpleLayout />,
     children: [{ index: true, element: <Test /> }]
-  },
-  {
-    path: '/settings',
-    element: <SimpleLayout />,
-    children: [{ index: true, element: <Settings /> }]
   },
   {
     path: '/app-config',
