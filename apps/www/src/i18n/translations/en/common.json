@@ -12,5 +12,13 @@
   "easilyManageWineEngines": "Easily manage Wine Engines, run Winetricks commands, download necessary files, and perform complete installation processes automatically, reproducibly, and much more comfortably. Ideal for simplifying complex configurations and sharing ready-to-use environments.",
   "applyWineConfigurations": "Apply Wine configurations",
   "easilyOnEachOfYourApps": "easily on each of your apps.",
-  "customizeSpecificParameters": "Customize specific parameters, adjust Windows versions, manage libraries, environment variables, and advanced options without complications, keeping each app optimized and isolated according to its needs."
+  "customizeSpecificParameters": "Customize specific parameters, adjust Windows versions, manage libraries, environment variables, and advanced options without complications, keeping each app optimized and isolated according to its needs.",
+  "contributeToTheProject": "Contribute to the project",
+  "contributeDescription": "Wine Mac Center is an open source project. Join us, contribute your code, report bugs, or suggest new ideas.",
+  "viewRepositoryOnGithub": "View repository on GitHub",
+  "developedWithLoveForTheCommunity": "Developed with ❤️ for the community",
+  "openSourceUnderMitLicense": "Open Source under MIT license",
+  "madeWithReactTypescriptAndElectron": "Made with React, Typescript, and Electron",
+  "designedForDevelopers": "Designed for developers",
+  "contributing": "Contributing"
 }

@@ -4,6 +4,7 @@ import { Body1, Box, H4, H5, Icon, Image, Stack } from 'reactjs-shared-ui';
 import { Button } from '@components/Button';
 import { FolderArrowDownIcon } from '@heroicons/react/16/solid';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { RELEASES_URL } from '@constants/urls';
 
 export const MainSection: React.FC = () => {
   const { t } = useI18n();
@@ -17,17 +18,10 @@ export const MainSection: React.FC = () => {
             {t('fromASinglePlace')}
           </H4>
         </H4>
-        <Body1>
-          {t('wineMacCenterDescription')}
-        </Body1>
+        <Body1>{t('wineMacCenterDescription')}</Body1>
         <Button
           sx={{ marginTop: 3 }}
-          onClick={() =>
-            window.open(
-              'https://github.com/mauriver21/wine-mac-center/releases',
-              '_blank',
-            )
-          }
+          onClick={() => window.open(RELEASES_URL, '_blank')}
         >
           <Icon size={24} pr={1} render={FolderArrowDownIcon} />
           <H5>{t('download')}</H5>

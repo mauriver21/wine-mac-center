@@ -48,6 +48,12 @@ export const MainHeader: React.FC = () => {
         <Link onClick={() => scrollIntoView('wine-config')} to="/#wine-config">
           {t('wineConfig')}
         </Link>
+        <Link
+          onClick={() => scrollIntoView('contributing')}
+          to="/#contributing"
+        >
+          {t('contributing')}
+        </Link>
       </Stack>
       <Box />
     </Stack>
