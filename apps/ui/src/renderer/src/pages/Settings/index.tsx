@@ -15,6 +15,7 @@ export const Settings: React.FC = () => {
   return (
     <ConfigLayout
       mainTitle={t('settings')}
+      showBack={false}
       contentSlot={
         <Stack
           overflow="auto"

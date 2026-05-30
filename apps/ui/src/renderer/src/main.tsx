@@ -22,19 +22,19 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Provider store={store}>
         <NotificationsProvider>
           <EnvProvider>
-            <SteamCliProvider>
-              <DirsWatcherProvider>
-                <WineAppPipelineProvider>
-                  <BrowserRouter>
-                    <AppSetup>
-                      <LoadingDialogProvider>
+            <LoadingDialogProvider>
+              <SteamCliProvider>
+                <DirsWatcherProvider>
+                  <WineAppPipelineProvider>
+                    <BrowserRouter>
+                      <AppSetup>
                         <App />
-                      </LoadingDialogProvider>
-                    </AppSetup>
-                  </BrowserRouter>
-                </WineAppPipelineProvider>
-              </DirsWatcherProvider>
-            </SteamCliProvider>
+                      </AppSetup>
+                    </BrowserRouter>
+                  </WineAppPipelineProvider>
+                </DirsWatcherProvider>
+              </SteamCliProvider>
+            </LoadingDialogProvider>
           </EnvProvider>
         </NotificationsProvider>
       </Provider>

@@ -165,5 +165,8 @@
   "runningWinetrick": "Ejecutando winetrick {{verb}}",
   "configuringAppExecutable": "Configurando el ejecutable de la aplicación",
   "generatingWinePrefix": "Generando prefijo de wine",
-  "searchLabels": "Etiquetas de búsqueda"
+  "searchLabels": "Etiquetas de búsqueda",
+  "loggingIntoSteam": "Iniciando sesión en Steam...",
+  "steamGuardCancelled": "Steam Guard cancelado",
+  "noSteamCredentialsProvided": "No se proporcionaron credenciales de Steam, no es posible iniciar sesión."
 }

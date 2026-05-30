@@ -165,5 +165,8 @@
   "runningWinetrick": "Running winetrick {{verb}}",
   "configuringAppExecutable": "Configuring the app executable",
   "generatingWinePrefix": "Generating wine prefix",
-  "searchLabels": "Search labels"
+  "searchLabels": "Search labels",
+  "loggingIntoSteam": "Loggin into steam...",
+  "steamGuardCancelled": "Steam guard canceled",
+  "noSteamCredentialsProvided": "No Steam credentials provided, unable to login."
 }
