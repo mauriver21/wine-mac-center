@@ -1,10 +1,21 @@
-# Wine Mac Center
+# 🍷 Wine Mac Center
+
+<p>
+  <img src="https://img.shields.io/badge/React-1d1d8a?logo=react&logoColor=white" height="24" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" height="24" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Electron-47848F?logo=electron&logoColor=white" height="24" alt="Electron">
+  <img src="https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white" height="24" alt="Vite">
+  <img src="https://img.shields.io/badge/pnpm-F69220?logo=pnpm&logoColor=white" height="24" alt="pnpm">
+  <img src="https://img.shields.io/badge/Shell_Script-121011?logo=gnu-bash&logoColor=white" height="24" alt="Shell Script">
+  <img src="https://img.shields.io/badge/License-MIT-green" height="24" alt="License">
+  <a href="https://mauriver21.github.io/wine-mac-center" target="_blank">
+    <img src="https://img.shields.io/badge/Website-Visit-blue?logo=safari&logoColor=white" height="24" alt="Website">
+  </a>
+</p>
 
 Wine Mac Center is an open-source graphical interface built with **React**, **TypeScript**, and **Electron** that makes it easier to work with **Wine** on macOS.
 
 The goal of the project is to provide a simple and intuitive way to install and manage Windows applications on Mac without requiring users to manually configure Wine through terminal commands.
-
----
 
 # Table of Contents
 
@@ -16,8 +27,6 @@ The goal of the project is to provide a simple and intuitive way to install and 
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
----
-
 # Features
 
 - Graphical interface for managing Wine environments.
@@ -27,8 +36,6 @@ The goal of the project is to provide a simple and intuitive way to install and 
 - Winetricks integration.
 - Open-source and community-driven.
 
----
-
 # Project Scope
 
 Wine Mac Center is primarily focused on building a user-friendly graphical interface for working with different Wine engines on macOS.
@@ -37,13 +44,9 @@ At this stage, the project prioritizes usability and accessibility over Wine dev
 
 It is important to note that the main developer of Wine Mac Center is not a Wine expert. Contributions, feedback, and knowledge sharing from the Wine community are always welcome.
 
----
-
 # Installation
 
 Prebuilt releases can be downloaded from the project's [Releases page](https://github.com/mauriver21/wine-mac-center/releases).
-
----
 
 # Development
 
@@ -54,10 +57,9 @@ Wine Mac Center is built using:
 - Electron
 - Vite
 - pnpm
+- Shell Script
 
 The project structure is designed to keep the user interface separate from Wine-related operations whenever possible, making it easier to maintain and extend.
-
----
 
 # Contributing
 
@@ -74,8 +76,6 @@ You can help by:
 
 If you would like to contribute, feel free to open an issue or submit a pull request.
 
----
-
 # Acknowledgements
 
 This project would not be possible without the work of:
@@ -84,8 +84,6 @@ This project would not be possible without the work of:
 - Community-maintained Wine distributions.
 - Winetricks maintainers.
 - Open-source contributors who help improve Wine compatibility on macOS.
-
----
 
 # License
 
