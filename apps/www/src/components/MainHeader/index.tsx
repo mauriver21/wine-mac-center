@@ -2,9 +2,11 @@ import { scrollIntoView } from '@utils/scrollIntoView';
 import { useEffect, useState } from 'react';
 import { Box, H6, Image, Link, Stack } from 'reactjs-shared-ui';
 import Logo from '@assets/imgs/logo.png';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const MainHeader: React.FC = () => {
   const [showShadow, setShowShadow] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     const root = document.querySelector('#root');
@@ -38,13 +40,13 @@ export const MainHeader: React.FC = () => {
       </Stack>
       <Stack spacing={3} alignItems="center" direction="row">
         <Link onClick={() => scrollIntoView('download')} to="/#download">
-          Download
+          {t('download')}
         </Link>
         <Link onClick={() => scrollIntoView('scripts')} to="/#scripts">
-          Scripts
+          {t('scripts')}
         </Link>
         <Link onClick={() => scrollIntoView('wine-config')} to="/#wine-config">
-          Wine Config
+          {t('wineConfig')}
         </Link>
       </Stack>
       <Box />
