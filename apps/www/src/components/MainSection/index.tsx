@@ -6,7 +6,7 @@ import { FolderArrowDownIcon } from '@heroicons/react/16/solid';
 
 export const MainSection: React.FC = () => {
   return (
-    <Box display="grid" gridTemplateColumns="1.5fr 2fr">
+    <Box display="grid" gridTemplateColumns="1.5fr 2fr" id="download" pt={4}>
       <Stack p={2} spacing={2}>
         <H4>
           Organiza y lanza tus aplicaciones de Windows en Mac{' '}

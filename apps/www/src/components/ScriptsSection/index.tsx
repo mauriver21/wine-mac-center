@@ -3,7 +3,7 @@ import AppCards from '@assets/imgs/apps-cards.png';
 import ScriptWindow from '@assets/imgs/script-window.png';
 
 export const ScriptsSection: React.FC = () => (
-  <Stack spacing={3}>
+  <Stack spacing={3} id="scripts">
     <Stack p={2} spacing={2}>
       <H5 textAlign="center" fontWeight="bold">
         Biblioteca Online de Scripts.

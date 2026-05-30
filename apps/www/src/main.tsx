@@ -1,4 +1,3 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App.tsx';
 import { ThemeProvider } from 'reactjs-shared-ui';
@@ -12,9 +11,7 @@ createRoot(document.getElementById('root')!).render(
   <I18nProvider resources={resources}>
     <BrowserRouter>
       <ThemeProvider>
-        <StrictMode>
-          <App />
-        </StrictMode>
+        <App />
       </ThemeProvider>
     </BrowserRouter>
   </I18nProvider>,

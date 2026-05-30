@@ -2,7 +2,7 @@ import { Body1, Box, H4, Image, Stack } from 'reactjs-shared-ui';
 import ScriptWindow from '@assets/imgs/app-config-window.png';
 
 export const WineConfigSection: React.FC = () => (
-  <Stack spacing={3}>
+  <Stack spacing={3} id="wine-config">
     <Box display="grid" gridTemplateColumns="1.5fr 2fr">
       <Stack p={2} spacing={2}>
         <H4>
