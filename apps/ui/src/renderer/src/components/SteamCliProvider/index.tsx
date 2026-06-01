@@ -121,13 +121,8 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   const loginCredentialsAreValid = async (spawnArgs?: SpawnProcessArgs) => {
     const credentials = getState();
     if (credentials === undefined) return false;
-
-    try {
-      await login(credentials, spawnArgs);
-      return true;
-    } catch {
-      return false;
-    }
+    await login(credentials, spawnArgs);
+    return true;
   };
 
   const askSteamCredentials = async (spawnArgs?: SpawnProcessArgs) => {

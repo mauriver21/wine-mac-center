@@ -17,6 +17,7 @@ import { WineApp } from '@interfaces/WineApp';
 import { Wineboot } from './Wineboot';
 import { WineCfg } from './WineCfg';
 import { Winetrick } from './Winetrick';
+import { SteamCli } from './SteamCli';
 
 export const TestContext = createContext<{
   wineApp: WineApp;
@@ -30,7 +31,7 @@ export const Test: React.FC = () => {
   const { signal, refresh } = useRefresh();
   const [wineApp, setWineApp] = useState<WineApp>(null as any);
 
-  const fixedModules = [<Aria2cCli />, <InitApp />];
+  const fixedModules = [<SteamCli />, <Aria2cCli />, <InitApp />];
   const modules = [
     <ScaffoldApp />,
     <DownloadEngine />,
