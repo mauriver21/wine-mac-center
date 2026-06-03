@@ -21,21 +21,21 @@ export const Donations: React.FC = withPaypalProvider(() => {
         value: 7,
         rate: t('moneyRate'),
         colors: { primaryColor: '#da690d', secondaryColor: '#c85e07' }
-      },
-      {
-        id: PAYPAL_BRONZE_PLAN_ID,
-        name: t('gold'),
-        value: 7,
-        rate: t('moneyRate'),
-        colors: { primaryColor: '#dabf0d', secondaryColor: '#c8a507' }
-      },
-      {
-        id: PAYPAL_BRONZE_PLAN_ID,
-        name: t('platinum'),
-        value: 7,
-        rate: t('moneyRate'),
-        colors: { primaryColor: '#d4d2d1', secondaryColor: '#c1c8c7' }
       }
+      // {
+      //   id: '',
+      //   name: t('gold'),
+      //   value: 14,
+      //   rate: t('moneyRate'),
+      //   colors: { primaryColor: '#dabf0d', secondaryColor: '#c8a507' }
+      // },
+      // {
+      //   id: '',
+      //   name: t('platinum'),
+      //   value: 18,
+      //   rate: t('moneyRate'),
+      //   colors: { primaryColor: '#d4d2d1', secondaryColor: '#c1c8c7' }
+      // }
     ],
     []
   );
