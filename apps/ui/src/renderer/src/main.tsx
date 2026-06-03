@@ -1,20 +1,20 @@
-import ReactDOM from 'react-dom/client';
-import { ThemeProvider } from 'reactjs-shared-ui';
-import { I18nProvider } from 'reactjs-shared-ui/i18next';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from '@store';
+import './main.css';
+import 'reactjs-shared-ui/styles.css';
 import { App } from './App';
 import { AppSetup } from '@components/AppSetup';
-import { EnvProvider } from '@components/EnvProvider';
-import { NotificationsProvider } from '@components/NotificationsProvider';
-import { WineAppPipelineProvider } from '@components/WineAppPipelineProvider';
+import { BrowserRouter } from 'react-router-dom';
 import { DirsWatcherProvider } from '@components/DirsWatcherProvider';
-import 'reactjs-shared-ui/styles.css';
-import './main.css';
-import { SteamCliProvider } from '@components/SteamCliProvider';
+import { EnvProvider } from '@components/EnvProvider';
+import { I18nProvider } from 'reactjs-shared-ui/i18next';
 import { LoadingDialogProvider } from '@components/LoadingDialogProvider';
+import { NotificationsProvider } from '@components/NotificationsProvider';
+import { Provider } from 'react-redux';
+import { SteamCliProvider } from '@components/SteamCliProvider';
+import { store } from '@store';
+import { ThemeProvider } from 'reactjs-shared-ui';
+import { WineAppPipelineProvider } from '@components/WineAppPipelineProvider';
 import * as resources from '@i18n/translations';
+import ReactDOM from 'react-dom/client';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <I18nProvider language="es" resources={resources}>

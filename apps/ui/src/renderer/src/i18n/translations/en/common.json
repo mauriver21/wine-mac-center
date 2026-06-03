@@ -170,5 +170,7 @@
   "steamGuardCancelled": "Steam guard canceled",
   "noSteamCredentialsProvided": "No Steam credentials provided, unable to login.",
   "about": "About",
-  "checkForUpdates": "Check for updates"
+  "checkForUpdates": "Check for updates",
+  "version": "Version",
+  "donations": "Donations"
 }

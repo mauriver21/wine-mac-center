@@ -12,7 +12,7 @@ export const AppVersion: React.FC = () => {
           <Stack direction="row" spacing={1} alignItems="center">
             <Stack direction="row" spacing={1}>
               <Icon strokeWidth={0} size={34} render={InfoOutlined} pr={1} />
-              <H6 className={ContentsClass.ItemTitle}>{t('Version')}</H6>
+              <H6 className={ContentsClass.ItemTitle}>{t('version')}</H6>
             </Stack>
             <Body1>
               <Version />

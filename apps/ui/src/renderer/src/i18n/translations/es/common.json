@@ -170,5 +170,7 @@
   "steamGuardCancelled": "Steam Guard cancelado",
   "noSteamCredentialsProvided": "No se proporcionaron credenciales de Steam, no es posible iniciar sesión.",
   "about": "Información",
-  "checkForUpdates": "Verificar actualizaciones"
+  "checkForUpdates": "Verificar actualizaciones",
+  "version": "Versión",
+  "donations": "Donaciones"
 }
