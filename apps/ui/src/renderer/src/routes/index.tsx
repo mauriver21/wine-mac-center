@@ -11,6 +11,7 @@ import { Test } from '@pages/Test';
 import { RouteObject } from 'react-router-dom';
 import { PipelineScript } from '@components/PipelineScript';
 import { AppLauncher } from '@components/AppLauncher';
+import { About } from '@pages/About';
 
 export const routes: RouteObject[] = [
   {
@@ -20,7 +21,8 @@ export const routes: RouteObject[] = [
       { index: true, element: <InstalledApps /> },
       { path: 'apps', element: <InstalledApps /> },
       { path: 'scripts', element: <Scripts /> },
-      { path: 'settings', element: <Settings /> }
+      { path: 'settings', element: <Settings /> },
+      { path: 'about', element: <About /> }
     ]
   },
   {

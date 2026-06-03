@@ -14,6 +14,8 @@ export const App = () => {
   const wineInstalledApps = useSelector(wineInstalledAppModel.selectWineInstalledApps);
   const { navigateToScripts, navigateToApps, navigateToTest } = useNavigateApp();
 
+  console.log(import.meta.env.VITE_APP_VERSION);
+
   useI18n();
 
   useLayoutEffect(() => {

@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar } from '@components/Sidebar';
 import { AppIcon } from '@assets/icons';
 import { Cog8ToothIcon } from '@heroicons/react/24/solid';
-import { PlayCircleOutline } from '@mui/icons-material';
+import { InfoOutlined, PlayCircleOutline } from '@mui/icons-material';
 import { MenuItem } from '@interfaces/MenuItem';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
@@ -12,8 +12,8 @@ export const MainLayout: React.FC = () => {
   const SIDEBAR_MENU: MenuItem[] = [
     { text: t('apps'), route: 'apps', icon: AppIcon },
     { text: t('scripts'), route: 'scripts', icon: PlayCircleOutline },
-    { text: t('settings'), route: 'settings', icon: Cog8ToothIcon }
-    // { text: 'Test', route: 'test', icon: EyeIcon }
+    { text: t('settings'), route: 'settings', icon: Cog8ToothIcon },
+    { text: t('about'), route: 'about', icon: InfoOutlined }
   ];
 
   return (

@@ -1,9 +1,13 @@
+import fs from 'fs';
 import { resolve } from 'path';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import react from '@vitejs/plugin-react';
 import EnvironmentPlugin from 'vite-plugin-environment';
 import checker from 'vite-plugin-checker';
+
+const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
+process.env.VITE_APP_VERSION = packageJson.version;
 
 export default defineConfig({
   main: {

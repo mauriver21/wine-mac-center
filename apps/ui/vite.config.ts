@@ -6,6 +6,7 @@ import { defineConfig, LibraryOptions } from 'vite';
 
 const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf-8'));
 const { dependencies = {}, peerDependencies = {}, devDependencies = {} } = packageJson;
+process.env.VITE_APP_VERSION = packageJson.version;
 
 const externalDeps = [
   ...Object.keys(dependencies),

@@ -168,5 +168,7 @@
   "searchLabels": "Etiquetas de búsqueda",
   "loggingIntoSteam": "Iniciando sesión en Steam...",
   "steamGuardCancelled": "Steam Guard cancelado",
-  "noSteamCredentialsProvided": "No se proporcionaron credenciales de Steam, no es posible iniciar sesión."
+  "noSteamCredentialsProvided": "No se proporcionaron credenciales de Steam, no es posible iniciar sesión.",
+  "about": "Información",
+  "checkForUpdates": "Verificar actualizaciones"
 }
