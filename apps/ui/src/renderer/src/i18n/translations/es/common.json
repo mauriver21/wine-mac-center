@@ -172,5 +172,9 @@
   "about": "Información",
   "checkForUpdates": "Verificar actualizaciones",
   "version": "Versión",
-  "donations": "Donaciones"
+  "donations": "Donaciones",
+  "bronze": "Bronce",
+  "moneyRate": "USD/mensual",
+  "gold": "Oro",
+  "platinum": "Platino"
 }
