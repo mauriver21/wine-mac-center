@@ -1,4 +1,4 @@
-import { Button } from '@components/Button';
+// import { Button } from '@components/Button';
 import { Version } from '@components/Version';
 import { InfoOutlined } from '@mui/icons-material';
 import { t } from 'i18next';
@@ -18,9 +18,9 @@ export const AppVersion: React.FC = () => {
               <Version />
             </Body1>
           </Stack>
-          <Stack direction="row" spacing={2} alignItems="center">
+          {/* <Stack direction="row" spacing={2} alignItems="center">
             <Button>{t('checkForUpdates')}</Button>
-          </Stack>
+          </Stack> */}
         </Stack>
       </CardContent>
     </Card>
