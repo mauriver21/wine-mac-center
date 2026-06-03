@@ -3,11 +3,12 @@ import { t } from 'i18next';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { Stack, Box, ContentsClass } from 'reactjs-shared-ui';
 import { AppVersion } from '@components/AppVersion';
+import { Donations } from '@components/Donations';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const About: React.FC = () => {
-  const modules = [<AppVersion />];
+  const modules = [<AppVersion />, <Donations />];
 
   return (
     <ConfigLayout

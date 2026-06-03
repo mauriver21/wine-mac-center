@@ -10,3 +10,4 @@ resources/clients/Frameworks
 !resources/clients/steam/README.md
 resources/launcher/*
 !resources/launcher/README.md
+.env
