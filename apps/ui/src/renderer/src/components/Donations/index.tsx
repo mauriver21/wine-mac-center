@@ -2,7 +2,7 @@ import { CardItem } from '@components/CardItem';
 import { LifebuoyIcon } from '@heroicons/react/24/solid';
 import { PAYPAL_BRONZE_PLAN_ID } from '@constants/constants';
 import { PayPalButtons } from '@paypal/react-paypal-js';
-import { Body1, H6, Icon, Stack } from 'reactjs-shared-ui';
+import { Body1, Box, H6, Icon, Stack } from 'reactjs-shared-ui';
 import { t } from 'i18next';
 import { useEffect, useMemo, useState } from 'react';
 import { useLoadingDialog } from '@hooks/useLoadingDialog';
@@ -40,10 +40,14 @@ export const Donations: React.FC = withPaypalProvider(() => {
             border={2}
             borderRadius={1}
             p={1}
+            bgcolor="secondary.main"
             borderColor="secondary.light"
           >
-            <Stack spacing={2} alignItems="center" direction="row" mt="-20px">
-              <Icon size={64} render={() => <WineIcon />} />
+            <Stack alignItems="center" direction="row">
+              <Icon
+                size={110}
+                render={() => <WineIcon primaryColor="#da690d" secondaryColor="#c85e07" />}
+              />
               <Stack alignItems="center">
                 <H6 fontWeight={500}>{name}</H6>
                 <Body1 fontWeight={500}>
@@ -51,22 +55,24 @@ export const Donations: React.FC = withPaypalProvider(() => {
                 </Body1>
               </Stack>
             </Stack>
-            <PayPalButtons
-              onClick={() => {
-                setLoading(true);
-              }}
-              onCancel={() => {
-                setLoading(false);
-              }}
-              onError={() => {
-                setLoading(false);
-              }}
-              createSubscription={(_, actions) => {
-                return actions.subscription.create({
-                  plan_id: id
-                });
-              }}
-            />
+            <Box mt={1.5}>
+              <PayPalButtons
+                onClick={() => {
+                  setLoading(true);
+                }}
+                onCancel={() => {
+                  setLoading(false);
+                }}
+                onError={() => {
+                  setLoading(false);
+                }}
+                createSubscription={(_, actions) => {
+                  return actions.subscription.create({
+                    plan_id: id
+                  });
+                }}
+              />
+            </Box>
           </Stack>
         ))}
       </Stack>
