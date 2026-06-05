@@ -9,11 +9,12 @@ import {
   PAYPAL_PLATINUM_PLAN_ID
 } from '@constants/constants';
 import { WineIcon } from '@assets/icons/24/outline/WineIcon';
-import { openExternal } from '@utils/openExternal';
 import { PAYPAL_SUBSCRIBE_URL } from '@constants/urls';
+import { useOpenExternal } from '@hooks/useOpenExternal';
 
 export const Donations: React.FC = () => {
   const { t } = useI18n();
+  const { openExternal } = useOpenExternal();
   const PLANS = useMemo(
     () => [
       {
