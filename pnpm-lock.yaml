@@ -104,9 +104,6 @@ importers:
       '@mui/material':
         specifier: ^5.13.6
         version: 5.13.6(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.3.18)(react-dom@18.3.1)(react@18.3.1)
-      '@paypal/react-paypal-js':
-        specifier: ^9.3.0
-        version: 9.3.0(react-dom@18.3.1)(react@18.3.1)
       '@reduxjs/toolkit':
         specifier: ^2.6.1
         version: 2.6.1(react-redux@9.2.0)(react@18.3.1)
@@ -2197,31 +2194,6 @@ packages:
       mkdirp: 1.0.4
       rimraf: 3.0.2
     dev: true
-
-  /@paypal/paypal-js@9.8.0:
-    resolution: {integrity: sha512-qZ+jq36Y10MA2E28lnCh4nCNX3uH9s4TKUw6UkjenRkGYJD94z4vkZ2uUKzIYqgCIRZTDlacdU4274API5WzjA==}
-    dependencies:
-      promise-polyfill: 8.3.0
-    dev: false
-
-  /@paypal/react-paypal-js@9.3.0(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-QSLGVFoymBy0wSjRKLCH8xu829vcLhh1wmmdJ8FYMEHNO05xlCOLWdeWCm6r5PPVRpE0zJfLqxbAxhrN3C2g6g==}
-    peerDependencies:
-      react: ^16.8.0 || ^17 || ^18 || ^19
-      react-dom: ^16.8.0 || ^17 || ^18 || ^19
-    dependencies:
-      '@paypal/paypal-js': 9.8.0
-      '@paypal/sdk-constants': 1.0.158
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-      server-only: 0.0.1
-    dev: false
-
-  /@paypal/sdk-constants@1.0.158:
-    resolution: {integrity: sha512-OrX2kN4gsBl6fG1GS1ewsNk7TTqYmdtUMVaJ+wAzPhsv9M7dfni95WuJdt4pMALOo5ioZeJ05a16BUSca5IC+Q==}
-    dependencies:
-      hi-base32: 0.5.1
-    dev: false
 
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -5686,10 +5658,6 @@ packages:
     hasBin: true
     dev: true
 
-  /hi-base32@0.5.1:
-    resolution: {integrity: sha512-EmBBpvdYh/4XxsnUybsPag6VikPYnN30td+vQk+GI3qpahVEG9+gTkG0aXVxTjBqQ5T6ijbWIu77O+C5WFWsnA==}
-    dev: false
-
   /highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
     dev: false
@@ -7031,10 +6999,6 @@ packages:
         optional: true
     dev: true
 
-  /promise-polyfill@8.3.0:
-    resolution: {integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==}
-    dev: false
-
   /promise-retry@2.0.1:
     resolution: {integrity: sha512-y+WKFlBR8BGXnsNlIHFGPZmyDf3DFMoLhaflAnyZgV6rG6xu+JwesTo2Q9R6XwYmtmwAFCkAk3e35jEdoeh/3g==}
     engines: {node: '>=10'}
@@ -7653,10 +7617,6 @@ packages:
     dependencies:
       type-fest: 0.13.1
     optional: true
-
-  /server-only@0.0.1:
-    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
-    dev: false
 
   /set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}

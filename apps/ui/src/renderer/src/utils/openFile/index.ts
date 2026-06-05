@@ -15,7 +15,7 @@ export const openFile = async (
     const [filePath] = filePaths;
     fileName = filePath?.split('/')?.pop() || '';
     const ext = fileName?.split('.')?.pop();
-    const byteArray = await readBinaryFile(filePath);
+    const byteArray = (await readBinaryFile(filePath)) as unknown as ArrayBuffer;
     const blob = new Blob([byteArray], ext ? { type: `image/${ext}` } : undefined);
     file = new File([blob], fileName);
   } catch (_) {
