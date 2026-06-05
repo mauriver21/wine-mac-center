@@ -3,7 +3,11 @@ import { Body2, H6, Icon, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { CardItem } from '@components/CardItem';
 import { LifebuoyIcon } from '@heroicons/react/24/solid';
-import { PAYPAL_BRONZE_PLAN_ID } from '@constants/constants';
+import {
+  PAYPAL_BRONZE_PLAN_ID,
+  PAYPAL_GOLD_PLAN_ID,
+  PAYPAL_PLATINUM_PLAN_ID
+} from '@constants/constants';
 import { WineIcon } from '@assets/icons/24/outline/WineIcon';
 import { openExternal } from '@utils/openExternal';
 import { PAYPAL_SUBSCRIBE_URL } from '@constants/urls';
@@ -20,14 +24,14 @@ export const Donations: React.FC = () => {
         colors: { primaryColor: '#da690d', secondaryColor: '#c85e07' }
       },
       {
-        id: '',
+        id: PAYPAL_GOLD_PLAN_ID,
         name: t('gold'),
         value: 5,
         rate: t('moneyRate'),
         colors: { primaryColor: '#dabf0d', secondaryColor: '#c8a507' }
       },
       {
-        id: '',
+        id: PAYPAL_PLATINUM_PLAN_ID,
         name: t('platinum'),
         value: 7,
         rate: t('moneyRate'),
