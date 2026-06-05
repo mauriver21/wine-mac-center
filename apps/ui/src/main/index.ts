@@ -22,7 +22,8 @@ import {
   writeBinaryFile,
   writeFile,
   showItemInFolder,
-  renameDirectory
+  renameDirectory,
+  openExternal
 } from './commands';
 import icon from '../../resources/icon.png?asset';
 
@@ -45,6 +46,7 @@ ipcMain.handle(ElectronApi.BuildPlist, buildPlist);
 ipcMain.handle(ElectronApi.RemoveDirectory, removeDirectory);
 ipcMain.handle(ElectronApi.ShowItemInFolder, showItemInFolder);
 ipcMain.handle(ElectronApi.RenameDirectory, renameDirectory);
+ipcMain.handle(ElectronApi.OpenExternal, openExternal);
 
 let isQuitting = false;
 

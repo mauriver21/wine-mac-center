@@ -4,6 +4,7 @@ export * from './dirExists';
 export * from './exec';
 export * from './fileExists';
 export * from './getAppPath';
+export * from './openExternal';
 export * from './pathJoin';
 export * from './readBinaryFile';
 export * from './readDirectory';

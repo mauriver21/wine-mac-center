@@ -63,7 +63,8 @@ const api: RendererApi = {
   unwatchDirs: (...args) => ipcRenderer.invoke(ElectronApi.UnwatchDirs, ...args),
   buildPlist: (...args) => ipcRenderer.invoke(ElectronApi.BuildPlist, ...args),
   showItemInFolder: (...args) => ipcRenderer.invoke(ElectronApi.ShowItemInFolder, ...args),
-  renameDirectory: (...args) => ipcRenderer.invoke(ElectronApi.RenameDirectory, ...args)
+  renameDirectory: (...args) => ipcRenderer.invoke(ElectronApi.RenameDirectory, ...args),
+  openExternal: (...args) => ipcRenderer.invoke(ElectronApi.OpenExternal, ...args)
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to

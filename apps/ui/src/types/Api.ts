@@ -34,4 +34,5 @@ export type Api = {
   buildPlist: (obj: plist.PlistValue) => Promise<string>;
   showItemInFolder: (fullPath: string) => Promise<void>;
   renameDirectory: (from: string, to: string) => Promise<void>;
+  openExternal: (url: string, options?: Electron.OpenExternalOptions) => Promise<void>;
 };

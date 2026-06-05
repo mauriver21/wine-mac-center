@@ -22,5 +22,6 @@ export enum ElectronApi {
   BuildPlist = 'build-plist',
   RemoveDirectory = 'remove-directory',
   RenameDirectory = 'rename-directory',
-  ShowItemInFolder = 'show-item-in-folder'
+  ShowItemInFolder = 'show-item-in-folder',
+  OpenExternal = 'open-external'
 }
