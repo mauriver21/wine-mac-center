@@ -176,5 +176,9 @@
   "bronze": "Bronze",
   "moneyRate": "USD/month",
   "gold": "Gold",
-  "platinum": "Platinum"
+  "platinum": "Platinum",
+  "checkingForUpdates": "Checking for updates...",
+  "versionAvailable": "Version {{version}} is available to download",
+  "noNewUpdates": "No new updates available.",
+  "download": "Download"
 }

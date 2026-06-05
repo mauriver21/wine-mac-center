@@ -15,6 +15,7 @@ import { ThemeProvider } from 'reactjs-shared-ui';
 import { WineAppPipelineProvider } from '@components/WineAppPipelineProvider';
 import * as resources from '@i18n/translations';
 import ReactDOM from 'react-dom/client';
+import { VersionDialogProvider } from '@components/VersionDialogProvider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <I18nProvider language="es" resources={resources}>
@@ -23,17 +24,19 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <NotificationsProvider>
           <EnvProvider>
             <LoadingDialogProvider>
-              <SteamCliProvider>
-                <DirsWatcherProvider>
-                  <WineAppPipelineProvider>
-                    <BrowserRouter>
-                      <AppSetup>
-                        <App />
-                      </AppSetup>
-                    </BrowserRouter>
-                  </WineAppPipelineProvider>
-                </DirsWatcherProvider>
-              </SteamCliProvider>
+              <VersionDialogProvider>
+                <SteamCliProvider>
+                  <DirsWatcherProvider>
+                    <WineAppPipelineProvider>
+                      <BrowserRouter>
+                        <AppSetup>
+                          <App />
+                        </AppSetup>
+                      </BrowserRouter>
+                    </WineAppPipelineProvider>
+                  </DirsWatcherProvider>
+                </SteamCliProvider>
+              </VersionDialogProvider>
             </LoadingDialogProvider>
           </EnvProvider>
         </NotificationsProvider>

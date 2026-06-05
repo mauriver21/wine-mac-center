@@ -52,3 +52,8 @@ export enum PipelineAction {
 export enum EventName {
   Cancelled = 'Cancelled'
 }
+
+export enum VersionDialogAction {
+  Download = 'Download',
+  None = 'None'
+}
