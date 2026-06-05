@@ -2,7 +2,7 @@ import { VersionDialogAction } from '@constants/enums';
 import { createContext } from 'react';
 
 export type VersionDialogContextType = {
-  open: (args: { message: string; action: VersionDialogAction }) => void;
+  open: (args: { message: string; action: VersionDialogAction; version: string }) => void;
   close: () => void;
 };
 

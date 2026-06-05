@@ -35,12 +35,14 @@ export const useAppModel = () => {
     if (version !== VERSION) {
       versionDialog.open({
         message: t('versionAvailable', { version }),
-        action: VersionDialogAction.Download
+        action: VersionDialogAction.Download,
+        version
       });
     } else {
       versionDialog.open({
         message: t('noNewUpdates', { version }),
-        action: VersionDialogAction.None
+        action: VersionDialogAction.None,
+        version
       });
     }
   };

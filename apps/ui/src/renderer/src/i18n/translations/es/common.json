@@ -179,6 +179,6 @@
   "platinum": "Platino",
   "checkingForUpdates": "Buscando actualizaciones...",
   "versionAvailable": "Version {{version}} is available to download",
-  "noNewUpdates": "No hay actualizaciones nuevas disponibles.",
+  "noNewUpdates": "No hay nuevas actualizaciones disponibles.",
   "download": "Descargar"
 }

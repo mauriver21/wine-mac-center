@@ -1,3 +1,7 @@
+export const GITHUB_URL = 'https://github.com/mauriver21';
+export const REPOSITORY_URL = `https://github.com/mauriver21/wine-mac-center`;
+export const RELEASES_URL = `${REPOSITORY_URL}/releases`;
+export const RELEASE_URL = `${REPOSITORY_URL}/releases/tag`;
 export const WINE_APPS_SRC_URL = 'https://mauriver21.github.io/wine-mac-center/assets';
 export const WINE_APPS_CONFIGS_URL = `${WINE_APPS_SRC_URL}/configs`;
 export const WINE_APPS_DOWNLOADABLES_URL = `${WINE_APPS_SRC_URL}/downloadables`;
