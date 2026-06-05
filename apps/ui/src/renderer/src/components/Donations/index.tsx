@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Body1, H6, Icon, Stack } from 'reactjs-shared-ui';
+import { Body2, H6, Icon, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { CardItem } from '@components/CardItem';
 import { LifebuoyIcon } from '@heroicons/react/24/solid';
@@ -15,21 +15,21 @@ export const Donations: React.FC = () => {
       {
         id: PAYPAL_BRONZE_PLAN_ID,
         name: t('bronze'),
-        value: 7,
+        value: 2,
         rate: t('moneyRate'),
         colors: { primaryColor: '#da690d', secondaryColor: '#c85e07' }
       },
       {
         id: '',
         name: t('gold'),
-        value: 14,
+        value: 5,
         rate: t('moneyRate'),
         colors: { primaryColor: '#dabf0d', secondaryColor: '#c8a507' }
       },
       {
         id: '',
         name: t('platinum'),
-        value: 18,
+        value: 7,
         rate: t('moneyRate'),
         colors: { primaryColor: '#d4d2d1', secondaryColor: '#c1c8c7' }
       }
@@ -39,7 +39,12 @@ export const Donations: React.FC = () => {
 
   return (
     <CardItem icon={LifebuoyIcon} label={t('donations')}>
-      <Stack spacing={2} direction="row" justifyContent="space-between">
+      <Stack
+        spacing={3}
+        direction="row"
+        justifyContent="space-between"
+        sx={{ marginX: 'auto !important' }}
+      >
         {PLANS.map(({ id, name, value, rate, colors }, index) => (
           <Stack
             onClick={() => {
@@ -48,13 +53,16 @@ export const Donations: React.FC = () => {
             key={index}
             alignItems="center"
             style={{ cursor: 'pointer' }}
+            border={(theme) => `1px solid ${theme.palette.primary.dark}`}
+            borderRadius={3}
+            p={1.5}
           >
-            <Icon size={110} render={() => <WineIcon {...colors} />} />
+            <Icon size={72} render={() => <WineIcon {...colors} />} />
             <Stack alignItems="center">
               <H6 fontWeight={500}>{name}</H6>
-              <Body1 fontWeight={500}>
+              <Body2 fontWeight={500} mt="-7px">
                 {value} {rate}
-              </Body1>
+              </Body2>
             </Stack>
           </Stack>
         ))}
