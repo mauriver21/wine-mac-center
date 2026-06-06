@@ -39,6 +39,7 @@ import { blobUrlToFile } from '@utils/blobUrlToFile';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { Rocket } from '@mui/icons-material';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { LabelsAutocomplete } from '@components/LabelsAutocomplete';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -74,11 +75,13 @@ export const PipelineScript: React.FC = () => {
     <CardItem icon={PencilSquareIcon} label={t('scriptDetails')}>
       <Stack spacing={2}>
         <TextField
+          required
           autoComplete="off"
           control={form.control}
           name="appName"
           label={t('applicationName')}
         />
+        <LabelsAutocomplete />
       </Stack>
     </CardItem>,
     <CardItem icon={CpuChipIcon} label={t('wineEngine')}>

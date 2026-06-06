@@ -190,5 +190,9 @@
   "winetricksMaintainers": "Winetricks maintainers.",
   "communityDistributions": "Community-maintained Wine distributions.",
   "openSourceContributors": "Open-source contributors who help improve Wine compatibility on macOS.",
-  "internetArchive": "The Internet Archive, for serving as a valuable source of software and digital assets."
+  "internetArchive": "The Internet Archive, for serving as a valuable source of software and digital assets.",
+  "label": "Label",
+  "steamApp": "Steam App",
+  "abandonware": "Abandonware",
+  "free": "Free"
 }
