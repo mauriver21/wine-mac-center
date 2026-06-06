@@ -180,5 +180,9 @@
   "checkingForUpdates": "Buscando actualizaciones...",
   "versionAvailable": "Version {{version}} is available to download",
   "noNewUpdates": "No hay nuevas actualizaciones disponibles.",
-  "download": "Descargar"
+  "download": "Descargar",
+  "projectInfo": "Información del Proyecto",
+  "viewRepositoryOnGithub": "Ver el repositorio en GitHub",
+  "projectInfoLegend1": "Wine Mac Center es una aplicación de código abierto desarrollada con React, TypeScript y Electron que simplifica el uso de Wine en macOS. Proporciona una interfaz intuitiva para instalar y administrar aplicaciones de Windows sin depender de comandos de terminal.",
+  "projectInfoLegend2": "El proyecto está impulsado por la comunidad. El desarrollador principal no es un experto en Wine, por lo que las contribuciones, los comentarios y el intercambio de conocimientos por parte de la comunidad de Wine son especialmente bienvenidos."
 }

@@ -84,6 +84,7 @@ This project would not be possible without the work of:
 - Community-maintained Wine distributions.
 - Winetricks maintainers.
 - Open-source contributors who help improve Wine compatibility on macOS.
+- The Internet Archive, for serving as a valuable source of software and digital assets.
 
 # License
 

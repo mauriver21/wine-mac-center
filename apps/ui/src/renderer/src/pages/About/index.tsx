@@ -5,11 +5,12 @@ import { Stack, Box, ContentsClass } from 'reactjs-shared-ui';
 import { AppVersion } from '@components/AppVersion';
 import { Donations } from '@components/Donations';
 import { PAYPAL_ENABLED } from '@constants/constants';
+import { ProjectInfo } from '@components/ProjectInfo';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const About: React.FC = () => {
-  const modules = [<AppVersion />, ...(PAYPAL_ENABLED ? [<Donations />] : [])];
+  const modules = [<AppVersion />, <ProjectInfo />, ...(PAYPAL_ENABLED ? [<Donations />] : [])];
 
   return (
     <ConfigLayout
