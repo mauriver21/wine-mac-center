@@ -6,11 +6,17 @@ import { AppVersion } from '@components/AppVersion';
 import { Donations } from '@components/Donations';
 import { PAYPAL_ENABLED } from '@constants/constants';
 import { ProjectInfo } from '@components/ProjectInfo';
+import { Acknowledgements } from '@components/Acknowledgements';
 
 const ITEM_STYLE = { px: '20px !important' };
 
 export const About: React.FC = () => {
-  const modules = [<AppVersion />, <ProjectInfo />, ...(PAYPAL_ENABLED ? [<Donations />] : [])];
+  const modules = [
+    <AppVersion />,
+    <ProjectInfo />,
+    <Acknowledgements />,
+    ...(PAYPAL_ENABLED ? [<Donations />] : [])
+  ];
 
   return (
     <ConfigLayout
