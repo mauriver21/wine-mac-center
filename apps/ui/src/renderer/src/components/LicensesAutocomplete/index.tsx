@@ -1,7 +1,7 @@
 import { License } from '@constants/enums';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Field, FieldProps } from 'reactjs-shared-ui/forms';
+import { Field, FieldProps, TextField } from 'reactjs-shared-ui/forms';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface LicensesAutocompleteProps extends FieldProps {}
@@ -57,8 +57,16 @@ export const LicensesAutocomplete: React.FC<LicensesAutocompleteProps> = ({
               setValue(value?.value);
               field.props.onInput(value);
             }}
-            renderInput={(params) => <TextField {...params} label={t('license')} />}
+            renderInput={(params) => (
+              <TextField
+                error={field.helpers.error}
+                errorMessage={field.helpers.errorMessage}
+                {...params}
+                label={t('license')}
+              />
+            )}
             onBlur={field.props.onBlur}
+            onClose={field.props.onBlur}
           />
         );
       }}
