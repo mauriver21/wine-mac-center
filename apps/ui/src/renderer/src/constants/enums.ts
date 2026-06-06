@@ -57,3 +57,8 @@ export enum VersionDialogAction {
   Download = 'Download',
   None = 'None'
 }
+
+export enum License {
+  Paid = 'paid',
+  Free = 'free'
+}

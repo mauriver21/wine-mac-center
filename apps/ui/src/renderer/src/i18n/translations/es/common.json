@@ -194,5 +194,7 @@
   "label": "Etiqueta",
   "steamApp": "Aplicación Steam",
   "abandonware": "Abandonware",
-  "free": "Gratis"
+  "free": "Gratis",
+  "license": "Licencia",
+  "paid": "De pago"
 }

@@ -5,7 +5,7 @@ import { WinetricksOptions } from '@interfaces/WinetricksOptions';
 
 export type WineAppConfig = {
   name: string;
-  label?: string;
+  license: string;
   origin: ConfigOrigin;
   scriptURL?: string;
   iconURL?: string;

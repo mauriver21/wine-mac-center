@@ -38,7 +38,7 @@ export const useSchema = () => {
       })
       .transform((value) => value.trim()),
     engineVersion: schema.string().required().default(''),
-    label: schema.string().optional(),
+    license: schema.string().required().default(''),
     dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
     winetricksVerbs: schema.array().of(schema.string().required()).default([]),
     winetricksVersion: schema.string().required().default(DEFAULT_WINETRICKS_VERSION),

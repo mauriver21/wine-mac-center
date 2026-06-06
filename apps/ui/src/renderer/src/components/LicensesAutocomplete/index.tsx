@@ -1,22 +1,23 @@
+import { License } from '@constants/enums';
 import { Autocomplete, TextField } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Field, FieldProps } from 'reactjs-shared-ui/forms';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
-export interface LabelsAutocompleteProps extends FieldProps {}
+export interface LicensesAutocompleteProps extends FieldProps {}
 
-export const LabelsAutocomplete: React.FC<LabelsAutocompleteProps> = ({
+export const LicensesAutocomplete: React.FC<LicensesAutocompleteProps> = ({
   name = '',
   control,
   fieldOptions,
   value: valueProp
 }) => {
   const { t } = useI18n();
+  const ref = useRef({ rendered: false });
   const [value, setValue] = useState<string | undefined>('');
   const OPTIONS = [
-    { label: t('steamApp'), value: 'steamApp' },
-    { label: t('abandonware'), value: 'abandonware' },
-    { label: t('free'), value: 'free' }
+    { label: t('paid'), value: License.Paid },
+    { label: t('free'), value: License.Free }
   ];
 
   const selectedValue = useMemo(() => {
@@ -27,6 +28,12 @@ export const LabelsAutocomplete: React.FC<LabelsAutocompleteProps> = ({
     valueProp !== undefined && setValue(valueProp);
   }, [valueProp]);
 
+  useEffect(() => {
+    return () => {
+      ref.current.rendered = false;
+    };
+  }, []);
+
   return (
     <Field
       control={control}
@@ -36,7 +43,10 @@ export const LabelsAutocomplete: React.FC<LabelsAutocompleteProps> = ({
       value={value}
       render={(field) => {
         useEffect(() => {
-          field.props.value !== undefined && setValue(field.props.value);
+          if (!ref.current.rendered) {
+            setValue(field.props.value);
+            ref.current.rendered = true;
+          }
         }, [field.props.value]);
 
         return (
@@ -47,7 +57,7 @@ export const LabelsAutocomplete: React.FC<LabelsAutocompleteProps> = ({
               setValue(value?.value);
               field.props.onInput(value);
             }}
-            renderInput={(params) => <TextField {...params} label={t('label')} />}
+            renderInput={(params) => <TextField {...params} label={t('license')} />}
             onBlur={field.props.onBlur}
           />
         );

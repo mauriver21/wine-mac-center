@@ -194,5 +194,7 @@
   "label": "Label",
   "steamApp": "Steam App",
   "abandonware": "Abandonware",
-  "free": "Free"
+  "free": "Free",
+  "license": "License",
+  "paid": "Paid"
 }
