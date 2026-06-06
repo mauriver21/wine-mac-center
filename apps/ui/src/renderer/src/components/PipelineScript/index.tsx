@@ -75,13 +75,12 @@ export const PipelineScript: React.FC = () => {
     <CardItem icon={PencilSquareIcon} label={t('scriptDetails')}>
       <Stack spacing={2}>
         <TextField
-          required
           autoComplete="off"
           control={form.control}
           name="appName"
           label={t('applicationName')}
         />
-        <LabelsAutocomplete />
+        <LabelsAutocomplete name="label" control={form.control} />
       </Stack>
     </CardItem>,
     <CardItem icon={CpuChipIcon} label={t('wineEngine')}>

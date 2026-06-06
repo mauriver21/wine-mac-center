@@ -9,8 +9,7 @@ export const LabelsAutocomplete: React.FC<LabelsAutocompleteProps> = ({
   name = '',
   control,
   fieldOptions,
-  value: valueProp,
-  ...rest
+  value: valueProp
 }) => {
   const { t } = useI18n();
   const [value, setValue] = useState<string | undefined>('');
@@ -35,18 +34,24 @@ export const LabelsAutocomplete: React.FC<LabelsAutocompleteProps> = ({
       as="input"
       name={name}
       value={value}
-      render={(field) => (
-        <Autocomplete
-          value={selectedValue}
-          options={OPTIONS}
-          onChange={(_, value) => {
-            setValue(value?.value);
-            field.props.onInput(value);
-          }}
-          renderInput={(params) => <TextField {...params} label={t('label')} />}
-          {...rest}
-        />
-      )}
+      render={(field) => {
+        useEffect(() => {
+          field.props.value !== undefined && setValue(field.props.value);
+        }, [field.props.value]);
+
+        return (
+          <Autocomplete
+            value={selectedValue || null}
+            options={OPTIONS}
+            onChange={(_, value) => {
+              setValue(value?.value);
+              field.props.onInput(value);
+            }}
+            renderInput={(params) => <TextField {...params} label={t('label')} />}
+            onBlur={field.props.onBlur}
+          />
+        );
+      }}
     />
   );
 };

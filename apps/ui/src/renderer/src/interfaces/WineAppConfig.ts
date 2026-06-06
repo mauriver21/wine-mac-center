@@ -4,7 +4,8 @@ import { WineAppExecutable } from '@interfaces/WineAppExecutable';
 import { WinetricksOptions } from '@interfaces/WinetricksOptions';
 
 export type WineAppConfig = {
-  name: string; //<--- Unique identifier
+  name: string;
+  label?: string;
   origin: ConfigOrigin;
   scriptURL?: string;
   iconURL?: string;

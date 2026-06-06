@@ -32,6 +32,7 @@ export const useWineAppConfigApiClient = () => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
     const config: WineAppConfig = {
       name: data.name,
+      label: data.label,
       origin: data.origin,
       dxvkEnabled: data.dxvkEnabled || false,
       setupExecutableURL: '',
