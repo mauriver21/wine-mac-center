@@ -23,7 +23,7 @@ export * from './DownloadEngineButton';
 export * from './DownloadWineEngines';
 export * from './EnvPaths';
 export * from './EnvProvider';
-export * from './ExecutableConfigModule';
+export * from './ExecutablesConfigModule';
 export * from './FileInput';
 export * from './FilePathInput';
 export * from './IconButton';

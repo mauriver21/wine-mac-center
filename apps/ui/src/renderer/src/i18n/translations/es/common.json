@@ -201,5 +201,7 @@
   "step": "Paso {{number}}",
   "addExecutable": "Agregar ejecutable",
   "removeExecutable": "Remover ejecutable",
-  "executable": "Ejecutable {{number}}"
+  "executable": "Ejecutable {{number}}",
+  "executablesConfig": "Configuración de Ejecutables",
+  "runExecutable": "Correr ejecutable"
 }

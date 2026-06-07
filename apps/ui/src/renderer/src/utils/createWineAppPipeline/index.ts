@@ -261,20 +261,23 @@ export const createWineAppPipeline = async (options: {
         const exePath = `/${parsePath(args.baseExePath)}/${parsePath(args.exePath)}`
           .replace('$HOME', env.get().HOME)
           .replace('$WINE_APP_PREFIX_PATH', appEnv.WINE_APP_PREFIX_PATH);
-        return wineApp.runExe(`${exePath}`, {
-          onStdOut: (data) => {
-            state.runningWine = true;
-            spawnProcessArgs?.onStdOut?.(data);
-          },
-          onStdErr: (data) => {
-            state.runningWine = true;
-            spawnProcessArgs?.onStdErr?.(data);
-          },
-          onExit: (data) => {
-            state.runningWine = false;
-            spawnProcessArgs?.onExit?.(data);
+        return wineApp.runExe(
+          { path: `${exePath}` },
+          {
+            onStdOut: (data) => {
+              state.runningWine = true;
+              spawnProcessArgs?.onStdOut?.(data);
+            },
+            onStdErr: (data) => {
+              state.runningWine = true;
+              spawnProcessArgs?.onStdErr?.(data);
+            },
+            onExit: (data) => {
+              state.runningWine = false;
+              spawnProcessArgs?.onExit?.(data);
+            }
           }
-        });
+        );
       }
       case ScriptOperation.SET_MAIN_EXE: {
         const mainExePath = getRelativeDriveCPath(
@@ -501,20 +504,23 @@ export const createWineAppPipeline = async (options: {
                   name: 'Running setup executable',
                   script: (args?: SpawnProcessArgs) => {
                     const exePath = wineApp.getAppConfig().setupExecutablePath || '';
-                    return wineApp.runExe(exePath, {
-                      onStdOut: (data) => {
-                        state.runningWine = true;
-                        args?.onStdOut?.(data);
-                      },
-                      onStdErr: (data) => {
-                        state.runningWine = true;
-                        args?.onStdErr?.(data);
-                      },
-                      onExit: (data) => {
-                        state.runningWine = false;
-                        args?.onExit?.(data);
+                    return wineApp.runExe(
+                      { path: exePath },
+                      {
+                        onStdOut: (data) => {
+                          state.runningWine = true;
+                          args?.onStdOut?.(data);
+                        },
+                        onStdErr: (data) => {
+                          state.runningWine = true;
+                          args?.onStdErr?.(data);
+                        },
+                        onExit: (data) => {
+                          state.runningWine = false;
+                          args?.onExit?.(data);
+                        }
                       }
-                    });
+                    );
                   },
                   status: ProcessStatus.Pending,
                   output: ''

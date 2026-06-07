@@ -26,18 +26,21 @@ export const SetSetupExe: React.FC = () => {
 
   const runSetupExe = () => {
     setLoading(true);
-    wineApp.runExe(configuredSetupExecutablePath, {
-      onStdOut: (data) => {
-        console.log(data);
-      },
-      onStdErr: (data) => {
-        console.log(data);
-      },
-      onExit: (data) => {
-        console.log(data);
-        setLoading(false);
+    wineApp.runExe(
+      { path: configuredSetupExecutablePath },
+      {
+        onStdOut: (data) => {
+          console.log(data);
+        },
+        onStdErr: (data) => {
+          console.log(data);
+        },
+        onExit: (data) => {
+          console.log(data);
+          setLoading(false);
+        }
       }
-    });
+    );
   };
 
   return (

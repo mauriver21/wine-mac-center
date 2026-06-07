@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
-import { ExecutableConfigModule } from '@components/ExecutableConfigModule';
+import { ExecutablesConfigModule } from '@components/ExecutablesConfigModule';
 import { ChangeEngineModule } from '@components/ChangeEngineModule';
 import { WinetricksModule } from '@components/WinetricksModule';
 import { WineConfigModule } from '@components/WineConfigModule';
@@ -35,7 +35,7 @@ export const AppConfig: React.FC = () => {
       <ControlPanelModule />,
       <UpdateAppModule />,
       <WinetricksModule />,
-      <ExecutableConfigModule appName={appName} />,
+      <ExecutablesConfigModule />,
       <ChangeEngineModule />,
       ...(env.isDev ? [<AppEnvVariables />] : [])
     ],

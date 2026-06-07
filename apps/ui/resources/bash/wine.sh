@@ -15,6 +15,12 @@ wine() {
     EXE_DIR=$(dirname "$EXE_PATH")
     EXE_FILE=$(basename "$EXE_PATH")
 
+    if [[ "$EXE_DIR" == /drive_c* ]]; then
+      EXE_DIR="$WINE_APP_PREFIX_PATH$EXE_DIR"
+    elif [[ "$EXE_DIR" == drive_c* ]]; then
+      EXE_DIR="$WINE_APP_PREFIX_PATH/$EXE_DIR"
+    fi
+
     cd "$EXE_DIR" || exit 1    
     "$WINE_APP_SCRIPTS_PATH/wineEnv.sh" "$WINE_ARCH" "$EXE_FILE" $EXE_FLAGS &
     script_pid=$!

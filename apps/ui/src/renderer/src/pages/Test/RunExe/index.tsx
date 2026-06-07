@@ -13,16 +13,19 @@ export const RunExe: React.FC = () => {
 
   const runExe = async () => {
     setLoading(true);
-    await wineApp.runExe(exePath, {
-      onStdOut: (data) => {
-        console.log(data);
-        setData(data);
-      },
-      onStdErr: (data) => {
-        console.log(data);
-        setData(data);
+    await wineApp.runExe(
+      { path: exePath },
+      {
+        onStdOut: (data) => {
+          console.log(data);
+          setData(data);
+        },
+        onStdErr: (data) => {
+          console.log(data);
+          setData(data);
+        }
       }
-    });
+    );
     setLoading(false);
   };
 
