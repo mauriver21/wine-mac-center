@@ -29,7 +29,7 @@ import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useSelector } from 'react-redux';
 import { RootState } from '@interfaces/RootState';
 import { IconInput } from '@components/IconInput';
-import { blobToURL } from '@utils/blobToURL';
+import { fileToURL } from '@utils/fileToURL';
 import { ArtWorkInput } from '@components/ArtWorkInput';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { LauncherImgInput } from '@components/LauncherImgInput';
@@ -116,7 +116,7 @@ export const PipelineScript: React.FC = () => {
             name="iconFile"
             control={form.control}
             onInput={async (file) => {
-              file && setIconSrc(blobToURL(await file?.arrayBuffer()));
+              file && setIconSrc(await fileToURL(file));
             }}
           />
           <ArtWorkInput
@@ -126,7 +126,7 @@ export const PipelineScript: React.FC = () => {
             imgSrc={artworkSrc}
             appName={t('noArtwork')}
             onInput={async (file) => {
-              file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
+              file && setArtWorkSrc(await fileToURL(file));
             }}
           />
           <LauncherImgInput
@@ -136,7 +136,7 @@ export const PipelineScript: React.FC = () => {
             imgSrc={launcherImgSrc}
             appName={t('noLauncherImage')}
             onInput={async (file) => {
-              file && setLauncherImgSrc(blobToURL(await file?.arrayBuffer()));
+              file && setLauncherImgSrc(await fileToURL(file));
             }}
           />
         </Box>
@@ -151,13 +151,6 @@ export const PipelineScript: React.FC = () => {
             label={t('startAppOnStartup')}
           />
         </Grid>
-        {/* <Grid item xs={12}>
-          <Checkbox
-            control={form.control}
-            name="launcherConfig.preventMonitorFromBecomingInactive"
-            label={t('preventMonitorInactive')}
-          />
-        </Grid> */}
         <Grid item xs={12}>
           <Checkbox
             control={form.control}

@@ -27,7 +27,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
 import { ArtWorkInput } from '@components/ArtWorkInput';
-import { blobToURL } from '@utils/blobToURL';
+import { fileToURL } from '@utils/fileToURL';
 import { IconInput } from '@components/IconInput';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 
@@ -102,7 +102,7 @@ export const CreateApp: React.FC = () => {
               name="iconFile"
               control={form.control}
               onInput={async (file) => {
-                file && setIconSrc(blobToURL(await file?.arrayBuffer()));
+                file && setIconSrc(await fileToURL(file));
               }}
             />
           </Stack>
@@ -115,7 +115,7 @@ export const CreateApp: React.FC = () => {
             imgSrc={artworkSrc}
             appName={t('noArtwork')}
             onInput={async (file) => {
-              file && setArtWorkSrc(blobToURL(await file?.arrayBuffer()));
+              file && setArtWorkSrc(await fileToURL(file));
             }}
           />
         </Grid>
