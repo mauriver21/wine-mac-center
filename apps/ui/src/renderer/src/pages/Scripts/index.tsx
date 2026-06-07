@@ -1,3 +1,4 @@
+import React from 'react';
 import { forwardRef, useEffect, useState } from 'react';
 import { SearchField } from '@components/SearchField';
 import { SortDirectionSelect } from '@components/SortDirectionSelect';

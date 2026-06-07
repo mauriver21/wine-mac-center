@@ -1,10 +1,10 @@
-import { Body1, Body2, Box, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
+import { Body1, Box, Card, CardProps, Icon, Image } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { useSelector } from 'react-redux';
 import { RootState } from '@interfaces/RootState';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useEffect, useState } from 'react';
-import { ConfigOrigin, License, PipelineAction } from '@constants/enums';
+import { ConfigOrigin, PipelineAction } from '@constants/enums';
 import { useNavigateApp } from '@hooks/useNavigateApp';
 import {
   ArrowDownCircleIcon,
@@ -18,8 +18,7 @@ import { AppCardButton } from '@components/AppCardButton';
 import { useWineAppPipelineModel } from '@models/useWineAppPipelineModel';
 import { ContextMenu } from '@components/ContextMenu';
 import defaultArtwork from '@assets/imgs/header.jpg';
-import { Chip } from '@mui/material';
-import { CrownIcon } from '@assets/icons/24/outline/CrownIcon';
+import { LicenseChip } from '@components/LicenseChip';
 
 export interface AppCardProps extends CardProps {
   appName: string | undefined;
@@ -59,39 +58,27 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
     }
   }, [wineAppConfig?.artworkURL]);
 
+  console.log(wineAppConfig);
+
   return (
     <Card
-      sx={{ width: 200, height: 300, borderRadius: 2, overflow: 'hidden', position: 'relative' }}
+      sx={{
+        width: 200,
+        height: 300,
+        borderRadius: 2,
+        overflow: 'hidden',
+        position: 'relative',
+        mb: 1
+      }}
       {...rest}
     >
       {wineAppConfig?.license ? (
         <Box position="absolute" top={5} left={5} zIndex={2}>
-          {wineAppConfig?.license == License.Paid && (
-            <Chip
-              color="warning"
-              label={
-                <Body2 fontSize={12} fontWeight="bold" display="flex" alignItems="center">
-                  <Icon color="black" render={CrownIcon} mr={0.2} mt={-0.2} />
-                  {t(wineAppConfig.license)}
-                </Body2>
-              }
-            />
-          )}
-          {wineAppConfig?.license == License.Free && (
-            <Chip
-              color="info"
-              label={
-                <Body2 fontSize={12} fontWeight="bold">
-                  {t(wineAppConfig.license)}
-                </Body2>
-              }
-            />
-          )}
+          <LicenseChip license={wineAppConfig.license} />
         </Box>
       ) : (
         <></>
       )}
-
       <Box
         height="100%"
         width="100%"
