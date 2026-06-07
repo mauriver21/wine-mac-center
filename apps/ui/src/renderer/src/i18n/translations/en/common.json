@@ -196,5 +196,6 @@
   "abandonware": "Abandonware",
   "free": "Free",
   "license": "License",
-  "paid": "Paid"
+  "paid": "Paid",
+  "selectedVerbs": "Selected verbs:"
 }

@@ -14,6 +14,7 @@ import {
   WinetricksVersionSelect,
   WinetricksVersionSelectProps
 } from '@components/WinetricksVersionSelect';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface WinetricksSelectorProps extends FieldProps {
   name?: string;
@@ -47,6 +48,7 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
   showSelectedVerbs,
   winetricksVersionSelectProps = {}
 }) => {
+  const { t } = useI18n();
   const winetrickModel = useWinetrickModel();
   const [version, setVersion] = useState(DEFAULT_WINETRICKS_VERSION);
   const [filters, setFilters] = useState({ verb: '' });
@@ -88,7 +90,7 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
           name={name}
           value={value}
           render={(field) => {
-            const verbs = field.props.value;
+            const verbs = field.props.value as string[];
             return (
               <>
                 {CATEGORIES.map((category, index) => {
@@ -145,7 +147,7 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
                 {showSelectedVerbs && verbs?.length ? (
                   <Stack spacing={1} pt={2}>
                     <Body2 fontWeight={500} color="text.secondary">
-                      Selected verbs:
+                      {t('selectedVerbs')}
                     </Body2>
                     <Box>
                       {verbs?.map((item) => (
