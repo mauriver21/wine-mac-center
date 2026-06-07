@@ -600,6 +600,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     setExecutables,
     saveAppArtwork,
     saveAppIcon,
+    saveAppLauncherImg,
     listAppExecutables,
     getAppConfig,
     saveMainExecutablePath,

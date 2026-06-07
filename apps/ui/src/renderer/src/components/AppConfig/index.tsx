@@ -17,6 +17,7 @@ import { AppEnvVariables } from '@components/AppEnvVariables';
 import { useResolveAppName } from '@hooks/useResolveAppName';
 import { WineAppProvider } from '@components/WineAppProvider';
 import { UpdateAppModule } from '@components/UpdateAppModule';
+import { StyleModule } from '@components/StyleModule';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -35,6 +36,7 @@ export const AppConfig: React.FC = () => {
       <ControlPanelModule />,
       <UpdateAppModule />,
       <WinetricksModule />,
+      <StyleModule />,
       <ExecutablesConfigModule />,
       <ChangeEngineModule />,
       ...(env.isDev ? [<AppEnvVariables />] : [])

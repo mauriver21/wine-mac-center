@@ -102,7 +102,9 @@ export const PipelineScript: React.FC = () => {
     </CardItem>,
     <CardItem icon={PaintBrushIcon} label={t('style')}>
       <>
-        <Divider />
+        <Box pb={2}>
+          <Divider />
+        </Box>
         <StyleSelector
           iconURL={appConfig?.iconURL}
           artworkURL={appConfig?.artworkURL}
