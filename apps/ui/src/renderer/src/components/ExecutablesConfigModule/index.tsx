@@ -1,6 +1,5 @@
 import { Grid, Stack, Icon, H6, ContentsClass, CardContent, Card } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
-import { useEffect, useState } from 'react';
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
 import { ExecutablesSelector } from '@components/ExecutablesSelector';
@@ -10,12 +9,7 @@ export interface ExecutablesConfigModuleProps {}
 export const ExecutablesConfigModule: React.FC<ExecutablesConfigModuleProps> = () => {
   const { t } = useI18n();
   const { wineApp } = useWineAppContext() || {};
-  const [driveCPath, setDriveCPath] = useState<string>('');
   const appConfig = wineApp?.getAppConfig();
-
-  useEffect(() => {
-    wineApp && setDriveCPath(wineApp.getWineEnv().WINE_APP_DRIVE_C_PATH);
-  }, [appConfig?.name]);
 
   return (
     <Card>
@@ -31,7 +25,6 @@ export const ExecutablesConfigModule: React.FC<ExecutablesConfigModuleProps> = (
             <Grid item xs={12}>
               <ExecutablesSelector
                 value={appConfig?.executables}
-                filePathInputProps={{ defaultPath: driveCPath, relativeToDriveC: true }}
                 onChange={(executables) => {
                   wineApp?.setExecutables({ executables });
                 }}
