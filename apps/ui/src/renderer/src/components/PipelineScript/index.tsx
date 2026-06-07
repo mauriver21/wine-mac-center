@@ -28,11 +28,7 @@ import { useParams } from 'react-router-dom';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
 import { useSelector } from 'react-redux';
 import { RootState } from '@interfaces/RootState';
-import { IconInput } from '@components/IconInput';
-import { fileToURL } from '@utils/fileToURL';
-import { ArtWorkInput } from '@components/ArtWorkInput';
 import { ConfigLayout } from '@layouts/ConfigLayout';
-import { LauncherImgInput } from '@components/LauncherImgInput';
 import { useQueryParam } from '@hooks/useQueryParam';
 import { buildUniqueAppName } from '@utils/buildUniqueAppName';
 import { blobUrlToFile } from '@utils/blobUrlToFile';
@@ -40,6 +36,7 @@ import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { Rocket } from '@mui/icons-material';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { LicensesAutocomplete } from '@components/LicensesAutocomplete';
+import { StyleSelector } from '@components/StyleSelector';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -57,9 +54,6 @@ export const PipelineScript: React.FC = () => {
     wineAppConfigModel.selectWineAppConfig(state, appName, ConfigOrigin.SCRIPTS)
   );
   const [loading, setLoading] = useState(false);
-  const [iconSrc, setIconSrc] = useState('');
-  const [artworkSrc, setArtWorkSrc] = useState('');
-  const [launcherImgSrc, setLauncherImgSrc] = useState('');
   const { fields, insert, remove } = useFieldArray<FormSchema>({
     name: 'pipelineScripts',
     control: form.control
@@ -109,37 +103,20 @@ export const PipelineScript: React.FC = () => {
     <CardItem icon={PaintBrushIcon} label={t('style')}>
       <>
         <Divider />
-        <Box pt={2} display="flex" gap={4} justifyContent="center">
-          <IconInput
-            type="image"
-            imgSrc={iconSrc}
-            name="iconFile"
-            control={form.control}
-            onInput={async (file) => {
-              file && setIconSrc(await fileToURL(file));
-            }}
-          />
-          <ArtWorkInput
-            control={form.control}
-            name="artworkFile"
-            type="image"
-            imgSrc={artworkSrc}
-            appName={t('noArtwork')}
-            onInput={async (file) => {
-              file && setArtWorkSrc(await fileToURL(file));
-            }}
-          />
-          <LauncherImgInput
-            control={form.control}
-            name="launcherImgFile"
-            type="image"
-            imgSrc={launcherImgSrc}
-            appName={t('noLauncherImage')}
-            onInput={async (file) => {
-              file && setLauncherImgSrc(await fileToURL(file));
-            }}
-          />
-        </Box>
+        <StyleSelector
+          iconURL={appConfig?.iconURL}
+          artworkURL={appConfig?.artworkURL}
+          launcherImgURL={appConfig?.launcherImgURL}
+          onChangeIcon={(file) => {
+            form.setValue('iconFile', file, { shouldValidate: true });
+          }}
+          onChangeArtWork={(file) => {
+            form.setValue('artworkFile', file, { shouldValidate: true });
+          }}
+          onChangeLauncherImg={(file) => {
+            form.setValue('launcherImgFile', file, { shouldValidate: true });
+          }}
+        />
       </>
     </CardItem>,
     <CardItem icon={Rocket} label={t('launcherSettings')}>
@@ -588,12 +565,6 @@ export const PipelineScript: React.FC = () => {
 
   useEffect(() => {
     fillForm();
-  }, [appConfig?.name]);
-
-  useEffect(() => {
-    setArtWorkSrc(appConfig?.artworkURL || '');
-    setIconSrc(appConfig?.iconURL || '');
-    setLauncherImgSrc(appConfig?.launcherImgURL || '');
   }, [appConfig?.name]);
 
   return (
