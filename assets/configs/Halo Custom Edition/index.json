@@ -1,5 +1,6 @@
 {
   "name": "Halo Custom Edition",
+  "license": "free",
   "origin": "SCRIPTS",
   "dxvkEnabled": false,
   "setupExecutableURL": "",

@@ -1,1 +1,56 @@
-{"name":"Looney Tunes Sheep Raider","origin":"SCRIPTS","dxvkEnabled":false,"setupExecutableURL":"","engineVersion":"WS11WineCX64Bit23.6.0","winetricks":{"verbs":[],"version":"20240105"},"executables":[{"main":true,"path":"","flags":""}],"pipelineScripts":[{"url":"https://archive.org/download/ralph-lupo/RalphLupo.zip","downloadName":"","operation":"DOWNLOAD","name":"Download setup executable"},{"url":"https://mauriver21.github.io/wine-mac-center/assets/downloadables/patches/Looney%20Tunes%20Sheep%20Raider/SheepD3D.exe","downloadName":"","operation":"DOWNLOAD","name":"Download setup executable"},{"path":"RalphLupo.zip","operation":"DECOMPRESS","name":"Extract File"},{"path":"RalphLupo/SDW.bin","operation":"DECOMPRESS","name":"Extract File"},{"from":"RalphLupo/SDW","target":"Program Files (x86)/SDW","operation":"COPY","name":"Copy file"},{"mainExePath":"Program Files (x86)/SDW/SheepD3D.exe","operation":"SET_MAIN_EXE","name":"Set main exe"},{"from":"SheepD3D.exe","target":"Program Files (x86)/SDW/SheepD3D.exe","operation":"COPY","name":"Copy file"},{"removePath":"Program Files (x86)/SDW/Levels/Demos","operation":"REMOVE","name":"Remove file or folder"}]}
+{
+  "name": "Looney Tunes Sheep Raider",
+  "license": "free",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit23.6.0",
+  "winetricks": { "verbs": [], "version": "20240105" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://archive.org/download/ralph-lupo/RalphLupo.zip",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "url": "https://mauriver21.github.io/wine-mac-center/assets/downloadables/patches/Looney%20Tunes%20Sheep%20Raider/SheepD3D.exe",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "path": "RalphLupo.zip",
+      "operation": "DECOMPRESS",
+      "name": "Extract File"
+    },
+    {
+      "path": "RalphLupo/SDW.bin",
+      "operation": "DECOMPRESS",
+      "name": "Extract File"
+    },
+    {
+      "from": "RalphLupo/SDW",
+      "target": "Program Files (x86)/SDW",
+      "operation": "COPY",
+      "name": "Copy file"
+    },
+    {
+      "mainExePath": "Program Files (x86)/SDW/SheepD3D.exe",
+      "operation": "SET_MAIN_EXE",
+      "name": "Set main exe"
+    },
+    {
+      "from": "SheepD3D.exe",
+      "target": "Program Files (x86)/SDW/SheepD3D.exe",
+      "operation": "COPY",
+      "name": "Copy file"
+    },
+    {
+      "removePath": "Program Files (x86)/SDW/Levels/Demos",
+      "operation": "REMOVE",
+      "name": "Remove file or folder"
+    }
+  ]
+}

@@ -1,1 +1,28 @@
-{"name":"Duck Game","origin":"SCRIPTS","dxvkEnabled":true,"setupExecutableURL":"","engineVersion":"WS12WineCX64Bit23.7.1-2","winetricks":{"verbs":["steam"],"version":"20240105"},"executables":[{"main":true,"path":"","flags":""}],"pipelineScripts":[{"mainExePath":"/Program Files (x86)/Steam/steam.exe","operation":"SET_MAIN_EXE","exeFlags":"-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 312530","name":"Set main exe"},{"steamAppId":"312530","installDirName":"Duck Game","operation":"DOWNLOAD_STEAM_APP","name":"Download Steam App"}],"launcherConfig":{"quitAppWhenLauncherIsClosed":true,"runMainExeOnStartup":true}}
+{
+  "name": "Duck Game",
+  "license": "paid",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": true,
+  "setupExecutableURL": "",
+  "engineVersion": "WS12WineCX64Bit23.7.1-2",
+  "winetricks": { "verbs": ["steam"], "version": "20240105" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "mainExePath": "/Program Files (x86)/Steam/steam.exe",
+      "operation": "SET_MAIN_EXE",
+      "exeFlags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 312530",
+      "name": "Set main exe"
+    },
+    {
+      "steamAppId": "312530",
+      "installDirName": "Duck Game",
+      "operation": "DOWNLOAD_STEAM_APP",
+      "name": "Download Steam App"
+    }
+  ],
+  "launcherConfig": {
+    "quitAppWhenLauncherIsClosed": true,
+    "runMainExeOnStartup": true
+  }
+}

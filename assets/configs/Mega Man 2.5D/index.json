@@ -1,1 +1,24 @@
-{"name":"Mega Man 2.5D","origin":"SCRIPTS","dxvkEnabled":true,"setupExecutableURL":"","engineVersion":"WS12WineCX64Bit23.7.1-4","winetricks":{"verbs":["xna40","dotnet462"]},"executables":[{"main":true,"path":"","flags":""}],"pipelineScripts":[{"url":"https://archive.org/download/megaman-2.5d-v1.1/Megaman%202.5D%20v1.1%20Installer.exe","downloadName":"","operation":"DOWNLOAD","name":"Download setup executable"},{"exePath":"Megaman%202.5D%20v1.1%20Installer.exe","baseExePath":"$HOME/Wine/assets/downloads","operation":"RUN_WINDOWS_EXE","name":"Run Windows Exe"}]}
+{
+  "name": "Mega Man 2.5D",
+  "license": "free",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": true,
+  "setupExecutableURL": "",
+  "engineVersion": "WS12WineCX64Bit23.7.1-4",
+  "winetricks": { "verbs": ["xna40", "dotnet462"] },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://archive.org/download/megaman-2.5d-v1.1/Megaman%202.5D%20v1.1%20Installer.exe",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Download setup executable"
+    },
+    {
+      "exePath": "Megaman%202.5D%20v1.1%20Installer.exe",
+      "baseExePath": "$HOME/Wine/assets/downloads",
+      "operation": "RUN_WINDOWS_EXE",
+      "name": "Run Windows Exe"
+    }
+  ]
+}

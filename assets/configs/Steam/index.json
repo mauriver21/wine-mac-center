@@ -1,5 +1,6 @@
 {
   "name": "Steam",
+  "license": "free",
   "origin": "SCRIPTS",
   "dxvkEnabled": true,
   "setupExecutableURL": "",

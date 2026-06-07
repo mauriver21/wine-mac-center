@@ -1,1 +1,35 @@
-{"name":"Driver San Francisco","origin":"SCRIPTS","dxvkEnabled":false,"setupExecutableURL":"","engineVersion":"WS11WineCX64Bit23.6.0","winetricks":{"verbs":[],"version":"20260125"},"executables":[{"main":true,"path":"","flags":""}],"pipelineScripts":[{"url":"https://dn721602.ca.archive.org/0/items/driver-san-francisco_202201/%5BR.G.%20Mechanics%5D%20Driver%20-%20San%20Francisco.iso","downloadName":"","operation":"DOWNLOAD","name":"Descargar ejecutable del instalador"},{"diskImagePath":"[R.G. Mechanics] Driver - San Francisco.iso","operation":"MOUNT_DISK_IMAGE","name":"Montar Imagen de Disco"},{"exePath":"/[R.G. Mechanics] Driver - San Francisco/setup.exe","baseExePath":"/Volumes","operation":"RUN_WINDOWS_EXE","name":"Ejecutar Windows EXE"},{"mainExePath":"/Program Files (x86)/R.G. Mechanics/Driver - San Francisco/Driver.exe","operation":"SET_MAIN_EXE","name":"Establecer EXE principal"}],"launcherConfig":{"quitAppWhenLauncherIsClosed":true}}
+{
+  "name": "Driver San Francisco",
+  "license": "free",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit23.6.0",
+  "winetricks": { "verbs": [], "version": "20260125" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://dn721602.ca.archive.org/0/items/driver-san-francisco_202201/%5BR.G.%20Mechanics%5D%20Driver%20-%20San%20Francisco.iso",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Descargar ejecutable del instalador"
+    },
+    {
+      "diskImagePath": "[R.G. Mechanics] Driver - San Francisco.iso",
+      "operation": "MOUNT_DISK_IMAGE",
+      "name": "Montar Imagen de Disco"
+    },
+    {
+      "exePath": "/[R.G. Mechanics] Driver - San Francisco/setup.exe",
+      "baseExePath": "/Volumes",
+      "operation": "RUN_WINDOWS_EXE",
+      "name": "Ejecutar Windows EXE"
+    },
+    {
+      "mainExePath": "/Program Files (x86)/R.G. Mechanics/Driver - San Francisco/Driver.exe",
+      "operation": "SET_MAIN_EXE",
+      "name": "Establecer EXE principal"
+    }
+  ],
+  "launcherConfig": { "quitAppWhenLauncherIsClosed": true }
+}

@@ -1,1 +1,27 @@
-{"name":"Heavy Weapon Deluxe","origin":"SCRIPTS","dxvkEnabled":true,"setupExecutableURL":"","engineVersion":"WS11WineCX64Bit23.6.0","winetricks":{"verbs":["steam","cnc_ddraw","renderer=gdi"],"version":"20240105"},"executables":[{"main":true,"path":"","flags":""}],"pipelineScripts":[{"mainExePath":"/Program Files (x86)/Steam/steam.exe","operation":"SET_MAIN_EXE","exeFlags":"-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 3410 -silent","name":"Set main exe"},{"steamAppId":"3410","installDirName":"Heavy Weapon Deluxe","operation":"DOWNLOAD_STEAM_APP","name":"Download Steam App"}]}
+{
+  "name": "Heavy Weapon Deluxe",
+  "license": "paid",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": true,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit23.6.0",
+  "winetricks": {
+    "verbs": ["steam", "cnc_ddraw", "renderer=gdi"],
+    "version": "20240105"
+  },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "mainExePath": "/Program Files (x86)/Steam/steam.exe",
+      "operation": "SET_MAIN_EXE",
+      "exeFlags": "-noreactlogin -allosarches -cef-force-32bit -udpforce -no-cef-sandbox -applaunch 3410 -silent",
+      "name": "Set main exe"
+    },
+    {
+      "steamAppId": "3410",
+      "installDirName": "Heavy Weapon Deluxe",
+      "operation": "DOWNLOAD_STEAM_APP",
+      "name": "Download Steam App"
+    }
+  ]
+}
