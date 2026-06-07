@@ -1,7 +1,6 @@
 # Initializes the environment variables which contains
 # the path locations for running wine.
 export WINE_BASE_PATH="$HOME/Wine"
-export WINE_LIBS_PATH="$WINE_BASE_PATH/libs"
 export WINE_ENGINES_PATH="$WINE_BASE_PATH/engines"
 export WINE_APP_CONTENTS_PATH="$WINE_APP_PATH/Contents"
 export WINE_APP_SHARED_SUPPORT_PATH="$WINE_APP_CONTENTS_PATH/SharedSupport"

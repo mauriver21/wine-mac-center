@@ -55,9 +55,6 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     get WINE_TMP_PATH() {
       return env.get().WINE_TMP_PATH;
     },
-    get WINE_LIBS_PATH() {
-      return env.get().WINE_LIBS_PATH;
-    },
     get WINE_APP_CONTENTS_PATH() {
       return `${WINE_ENV.WINE_APP_PATH}/Contents`;
     },
