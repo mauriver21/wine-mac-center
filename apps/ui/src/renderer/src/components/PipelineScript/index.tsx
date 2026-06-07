@@ -18,7 +18,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { CardItem } from '@components/CardItem';
 import { useNavigateApp } from '@hooks/useNavigateApp';
-import { ConfigOrigin, ScriptOperation } from '@constants/enums';
+import { ConfigOrigin, License, ScriptOperation } from '@constants/enums';
 import { ENV } from '@constants/envs';
 import { getRelativeWinePath } from '@utils/getRelativeWinePath';
 import { DRIVE_C_PATH as RELATIVE_DRIVE_C_PATH } from '@constants/paths';
@@ -542,6 +542,7 @@ export const PipelineScript: React.FC = () => {
         artworkFile = undefined,
         iconFile = undefined,
         launcherImgFile = undefined,
+        license = License.Empty,
         ...rest
       } = appConfig;
 
@@ -577,6 +578,7 @@ export const PipelineScript: React.FC = () => {
         iconFile: copiedIconFile || undefined,
         launcherImgFile: copiedLauncherImgFile || undefined,
         winetricksVersion: winetricks?.version || DEFAULT_WINETRICKS_VERSION,
+        license,
         ...rest
       });
 

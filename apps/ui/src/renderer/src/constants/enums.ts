@@ -60,5 +60,6 @@ export enum VersionDialogAction {
 
 export enum License {
   Paid = 'paid',
-  Free = 'free'
+  Free = 'free',
+  Empty = ''
 }

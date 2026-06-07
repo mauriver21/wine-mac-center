@@ -1,11 +1,11 @@
-import { ConfigOrigin } from '@constants/enums';
+import { ConfigOrigin, License } from '@constants/enums';
 import { PipelineScript } from '@interfaces/PipelineScript';
 import { WineAppExecutable } from '@interfaces/WineAppExecutable';
 import { WinetricksOptions } from '@interfaces/WinetricksOptions';
 
 export type WineAppConfig = {
   name: string;
-  license: string;
+  license?: License;
   origin: ConfigOrigin;
   scriptURL?: string;
   iconURL?: string;

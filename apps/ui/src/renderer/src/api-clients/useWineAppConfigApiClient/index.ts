@@ -32,7 +32,7 @@ export const useWineAppConfigApiClient = () => {
     const SCRIPT_PATH = `${WINE_SCRIPTS_PATH}/${data.name}`;
     const config: WineAppConfig = {
       name: data.name,
-      label: data.label,
+      license: data.license,
       origin: data.origin,
       dxvkEnabled: data.dxvkEnabled || false,
       setupExecutableURL: '',
@@ -172,7 +172,7 @@ export const useWineAppConfigApiClient = () => {
       promises.push(readScriptFile(dir));
     }
 
-    let cloudConfigs: WineAppConfig[] = [];
+    let cloudConfigs: Partial<WineAppConfig>[] = [];
 
     for (const configIndex of configsIndexes) {
       const urls = buildAppUrls({ appName: configIndex.name, origin: ConfigOrigin.CLOUD });
@@ -186,7 +186,7 @@ export const useWineAppConfigApiClient = () => {
       (item) => item !== undefined || item !== ''
     ) as WineAppConfig[];
 
-    return [...configs, ...cloudConfigs];
+    return [...configs, ...cloudConfigs] as WineAppConfig[];
   };
 
   const create = async (data: WineAppConfig) => {

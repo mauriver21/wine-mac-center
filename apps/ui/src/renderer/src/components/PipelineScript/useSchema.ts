@@ -1,5 +1,5 @@
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
-import { ScriptOperation } from '@constants/enums';
+import { License, ScriptOperation } from '@constants/enums';
 import { fileMaxSize } from '@utils/fileMaxSize';
 import { isDownloadableURL } from '@utils/isDownloadableURL';
 import { isURL } from '@utils/isURL';
@@ -38,7 +38,11 @@ export const useSchema = () => {
       })
       .transform((value) => value.trim()),
     engineVersion: schema.string().required().default(''),
-    license: schema.string().required().default(''),
+    license: schema
+      .string()
+      .required()
+      .oneOf([License.Free, License.Paid, License.Empty])
+      .default(License.Empty),
     dxvkEnabled: schema.boolean().required().oneOf([true, false]).default(false),
     winetricksVerbs: schema.array().of(schema.string().required()).default([]),
     winetricksVersion: schema.string().required().default(DEFAULT_WINETRICKS_VERSION),
