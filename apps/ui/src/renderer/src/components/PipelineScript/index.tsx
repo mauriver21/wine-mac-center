@@ -183,7 +183,7 @@ export const PipelineScript: React.FC = () => {
               sx={{ '&:hover .step-actions': { display: 'flex' } }}
             >
               <Box position="absolute" top={-7} left={20}>
-                <Chip sx={{ opacity: 1 }} label={`Step ${index + 1}`} />
+                <Chip sx={{ opacity: 1 }} label={t('step', { number: index + 1 })} />
               </Box>
               <Box
                 className="step-actions"

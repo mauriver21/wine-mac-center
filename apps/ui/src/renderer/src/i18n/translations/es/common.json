@@ -197,5 +197,9 @@
   "free": "Gratis",
   "license": "Licencia",
   "paid": "De pago",
-  "selectedVerbs": "Tricks seleccionados:"
+  "selectedVerbs": "Tricks seleccionados:",
+  "step": "Paso {{number}}",
+  "addExecutable": "Agregar ejecutable",
+  "removeExecutable": "Remover ejecutable",
+  "executable": "Ejecutable {{number}}"
 }

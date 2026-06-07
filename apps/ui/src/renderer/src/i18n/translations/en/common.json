@@ -197,5 +197,9 @@
   "free": "Free",
   "license": "License",
   "paid": "Paid",
-  "selectedVerbs": "Selected verbs:"
+  "selectedVerbs": "Selected verbs:",
+  "step": "Step {{number}}",
+  "addExecutable": "Add executable",
+  "removeExecutable": "Remove executable",
+  "executable": "Executable {{number}}"
 }

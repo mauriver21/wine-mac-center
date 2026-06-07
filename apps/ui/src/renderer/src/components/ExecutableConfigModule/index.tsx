@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
 import { spawnLog } from '@utils/spawnLog';
+import { ExecutablesSelector } from '@components/ExecutablesSelector';
 
 export interface ExecutableConfigModuleProps {
   appName: string | undefined;
@@ -131,6 +132,12 @@ export const ExecutableConfigModule: React.FC<ExecutableConfigModuleProps> = ({ 
                   </Button>
                 </Stack>
               </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <ExecutablesSelector
+                value={appConfig?.executables}
+                filePathInputProps={{ defaultPath: driveCPath, relativeToDriveC: true }}
+              />
             </Grid>
           </Grid>
         </Grid>
