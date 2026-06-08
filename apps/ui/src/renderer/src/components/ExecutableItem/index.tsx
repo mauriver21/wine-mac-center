@@ -1,12 +1,13 @@
 import { Button } from '@components/Button';
 import { FilePathInput } from '@components/FilePathInput';
+import { FileFilter } from '@constants/enums';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import { WineAppExecutable } from '@interfaces/WineAppExecutable';
-import { Chip, TextField } from '@mui/material';
+import { Checkbox, Chip, TextField } from '@mui/material';
 import { spawnLog } from '@utils/spawnLog';
 import { useState } from 'react';
-import { Box, Icon, Stack } from 'reactjs-shared-ui';
+import { Box, FormControlLabel, Icon, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface ExecutableItemProps {
@@ -14,7 +15,7 @@ export interface ExecutableItemProps {
   hideRemoveAction?: boolean;
   removeAction?: (index: number) => void;
   executable?: WineAppExecutable;
-  onChange?: (executable: Partial<WineAppExecutable>) => void;
+  onChange?: (executable: Partial<WineAppExecutable> & { index: number }) => void;
   hideRunExeButton?: boolean;
 }
 
@@ -60,19 +61,37 @@ export const ExecutableItem: React.FC<ExecutableItemProps> = ({
       </Box>
       <Stack spacing={2}>
         <FilePathInput
+          filters={FileFilter.WindowsExecutables}
           defaultPath={wineApp?.getWineEnv()?.WINE_APP_DRIVE_C_PATH}
           relativeToDriveC
           value={executable?.path}
           onInput={(path) => {
-            onChange?.({ path });
+            onChange?.({ path, index });
           }}
         />
         <TextField
           label={t('exeFlags')}
           value={executable?.flags}
           onChange={(event) => {
-            onChange?.({ flags: event.target.value });
+            onChange?.({ flags: event.target.value, index });
           }}
+        />
+        <FormControlLabel
+          sx={{ mt: '7px !important' }}
+          disabled={!Boolean(executable?.path) || loading}
+          control={
+            <Checkbox
+              sx={{ ml: '-12px' }}
+              color="success"
+              checked={executable?.main}
+              disableRipple
+              onChange={(event) => {
+                if (executable?.main) return;
+                onChange?.({ main: event.target.checked, index });
+              }}
+            />
+          }
+          label={t('setAsMainExecutable')}
         />
         {hideRunExeButton ? (
           <></>

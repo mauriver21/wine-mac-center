@@ -203,5 +203,6 @@
   "removeExecutable": "Remover ejecutable",
   "executable": "Ejecutable {{number}}",
   "executablesConfig": "Configuración de Ejecutables",
-  "runExecutable": "Correr ejecutable"
+  "runExecutable": "Correr ejecutable",
+  "setAsMainExecutable": "Establecer como ejecutable principal."
 }

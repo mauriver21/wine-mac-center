@@ -35,12 +35,18 @@ export const ExecutablesSelector: React.FC<ExecutablesSelectorProps> = ({
     });
   };
 
-  const save = (data: Partial<WineAppExecutable>) => {
+  const save = (data: Partial<WineAppExecutable> & { index: number }) => {
+    const { index: dataIndex, ...restData } = data;
     setExecutables((prev) => {
+      if (restData.main) {
+        prev = prev.map((item) => ({ ...item, main: false }));
+      }
+
       return prev.map((item, index) => {
-        if (prev.indexOf(item) === index) {
-          return { ...item, ...data };
+        if (dataIndex === index) {
+          return { ...item, ...restData };
         }
+
         return item;
       });
     });
