@@ -33,6 +33,7 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
   properties,
   defaultPath,
   relativeToDriveC,
+  disabled,
   ...rest
 }) => {
   const { t } = useI18n();
@@ -65,6 +66,7 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
             fullWidth
             {...rest}
             {...props}
+            disabled={disabled}
             value={filePath}
             InputLabelProps={{ shrink: true }}
             InputProps={{
@@ -73,6 +75,7 @@ export const FilePathInput: React.FC<FilePathInputProps> = ({
                 <InputAdornment position="start">
                   <Box pr={2}>
                     <Button
+                      disabled={disabled}
                       sx={{ border: (theme) => `1px solid ${theme.palette.secondary.light}` }}
                       color="secondary"
                       type="button"

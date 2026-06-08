@@ -11,7 +11,7 @@ export interface ExecutablesSelectorProps {
   hideRunExeButton?: boolean;
 }
 
-export const DEFAULT_EXECUTABLE = { path: '', main: false, flags: '' } as const;
+export const DEFAULT_EXECUTABLE = { path: '', main: true, flags: '' } as const;
 export const ExecutablesSelector: React.FC<ExecutablesSelectorProps> = ({
   value,
   onChange,
@@ -22,15 +22,19 @@ export const ExecutablesSelector: React.FC<ExecutablesSelectorProps> = ({
   const [executables, setExecutables] = useState<WineAppExecutable[]>([]);
 
   const insert = () => {
+    let main = executables.length < 1;
     setExecutables((prev) => {
-      const executables = [...(prev || []), DEFAULT_EXECUTABLE];
+      const executables = [...(prev || []), { ...DEFAULT_EXECUTABLE, main }];
       return executables;
     });
   };
 
   const remove = (index: number) => {
     setExecutables((prev) => {
-      const executables = prev?.filter((_, i) => index !== i);
+      let executables = prev?.filter((_, i) => index !== i);
+      if (executables.length === 1) {
+        executables = executables.map((item) => ({ ...item, main: true }));
+      }
       return executables;
     });
   };

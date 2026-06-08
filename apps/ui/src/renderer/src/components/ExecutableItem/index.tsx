@@ -30,6 +30,7 @@ export const ExecutableItem: React.FC<ExecutableItemProps> = ({
   const { t } = useI18n();
   const { wineApp } = useWineAppContext() || {};
   const [loading, setLoading] = useState(false);
+  const disabled = !Boolean(executable?.path) || loading;
 
   return (
     <Box
@@ -61,6 +62,7 @@ export const ExecutableItem: React.FC<ExecutableItemProps> = ({
       </Box>
       <Stack spacing={2}>
         <FilePathInput
+          disabled={loading}
           filters={FileFilter.WindowsExecutables}
           defaultPath={wineApp?.getWineEnv()?.WINE_APP_DRIVE_C_PATH}
           relativeToDriveC
@@ -78,7 +80,6 @@ export const ExecutableItem: React.FC<ExecutableItemProps> = ({
         />
         <FormControlLabel
           sx={{ mt: '7px !important' }}
-          disabled={!Boolean(executable?.path) || loading}
           control={
             <Checkbox
               sx={{ ml: '-12px' }}
@@ -98,7 +99,7 @@ export const ExecutableItem: React.FC<ExecutableItemProps> = ({
         ) : (
           <Stack direction="row" justifyContent="flex-end">
             <Button
-              disabled={!Boolean(executable?.path) || loading}
+              disabled={disabled}
               onClick={async () => {
                 if (executable?.path) {
                   setLoading(true);
