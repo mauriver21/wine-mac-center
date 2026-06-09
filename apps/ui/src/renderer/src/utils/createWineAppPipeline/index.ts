@@ -553,7 +553,7 @@ export const createWineAppPipeline = async (options: {
             key: 'configuringAppExecutable',
             name: 'Configuring app executable',
             script: async (args?: SpawnProcessArgs) => {
-              const appConfig = wineApp.getAppConfig();
+              const appConfig = await wineApp.readAppConfig();
               let executables = appConfig.executables || [];
               const mainExecutablePath = executables.find((item) => item.main)?.path || '';
 

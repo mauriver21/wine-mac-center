@@ -106,7 +106,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     data: Partial<WineAppConfig>,
     options = { writeAppConfig: true }
   ) => {
-    Object.assign(appConfig, data);
+    appConfig = { ...appConfig, ...data };
     options.writeAppConfig && (await writeAppConfig(appConfig));
     buildWineEnvExports();
   };
