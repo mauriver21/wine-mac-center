@@ -14,13 +14,13 @@ import { removeDirectory } from '@utils/removeDirectory';
 import { useEnv } from '@hooks/useEnv';
 import { writeFile } from '@utils/writeFile';
 import axios from 'axios';
-import { createObjectURL } from '@utils/createObjectURL';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
 import { renameDirectory } from '@utils/renameDirectory';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { blobUrlToFile } from '@utils/blobUrlToFile';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { buildAppUrls } from '@utils/buildAppUrls';
+import { buildAppObjectUrls } from '@utils/buildAppObjectUrls';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
@@ -70,40 +70,19 @@ export const useWineAppConfigApiClient = () => {
 
   const readScriptFile = (appName: string) => {
     const SCRIPT_FILE = `${WINE_SCRIPTS_PATH}/${appName}/index.json`;
-    const urls = buildAppUrls({ appName, origin: ConfigOrigin.SCRIPTS });
 
     return new Promise<WineAppConfig | undefined>(async (resolve) => {
-      let script = '';
-      let hasIcon = false;
-      let hasArtwork = false;
-      let hasLauncherImg = false;
       const hasScriptFile = await fileExists(SCRIPT_FILE);
 
-      if (urls?.iconURL) {
-        hasIcon = await fileExists(urls?.iconURL);
-      }
-
-      if (urls?.artworkURL) {
-        hasArtwork = await fileExists(urls?.artworkURL);
-      }
-
-      if (urls?.launcherImgURL) {
-        hasLauncherImg = await fileExists(urls?.launcherImgURL);
-      }
-
       if (hasScriptFile) {
-        script = await readFileAsString(SCRIPT_FILE);
+        const script = await readFileAsString(SCRIPT_FILE);
         const wineAppConfig = parseJson<WineAppConfig>(script);
 
         resolve(
           wineAppConfig
             ? {
                 ...wineAppConfig,
-                artworkURL: hasArtwork ? await createObjectURL(urls?.artworkURL) : undefined,
-                iconURL: hasIcon ? await createObjectURL(urls?.iconURL) : undefined,
-                launcherImgURL: hasLauncherImg
-                  ? await createObjectURL(urls?.launcherImgURL)
-                  : undefined
+                ...(await buildAppObjectUrls({ appName, origin: ConfigOrigin.SCRIPTS }))
               }
             : undefined
         );
