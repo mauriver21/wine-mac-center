@@ -22,6 +22,7 @@ export interface ConfigLayoutProps {
   showTableOfContents?: boolean;
   showBack?: boolean;
   signal?: number;
+  backCallback?: Function;
 }
 
 export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
@@ -30,7 +31,8 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
   actionsSlot,
   showTableOfContents = true,
   showBack = true,
-  signal: signalProp
+  signal: signalProp,
+  backCallback
 }) => {
   const { t } = useI18n();
   const { refresh, signal } = useRefresh();
@@ -75,7 +77,9 @@ export const ConfigLayout: React.FC<ConfigLayoutProps> = ({
                 disabled={loading}
                 sx={{ border: (theme) => `1px solid ${theme.palette.primary.dark}` }}
                 color="secondary"
-                onClick={() => navigate(-1)}
+                onClick={() => {
+                  backCallback ? backCallback?.() : navigate(-1);
+                }}
               >
                 {t('back')}
               </Button>

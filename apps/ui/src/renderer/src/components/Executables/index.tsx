@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LauncherBg from '@app-launcher/assets/imgs/launcher-bg.png';
 import { Box, Icon, Stack } from 'reactjs-shared-ui';
 import { useWineAppContext } from '@hooks/useWineAppContext';
@@ -9,12 +9,18 @@ import { Button } from '@components/Button';
 import { Executable } from '@components/Executable';
 
 export const Executables: React.FC = () => {
-  const { urls, wineApp } = useWineAppContext();
+  const { urls, wineApp, refresh } = useWineAppContext();
   const { navigateToLauncherConfig, navigateToMenu } = useNavigateApp();
   const { t } = useI18n();
   const appConfig = wineApp?.getAppConfig();
   const executables = appConfig?.executables;
   const backgroundImage = urls?.launcherImgURL || LauncherBg;
+
+  useEffect(() => {
+    wineApp?.readAppConfig().then(() => {
+      refresh();
+    });
+  }, []);
 
   return (
     <Box

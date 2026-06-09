@@ -93,7 +93,8 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   const readAppConfig = async (): Promise<WineAppConfig> => {
     const path = WINE_ENV.WINE_APP_CONFIG_JSON_PATH;
     if (await fileExists(path)) {
-      return JSON.parse(await readFileAsString(path)) as WineAppConfig;
+      appConfig = JSON.parse(await readFileAsString(path)) as WineAppConfig;
+      return appConfig;
     } else {
       return appConfig;
     }
@@ -574,8 +575,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   /**
    * Initialize app config.
    */
-  const initialAppConfig = await readAppConfig();
-  appConfig = { ...initialAppConfig, name: appName };
+  appConfig = await readAppConfig();
 
   return {
     execCommand,
@@ -607,6 +607,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     updateMainExecutableFlags,
     updateAppLauncherConfig,
     writeAppConfig,
-    updateWineApp
+    updateWineApp,
+    readAppConfig
   };
 };

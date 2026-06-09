@@ -19,6 +19,7 @@ export const Languages: React.FC = () => {
             </Stack>
           </Stack>
           <LanguagesSelect
+            size="small"
             onChange={() => {
               refresh();
             }}

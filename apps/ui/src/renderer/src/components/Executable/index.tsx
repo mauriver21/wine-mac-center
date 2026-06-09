@@ -1,5 +1,6 @@
 import { IconButton } from '@components/IconButton';
 import { PlayIcon } from '@heroicons/react/24/solid';
+import { useWineAppContext } from '@hooks/useWineAppContext';
 import { WineAppExecutable } from '@interfaces/WineAppExecutable';
 import { alpha } from '@mui/material';
 import { Body2, Icon, Stack } from 'reactjs-shared-ui';
@@ -10,6 +11,7 @@ export interface ExecutableProps {
 }
 
 export const Executable: React.FC<ExecutableProps> = ({ executable }) => {
+  const { wineApp } = useWineAppContext();
   const { t } = useI18n();
   return (
     <Stack
@@ -23,7 +25,13 @@ export const Executable: React.FC<ExecutableProps> = ({ executable }) => {
       justifyContent="space-between"
     >
       <Body2>{executable.path}</Body2>
-      <IconButton title={t('run')}>
+      <IconButton
+        sx={{ border: 1 }}
+        title={t('run')}
+        onClick={async () => {
+          wineApp?.runExe?.({ path: executable.path, flags: executable.flags });
+        }}
+      >
         <Icon render={PlayIcon} />
       </IconButton>
     </Stack>
