@@ -522,13 +522,6 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   };
 
   /**
-   * Save app executables.
-   */
-  const saveExecutables = (executables: WineAppExecutable[]) => {
-    return updateAppConfig({ executables });
-  };
-
-  /**
    * Updates main executable flags.
    */
   const updateMainExecutableFlags = async (flags: string) => {
@@ -615,7 +608,6 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     updateAppLauncherConfig,
     writeAppConfig,
     updateWineApp,
-    readAppConfig,
-    saveExecutables
+    readAppConfig
   };
 };

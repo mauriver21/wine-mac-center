@@ -288,7 +288,7 @@ export const createWineAppPipeline = async (options: {
         break;
       }
       case ScriptOperation.SET_EXECUTABLES: {
-        await wineApp.saveExecutables(args.executables);
+        await wineApp.setExecutables({ executables: args.executables });
         spawnProcessArgs.onExit?.(0);
         break;
       }
