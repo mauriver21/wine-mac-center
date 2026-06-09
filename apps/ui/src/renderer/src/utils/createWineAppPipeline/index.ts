@@ -288,7 +288,12 @@ export const createWineAppPipeline = async (options: {
         break;
       }
       case ScriptOperation.SET_EXECUTABLES: {
-        await wineApp.setExecutables({ executables: args.executables });
+        await wineApp.setExecutables({
+          executables: args.executables.map((item) => ({
+            ...item,
+            path: getRelativeDriveCPath(`${appEnv.WINE_APP_DRIVE_C_PATH}/${parsePath(item.path)}`)
+          }))
+        });
         spawnProcessArgs.onExit?.(0);
         break;
       }
