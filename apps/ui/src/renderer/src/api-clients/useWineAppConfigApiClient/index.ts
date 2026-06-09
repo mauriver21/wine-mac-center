@@ -6,7 +6,6 @@ import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { WineAppConfigIndex } from '@interfaces/WineAppConfigIndex';
 import { createDirectory } from '@utils/createDirectory';
 import { dirExists } from '@utils/dirExists';
-import { encodeURL } from '@utils/encodeURL';
 import { fileExists } from '@utils/fileExists';
 import { parseJson } from '@utils/parseJson';
 import { readDirectory } from '@utils/readDirectory';
@@ -14,7 +13,6 @@ import { readFileAsString } from '@utils/readFileAsString';
 import { removeDirectory } from '@utils/removeDirectory';
 import { useEnv } from '@hooks/useEnv';
 import { writeFile } from '@utils/writeFile';
-import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { createObjectURL } from '@utils/createObjectURL';
 import { writeBinaryFile } from '@utils/writeBinaryFile';
@@ -22,6 +20,7 @@ import { renameDirectory } from '@utils/renameDirectory';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { blobUrlToFile } from '@utils/blobUrlToFile';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { buildAppUrls } from '@utils/buildAppUrls';
 
 export const useWineAppConfigApiClient = () => {
   const env = useEnv();
@@ -48,36 +47,6 @@ export const useWineAppConfigApiClient = () => {
 
     await writeFile(`${SCRIPT_PATH}/index.json`, JSON.stringify(config));
     return config;
-  };
-
-  const buildAppUrls = (args: {
-    appName: string | undefined;
-    origin: ConfigOrigin | undefined;
-  }) => {
-    const { appName, origin } = args;
-
-    switch (origin) {
-      case ConfigOrigin.CLOUD: {
-        const ASSETS_URL = `${WINE_APPS_CONFIGS_URL}/${appName}`;
-        return {
-          artworkURL: encodeURL(`${ASSETS_URL}/header.jpeg`),
-          iconURL: encodeURL(`${ASSETS_URL}/${FileName.CFBundleIconFile}?cache=${uuid()}`),
-          launcherImgURL: encodeURL(`${ASSETS_URL}/launcher.jpeg`),
-          scriptURL: encodeURL(`${ASSETS_URL}/index.json`)
-        };
-      }
-      case ConfigOrigin.SCRIPTS: {
-        const SCRIPT_PATH = `${env.get().WINE_SCRIPTS_PATH}/${appName}`;
-        return {
-          artworkURL: encodeURL(`${SCRIPT_PATH}/header.jpeg`),
-          iconURL: encodeURL(`${SCRIPT_PATH}/${FileName.CFBundleIconFile}`),
-          launcherImgURL: encodeURL(`${SCRIPT_PATH}/launcher.jpeg`),
-          scriptURL: encodeURL(`${SCRIPT_PATH}/index.json`)
-        };
-      }
-      default:
-        return;
-    }
   };
 
   const readCloudFile = async (appName: string): Promise<WineAppConfig> => {

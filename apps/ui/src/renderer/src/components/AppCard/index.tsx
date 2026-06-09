@@ -58,8 +58,6 @@ export const AppCard: React.FC<AppCardProps> = ({ appName = '', origin, ...rest 
     }
   }, [wineAppConfig?.artworkURL]);
 
-  console.log(wineAppConfig);
-
   return (
     <Card
       sx={{
