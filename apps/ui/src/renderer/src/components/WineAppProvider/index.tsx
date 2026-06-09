@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { WineAppContext } from '@contexts/WineAppContext';
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { WineApp } from '@interfaces/WineApp';
@@ -7,7 +8,7 @@ import { getAppArtwork } from '@utils/getAppArtwork';
 import { getAppIcon } from '@utils/getAppIcon';
 import { getAppLauncherImg } from '@utils/getAppLauncherImg';
 import { useRefresh } from '@utils/useRefresh';
-import React, { useEffect, useState } from 'react';
+import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface WineAppProviderProps {
   children?: React.ReactNode;
@@ -25,6 +26,7 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
   onInitialized,
   onUpdateAppLauncherConfig
 }) => {
+  const { t } = useI18n();
   const [runningMainExe, setRunningMainExe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [wineApp, setWineApp] = useState<WineApp>();
@@ -41,7 +43,7 @@ export const WineAppProvider: React.FC<WineAppProviderProps> = ({
   const initWineApp = async () => {
     try {
       setLoading(true);
-      if (appName === undefined) throw new Error('Missing application name');
+      if (appName === undefined) throw new Error(t('missingApplicationName'));
       const wineApp = await createWineApp(appName);
       const WINE_APP_PATH = wineApp.getWineEnv().WINE_APP_PATH;
       const [artworkURL, iconURL, launcherImgURL] = await Promise.all([

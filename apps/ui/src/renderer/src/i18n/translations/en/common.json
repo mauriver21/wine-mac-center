@@ -207,5 +207,6 @@
   "setAsMainExecutable": "Set as main executable.",
   "executables": "Executables",
   "menu": "Menu",
-  "setExecutables": "Set executables"
+  "setExecutables": "Set executables",
+  "missingApplicationName": "Missing application name"
 }

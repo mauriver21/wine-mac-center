@@ -207,5 +207,6 @@
   "setAsMainExecutable": "Establecer como ejecutable principal.",
   "executables": "Ejecutables",
   "menu": "Menú",
-  "setExecutables": "Configurar ejecutables"
+  "setExecutables": "Configurar ejecutables",
+  "missingApplicationName": "Hace falta el nombre del app"
 }
