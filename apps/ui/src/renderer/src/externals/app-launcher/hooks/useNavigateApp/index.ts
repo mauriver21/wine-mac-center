@@ -4,7 +4,7 @@ export const useNavigateApp = () => {
   const navigate = useNavigate();
 
   const navigateToMenu = () => {
-    navigate('');
+    navigate('../');
   };
 
   const navigateToAppConfig = () => {
@@ -16,11 +16,11 @@ export const useNavigateApp = () => {
   };
 
   const navigateToLauncherConfig = () => {
-    navigate('launcher-config');
+    navigate('../launcher-config');
   };
 
   const navigateToExecutables = () => {
-    navigate('executables');
+    navigate('../executables');
   };
 
   return {

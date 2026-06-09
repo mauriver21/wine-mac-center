@@ -1,15 +1,16 @@
 import React from 'react';
+import LauncherBg from '@app-launcher/assets/imgs/launcher-bg.png';
 import { Box, Icon, Stack } from 'reactjs-shared-ui';
 import { useWineAppContext } from '@hooks/useWineAppContext';
-import LauncherBg from '@app-launcher/assets/imgs/launcher-bg.png';
 import { useI18n } from 'reactjs-shared-ui/i18next';
-import { Cog6ToothIcon, Squares2X2Icon } from '@heroicons/react/24/solid';
+import { Bars3Icon, Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { useNavigateApp } from '@app-launcher/hooks/useNavigateApp';
 import { Button } from '@components/Button';
+import { Executable } from '@components/Executable';
 
 export const Executables: React.FC = () => {
   const { urls, wineApp } = useWineAppContext();
-  const { navigateToLauncherConfig, navigateToExecutables } = useNavigateApp();
+  const { navigateToLauncherConfig, navigateToMenu } = useNavigateApp();
   const { t } = useI18n();
   const appConfig = wineApp?.getAppConfig();
   const executables = appConfig?.executables;
@@ -27,9 +28,17 @@ export const Executables: React.FC = () => {
               `,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        overflow: 'auto',
+        pl: 2,
+        pt: 2
       }}
     >
+      <Stack maxWidth={870} spacing={2}>
+        {executables?.map((executable, index) => (
+          <Executable key={index} executable={executable} />
+        ))}
+      </Stack>
       <Stack spacing={2} position="absolute" justifyContent="flex-end" top={30} right={30}>
         <Button
           title={t('launcherConfig')}
@@ -39,11 +48,11 @@ export const Executables: React.FC = () => {
           <Icon color="text.secondary" render={Cog6ToothIcon} />
         </Button>
         <Button
-          title={t('executables')}
+          title={t('menu')}
           sx={{ p: 0.5, minWidth: 0, borderRadius: 4 }}
-          onClick={navigateToExecutables}
+          onClick={navigateToMenu}
         >
-          <Icon color="text.secondary" render={Squares2X2Icon} />
+          <Icon color="text.secondary" render={Bars3Icon} />
         </Button>
       </Stack>
     </Box>

@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { Box, FormControlLabel, Icon, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
-export interface ExecutableItemProps {
+export interface ExecutableSelectorItemProps {
   index?: number;
   hideRemoveAction?: boolean;
   removeAction?: (index: number) => void;
@@ -19,7 +19,7 @@ export interface ExecutableItemProps {
   hideRunExeButton?: boolean;
 }
 
-export const ExecutableItem: React.FC<ExecutableItemProps> = ({
+export const ExecutableSelectorItem: React.FC<ExecutableSelectorItemProps> = ({
   index = 0,
   hideRemoveAction = false,
   removeAction,

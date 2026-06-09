@@ -205,5 +205,6 @@
   "executablesConfig": "Configuración de Ejecutables",
   "runExecutable": "Correr ejecutable",
   "setAsMainExecutable": "Establecer como ejecutable principal.",
-  "executables": "Ejecutables"
+  "executables": "Ejecutables",
+  "menu": "Menú"
 }

@@ -1,5 +1,5 @@
 import { Button } from '@components/Button';
-import { ExecutableItem } from '@components/ExecutableItem';
+import { ExecutableSelectorItem } from '@components/ExecutableSelectorItem';
 import { WineAppExecutable } from '@interfaces/WineAppExecutable';
 import { useEffect, useRef, useState } from 'react';
 import { Stack } from 'reactjs-shared-ui';
@@ -71,7 +71,7 @@ export const ExecutablesSelector: React.FC<ExecutablesSelectorProps> = ({
   return (
     <Stack spacing={2}>
       {executables?.map((executable, index) => (
-        <ExecutableItem
+        <ExecutableSelectorItem
           hideRemoveAction={executables.length <= 1}
           removeAction={remove}
           hideRunExeButton={hideRunExeButton}
