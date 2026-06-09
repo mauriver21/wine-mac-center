@@ -140,16 +140,13 @@ export const useSchema = () => {
           executables: schema.array().when('operation', {
             is: ScriptOperation.SET_EXECUTABLES,
             then: (array) =>
-              array
-                .of(
-                  schema.object({
-                    basePath: schema.string().required(),
-                    path: schema.string().required(),
-                    main: schema.boolean().oneOf([true, false]).default(false),
-                    flags: schema.string().required()
-                  })
-                )
-                .default([{ basePath: '', path: '', main: true, flags: '' }])
+              array.of(
+                schema.object({
+                  path: schema.string().required(),
+                  main: schema.boolean().oneOf([true, false]).default(false),
+                  flags: schema.string().optional()
+                })
+              )
           }),
           diskImagePath: schema.string().when('operation', {
             is: ScriptOperation.MOUNT_DISK_IMAGE,

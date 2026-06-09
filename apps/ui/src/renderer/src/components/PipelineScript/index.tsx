@@ -144,7 +144,6 @@ export const PipelineScript: React.FC = () => {
       <Stack spacing={2}>
         {fields.map((field, index) => {
           const operation = form.watch(`pipelineScripts.${index}.operation`);
-
           return (
             <Box
               position="relative"
@@ -313,10 +312,8 @@ export const PipelineScript: React.FC = () => {
                 )}
                 {operation === ScriptOperation.SET_EXECUTABLES && (
                   <ScriptExecutablesSelector
-                    value={form.watch('executables')}
-                    onChange={(executables) => {
-                      form.setValue('executables', executables, { shouldValidate: true });
-                    }}
+                    control={form.control}
+                    baseName={`pipelineScripts.${index}.executables`}
                   />
                 )}
                 {operation === ScriptOperation.RUN_WINDOWS_EXE && (

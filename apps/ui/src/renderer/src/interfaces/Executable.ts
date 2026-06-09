@@ -1,1 +1,1 @@
-export type Executable = { basePath: string; path: string; main: boolean; flags?: string };
+export type Executable = { path: string; main: boolean; flags?: string };
