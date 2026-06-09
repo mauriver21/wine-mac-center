@@ -304,7 +304,8 @@ export const createWineAppPipeline = async (options: {
         );
       }
       default:
-        return;
+        spawnProcessArgs.onExit?.(0);
+        break;
     }
 
     return;

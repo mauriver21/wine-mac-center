@@ -212,5 +212,6 @@
   "removeStep": "Remove Step",
   "addPrevStep": "Add Prev Step",
   "addNextStep": "Add Next Step",
-  "operation": "Operation"
+  "operation": "Operation",
+  "SET_EXECUTABLES": "Set executables"
 }

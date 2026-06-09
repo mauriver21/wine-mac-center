@@ -212,5 +212,6 @@
   "removeStep": "Remover Paso",
   "addPrevStep": "Agregar Paso Anterior",
   "addNextStep": "Agregar Siguiente Paso",
-  "operation": "Operación"
+  "operation": "Operación",
+  "SET_EXECUTABLES": "Configurar ejecutables"
 }
