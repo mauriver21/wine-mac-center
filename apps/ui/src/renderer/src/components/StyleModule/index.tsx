@@ -6,8 +6,7 @@ import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const StyleModule = () => {
   const { t } = useI18n();
-  const { wineApp, refresh, signal } = useWineAppContext() || {};
-  const appConfig = wineApp?.getAppConfig();
+  const { wineApp, signal, refresh, urls } = useWineAppContext() || {};
 
   return (
     <Card>
@@ -22,9 +21,9 @@ export const StyleModule = () => {
           <Grid item xs={12}>
             <StyleSelector
               refreshImage={signal}
-              iconURL={appConfig?.iconURL}
-              artworkURL={appConfig?.artworkURL}
-              launcherImgURL={appConfig?.launcherImgURL}
+              iconURL={urls?.iconURL}
+              artworkURL={urls?.artworkURL}
+              launcherImgURL={urls?.launcherImgURL}
               onChangeIcon={async (file) => {
                 file && wineApp?.saveAppIcon({ appIconFile: await file?.arrayBuffer() });
                 refresh();
