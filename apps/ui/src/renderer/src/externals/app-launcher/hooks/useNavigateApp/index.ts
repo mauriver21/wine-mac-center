@@ -19,10 +19,15 @@ export const useNavigateApp = () => {
     navigate('launcher-config');
   };
 
+  const navigateToExecutables = () => {
+    navigate('executables');
+  };
+
   return {
     navigateToMenu,
     navigateToAppConfig,
     navigateToEnvPath,
-    navigateToLauncherConfig
+    navigateToLauncherConfig,
+    navigateToExecutables
   };
 };
