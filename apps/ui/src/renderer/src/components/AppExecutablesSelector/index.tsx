@@ -1,7 +1,7 @@
 import { AppExecutableSelectorItem } from '@components/AppExecutableSelectorItem';
 import { Button } from '@components/Button';
 import { WineAppExecutable } from '@interfaces/WineAppExecutable';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
@@ -18,13 +18,13 @@ export const AppExecutablesSelector: React.FC<AppExecutablesSelectorProps> = ({
   hideRunExeButton
 }) => {
   const { t } = useI18n();
-  const ref = useRef({ mounted: false });
   const [executables, setExecutables] = useState<WineAppExecutable[]>([]);
 
   const insert = () => {
     let main = executables.length < 1;
     setExecutables((prev) => {
       const executables = [...(prev || []), { ...DEFAULT_EXECUTABLE, main }];
+      onChange?.(executables);
       return executables;
     });
   };
@@ -35,6 +35,7 @@ export const AppExecutablesSelector: React.FC<AppExecutablesSelectorProps> = ({
       if (executables.length === 1) {
         executables = executables.map((item) => ({ ...item, main: true }));
       }
+      onChange?.(executables);
       return executables;
     });
   };
@@ -42,31 +43,27 @@ export const AppExecutablesSelector: React.FC<AppExecutablesSelectorProps> = ({
   const save = (data: Partial<WineAppExecutable> & { index: number }) => {
     const { index: dataIndex, ...restData } = data;
     setExecutables((prev) => {
+      let executables = prev;
       if (restData.main) {
-        prev = prev.map((item) => ({ ...item, main: false }));
+        executables = executables.map((item) => ({ ...item, main: false }));
       }
 
-      return prev.map((item, index) => {
+      executables = executables.map((item, index) => {
         if (dataIndex === index) {
           return { ...item, ...restData };
         }
 
         return item;
       });
+
+      onChange?.(executables);
+      return executables;
     });
   };
 
   useEffect(() => {
     value !== undefined && setExecutables(value);
   }, [value]);
-
-  useEffect(() => {
-    ref.current.mounted && onChange?.(executables);
-  }, [executables]);
-
-  useEffect(() => {
-    ref.current.mounted = true;
-  }, []);
 
   return (
     <Stack spacing={2}>

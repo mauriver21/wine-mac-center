@@ -208,5 +208,9 @@
   "executables": "Ejecutables",
   "menu": "Menú",
   "setExecutables": "Configurar ejecutables",
-  "missingApplicationName": "Hace falta el nombre del app"
+  "missingApplicationName": "Hace falta el nombre del app",
+  "removeStep": "Remover Paso",
+  "addPrevStep": "Agregar Paso Anterior",
+  "addNextStep": "Agregar Siguiente Paso",
+  "operation": "Operación"
 }

@@ -287,6 +287,11 @@ export const createWineAppPipeline = async (options: {
         spawnProcessArgs.onExit?.(0);
         break;
       }
+      case ScriptOperation.SET_EXECUTABLES: {
+        await wineApp.saveExecutables(args.executables);
+        spawnProcessArgs.onExit?.(0);
+        break;
+      }
       case ScriptOperation.MOUNT_DISK_IMAGE: {
         const diskImagePath = `${WINE_DOWNLOADS_PATH}/${parsePath(args.diskImagePath)}`;
         return wineApp.spawnScript('mountDiskImage', `"${diskImagePath}"`, spawnProcessArgs);

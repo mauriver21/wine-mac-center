@@ -171,7 +171,7 @@ export const PipelineScript: React.FC = () => {
                     sx={{ borderRadius: 10 }}
                     equalSize={32}
                     onClick={() => remove(index)}
-                    title="Remove Step"
+                    title={t('removeStep')}
                   >
                     <Icon strokeWidth={3} render={TrashIcon} />
                   </Button>
@@ -194,7 +194,7 @@ export const PipelineScript: React.FC = () => {
                     sx={{ borderRadius: 10 }}
                     equalSize={32}
                     onClick={() => insertBefore(index)}
-                    title="Add Prev Step"
+                    title={t('addPrevStep')}
                   >
                     <Icon strokeWidth={3} render={ChevronLeftIcon} />
                   </Button>
@@ -206,14 +206,14 @@ export const PipelineScript: React.FC = () => {
                   sx={{ borderRadius: 10 }}
                   equalSize={32}
                   onClick={() => insertAfter(index)}
-                  title="Add Next Step"
+                  title={t('addNextStep')}
                 >
                   <Icon strokeWidth={3} render={ChevronRightIcon} />
                 </Button>
               </Stack>
               <Stack spacing={2}>
                 <Select
-                  label="Operation"
+                  label={t('operation')}
                   control={form.control}
                   name={`pipelineScripts.${index}.operation`}
                   options={[
@@ -312,7 +312,12 @@ export const PipelineScript: React.FC = () => {
                   </>
                 )}
                 {operation === ScriptOperation.SET_EXECUTABLES && (
-                  <ScriptExecutablesSelector value={form.watch('executables')} />
+                  <ScriptExecutablesSelector
+                    value={form.watch('executables')}
+                    onChange={(executables) => {
+                      form.setValue('executables', executables, { shouldValidate: true });
+                    }}
+                  />
                 )}
                 {operation === ScriptOperation.RUN_WINDOWS_EXE && (
                   <TextField

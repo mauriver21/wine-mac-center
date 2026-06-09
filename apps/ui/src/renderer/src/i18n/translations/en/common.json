@@ -208,5 +208,9 @@
   "executables": "Executables",
   "menu": "Menu",
   "setExecutables": "Set executables",
-  "missingApplicationName": "Missing application name"
+  "missingApplicationName": "Missing application name",
+  "removeStep": "Remove Step",
+  "addPrevStep": "Add Prev Step",
+  "addNextStep": "Add Next Step",
+  "operation": "Operation"
 }

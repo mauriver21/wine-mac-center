@@ -5,7 +5,6 @@ import { Executable } from '@interfaces/Executable';
 import { WineAppExecutable } from '@interfaces/WineAppExecutable';
 import { Checkbox, Chip, TextField } from '@mui/material';
 import { Box, FormControlLabel, Icon, Stack } from 'reactjs-shared-ui';
-import { Select } from 'reactjs-shared-ui/forms';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export interface ScriptExecutableSelectorItemProps {
@@ -65,22 +64,11 @@ export const ScriptExecutableSelectorItem: React.FC<ScriptExecutableSelectorItem
       <Stack spacing={2}>
         <TextField
           InputProps={{
-            startAdornment: (
-              <Box mr={2}>
-                <Select
-                  sx={{ height: 34 }}
-                  options={[{ value: DRIVE_C_PATH, label: DRIVE_C_PATH }]}
-                  value={DRIVE_C_PATH}
-                  onChange={(event) => {
-                    onChange?.({ basePath: event.target.value as string });
-                  }}
-                />
-              </Box>
-            )
+            startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
           }}
           label={t('executablePath')}
           placeholder={t('relativePathExample')}
-          onChange={(event) => {
+          onBlur={(event) => {
             onChange?.({ path: event.target.value });
           }}
         />
