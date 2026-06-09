@@ -21,7 +21,7 @@ import { useNavigateApp } from '@hooks/useNavigateApp';
 import { ConfigOrigin, License, ScriptOperation } from '@constants/enums';
 import { ENV } from '@constants/envs';
 import { getRelativeWinePath } from '@utils/getRelativeWinePath';
-import { DRIVE_C_PATH as RELATIVE_DRIVE_C_PATH } from '@constants/paths';
+import { RELATIVE_DRIVE_C_PATH } from '@constants/paths';
 import { Button } from '@components/Button';
 import { PipelineScript as PipelineScriptType } from '@interfaces/PipelineScript';
 import { useParams } from 'react-router-dom';
@@ -37,6 +37,7 @@ import { Rocket } from '@mui/icons-material';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { LicensesAutocomplete } from '@components/LicensesAutocomplete';
 import { StyleSelector } from '@components/StyleSelector';
+import { ScriptExecutablesSelector } from '@components/ScriptExecutablesSelector';
 
 const ITEM_STYLE = { px: '20px !important' };
 
@@ -310,7 +311,9 @@ export const PipelineScript: React.FC = () => {
                     />
                   </>
                 )}
-                {operation === ScriptOperation.SET_EXECUTABLES && <>WIP...</>}
+                {operation === ScriptOperation.SET_EXECUTABLES && (
+                  <ScriptExecutablesSelector value={form.watch('executables')} />
+                )}
                 {operation === ScriptOperation.RUN_WINDOWS_EXE && (
                   <TextField
                     control={form.control}
@@ -424,6 +427,16 @@ export const PipelineScript: React.FC = () => {
               operation: item.operation,
               exeFlags: item.exeFlags,
               name: t('setMainExe')
+            }
+          ];
+          break;
+        case ScriptOperation.SET_EXECUTABLES:
+          result = [
+            ...result,
+            {
+              operation: item.operation,
+              executables: item.executables || [],
+              name: t('setExecutables')
             }
           ];
           break;

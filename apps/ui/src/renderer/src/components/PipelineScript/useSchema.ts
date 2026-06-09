@@ -143,12 +143,13 @@ export const useSchema = () => {
               array
                 .of(
                   schema.object({
+                    basePath: schema.string().required(),
                     path: schema.string().required(),
                     main: schema.boolean().oneOf([true, false]).default(false),
                     flags: schema.string().required()
                   })
                 )
-                .default([{ path: '', main: true, flags: '' }])
+                .default([{ basePath: '', path: '', main: true, flags: '' }])
           }),
           diskImagePath: schema.string().when('operation', {
             is: ScriptOperation.MOUNT_DISK_IMAGE,

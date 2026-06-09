@@ -1,4 +1,5 @@
 import { ScriptOperation } from '@constants/enums';
+import { Executable } from '@interfaces/Executable';
 
 export type PipelineScript =
   | {
@@ -32,6 +33,11 @@ export type PipelineScript =
       operation: ScriptOperation.SET_MAIN_EXE;
       mainExePath: string;
       exeFlags?: string;
+    }
+  | {
+      name: string;
+      operation: ScriptOperation.SET_EXECUTABLES;
+      executables: Executable[];
     }
   | {
       name: string;
