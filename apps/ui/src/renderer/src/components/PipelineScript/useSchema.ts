@@ -79,6 +79,7 @@ export const useSchema = () => {
               ScriptOperation.RUN_WINDOWS_EXE,
               ScriptOperation.DECOMPRESS,
               ScriptOperation.SET_MAIN_EXE,
+              ScriptOperation.SET_EXECUTABLES,
               ScriptOperation.MOUNT_DISK_IMAGE,
               ScriptOperation.REMOVE,
               ScriptOperation.DOWNLOAD_STEAM_APP
@@ -135,6 +136,19 @@ export const useSchema = () => {
           exeFlags: schema.string().when('operation', {
             is: ScriptOperation.SET_MAIN_EXE,
             then: (schema) => schema.optional()
+          }),
+          executables: schema.array().when('operation', {
+            is: ScriptOperation.SET_EXECUTABLES,
+            then: (array) =>
+              array
+                .of(
+                  schema.object({
+                    path: schema.string().required(),
+                    main: schema.boolean().oneOf([true, false]).default(false),
+                    flags: schema.string().required()
+                  })
+                )
+                .default([{ path: '', main: true, flags: '' }])
           }),
           diskImagePath: schema.string().when('operation', {
             is: ScriptOperation.MOUNT_DISK_IMAGE,

@@ -1,18 +1,18 @@
+import { AppExecutableSelectorItem } from '@components/AppExecutableSelectorItem';
 import { Button } from '@components/Button';
-import { ExecutableSelectorItem } from '@components/ExecutableSelectorItem';
 import { WineAppExecutable } from '@interfaces/WineAppExecutable';
 import { useEffect, useRef, useState } from 'react';
 import { Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
-export interface ExecutablesSelectorProps {
+export interface AppExecutablesSelectorProps {
   value?: WineAppExecutable[];
   onChange?: (executables: WineAppExecutable[]) => void;
   hideRunExeButton?: boolean;
 }
 
 export const DEFAULT_EXECUTABLE = { path: '', main: true, flags: '' } as const;
-export const ExecutablesSelector: React.FC<ExecutablesSelectorProps> = ({
+export const AppExecutablesSelector: React.FC<AppExecutablesSelectorProps> = ({
   value,
   onChange,
   hideRunExeButton
@@ -71,7 +71,7 @@ export const ExecutablesSelector: React.FC<ExecutablesSelectorProps> = ({
   return (
     <Stack spacing={2}>
       {executables?.map((executable, index) => (
-        <ExecutableSelectorItem
+        <AppExecutableSelectorItem
           hideRemoveAction={executables.length <= 1}
           removeAction={remove}
           hideRunExeButton={hideRunExeButton}

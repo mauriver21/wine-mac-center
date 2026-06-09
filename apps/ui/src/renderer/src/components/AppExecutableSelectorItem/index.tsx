@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { Box, FormControlLabel, Icon, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
-export interface ExecutableSelectorItemProps {
+export interface AppExecutableSelectorItemProps {
   index?: number;
   hideRemoveAction?: boolean;
   removeAction?: (index: number) => void;
@@ -19,7 +19,7 @@ export interface ExecutableSelectorItemProps {
   hideRunExeButton?: boolean;
 }
 
-export const ExecutableSelectorItem: React.FC<ExecutableSelectorItemProps> = ({
+export const AppExecutableSelectorItem: React.FC<AppExecutableSelectorItemProps> = ({
   index = 0,
   hideRemoveAction = false,
   removeAction,
@@ -42,7 +42,10 @@ export const ExecutableSelectorItem: React.FC<ExecutableSelectorItemProps> = ({
       sx={{ '&:hover .exe-actions': { display: 'flex' } }}
     >
       <Box position="absolute" top={-7} left={20}>
-        <Chip sx={{ opacity: 1 }} label={t('executable', { number: index + 1 })} />
+        <Chip
+          sx={{ opacity: 1, bgcolor: 'secondary.light' }}
+          label={t('executable', { number: index + 1 })}
+        />
       </Box>
       <Box className="exe-actions" sx={{ display: 'none' }} position="absolute" top={-7} left={-15}>
         {!hideRemoveAction && (

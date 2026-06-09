@@ -222,6 +222,7 @@ export const PipelineScript: React.FC = () => {
                     { value: ScriptOperation.REMOVE, label: t('remove') },
                     { value: ScriptOperation.RUN_WINDOWS_EXE, label: t('runWindowsExe') },
                     { value: ScriptOperation.SET_MAIN_EXE, label: t('setMainExe') },
+                    { value: ScriptOperation.SET_EXECUTABLES, label: t('setExecutables') },
                     { value: ScriptOperation.MOUNT_DISK_IMAGE, label: t('mountDiskImage') },
                     { value: ScriptOperation.DOWNLOAD_STEAM_APP, label: t('downloadSteamApp') }
                   ]}
@@ -309,6 +310,7 @@ export const PipelineScript: React.FC = () => {
                     />
                   </>
                 )}
+                {operation === ScriptOperation.SET_EXECUTABLES && <>WIP...</>}
                 {operation === ScriptOperation.RUN_WINDOWS_EXE && (
                   <TextField
                     control={form.control}

@@ -206,5 +206,6 @@
   "runExecutable": "Run executable",
   "setAsMainExecutable": "Set as main executable.",
   "executables": "Executables",
-  "menu": "Menu"
+  "menu": "Menu",
+  "setExecutables": "Set executables"
 }

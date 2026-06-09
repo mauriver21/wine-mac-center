@@ -2,11 +2,11 @@ import { Grid, Stack, Icon, H6, ContentsClass, CardContent, Card } from 'reactjs
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { useWineAppContext } from '@hooks/useWineAppContext';
 import PlayIcon from '@heroicons/react/24/solid/PlayIcon';
-import { ExecutablesSelector } from '@components/ExecutablesSelector';
+import { AppExecutablesSelector } from '@components/AppExecutablesSelector';
 
 export interface ExecutablesConfigModuleProps {}
 
-export const ExecutablesConfigModule: React.FC<ExecutablesConfigModuleProps> = () => {
+export const AppExecutablesConfigModule: React.FC<ExecutablesConfigModuleProps> = () => {
   const { t } = useI18n();
   const { wineApp } = useWineAppContext() || {};
   const appConfig = wineApp?.getAppConfig();
@@ -23,7 +23,7 @@ export const ExecutablesConfigModule: React.FC<ExecutablesConfigModuleProps> = (
           </Grid>
           <Grid item xs={12}>
             <Grid item xs={12}>
-              <ExecutablesSelector
+              <AppExecutablesSelector
                 value={appConfig?.executables}
                 onChange={(executables) => {
                   wineApp?.setExecutables({ executables });
