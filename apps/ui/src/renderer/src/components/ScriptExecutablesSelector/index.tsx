@@ -42,15 +42,18 @@ export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps>
   }, []);
 
   return (
-    <Stack spacing={2}>
+    <Stack bgcolor="secondary.main" spacing={2} overflow="auto" height={400} borderRadius={2} p={3}>
       {fields?.map((_, index) => {
         const field = fields.find((_, i) => i == index);
         const baseName = `${baseNameProp}.${index}`;
+        const executableName = field?.path?.match?.(/[^/]+\.exe$/i)?.[0];
+
         return (
           <Box
+            border="secondary.light"
+            bgcolor="secondary.main"
             key={index}
             position="relative"
-            bgcolor="secondary.dark"
             borderRadius={2}
             pt={5}
             sx={{ '&:hover .exe-actions': { display: 'flex' } }}
@@ -58,7 +61,7 @@ export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps>
             <Box position="absolute" top={-7} left={0}>
               <Chip
                 sx={{ opacity: 1, bgcolor: 'secondary.light' }}
-                label={t('executable', { number: index + 1 })}
+                label={executableName || `${t('executable', { number: index + 1 })}`}
               />
             </Box>
             <Box
@@ -66,7 +69,7 @@ export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps>
               sx={{ display: 'none' }}
               position="absolute"
               top={-7}
-              left={-15}
+              right={0}
             >
               {fields.length > 1 && (
                 <Button
