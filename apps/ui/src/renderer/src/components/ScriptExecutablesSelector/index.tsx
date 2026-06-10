@@ -3,20 +3,21 @@ import { Button } from '@components/Button';
 import { Box, FormControlLabel, Icon, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 import { Checkbox, Chip, Divider } from '@mui/material';
-import { FieldProps, TextField } from 'reactjs-shared-ui/forms';
+import { TextField } from 'reactjs-shared-ui/forms';
 import { DRIVE_C_PATH } from '@constants/paths';
 import { TrashIcon } from '@heroicons/react/24/solid';
-import { useFieldArray } from 'react-hook-form';
+import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { Executable } from '@interfaces/Executable';
 
-export interface ScriptExecutablesSelectorProps extends FieldProps {
+export interface ScriptExecutablesSelectorProps {
   baseName: string;
+  form: UseFormReturn<any>;
 }
 
 const DEFAULT_EXECUTABLE = { path: '', main: true, flags: '' } as const;
 export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps> = ({
-  control,
-  baseName: baseNameProp
+  baseName: baseNameProp,
+  form
 }) => {
   const { t } = useI18n();
   const {
@@ -26,7 +27,7 @@ export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps>
     remove
   } = useFieldArray({
     name: baseNameProp,
-    control
+    control: form.control
   });
   const fields = baseFields as unknown as Executable[];
 
@@ -42,11 +43,19 @@ export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps>
   }, []);
 
   return (
-    <Stack bgcolor="secondary.main" spacing={2} overflow="auto" height={400} borderRadius={2} p={3}>
+    <Stack
+      bgcolor="secondary.main"
+      spacing={2}
+      overflow="auto"
+      maxHeight={400}
+      borderRadius={2}
+      p={3}
+    >
       {fields?.map((_, index) => {
         const field = fields.find((_, i) => i == index);
         const baseName = `${baseNameProp}.${index}`;
-        const executableName = field?.path?.match?.(/[^/]+\.exe$/i)?.[0];
+        const path = form.watch(`${baseName}.path`);
+        const executableName = path?.match?.(/[^/]+\.exe$/i)?.[0];
 
         return (
           <Box
@@ -89,11 +98,11 @@ export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps>
                   startAdornment: <Chip label={DRIVE_C_PATH} sx={{ mr: 1 }} />
                 }}
                 name={`${baseName}.path`}
-                control={control}
+                control={form.control}
                 label={t('executablePath')}
                 placeholder={t('relativePathExample')}
               />
-              <TextField control={control} name={`${baseName}.flags`} label={t('exeFlags')} />
+              <TextField control={form.control} name={`${baseName}.flags`} label={t('exeFlags')} />
               <FormControlLabel
                 label={t('setMainExe')}
                 control={
