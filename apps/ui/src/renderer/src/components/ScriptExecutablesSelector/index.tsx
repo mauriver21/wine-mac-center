@@ -1,27 +1,41 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { Button } from '@components/Button';
-import { Box, Icon, Stack } from 'reactjs-shared-ui';
+import { Box, FormControlLabel, Icon, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
-import { Chip } from '@mui/material';
-import { Checkbox, FieldProps, TextField } from 'reactjs-shared-ui/forms';
+import { Checkbox, Chip, Divider } from '@mui/material';
+import { FieldProps, TextField } from 'reactjs-shared-ui/forms';
 import { DRIVE_C_PATH } from '@constants/paths';
 import { TrashIcon } from '@heroicons/react/24/solid';
 import { useFieldArray } from 'react-hook-form';
+import { Executable } from '@interfaces/Executable';
 
 export interface ScriptExecutablesSelectorProps extends FieldProps {
   baseName: string;
 }
 
-export const DEFAULT_EXECUTABLE = { path: '', main: true, flags: '' } as const;
+const DEFAULT_EXECUTABLE = { path: '', main: true, flags: '' } as const;
 export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps> = ({
   control,
   baseName: baseNameProp
 }) => {
   const { t } = useI18n();
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: baseFields,
+    append,
+    update,
+    remove
+  } = useFieldArray({
     name: baseNameProp,
     control
   });
+  const fields = baseFields as unknown as Executable[];
+
+  useEffect(() => {
+    const hasMain = fields.some((item) => item.main);
+    if (!hasMain) {
+      update(0, { ...fields[0], main: true });
+    }
+  }, [fields.length]);
 
   useLayoutEffect(() => {
     !fields.length && append(DEFAULT_EXECUTABLE);
@@ -30,6 +44,7 @@ export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps>
   return (
     <Stack spacing={2}>
       {fields?.map((_, index) => {
+        const field = fields.find((_, i) => i == index);
         const baseName = `${baseNameProp}.${index}`;
         return (
           <Box
@@ -76,19 +91,37 @@ export const ScriptExecutablesSelector: React.FC<ScriptExecutablesSelectorProps>
                 placeholder={t('relativePathExample')}
               />
               <TextField control={control} name={`${baseName}.flags`} label={t('exeFlags')} />
-              <Checkbox
-                control={control}
-                name={`${baseName}.main`}
-                color="success"
-                label={t('setAsMainExecutable')}
-                disableRipple
+              <FormControlLabel
+                label={t('setMainExe')}
+                control={
+                  <Checkbox
+                    checked={field?.main}
+                    color="success"
+                    disableRipple
+                    onChange={() => {
+                      for (let i = 0; i < fields.length; i++) {
+                        if (i !== index) {
+                          update(i, { ...field, main: false });
+                        }
+                      }
+                      update(index, { ...field, main: true });
+                    }}
+                  />
+                }
               />
             </Stack>
+            <Divider sx={{ my: 2 }} />
           </Box>
         );
       })}
       <Stack direction="row" justifyContent="flex-end">
-        <Button onClick={() => append(DEFAULT_EXECUTABLE)}>{t('addExecutable')}</Button>
+        <Button
+          onClick={() => {
+            append({ ...DEFAULT_EXECUTABLE, main: false });
+          }}
+        >
+          {t('addExecutable')}
+        </Button>
       </Stack>
     </Stack>
   );
