@@ -101,6 +101,24 @@ export const PipelineScript: React.FC = () => {
         </Grid>
       </Grid>
     </CardItem>,
+    <CardItem icon={Rocket} label={t('launcherSettings')}>
+      <Grid container>
+        <Grid item xs={12}>
+          <Checkbox
+            control={form.control}
+            name="launcherConfig.runMainExeOnStartup"
+            label={t('startAppOnStartup')}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Checkbox
+            control={form.control}
+            name="launcherConfig.quitAppWhenLauncherIsClosed"
+            label={t('quitAppWhenLauncherClosed')}
+          />
+        </Grid>
+      </Grid>
+    </CardItem>,
     <CardItem icon={PaintBrushIcon} label={t('style')}>
       <>
         <Box pb={2}>
@@ -121,24 +139,6 @@ export const PipelineScript: React.FC = () => {
           }}
         />
       </>
-    </CardItem>,
-    <CardItem icon={Rocket} label={t('launcherSettings')}>
-      <Grid container>
-        <Grid item xs={12}>
-          <Checkbox
-            control={form.control}
-            name="launcherConfig.runMainExeOnStartup"
-            label={t('startAppOnStartup')}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Checkbox
-            control={form.control}
-            name="launcherConfig.quitAppWhenLauncherIsClosed"
-            label={t('quitAppWhenLauncherClosed')}
-          />
-        </Grid>
-      </Grid>
     </CardItem>,
     <CardItem icon={PlayCircleIcon} label={t('installationScript')}>
       <Stack spacing={2}>

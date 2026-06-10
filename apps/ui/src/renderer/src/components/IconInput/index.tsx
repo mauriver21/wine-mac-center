@@ -27,7 +27,7 @@ export const IconInput: React.FC<IconInputProps> = ({
   const { t } = useI18n();
   const inputRef = useRef<HTMLDivElement>(null);
   const [fileName, setFileName] = useState('');
-  const [iconSrc, setIconSrc] = useState('');
+  const [iconSrc, setIconSrc] = useState(defaultAppIcon);
   const [noIcon, setNoIcon] = useState(false);
 
   const getSrcPath = () => {
