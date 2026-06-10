@@ -28,9 +28,11 @@ const List = forwardRef<HTMLDivElement, ListProps>(({ style, children, ...rest }
     style={{
       display: 'grid',
       gridAutoColumns: 'minmax(200px, auto)',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 200px))',
       gridGap: '10px',
-      padding: '10px',
+      paddingLeft: '22px',
+      paddingRight: '22px',
+      justifyContent: 'space-between',
       ...style
     }}
   >
@@ -43,9 +45,6 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
     {...rest}
     style={{
       width: '100%',
-      paddingRight: 12,
-      paddingLeft: 12,
-
       boxSizing: 'border-box',
       ...style
     }}
@@ -95,7 +94,7 @@ export const Scripts: React.FC = () => {
           open={openConfirmRemoveScript}
           onAccept={removeScript}
         />
-        <Stack direction="row" spacing={1} pt={2} px={3} justifyContent="space-between" pb={2}>
+        <Stack direction="row" spacing={1} py={2} px={3} justifyContent="space-between">
           <Stack spacing={1} direction="row" width="100%" maxWidth={450}>
             <SearchField
               sx={{ minWidth: 300 }}

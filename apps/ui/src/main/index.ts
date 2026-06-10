@@ -52,9 +52,9 @@ let isQuitting = false;
 
 function createWindow(): void {
   singleton.mainWindow = new BrowserWindow({
-    width: 1170,
+    width: 1172,
     height: 768,
-    minWidth: 1170,
+    minWidth: 1172,
     minHeight: 768,
     show: false,
     autoHideMenuBar: true,

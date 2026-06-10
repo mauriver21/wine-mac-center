@@ -21,9 +21,11 @@ const List = forwardRef<HTMLDivElement, ListProps>(({ style, children, ...rest }
     style={{
       display: 'grid',
       gridAutoColumns: 'minmax(200px, auto)',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 200px))',
       gridGap: '10px',
-      padding: '10px',
+      paddingLeft: '22px',
+      paddingRight: '22px',
+      justifyContent: 'space-between',
       ...style
     }}
   >
@@ -35,7 +37,6 @@ const Item: React.FC<ItemProps> = ({ style, children, ...rest }) => (
   <div
     {...rest}
     style={{
-      padding: 12,
       display: 'flex',
       flex: 'none',
       alignContent: 'stretch',
@@ -65,7 +66,7 @@ export const WineInstalledAppsList: React.FC = () => {
 
   return (
     <Box display="grid" gridTemplateRows="auto 1fr">
-      <Stack direction="row" spacing={1} pt={2} px={3} justifyContent="space-between">
+      <Stack direction="row" spacing={1} py={2} px={3} justifyContent="space-between">
         <Stack spacing={1} direction="row" width="100%" maxWidth={450}>
           <SearchField
             onChange={(event) =>
