@@ -35,7 +35,7 @@ import { blobUrlToFile } from '@utils/blobUrlToFile';
 import { DEFAULT_WINETRICKS_VERSION } from '@constants/constants';
 import { Rocket } from '@mui/icons-material';
 import { useI18n } from 'reactjs-shared-ui/i18next';
-import { LicensesAutocomplete } from '@components/LicensesAutocomplete';
+import { LicensesSelect } from '@components/LicensesSelect';
 import { StyleSelector } from '@components/StyleSelector';
 import { ScriptExecutablesSelector } from '@components/ScriptExecutablesSelector';
 
@@ -75,7 +75,7 @@ export const PipelineScript: React.FC = () => {
           name="appName"
           label={t('applicationName')}
         />
-        <LicensesAutocomplete name="license" control={form.control} />
+        <LicensesSelect name="license" control={form.control} />
       </Stack>
     </CardItem>,
     <CardItem icon={CpuChipIcon} label={t('wineEngine')}>
