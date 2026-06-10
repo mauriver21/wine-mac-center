@@ -75,7 +75,7 @@ export const PipelineScript: React.FC = () => {
           name="appName"
           label={t('applicationName')}
         />
-        <LicensesSelect name="license" control={form.control} />
+        <LicensesSelect label={t('license')} name="license" control={form.control} />
       </Stack>
     </CardItem>,
     <CardItem icon={CpuChipIcon} label={t('wineEngine')}>
