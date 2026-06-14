@@ -2,7 +2,7 @@ import { License } from '@constants/enums';
 import { Select, SelectProps } from 'reactjs-shared-ui/forms';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
-export interface LicensesSelectProps extends SelectProps {}
+export type LicensesSelectProps = SelectProps;
 
 export const LicensesSelect: React.FC<LicensesSelectProps> = ({ onChange, ...rest }) => {
   const { t } = useI18n();

@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosHeaders, AxiosResponse } from 'axios';
 
 const BYPASS_STATUS_CODES = [405];
 
@@ -26,7 +26,7 @@ export async function isDownloadableURL(url: string): Promise<boolean> {
     const contentDisposition = response.headers['content-disposition'] ?? '';
     const isAttachment = contentDisposition.includes('attachment');
 
-    const contentType = response.headers['content-type'] ?? '';
+    const contentType = (response.headers['content-type'] ?? '') as AxiosHeaders | string;
     const isDownloadableType =
       contentType.startsWith('application/') ||
       contentType === 'binary/octet-stream' ||

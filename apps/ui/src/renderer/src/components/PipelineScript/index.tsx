@@ -312,7 +312,7 @@ export const PipelineScript: React.FC = () => {
                 )}
                 {operation === ScriptOperation.SET_EXECUTABLES && (
                   <ScriptExecutablesSelector
-                    form={form}
+                    form={form as any}
                     baseName={`pipelineScripts.${index}.executables`}
                   />
                 )}
