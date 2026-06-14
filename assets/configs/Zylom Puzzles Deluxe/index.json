@@ -1,0 +1,36 @@
+{
+  "name": "Zylom Puzzles Deluxe",
+  "license": "free",
+  "origin": "SCRIPTS",
+  "dxvkEnabled": false,
+  "setupExecutableURL": "",
+  "engineVersion": "WS11WineCX64Bit23.6.0",
+  "winetricks": { "verbs": [], "version": "20260125" },
+  "executables": [{ "main": true, "path": "", "flags": "" }],
+  "pipelineScripts": [
+    {
+      "url": "https://mauriver21.github.io/wine-mac-center/assets/downloadables/compressed/Zylom%20Puzzles%20Deluxe.zip",
+      "downloadName": "",
+      "operation": "DOWNLOAD",
+      "name": "Descargar ejecutable del instalador"
+    },
+    {
+      "path": "/Zylom Puzzles Deluxe.zip",
+      "operation": "DECOMPRESS",
+      "name": "Extraer Archivo"
+    },
+    {
+      "baseFromPath": "$HOME/Wine/assets/downloads",
+      "from": "Zylom Puzzles Deluxe",
+      "target": "Program Files (x86)/Zylom Puzzles Deluxe",
+      "operation": "COPY",
+      "name": "Copiar Archivo"
+    },
+    {
+      "mainExePath": "Program Files (x86)/Zylom Puzzles Deluxe/zylompuzzles.exe",
+      "operation": "SET_MAIN_EXE",
+      "name": "Establecer EXE principal"
+    }
+  ],
+  "launcherConfig": { "quitAppWhenLauncherIsClosed": true }
+}

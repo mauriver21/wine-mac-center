@@ -34,5 +34,6 @@
   { "name": "Spelunky 2", "license": "paid", "origin": "CLOUD" },
   { "name": "Steam", "license": "free", "origin": "CLOUD" },
   { "name": "Trine 4", "license": "paid", "origin": "CLOUD" },
-  { "name": "Zuma Deluxe", "license": "paid", "origin": "CLOUD" }
+  { "name": "Zuma Deluxe", "license": "paid", "origin": "CLOUD" },
+  { "name": "Zylom Puzzles Deluxe", "license": "free", "origin": "CLOUD" }
 ]
