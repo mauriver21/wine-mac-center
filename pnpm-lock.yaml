@@ -13,6 +13,12 @@ importers:
       '@reduxjs/toolkit':
         specifier: ^2.6.1
         version: 2.12.0(react-redux@9.3.0(@types/react@18.3.31)(react@18.3.1)(redux@5.0.1))(react@18.3.1)
+      chokidar:
+        specifier: ^4.0.3
+        version: 4.0.3
+      plist:
+        specifier: ^3.1.1
+        version: 3.1.1
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -31,6 +37,9 @@ importers:
       ui:
         specifier: workspace:^
         version: link:../ui
+      uuid:
+        specifier: ^11.1.1
+        version: 11.1.1
     devDependencies:
       '@types/react':
         specifier: ^18.2.64
@@ -77,6 +86,12 @@ importers:
       vite-plugin-electron-renderer:
         specifier: ^0.14.5
         version: 0.14.7
+      vite-plugin-environment:
+        specifier: ^1.1.3
+        version: 1.1.3(vite@5.4.21(@types/node@22.19.21))
+      vite-tsconfig-paths:
+        specifier: ^4.3.2
+        version: 4.3.2(typescript@5.8.3)(vite@5.4.21(@types/node@22.19.21))
 
   apps/ui:
     dependencies:
@@ -9451,9 +9466,24 @@ snapshots:
     optionalDependencies:
       vite-plugin-electron-renderer: 0.14.7
 
+  vite-plugin-environment@1.1.3(vite@5.4.21(@types/node@22.19.21)):
+    dependencies:
+      vite: 5.4.21(@types/node@22.19.21)
+
   vite-plugin-environment@1.1.3(vite@6.4.3(@types/node@22.19.21)):
     dependencies:
       vite: 6.4.3(@types/node@22.19.21)
+
+  vite-tsconfig-paths@4.3.2(typescript@5.8.3)(vite@5.4.21(@types/node@22.19.21)):
+    dependencies:
+      debug: 4.4.3
+      globrex: 0.1.2
+      tsconfck: 3.1.6(typescript@5.8.3)
+    optionalDependencies:
+      vite: 5.4.21(@types/node@22.19.21)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
 
   vite-tsconfig-paths@4.3.2(typescript@5.8.3)(vite@6.4.3(@types/node@22.19.21)):
     dependencies:
