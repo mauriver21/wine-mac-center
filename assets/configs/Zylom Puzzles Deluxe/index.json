@@ -5,7 +5,7 @@
   "dxvkEnabled": false,
   "setupExecutableURL": "",
   "engineVersion": "WS11WineCX64Bit23.6.0",
-  "winetricks": { "verbs": [], "version": "20260125" },
+  "winetricks": { "verbs": ["cnc_ddraw"], "version": "20260125" },
   "executables": [{ "main": true, "path": "", "flags": "" }],
   "pipelineScripts": [
     {
