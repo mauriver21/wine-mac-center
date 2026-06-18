@@ -21,7 +21,7 @@
     },
     {
       "baseFromPath": "$HOME/Wine/assets/downloads",
-      "from": "Zylom Puzzles Deluxe",
+      "from": "Zylom Puzzles Deluxe/Zylom Puzzles Deluxe",
       "target": "Program Files (x86)",
       "operation": "COPY",
       "name": "Copiar Archivo"
