@@ -157,7 +157,6 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
                 onInputProp?.(file);
               }}
               error={helpers.error}
-              errorMessage={helpers.errorMessage}
             />
           )}
         />

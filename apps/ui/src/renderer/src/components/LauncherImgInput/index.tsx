@@ -157,7 +157,6 @@ export const LauncherImgInput: React.FC<LauncherImgInputProps> = ({
                 onInputProp?.(file);
               }}
               error={helpers.error}
-              errorMessage={helpers.errorMessage}
             />
           )}
         />

@@ -160,7 +160,6 @@ export const IconInput: React.FC<IconInputProps> = ({
                 onInputProp?.(file);
               }}
               error={helpers.error}
-              errorMessage={helpers.errorMessage}
             />
           )}
         />
