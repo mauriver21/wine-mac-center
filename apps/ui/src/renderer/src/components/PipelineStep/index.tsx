@@ -91,7 +91,7 @@ export const PipelineStep: React.FC<PipelineStepProps> = ({ step, jobIndex, step
           }}
           type="content"
           language="bash"
-          code={Boolean(output) ? output : t('No output to display')}
+          code={Boolean(output) ? output : t('noOutputToDisplay')}
         />
       ) : (
         <></>
