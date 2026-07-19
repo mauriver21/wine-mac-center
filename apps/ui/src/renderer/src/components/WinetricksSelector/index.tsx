@@ -150,8 +150,9 @@ export const WinetricksSelector: React.FC<WinetricksSelectorProps> = ({
                       {t('selectedVerbs')}
                     </Body2>
                     <Box>
-                      {verbs?.map((item) => (
+                      {verbs?.map((item, index) => (
                         <Box
+                          key={index}
                           display="inline-block"
                           position="relative"
                           sx={{ '&:hover .remove-verb': { display: 'block' } }}
