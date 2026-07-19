@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Body1, Body2, Button, Dialog, DialogProps, Stack } from 'reactjs-shared-ui';
 import { useForm } from 'reactjs-shared-ui/forms';
 import { useI18n } from 'reactjs-shared-ui/i18next';
@@ -25,6 +25,12 @@ export const ChangeWineEngineDialog: React.FC<ChangeWineEngineDialogProps> = ({
   const schema = useSchema();
   const form = useForm(schema);
   const config = wineApp?.getAppConfig();
+
+  useEffect(() => {
+    if (config?.engineVersion) {
+      form.setValue('engineVersion', config.engineVersion, { shouldValidate: true });
+    }
+  }, [config?.engineVersion]);
 
   const submit = async (data: FormSchema) => {
     try {
@@ -65,6 +71,7 @@ export const ChangeWineEngineDialog: React.FC<ChangeWineEngineDialogProps> = ({
         });
       });
 
+      await wineApp?.readAppConfig();
       setRunning(false);
     } catch (error) {
       setError(handleError(error));
@@ -92,7 +99,6 @@ export const ChangeWineEngineDialog: React.FC<ChangeWineEngineDialogProps> = ({
             <Stack spacing={2}>
               <Body1 fontWeight={500}>{t('changeWineEngine')}</Body1>
               <WineEnginesSelect
-                value={config?.engineVersion}
                 control={form.control}
                 name="engineVersion"
               />

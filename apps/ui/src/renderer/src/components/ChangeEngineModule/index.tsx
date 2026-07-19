@@ -17,40 +17,45 @@ import {
 
 export const ChangeEngineModule: React.FC = () => {
   const { t } = useI18n();
-  const { wineApp, loading, setLoading } = useWineAppContext() || {};
+  const { wineApp, loading, setLoading, refresh } = useWineAppContext() || {};
   const [engineVersion, setEngineVersion] = useState<string>('');
   const appConfig = wineApp?.getAppConfig();
 
   const changeWineEngine = async () => {
     setLoading?.(true);
 
-    await new Promise((resolve, reject) => {
-      wineApp?.extractEngine(engineVersion, {
-        onStdOut: console.log,
-        onStdErr: console.log,
-        onExit: (output) => {
-          if (output === ExitCode.Error) {
-            reject(`Failed to Extract the Wine Engine ${engineVersion}`);
+    try {
+      await new Promise((resolve, reject) => {
+        wineApp?.extractEngine(engineVersion, {
+          onStdOut: console.log,
+          onStdErr: console.log,
+          onExit: (output) => {
+            if (output === ExitCode.Error) {
+              reject(`Failed to Extract the Wine Engine ${engineVersion}`);
+            }
+            resolve(undefined);
           }
-          resolve(undefined);
-        }
+        });
       });
-    });
 
-    await new Promise((resolve, reject) => {
-      wineApp?.wineboot('', {
-        onStdOut: console.log,
-        onStdErr: console.log,
-        onExit: (output) => {
-          if (output === ExitCode.Error) {
-            reject(`Failed to initialize the Wine Engine ${engineVersion}`);
+      await new Promise((resolve, reject) => {
+        wineApp?.wineboot('', {
+          onStdOut: console.log,
+          onStdErr: console.log,
+          onExit: (output) => {
+            if (output === ExitCode.Error) {
+              reject(`Failed to initialize the Wine Engine ${engineVersion}`);
+            }
+            resolve(undefined);
           }
-          resolve(undefined);
-        }
+        });
       });
-    });
 
-    setLoading?.(false);
+      await wineApp?.readAppConfig();
+      refresh?.();
+    } finally {
+      setLoading?.(false);
+    }
   };
 
   useEffect(() => {

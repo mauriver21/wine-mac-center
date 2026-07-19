@@ -463,9 +463,10 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
   /**
    * Write app config.json in disk.
    */
-  const writeAppConfig = async (appConfig: Partial<WineAppConfig>) => {
-    const updatedAppConfig = { ...(await readAppConfig()), ...appConfig };
+  const writeAppConfig = async (data: Partial<WineAppConfig>) => {
+    const updatedAppConfig = { ...(await readAppConfig()), ...data };
     await writeFile(WINE_ENV.WINE_APP_CONFIG_JSON_PATH, JSON.stringify(updatedAppConfig));
+    appConfig = updatedAppConfig;
   };
 
   /**
