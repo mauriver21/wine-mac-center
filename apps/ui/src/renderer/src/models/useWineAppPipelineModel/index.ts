@@ -67,9 +67,15 @@ export const useWineAppPipelineModel = () => {
   };
 
   const resolveEngineURLs = (engineVersion: string | undefined) => {
+    const wineEngines = wineEngineModel.selectWineEngines(store.getState());
     const wineEnginesDownloadables = wineEngineModel.selectWineEnginesDownloadables(
       store.getState()
     );
+
+    if (engineVersion !== undefined && wineEngines?.includes(engineVersion)) {
+      return [];
+    }
+
     const wineEngineDownloadables = wineEnginesDownloadables?.find(
       (item) => item.version == engineVersion
     );
