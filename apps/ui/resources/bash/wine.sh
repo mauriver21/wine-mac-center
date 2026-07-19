@@ -1,9 +1,14 @@
 #!/bin/bash
 wine() {
-  if [[ -e "$WINE_APP_BIN_PATH/wine32on64" ]]; then
+  if [[ -x "$WINE_APP_BIN_PATH/wine32on64" ]]; then
     WINE_ARCH=wine32on64
-  else
+  elif [[ -x "$WINE_APP_BIN_PATH/wine64" ]]; then
     WINE_ARCH=wine64
+  elif [[ -x "$WINE_APP_BIN_PATH/wine" ]]; then
+    WINE_ARCH=wine
+  else
+    echo "Error: No executable Wine binary found in $WINE_APP_BIN_PATH"
+    exit 1
   fi
 
   WINDOWS_EXE=$1
