@@ -142,7 +142,6 @@ export const ArtWorkInput: React.FC<ArtWorkInputProps> = ({
             <TextField
               fullWidth
               inputRef={inputRef}
-              {...rest}
               InputLabelProps={{ shrink: true }}
               InputProps={{
                 readOnly: true

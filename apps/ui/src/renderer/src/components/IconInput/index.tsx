@@ -145,7 +145,6 @@ export const IconInput: React.FC<IconInputProps> = ({
               fullWidth
               inputRef={inputRef}
               sx={{ display: 'none' }}
-              {...rest}
               InputLabelProps={{ shrink: true }}
               InputProps={{
                 readOnly: true

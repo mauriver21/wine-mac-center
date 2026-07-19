@@ -142,7 +142,6 @@ export const LauncherImgInput: React.FC<LauncherImgInputProps> = ({
             <TextField
               fullWidth
               inputRef={inputRef}
-              {...rest}
               InputLabelProps={{ shrink: true }}
               InputProps={{
                 readOnly: true
