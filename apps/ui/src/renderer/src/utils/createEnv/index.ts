@@ -37,7 +37,6 @@ export const createEnv = (args?: {
     ENV.COMPRESSED_PATH = `${ENV.RESOURCES_PATH}/compressed`;
     ENV.CLIENTS_PATH = `${ENV.RESOURCES_PATH}/clients`;
     ENV.LAUNCHER_APP_PATH = `${ENV.RESOURCES_PATH}/launcher/${FileName.CFBundleExecutable}.app`;
-
     await createDirs();
   };
 
@@ -67,6 +66,7 @@ export const createEnv = (args?: {
   };
 
   const resolveResourcesPath = (mode: string | undefined) => {
+    console.log(mode)
     switch (mode) {
       case 'development':
       case 'integration':

@@ -1,4 +1,21 @@
 #!/bin/bash
+
+: "${WINE_APP_LOGS_PATH:?WINE_APP_LOGS_PATH is not set}"
+mkdir -p "$WINE_APP_LOGS_PATH" || exit 1
+WINE_LOG_PATH="$WINE_APP_LOGS_PATH/$(date '+%Y-%m-%d_%H-%M-%S').log"
+touch "$WINE_LOG_PATH" || exit 1
+
+shopt -s nullglob
+WINE_LOG_FILES=("$WINE_APP_LOGS_PATH"/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]_[0-9][0-9]-[0-9][0-9]-[0-9][0-9].log)
+shopt -u nullglob
+
+while (( ${#WINE_LOG_FILES[@]} > 5 )); do
+  rm -f -- "${WINE_LOG_FILES[0]}"
+  WINE_LOG_FILES=("${WINE_LOG_FILES[@]:1}")
+done
+
+exec >> "$WINE_LOG_PATH" 2>&1
+
 wine() {
   if [[ -x "$WINE_APP_BIN_PATH/wine32on64" ]]; then
     WINE_ARCH=wine32on64

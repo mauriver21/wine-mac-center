@@ -67,6 +67,9 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
     get WINE_APP_DATA_PATH() {
       return `${WINE_ENV.WINE_APP_RESOURCES_PATH}/data`;
     },
+    get WINE_APP_LOGS_PATH() {
+      return `${WINE_ENV.WINE_APP_RESOURCES_PATH}/logs`;
+    },
     get WINE_APP_CONFIG_JSON_PATH() {
       return `${WINE_ENV.WINE_APP_DATA_PATH}/config.json`;
     },
