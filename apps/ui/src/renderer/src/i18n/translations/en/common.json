@@ -220,5 +220,6 @@
   "addPrevStep": "Add Prev Step",
   "addNextStep": "Add Next Step",
   "operation": "Operation",
-  "SET_EXECUTABLES": "Set executables"
+  "SET_EXECUTABLES": "Set executables",
+  "buildWine": "Build Wine"
 }

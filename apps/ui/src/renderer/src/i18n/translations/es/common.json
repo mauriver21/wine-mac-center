@@ -220,5 +220,6 @@
   "addPrevStep": "Agregar Paso Anterior",
   "addNextStep": "Agregar Siguiente Paso",
   "operation": "Operación",
-  "SET_EXECUTABLES": "Configurar ejecutables"
+  "SET_EXECUTABLES": "Configurar ejecutables",
+  "buildWine": "Compilar Wine"
 }
