@@ -28,6 +28,10 @@ wine() {
     exit 1
   fi
 
+  WINE_VERSION=$("$WINE_APP_BIN_PATH/$WINE_ARCH" --version 2>&1)
+  printf 'Wine binary: %s\n' "$WINE_ARCH"
+  printf 'Wine version: %s\n' "$WINE_VERSION"
+
   WINDOWS_EXE=$1
 
   if [ "$WINDOWS_EXE" = "WINDOWS_EXE" ]; then
