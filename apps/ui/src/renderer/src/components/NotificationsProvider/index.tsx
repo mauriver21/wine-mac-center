@@ -1,5 +1,7 @@
 import { withNotificationsProvider } from '@hocs/withNotificationsProvider';
 import { useAppModel } from '@models/useAppModel';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 import { OptionsObject, SnackbarKey, useSnackbar } from 'notistack';
 import { createContext, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -22,7 +24,7 @@ export interface NotificationsProviderProps {
 
 export const NotificationsProvider: React.FC<NotificationsProviderProps> =
   withNotificationsProvider(({ children }) => {
-    const { enqueueSnackbar } = useSnackbar();
+    const { closeSnackbar, enqueueSnackbar } = useSnackbar();
     const appModel = useAppModel();
     const errorMessage = useSelector(appModel.selectError);
     const successMessage = useSelector(appModel.selectSuccessMessage);
@@ -31,6 +33,16 @@ export const NotificationsProvider: React.FC<NotificationsProviderProps> =
     const printMessage: NotificationsContextType['printMessage'] = (message, options) =>
       enqueueSnackbar(message, {
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        action: (snackbarKey) => (
+          <IconButton
+            aria-label="Close notification"
+            color="inherit"
+            size="small"
+            onClick={() => closeSnackbar(snackbarKey)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        ),
         ...options
       });
 
