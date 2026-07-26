@@ -13,6 +13,7 @@
   "revealInFinder": "Reveal in Finder",
   "runScript": "Run Script",
   "downloadScript": "Download Script",
+  "downloadingScript": "Downloading script...",
   "configureScript": "Configure Script",
   "changeWineEngine": "Change Wine Engine",
   "cancel": "Cancel",

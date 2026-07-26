@@ -13,9 +13,11 @@ import { WineAppConfig } from '@interfaces/WineAppConfig';
 import { ConfigOrigin } from '@constants/enums';
 import { WineAppArgs } from '@interfaces/WineAppArgs';
 import { useI18n } from 'reactjs-shared-ui/i18next';
+import { useLoadingDialog } from '@hooks/useLoadingDialog';
 
 export const useWineAppConfigModel = () => {
   const { t } = useI18n();
+  const loadingDialog = useLoadingDialog();
   const [state, setState] = useState({
     loaders: { listingAll: false }
   });
@@ -24,10 +26,14 @@ export const useWineAppConfigModel = () => {
   const dispatch = useDispatch<Dispatch<WineAppConfigAction>>();
 
   const downloadScript = async (appName: string) => {
+    loadingDialog.open({ message: t('downloadingScript') });
+
     try {
       await wineAppConfigApiClient.downloadScript(appName);
     } catch (error) {
       appModel.dispatchError(error);
+    } finally {
+      loadingDialog.close();
     }
   };
 
