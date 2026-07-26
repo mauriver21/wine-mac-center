@@ -1,14 +1,12 @@
-import { readDirectory } from '@utils/readDirectory';
-import { createEnv } from '@utils/createEnv';
+import { axiosWineEngines } from '@utils/axiosWineEngines';
 
 export const createWineEngineApiClient = () => {
-  const env = createEnv();
-
   const list = async () => {
-    const engines = await readDirectory(env.get().WINE_ENGINES_PATH);
-    return engines
-      .filter((item) => item !== '.DS_Store')
-      .map((item) => item.replace(/.tar.7z$/, ''));
+    const { data } = await axiosWineEngines.get<{
+      engines: Array<{ version: string }>;
+    }>('/index.json');
+
+    return data.engines.map((engine) => engine.version);
   };
 
   return {
