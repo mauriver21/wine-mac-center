@@ -44,29 +44,37 @@ export const createSteamCli = (options: {
 
     const steamCmdArgs = [
       ...(guardCode ? [`+set_steam_guard_code ${guardCode}`] : []),
-      `+login ${userName || 'NO_VALUE'} ${password || 'NO_VALUE'}`,
+      `+login ${userName || 'NO_VALUE'}${password ? ` ${password}` : ''}`,
       '+quit'
     ];
 
     const steamCmd = steamCmdArgs.join(' ');
 
     return new Promise((resolve, reject) => {
+      let loginFailed = false;
+      let loginOutput = '';
+
       runSteamCmd(steamCmd, {
         onStdOut: (data) => {
-          if (data.match(/ERROR/i)) {
-            reject('Login Failed');
-          }
+          loginOutput += data;
+          loginFailed ||= /ERROR|Invalid Password|Login Failure/i.test(data);
           args?.onStdOut?.(data);
         },
         onStdErr: (data) => {
-          if (data.match(/ERROR/i)) {
-            reject('Login Failed');
-          }
+          loginOutput += data;
+          loginFailed ||= /ERROR|Invalid Password|Login Failure/i.test(data);
           args?.onStdErr?.(data);
         },
         onExit: (data) => {
-          resolve(undefined);
           args?.onExit?.(data);
+          const loginSucceeded = /Waiting for user info[\s\S]*OK/i.test(loginOutput);
+          const steamGuardRequired = /Steam Guard/i.test(loginOutput);
+
+          if (loginFailed || (!loginSucceeded && !steamGuardRequired)) {
+            reject(new Error('Login Failed'));
+          } else {
+            resolve(undefined);
+          }
         }
       });
     });

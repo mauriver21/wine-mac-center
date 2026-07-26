@@ -226,6 +226,8 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
       const engineTmpFolder = `${WINE_ENV.WINE_TMP_PATH}/${version.trim() || 'NO_VERSION'}`;
       let fileNamePart = '';
 
+      if (urls.length === 0) throw new Error(`No download URLs found for Wine engine ${version}`);
+
       let totalPercent = 0;
 
       for (const url of urls) {
@@ -236,7 +238,7 @@ export const createWineApp = async (appName: string, config?: WineAppConfig) => 
         fileNamePart = fileNamePart || fileName;
 
         if (!(await dirExists(engineTmpFolder))) {
-          createDirectory(engineTmpFolder, { recursive: true });
+          await createDirectory(engineTmpFolder, { recursive: true });
         }
 
         let currentPercent: number | undefined = undefined;

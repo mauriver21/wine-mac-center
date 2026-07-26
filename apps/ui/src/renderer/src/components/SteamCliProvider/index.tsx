@@ -48,7 +48,13 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
     ref.current.steamCredentials = steamCredentials;
   };
 
-  const login = async (credentials: SteamCredentials, spawnArgs?: SpawnProcessArgs) => {
+  const login = async (
+    credentials: SteamCredentials,
+    spawnArgs?: SpawnProcessArgs,
+    options?: { keepLoadingDialogOpen?: boolean; silent?: boolean }
+  ) => {
+    let loggedIn = false;
+
     try {
       dialog.open({ message: t('loggingIntoSteam') });
 
@@ -58,28 +64,12 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
       }
 
       dialog.updateMessage(t('loggingIntoSteam'));
-      let steamGuardCanceled = false;
+      let steamGuardRequired = false;
 
       await steamCli.login(credentials, {
         onStdOut: (data) => {
           if (data.includes('Steam Guard')) {
-            dialog.close();
-            askSteamGuardCode({
-              onSuccess: ({ guardCode }) => {
-                steamCli.login(
-                  { ...credentials, guardCode },
-                  {
-                    ...spawnArgs,
-                    onExit: (data) => {
-                      spawnArgs?.onExit?.(data);
-                    }
-                  }
-                );
-              },
-              onCanceled: () => {
-                steamGuardCanceled = true;
-              }
-            });
+            steamGuardRequired = true;
           }
           spawnArgs?.onStdOut?.(data);
         },
@@ -91,12 +81,26 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
         }
       });
 
-      if (steamGuardCanceled) throw new Error(t('steamGuardCancelled'));
-      appModel.dispatchSuccessMessage(t('loginSuccess'));
+      if (steamGuardRequired) {
+        dialog.close();
+        const guardCode = await new Promise<string>((resolve, reject) => {
+          askSteamGuardCode({
+            onSuccess: ({ guardCode }) => resolve(guardCode),
+            onCanceled: () => reject(new Error(t('steamGuardCancelled')))
+          });
+        });
+
+        dialog.open({ message: t('loggingIntoSteam') });
+        await steamCli.login({ ...credentials, guardCode }, spawnArgs);
+      }
+
+      loggedIn = true;
+      if (!options?.silent) appModel.dispatchSuccessMessage(t('loginSuccess'));
     } catch (error) {
-      appModel.dispatchError(error);
+      if (!options?.silent) appModel.dispatchError(error);
+      throw error;
     } finally {
-      dialog.close();
+      if (!options?.keepLoadingDialogOpen || !loggedIn) dialog.close();
     }
   };
 
@@ -121,8 +125,21 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
   const loginCredentialsAreValid = async (spawnArgs?: SpawnProcessArgs) => {
     const credentials = getState();
     if (credentials === undefined) return false;
-    await login(credentials, spawnArgs);
-    return true;
+
+    try {
+      await login({ ...credentials, password: '' }, spawnArgs, {
+        keepLoadingDialogOpen: true,
+        silent: true
+      });
+      return true;
+    } catch {
+      try {
+        await login(credentials, spawnArgs, { keepLoadingDialogOpen: true });
+        return true;
+      } catch {
+        return false;
+      }
+    }
   };
 
   const askSteamCredentials = async (spawnArgs?: SpawnProcessArgs) => {
@@ -135,7 +152,7 @@ export const SteamCliProvider: React.FC<SteamCliProviderProps> = ({ children }) 
 
     if (steamCredentials && steamCredentials !== EventName.Cancelled) {
       setState({ ...getState(), ...steamCredentials });
-      await login(steamCredentials, spawnArgs);
+      await login(steamCredentials, spawnArgs, { keepLoadingDialogOpen: true });
       setOpenSteamCredentialsDialog(false);
     } else {
       setOpenSteamCredentialsDialog(false);

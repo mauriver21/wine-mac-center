@@ -14,6 +14,13 @@ PARTS_DIR=$(dirname "$ARCHIVE")
 PID=$!
 echo "[PIDS_START]$PID[PIDS_END]"
 wait "$PID"
+STATUS=$?
+
+if [ "$STATUS" -ne 0 ]; then
+    echo "Error: Failed to extract Wine engine archive: $ARCHIVE"
+    exit "$STATUS"
+fi
+
 rm -rf "$PARTS_DIR" &
 PID=$!
 echo "[PIDS_START]$PID[PIDS_END]"

@@ -34,6 +34,8 @@ export const useWineEngineApiClient = () => {
     const engineTmpFolder = `${WINE_TMP_PATH}/${version.trim() || 'NO_VERSION'}`;
     let fileNamePart = '';
 
+    if (urls.length === 0) throw new Error(`No download URLs found for Wine engine ${version}`);
+
     for (const url of urls) {
       const fileName = url.split('/').pop();
 
@@ -41,7 +43,7 @@ export const useWineEngineApiClient = () => {
       fileNamePart = fileNamePart || fileName;
 
       if (!(await dirExists(engineTmpFolder))) {
-        createDirectory(engineTmpFolder);
+        await createDirectory(engineTmpFolder);
       }
 
       const file = await downloadFile(url);
