@@ -1,7 +1,9 @@
+#!/bin/bash
+
 runSteamCMD() {
     local STEAM_CLI_PATH="$CLIENTS_PATH/steam"
     local STEAMCMD_BIN="$STEAM_CLI_PATH/steamcmd.sh"
-    local INSTALL_SCRIPT="$STEAM_CLI_PATH/installSteamCMD.sh"
+    local INSTALL_SCRIPT="$SCRIPTS_PATH/installSteamCMD.sh"
 
     # Ensure base directory exists
     mkdir -p "$STEAM_CLI_PATH"
