@@ -1,6 +1,7 @@
 import { SpawnProcessArgs } from '@interfaces/SpawnProcessArgs';
 import { SteamCredentials } from '@interfaces/SteamCredentials';
 import { createEnv } from '@utils/createEnv';
+import { execCommand as baseExecCommand } from '@utils/execCommand';
 import { fileExists } from '@utils/fileExists';
 import { spawnProcess as baseSpawnProcess } from '@utils/spawnProcess';
 
@@ -24,8 +25,10 @@ export const createSteamCli = (options: {
     return spawnProcess(`"${SCRIPTS_PATH}/installSteamCMD.sh"`, args);
   };
 
-  const runSteamCmd = (cmd: string, args?: SpawnProcessArgs) => {
-    return spawnProcess(`"${SCRIPTS_PATH}/runSteamCMD.sh" ${cmd}`, args);
+  const runSteamCmd = async (cmd: string, args?: SpawnProcessArgs) => {
+    const result = await spawnProcess(`"${SCRIPTS_PATH}/runSteamCMD.sh" ${cmd}`, args);
+    await baseExecCommand(s(`"${SCRIPTS_PATH}/closeExtraFinderInstances.sh"`));
+    return result;
   };
 
   const isInstalled = () => {
