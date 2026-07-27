@@ -7,7 +7,7 @@ import { spawnProcess } from '@utils/spawnProcess';
 
 export const useWineApiClient = () => {
   const env = useEnv();
-  const wineRepositoryPath = () => `${env.get().WINE_ASSETS_PATH}/wine`;
+  const wineRepositoryPath = () => env.get().WINE_REPOSITORY_PATH;
 
   const isWineRepositoryDownloaded = () => dirExists(`${wineRepositoryPath()}/.git`);
 

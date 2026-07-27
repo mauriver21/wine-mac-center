@@ -7,6 +7,7 @@ export const DRIVE_C_PATH = `$WINE_APP_PREFIX_PATH/${RELATIVE_DRIVE_C_PATH}`;
 export const WINE_PATH = '/Wine';
 export const WINE_APPS_PATH = '/Wine/apps';
 export const WINE_ASSETS_PATH = '/Wine/assets';
+export const WINE_REPOSITORY_PATH = `${WINE_ASSETS_PATH}/wine`;
 export const WINE_ENGINES_PATH = '/Wine/engines';
 export const WINE_SCRIPTS_PATH = '/Wine/assets/scripts';
 export const EXECUTABLES_PATHS: { [key: string]: string } = {

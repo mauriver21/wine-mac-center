@@ -14,6 +14,7 @@ export const ENV = {
   WINE_SCRIPTS_PATH: '',
   WINE_DOWNLOADS_PATH: '',
   WINE_ASSETS_PATH: '',
+  WINE_REPOSITORY_PATH: '',
   WINE_ENGINES_PATH: '',
   WINE_TMP_PATH: ''
 };

@@ -64,7 +64,7 @@ export const DirsWatcherProvider: React.FC<DirsWatcherProviderProps> = ({ childr
 
     if (
       watchDirEvent?.from?.match(WINE_ASSETS_PATH) &&
-      watchDirEvent.path === `${env.get().WINE_ASSETS_PATH}/wine` &&
+      watchDirEvent.path === env.get().WINE_REPOSITORY_PATH &&
       (watchDirEvent.type === 'addDir' || watchDirEvent.type === 'unlinkDir')
     ) {
       wineModel.checkWineRepository();

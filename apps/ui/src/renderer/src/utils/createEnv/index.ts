@@ -1,5 +1,6 @@
 import { FileName } from '@constants/enums';
 import { ENV } from '@constants/envs';
+import { WINE_REPOSITORY_PATH } from '@constants/paths';
 import { buildEnvExports } from '@utils/buildEnvExports';
 import { createDirectory } from '@utils/createDirectory';
 import { dirExists } from '@utils/dirExists';
@@ -29,6 +30,7 @@ export const createEnv = (args?: {
     ENV.APP_NAME = resolveApplicationName();
     ENV.WINE_APPS_PATH = `${ENV.WINE_PATH}/apps`;
     ENV.WINE_ASSETS_PATH = `${ENV.WINE_PATH}/assets`;
+    ENV.WINE_REPOSITORY_PATH = `${ENV.WINE_ASSETS_PATH}/wine`;
     ENV.WINE_DOWNLOADS_PATH = `${ENV.WINE_ASSETS_PATH}/downloads`;
     ENV.WINE_ENGINES_PATH = `${ENV.WINE_PATH}/engines`;
     ENV.WINE_SCRIPTS_PATH = `${ENV.WINE_ASSETS_PATH}/scripts`;
