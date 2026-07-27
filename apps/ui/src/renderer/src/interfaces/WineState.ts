@@ -6,6 +6,7 @@ export type WineState = {
   wineCheckoutOutput: string;
   selectedWineArch: string;
   wineBuildOutput: string;
+  wineArchs: string[];
   loaders: {
     downloadingRepository: boolean;
     checkingRepository: boolean;
@@ -15,5 +16,6 @@ export type WineState = {
     checkingOutTag: boolean;
     buildingWine: boolean;
     abortingWineBuild: boolean;
+    listingArchs: boolean;
   };
 };

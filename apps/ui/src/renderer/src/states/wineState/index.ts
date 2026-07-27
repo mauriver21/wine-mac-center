@@ -10,6 +10,7 @@ import {
   setRepositoryDownloaded,
   setSelectedWineTag,
   setSelectedWineArch,
+  setWineArchs,
   setWineBuildOutput,
   setWineCheckoutOutput,
   setWineTags
@@ -23,6 +24,7 @@ const initialState: WineState = {
   wineCheckoutOutput: '',
   selectedWineArch: 'wow64',
   wineBuildOutput: '',
+  wineArchs: [],
   loaders: {
     checkingRepository: false,
     downloadingRepository: false,
@@ -31,7 +33,8 @@ const initialState: WineState = {
     listingTags: false,
     checkingOutTag: false,
     buildingWine: false,
-    abortingWineBuild: false
+    abortingWineBuild: false,
+    listingArchs: false
   }
 };
 
@@ -51,6 +54,8 @@ export const wineState = (state: WineState = initialState, action: WineAction): 
       return setSelectedWineArch(action.selectedWineArch, state);
     case WineActionType.SET_BUILD_OUTPUT:
       return setWineBuildOutput(action.wineBuildOutput, state);
+    case WineActionType.SET_ARCHS:
+      return setWineArchs(action.wineArchs, state);
     case WineActionType.LOADING:
       return loaders(action.loaders, state);
     default:

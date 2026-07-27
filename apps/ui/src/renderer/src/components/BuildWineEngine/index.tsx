@@ -14,10 +14,14 @@ export const BuildWineEngine: React.FC = () => {
   const selectedWineTag = useSelector(wineModel.selectSelectedWineTag);
   const selectedWineArch = useSelector(wineModel.selectSelectedWineArch);
   const wineBuildOutput = useSelector(wineModel.selectWineBuildOutput);
-  const { abortingWineBuild, buildingWine, checkingOutTag, installingDependencies } = useSelector(
-    wineModel.selectWineLoaders
-  );
-  const conflictingOperation = checkingOutTag || installingDependencies;
+  const {
+    abortingWineBuild,
+    buildingWine,
+    checkingOutTag,
+    installingDependencies,
+    listingArchs
+  } = useSelector(wineModel.selectWineLoaders);
+  const conflictingOperation = checkingOutTag || installingDependencies || listingArchs;
 
   return (
     <CardItem icon={CpuChipIcon} label={t('buildWineEngine')}>

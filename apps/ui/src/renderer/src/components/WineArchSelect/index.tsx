@@ -1,4 +1,5 @@
 import { useWineModel } from '@models/useWineModel';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Select, SelectProps } from 'reactjs-shared-ui/forms';
 import { useI18n } from 'reactjs-shared-ui/i18next';
@@ -9,6 +10,14 @@ export const WineArchSelect: React.FC<WineArchSelectProps> = ({ onChange, ...pro
   const { t } = useI18n();
   const wineModel = useWineModel();
   const selectedWineArch = useSelector(wineModel.selectSelectedWineArch);
+  const selectedWineTag = useSelector(wineModel.selectSelectedWineTag);
+  const wineArchs = useSelector(wineModel.selectWineArchs);
+  const { checkingOutTag, listingArchs } = useSelector(wineModel.selectWineLoaders);
+
+  useEffect(() => {
+    if (selectedWineTag && !checkingOutTag) wineModel.getWineArchs();
+  }, [checkingOutTag, selectedWineTag]);
+
   const changeArch: SelectProps['onChange'] = (event, child) => {
     wineModel.selectWineArch(event.target.value as string);
     onChange?.(event, child);
@@ -18,13 +27,14 @@ export const WineArchSelect: React.FC<WineArchSelectProps> = ({ onChange, ...pro
     <Select
       label={t('wineArchitecture')}
       {...props}
+      disabled={listingArchs || props.disabled}
       value={props.value ?? selectedWineArch}
       onChange={changeArch}
       options={[
         { label: t('wine32on64Architecture'), value: 'wine32on64' },
         { label: t('wow64Architecture'), value: 'wow64' },
         { label: t('wine64Architecture'), value: 'wine64' }
-      ]}
+      ].filter((option) => wineArchs.includes(option.value))}
     />
   );
 };

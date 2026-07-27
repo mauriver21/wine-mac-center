@@ -27,6 +27,17 @@ export const useWineApiClient = () => {
       .filter(Boolean);
   };
 
+  const getWineArchs = async () => {
+    if (!(await isWineRepositoryDownloaded())) return [];
+
+    const { stdOut } = await execCommand(`"${WINE_REPOSITORY_PATH()}/configure" --help`);
+    return [
+      ...(stdOut.includes('--enable-win32on64') ? ['wine32on64'] : []),
+      ...(stdOut.includes('--enable-archs') ? ['wow64'] : []),
+      ...(stdOut.includes('--enable-win64') ? ['wine64'] : [])
+    ];
+  };
+
   const checkoutWineTag = async (tag: string, onOutput: OutputHandler) => {
     const tags = await getWineTags();
     if (!tags.includes(tag) || !/^[a-zA-Z0-9._/-]+$/.test(tag)) {
@@ -160,6 +171,7 @@ export const useWineApiClient = () => {
     checkoutWineTag,
     downloadWineRepository,
     getWineTags,
+    getWineArchs,
     installWineBuildDependencies,
     isWineRepositoryDownloaded,
   };

@@ -35,6 +35,11 @@ export const setWineBuildOutput = (
   state: WineState
 ): WineState => ({ ...state, wineBuildOutput });
 
+export const setWineArchs = (wineArchs: WineState['wineArchs'], state: WineState): WineState => ({
+  ...state,
+  wineArchs
+});
+
 export const loaders = (
   nextLoaders: Partial<WineState['loaders']>,
   state: WineState

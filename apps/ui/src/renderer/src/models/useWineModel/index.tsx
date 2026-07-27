@@ -4,6 +4,7 @@ import { WineAction } from '@interfaces/WineAction';
 import { WineState } from '@interfaces/WineState';
 import { useWineApiClient } from '@api-clients/useWineApiClient';
 import { useAppModel } from '@models/useAppModel';
+import { store } from '@store';
 import { Dispatch, createSelector } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
@@ -109,6 +110,23 @@ export const useWineModel = () => {
     }
   };
 
+  const getWineArchs = async () => {
+    try {
+      dispatchLoader({ listingArchs: true });
+      const wineArchs = await wineApiClient.getWineArchs();
+      dispatch({ type: ActionType.SET_ARCHS, wineArchs });
+
+      const selectedWineArch = selectSelectedWineArch(store.getState());
+      if (!wineArchs.includes(selectedWineArch)) {
+        selectWineArch(wineArchs[0] || 'wine64');
+      }
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      dispatchLoader({ listingArchs: false });
+    }
+  };
+
   const checkoutWineTag = async (tag: string) => {
     let output = `$ git checkout --detach refs/tags/${tag}\n`;
     const updateOutput = (data: string) => {
@@ -202,6 +220,7 @@ export const useWineModel = () => {
     [selectWineState],
     (state) => state.wineBuildOutput
   );
+  const selectWineArchs = createSelector([selectWineState], (state) => state.wineArchs);
 
   return {
     abortWineBuildDependenciesInstallation,
@@ -211,6 +230,7 @@ export const useWineModel = () => {
     checkoutWineTag,
     downloadWineRepository,
     getWineTags,
+    getWineArchs,
     installWineBuildDependencies,
     selectDependenciesInstallationOutput,
     selectRepositoryDownloaded,
@@ -221,6 +241,7 @@ export const useWineModel = () => {
     selectWineTags,
     selectWineCheckoutOutput,
     selectWineBuildOutput,
+    selectWineArchs,
     selectWineArch,
   };
 };
