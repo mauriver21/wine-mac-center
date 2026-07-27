@@ -8,6 +8,7 @@ export const Code: React.FC<CodeProps> = (props) => {
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const shouldScrollToEndRef = useRef(true);
+  const hasOverflowRef = useRef(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -19,19 +20,29 @@ export const Code: React.FC<CodeProps> = (props) => {
 
       animationFrame = requestAnimationFrame(() => {
         animationFrame = undefined;
-        if (!shouldScrollToEndRef.current) return;
-
         const scrollContainer = container.querySelector('pre');
-        if (scrollContainer) scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        if (!scrollContainer) return;
+
+        const hasOverflow = scrollContainer.scrollHeight > scrollContainer.clientHeight;
+        const overflowAppeared = hasOverflow && !hasOverflowRef.current;
+        hasOverflowRef.current = hasOverflow;
+
+        if (shouldScrollToEndRef.current || overflowAppeared) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+          shouldScrollToEndRef.current = true;
+        }
       });
     };
     const observer = new MutationObserver(scrollToEnd);
+    const resizeObserver = new ResizeObserver(scrollToEnd);
 
     observer.observe(container, { childList: true, characterData: true, subtree: true });
+    resizeObserver.observe(container);
     scrollToEnd();
 
     return () => {
       observer.disconnect();
+      resizeObserver.disconnect();
       if (animationFrame !== undefined) cancelAnimationFrame(animationFrame);
     };
   }, []);
