@@ -1,5 +1,4 @@
 import { ExitCode } from '@constants/enums';
-import { WINE_REPOSITORY_URL } from '@constants/urls';
 import { useEnv } from '@hooks/useEnv';
 import { dirExists } from '@utils/dirExists';
 import { spawnLog } from '@utils/spawnLog';
@@ -14,20 +13,18 @@ export const useWineApiClient = () => {
   const downloadWineRepository = async () => {
     if (await isWineRepositoryDownloaded()) return;
 
+    const { SCRIPTS_PATH } = env.get();
     return new Promise<void>((resolve, reject) => {
-      void spawnProcess(
-        `git clone --progress "${WINE_REPOSITORY_URL}" "${wineRepositoryPath()}"`,
-        {
-          ...spawnLog,
-          onExit: (exitCode) => {
-            if (exitCode === ExitCode.SuccessfulExecution) {
-              resolve();
-            } else {
-              reject(new Error(`Wine repository download failed with exit code ${exitCode}`));
-            }
+      void spawnProcess(`${env.getEnvExports()} "${SCRIPTS_PATH}/downloadWineRepository.sh"`, {
+        ...spawnLog,
+        onExit: (exitCode) => {
+          if (exitCode === ExitCode.SuccessfulExecution) {
+            resolve();
+          } else {
+            reject(new Error(`Wine repository download failed. Exit code: ${exitCode}`));
           }
         }
-      ).catch(reject);
+      }).catch(reject);
     });
   };
 

@@ -1,6 +1,5 @@
 import { FileName } from '@constants/enums';
 import { ENV } from '@constants/envs';
-import { WINE_REPOSITORY_PATH } from '@constants/paths';
 import { buildEnvExports } from '@utils/buildEnvExports';
 import { createDirectory } from '@utils/createDirectory';
 import { dirExists } from '@utils/dirExists';

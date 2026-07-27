@@ -10,7 +10,6 @@ export const WINE_APPS_SETUP_EXECUTABLES_URL = `${WINE_APPS_DOWNLOADABLES_URL}/s
 export const PAYPAL_DOMAIN_URL = 'https://www.paypal.com';
 export const PAYPAL_SUBSCRIBE_URL = `${PAYPAL_DOMAIN_URL}/webapps/billing/plans/subscribe`;
 export const WINE_HQ_URL = 'https://www.winehq.org';
-export const WINE_REPOSITORY_URL = 'https://gitlab.winehq.org/wine/wine.git';
 export const WINETRICKS_URL = 'https://github.com/winetricks/winetricks';
 export const INTERNET_ARCHIVE_URL = 'https://archive.org';
 export const GCENX_REPOSITORY_URL = 'https://github.com/Gcenx/macOS_Wine_builds';
