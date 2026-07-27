@@ -38,6 +38,7 @@ export * from './PipelineScript';
 export * from './PipelineStep';
 export * from './RegistryEditorModule';
 export * from './SearchField';
+export * from './SelectWineVersion';
 export * from './Sidebar';
 export * from './SidebarItem';
 export * from './SortDirectionSelect';

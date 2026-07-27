@@ -231,5 +231,6 @@
   "installingDependencies": "Installing dependencies...",
   "abortInstallation": "Abort installation",
   "abortingInstallation": "Aborting installation...",
-  "wineVersion": "Wine version"
+  "wineVersion": "Wine version",
+  "selectWineVersion": "Select Wine version"
 }

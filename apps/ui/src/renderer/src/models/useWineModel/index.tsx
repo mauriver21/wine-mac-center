@@ -109,6 +109,25 @@ export const useWineModel = () => {
     }
   };
 
+  const checkoutWineTag = async (tag: string) => {
+    let output = `$ git checkout --detach refs/tags/${tag}\n`;
+    const updateOutput = (data: string) => {
+      output += data;
+      dispatch({ type: ActionType.SET_CHECKOUT_OUTPUT, wineCheckoutOutput: output });
+    };
+
+    try {
+      dispatchLoader({ checkingOutTag: true });
+      dispatch({ type: ActionType.SET_CHECKOUT_OUTPUT, wineCheckoutOutput: output });
+      await wineApiClient.checkoutWineTag(tag, updateOutput);
+      dispatch({ type: ActionType.SET_SELECTED_TAG, selectedWineTag: tag });
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      dispatchLoader({ checkingOutTag: false });
+    }
+  };
+
   const selectWineState = (state: RootState) => state.wineState;
   const selectRepositoryDownloaded = createSelector(
     [selectWineState],
@@ -120,17 +139,28 @@ export const useWineModel = () => {
     (state) => state.dependenciesInstallationOutput
   );
   const selectWineTags = createSelector([selectWineState], (state) => state.wineTags);
+  const selectSelectedWineTag = createSelector(
+    [selectWineState],
+    (state) => state.selectedWineTag
+  );
+  const selectWineCheckoutOutput = createSelector(
+    [selectWineState],
+    (state) => state.wineCheckoutOutput
+  );
 
   return {
     abortWineBuildDependenciesInstallation,
     checkWineRepository,
+    checkoutWineTag,
     downloadWineRepository,
     getWineTags,
     installWineBuildDependencies,
     selectDependenciesInstallationOutput,
     selectRepositoryDownloaded,
+    selectSelectedWineTag,
     selectWineLoaders,
     selectWineState,
     selectWineTags,
+    selectWineCheckoutOutput,
   };
 };

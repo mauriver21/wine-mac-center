@@ -26,6 +26,30 @@ export const useWineApiClient = () => {
       .filter(Boolean);
   };
 
+  const checkoutWineTag = async (tag: string, onOutput: OutputHandler) => {
+    const tags = await getWineTags();
+    if (!tags.includes(tag) || !/^[a-zA-Z0-9._/-]+$/.test(tag)) {
+      throw new Error(`Invalid Wine repository tag: ${tag}`);
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      void spawnProcess(
+        `git -C "${WINE_REPOSITORY_PATH()}" checkout --detach "refs/tags/${tag}"`,
+        {
+          onStdOut: onOutput,
+          onStdErr: onOutput,
+          onExit: (exitCode) => {
+            if (exitCode === ExitCode.SuccessfulExecution) {
+              resolve();
+            } else {
+              reject(new Error(`Wine tag checkout failed. Exit code: ${exitCode}`));
+            }
+          }
+        }
+      ).catch(reject);
+    });
+  };
+
   const downloadWineRepository = async () => {
     if (await isWineRepositoryDownloaded()) return;
 
@@ -88,6 +112,7 @@ export const useWineApiClient = () => {
 
   return {
     abortWineBuildDependenciesInstallation,
+    checkoutWineTag,
     downloadWineRepository,
     getWineTags,
     installWineBuildDependencies,

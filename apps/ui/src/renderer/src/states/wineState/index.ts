@@ -8,6 +8,8 @@ import {
   loaders,
   setDependenciesInstallationOutput,
   setRepositoryDownloaded,
+  setSelectedWineTag,
+  setWineCheckoutOutput,
   setWineTags
 } from './handlers';
 
@@ -15,12 +17,15 @@ const initialState: WineState = {
   repositoryDownloaded: false,
   dependenciesInstallationOutput: '',
   wineTags: [],
+  selectedWineTag: '',
+  wineCheckoutOutput: '',
   loaders: {
     checkingRepository: false,
     downloadingRepository: false,
     installingDependencies: false,
     abortingDependenciesInstallation: false,
-    listingTags: false
+    listingTags: false,
+    checkingOutTag: false
   }
 };
 
@@ -32,6 +37,10 @@ export const wineState = (state: WineState = initialState, action: WineAction): 
       return setDependenciesInstallationOutput(action.dependenciesInstallationOutput, state);
     case WineActionType.SET_TAGS:
       return setWineTags(action.wineTags, state);
+    case WineActionType.SET_SELECTED_TAG:
+      return setSelectedWineTag(action.selectedWineTag, state);
+    case WineActionType.SET_CHECKOUT_OUTPUT:
+      return setWineCheckoutOutput(action.wineCheckoutOutput, state);
     case WineActionType.LOADING:
       return loaders(action.loaders, state);
     default:
@@ -42,7 +51,7 @@ export const wineState = (state: WineState = initialState, action: WineAction): 
 const persistConfig: PersistConfig<WineState> = {
   key: 'wineState',
   storage,
-  whitelist: ['dependenciesInstallationOutput']
+  whitelist: ['dependenciesInstallationOutput', 'selectedWineTag', 'wineCheckoutOutput']
 };
 
 export const persistedWineState = persistReducer<WineState>(

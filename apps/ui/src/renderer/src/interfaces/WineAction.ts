@@ -11,4 +11,6 @@ export type WineAction =
       dependenciesInstallationOutput: WineState['dependenciesInstallationOutput'];
     }
   | { type: ActionType.SET_TAGS; wineTags: WineState['wineTags'] }
+  | { type: ActionType.SET_SELECTED_TAG; selectedWineTag: WineState['selectedWineTag'] }
+  | { type: ActionType.SET_CHECKOUT_OUTPUT; wineCheckoutOutput: WineState['wineCheckoutOutput'] }
   | { type: ActionType.LOADING; loaders: Partial<WineState['loaders']> };

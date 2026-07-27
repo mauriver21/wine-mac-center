@@ -1,6 +1,9 @@
 import { DownloadWineRepository } from '@components/DownloadWineRepository';
 import { InstallWineBuildDependencies } from '@components/InstallWineBuildDependencies';
+import { SelectWineVersion } from '@components/SelectWineVersion';
 import { ConfigLayout } from '@layouts/ConfigLayout';
+import { useWineModel } from '@models/useWineModel';
+import { useSelector } from 'react-redux';
 import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
@@ -8,7 +11,13 @@ const ITEM_STYLE = { px: '20px !important' };
 
 export const BuildWine: React.FC = () => {
   const { t } = useI18n();
-  const modules = [<DownloadWineRepository />, <InstallWineBuildDependencies />];
+  const wineModel = useWineModel();
+  const repositoryDownloaded = useSelector(wineModel.selectRepositoryDownloaded);
+  const modules = [
+    <DownloadWineRepository />,
+    <InstallWineBuildDependencies />,
+    ...(repositoryDownloaded ? [<SelectWineVersion />] : [])
+  ];
 
   return (
     <ConfigLayout

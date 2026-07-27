@@ -231,5 +231,6 @@
   "installingDependencies": "Instalando dependencias...",
   "abortInstallation": "Abortar instalación",
   "abortingInstallation": "Abortando instalación...",
-  "wineVersion": "Versión de Wine"
+  "wineVersion": "Versión de Wine",
+  "selectWineVersion": "Seleccionar versión de Wine"
 }

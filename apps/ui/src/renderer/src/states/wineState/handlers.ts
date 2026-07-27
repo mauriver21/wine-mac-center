@@ -15,6 +15,16 @@ export const setWineTags = (wineTags: WineState['wineTags'], state: WineState): 
   wineTags
 });
 
+export const setSelectedWineTag = (
+  selectedWineTag: WineState['selectedWineTag'],
+  state: WineState
+): WineState => ({ ...state, selectedWineTag });
+
+export const setWineCheckoutOutput = (
+  wineCheckoutOutput: WineState['wineCheckoutOutput'],
+  state: WineState
+): WineState => ({ ...state, wineCheckoutOutput });
+
 export const loaders = (
   nextLoaders: Partial<WineState['loaders']>,
   state: WineState
