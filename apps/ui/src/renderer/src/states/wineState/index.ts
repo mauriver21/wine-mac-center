@@ -9,7 +9,8 @@ const initialState: WineState = {
   loaders: {
     checkingRepository: false,
     downloadingRepository: false,
-    installingDependencies: false
+    installingDependencies: false,
+    abortingDependenciesInstallation: false
   }
 };
 

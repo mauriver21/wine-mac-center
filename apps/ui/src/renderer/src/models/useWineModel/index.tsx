@@ -87,6 +87,17 @@ export const useWineModel = () => {
     }
   };
 
+  const abortWineBuildDependenciesInstallation = async () => {
+    try {
+      dispatchLoader({ abortingDependenciesInstallation: true });
+      await wineApiClient.abortWineBuildDependenciesInstallation();
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      dispatchLoader({ abortingDependenciesInstallation: false });
+    }
+  };
+
   const selectWineState = (state: RootState) => state.wineState;
   const selectRepositoryDownloaded = createSelector(
     [selectWineState],
@@ -99,6 +110,7 @@ export const useWineModel = () => {
   );
 
   return {
+    abortWineBuildDependenciesInstallation,
     checkWineRepository,
     downloadWineRepository,
     installWineBuildDependencies,

@@ -3,6 +3,20 @@
 set -o pipefail
 
 REQUIRED_FORMULAS=(bison mingw-w64 pkgconf freetype gnutls molten-vk sdl2)
+PID_FILE="${TMPDIR:-/tmp}/wine-mac-center-install-wine-build-dependencies.pid"
+
+cleanup() {
+    if [[ -f "$PID_FILE" ]] && [[ "$(cat "$PID_FILE")" == "$$" ]]; then
+        rm -f "$PID_FILE"
+    fi
+}
+
+echo "$$" > "$PID_FILE" || {
+    echo "Error: could not create the dependency installer PID file."
+    exit 1
+}
+trap cleanup EXIT
+trap 'exit 130' INT TERM
 
 find_brew() {
     if command -v brew >/dev/null 2>&1; then

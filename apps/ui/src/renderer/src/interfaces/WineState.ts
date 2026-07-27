@@ -5,5 +5,6 @@ export type WineState = {
     downloadingRepository: boolean;
     checkingRepository: boolean;
     installingDependencies: boolean;
+    abortingDependenciesInstallation: boolean;
   };
 };

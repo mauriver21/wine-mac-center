@@ -228,5 +228,7 @@
   "wineBuildDependencies": "Install Wine build dependencies",
   "wineBuildDependenciesDescription": "Verify and install the tools and libraries required to build Wine on macOS.",
   "installDependencies": "Install dependencies",
-  "installingDependencies": "Installing dependencies..."
+  "installingDependencies": "Installing dependencies...",
+  "abortInstallation": "Abort installation",
+  "abortingInstallation": "Aborting installation..."
 }

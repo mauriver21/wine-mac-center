@@ -228,5 +228,7 @@
   "wineBuildDependencies": "Instalar dependencias para compilar Wine",
   "wineBuildDependenciesDescription": "Verifica e instala las herramientas y librerías necesarias para compilar Wine en macOS.",
   "installDependencies": "Instalar dependencias",
-  "installingDependencies": "Instalando dependencias..."
+  "installingDependencies": "Instalando dependencias...",
+  "abortInstallation": "Abortar instalación",
+  "abortingInstallation": "Abortando instalación..."
 }
