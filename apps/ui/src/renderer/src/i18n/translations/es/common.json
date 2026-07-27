@@ -221,5 +221,8 @@
   "addNextStep": "Agregar Siguiente Paso",
   "operation": "Operación",
   "SET_EXECUTABLES": "Configurar ejecutables",
-  "buildWine": "Compilar Wine"
+  "buildWine": "Compilar Wine",
+  "downloadWineRepository": "Descargar repositorio de Wine",
+  "wineRepository": "Repositorio de Wine",
+  "wineRepositoryDownloaded": "Repositorio de Wine descargado"
 }

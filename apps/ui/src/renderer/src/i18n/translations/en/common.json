@@ -221,5 +221,8 @@
   "addNextStep": "Add Next Step",
   "operation": "Operation",
   "SET_EXECUTABLES": "Set executables",
-  "buildWine": "Build Wine"
+  "buildWine": "Build Wine",
+  "downloadWineRepository": "Download Wine repository",
+  "wineRepository": "Wine repository",
+  "wineRepositoryDownloaded": "Wine repository downloaded"
 }

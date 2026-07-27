@@ -9,6 +9,11 @@ export enum WineEngineActionType {
   LOADING = 'WINE_ENGINE:LOADING'
 }
 
+export enum WineActionType {
+  SET_REPOSITORY_DOWNLOADED = 'WINE:SET_REPOSITORY_DOWNLOADED',
+  LOADING = 'WINE:LOADING'
+}
+
 export enum WineAppConfigActionType {
   LIST_ALL = 'WINE_APP_CONFIG:LIST_ALL',
   PATCH = 'WINE_APP_CONFIG:PATCH',

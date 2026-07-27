@@ -20,6 +20,7 @@ export * from './ControlPanelModule';
 export * from './CreateApp';
 export * from './DirsWatcherProvider';
 export * from './DownloadEngineButton';
+export * from './DownloadWineRepository';
 export * from './DownloadWineEngines';
 export * from './EnvPaths';
 export * from './EnvProvider';
