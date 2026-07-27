@@ -7,6 +7,7 @@ import { spawnLog } from '@utils/spawnLog';
 import { spawnProcess } from '@utils/spawnProcess';
 
 let dependenciesInstallationAbortRequested = false;
+let wineBuildAbortRequested = false;
 
 export const useWineApiClient = () => {
   const env = useEnv();
@@ -57,6 +58,7 @@ export const useWineApiClient = () => {
     }
 
     const { SCRIPTS_PATH } = env.get();
+    wineBuildAbortRequested = false;
     return new Promise<void>((resolve, reject) => {
       void spawnProcess(
         `${env.getEnvExports()} "${SCRIPTS_PATH}/buildWineEngine.sh" "${tag}" "${arch}"`,
@@ -64,7 +66,11 @@ export const useWineApiClient = () => {
           onStdOut: onOutput,
           onStdErr: onOutput,
           onExit: (exitCode) => {
-            if (exitCode === ExitCode.SuccessfulExecution) {
+            if (wineBuildAbortRequested) {
+              wineBuildAbortRequested = false;
+              onOutput('\nWine build aborted.\n');
+              resolve();
+            } else if (exitCode === ExitCode.SuccessfulExecution) {
               resolve();
             } else {
               reject(new Error(`Wine build failed. Exit code: ${exitCode}`));
@@ -73,6 +79,18 @@ export const useWineApiClient = () => {
         }
       ).catch(reject);
     });
+  };
+
+  const abortWineBuild = async () => {
+    const { SCRIPTS_PATH } = env.get();
+    wineBuildAbortRequested = true;
+
+    try {
+      await execCommand(`${env.getEnvExports()} "${SCRIPTS_PATH}/abortWineBuild.sh"`);
+    } catch (error) {
+      wineBuildAbortRequested = false;
+      throw error;
+    }
   };
 
   const downloadWineRepository = async () => {
@@ -136,6 +154,7 @@ export const useWineApiClient = () => {
   };
 
   return {
+    abortWineBuild,
     abortWineBuildDependenciesInstallation,
     buildWine,
     checkoutWineTag,

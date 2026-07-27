@@ -4,6 +4,20 @@ set -o pipefail
 
 WINE_TAG="$1"
 WINE_ARCH="$2"
+PID_FILE="${TMPDIR:-/tmp}/wine-mac-center-build-wine.pid"
+
+cleanup() {
+    if [[ -f "$PID_FILE" ]] && [[ "$(cat "$PID_FILE")" == "$$" ]]; then
+        rm -f "$PID_FILE"
+    fi
+}
+
+echo "$$" > "$PID_FILE" || {
+    echo "Error: could not create the Wine build PID file."
+    exit 1
+}
+trap cleanup EXIT
+trap 'exit 130' INT TERM
 
 fail() {
     echo "Error: $1"
@@ -111,8 +125,17 @@ build_wine32on64() {
 package_engine() {
     mkdir -p "$WINE_ENGINES_PATH" || return 1
     echo "$WINE_TAG $WINE_ARCH" > "$BUNDLE_PATH/version" || return 1
-    tar -cJf "$ENGINE_ARCHIVE_PATH" -C "$STAGING_PATH" wswine.bundle || return 1
+    tar -cJf "$TEMP_ENGINE_ARCHIVE_PATH" -C "$STAGING_PATH" wswine.bundle || return 1
+    mv "$TEMP_ENGINE_ARCHIVE_PATH" "$ENGINE_ARCHIVE_PATH" || return 1
     echo "Wine engine created: $ENGINE_ARCHIVE_PATH"
+}
+
+play_completion_sound() {
+    local SOUND_PATH="/System/Library/Sounds/Glass.aiff"
+
+    if command -v afplay >/dev/null 2>&1 && [[ -f "$SOUND_PATH" ]]; then
+        afplay "$SOUND_PATH" >/dev/null 2>&1 &
+    fi
 }
 
 validate_environment
@@ -123,6 +146,7 @@ BUILD_ROOT="$WINE_TMP_PATH/wine-build/$ENGINE_NAME"
 STAGING_PATH="$BUILD_ROOT/staging"
 BUNDLE_PATH="$STAGING_PATH/wswine.bundle"
 ENGINE_ARCHIVE_PATH="$WINE_ENGINES_PATH/$ENGINE_NAME.tar.7z"
+TEMP_ENGINE_ARCHIVE_PATH="$BUILD_ROOT/$ENGINE_NAME.tar.7z"
 
 case "$BUILD_ROOT" in
     "$WINE_TMP_PATH"/wine-build/*) ;;
@@ -142,3 +166,4 @@ case "$WINE_ARCH" in
 esac
 
 package_engine || fail "Could not package the Wine engine."
+play_completion_sound

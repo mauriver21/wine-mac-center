@@ -14,5 +14,6 @@ export type WineState = {
     listingTags: boolean;
     checkingOutTag: boolean;
     buildingWine: boolean;
+    abortingWineBuild: boolean;
   };
 };

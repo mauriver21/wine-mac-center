@@ -238,5 +238,7 @@
   "wow64Architecture": "WoW64 — 32-bit and 64-bit",
   "wine64Architecture": "Wine64 — 64-bit only",
   "buildWineEngine": "Build Wine engine",
-  "buildingWine": "Building Wine..."
+  "buildingWine": "Building Wine...",
+  "abortWineBuild": "Abort Wine build",
+  "abortingWineBuild": "Aborting Wine build..."
 }

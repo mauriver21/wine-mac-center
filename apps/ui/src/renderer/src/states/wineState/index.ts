@@ -30,7 +30,8 @@ const initialState: WineState = {
     abortingDependenciesInstallation: false,
     listingTags: false,
     checkingOutTag: false,
-    buildingWine: false
+    buildingWine: false,
+    abortingWineBuild: false
   }
 };
 

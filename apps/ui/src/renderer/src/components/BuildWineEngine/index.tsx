@@ -2,7 +2,7 @@ import { Button } from '@components/Button';
 import { CardItem } from '@components/CardItem';
 import { Code } from '@components/Code';
 import { WineArchSelect } from '@components/WineArchSelect';
-import { CpuChipIcon } from '@heroicons/react/24/solid';
+import { CpuChipIcon, StopIcon } from '@heroicons/react/24/solid';
 import { useWineModel } from '@models/useWineModel';
 import { useSelector } from 'react-redux';
 import { CircularProgress, Stack } from 'reactjs-shared-ui';
@@ -14,24 +14,33 @@ export const BuildWineEngine: React.FC = () => {
   const selectedWineTag = useSelector(wineModel.selectSelectedWineTag);
   const selectedWineArch = useSelector(wineModel.selectSelectedWineArch);
   const wineBuildOutput = useSelector(wineModel.selectWineBuildOutput);
-  const { buildingWine, checkingOutTag, installingDependencies } = useSelector(
+  const { abortingWineBuild, buildingWine, checkingOutTag, installingDependencies } = useSelector(
     wineModel.selectWineLoaders
   );
-  const buildUnavailable = buildingWine || checkingOutTag || installingDependencies;
+  const conflictingOperation = checkingOutTag || installingDependencies;
 
   return (
     <CardItem icon={CpuChipIcon} label={t('buildWineEngine')}>
       <Stack spacing={2}>
-        <WineArchSelect disabled={buildUnavailable} />
+        <WineArchSelect disabled={buildingWine || conflictingOperation} />
         <Stack direction="row" justifyContent="flex-end">
-          <Button
-            disabled={buildUnavailable || !selectedWineTag}
-            onClick={() => wineModel.buildWine(selectedWineTag, selectedWineArch)}
+          <Button            
+            disabled={abortingWineBuild || conflictingOperation || !selectedWineTag}
+            onClick={() =>
+              buildingWine
+                ? wineModel.abortWineBuild()
+                : wineModel.buildWine(selectedWineTag, selectedWineArch)
+            }
           >
-            {buildingWine ? (
+            {abortingWineBuild ? (
               <Stack direction="row" alignItems="center" spacing={1}>
                 <CircularProgress style={{ width: 18, height: 18 }} />
-                <span>{t('buildingWine')}</span>
+                <span>{t('abortingWineBuild')}</span>
+              </Stack>
+            ) : buildingWine ? (
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <StopIcon width={18} />
+                <span>{t('abortWineBuild')}</span>
               </Stack>
             ) : (
               t('buildWineEngine')
