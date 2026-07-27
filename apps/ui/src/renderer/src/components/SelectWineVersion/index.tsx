@@ -15,7 +15,7 @@ export const SelectWineVersion: React.FC = () => {
   const selectedWineTag = useSelector(wineModel.selectSelectedWineTag);
   const wineTags = useSelector(wineModel.selectWineTags);
   const wineCheckoutOutput = useSelector(wineModel.selectWineCheckoutOutput);
-  const { checkingOutTag } = useSelector(wineModel.selectWineLoaders);
+  const { buildingWine, checkingOutTag } = useSelector(wineModel.selectWineLoaders);
 
   useEffect(() => {
     if (initializedRef.current || wineTags.length === 0) return;
@@ -34,7 +34,7 @@ export const SelectWineVersion: React.FC = () => {
     <CardItem icon={TagIcon} label={t('selectWineVersion')}>
       <Stack spacing={2}>
         <WineTagSelect
-          disabled={checkingOutTag}
+          disabled={buildingWine || checkingOutTag}
           value={selectedWineTag || null}
           onChange={selectTag}
         />
