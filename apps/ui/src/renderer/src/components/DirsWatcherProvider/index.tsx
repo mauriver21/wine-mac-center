@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { WINE_APPS_PATH, WINE_ENGINES_PATH, WINE_SCRIPTS_PATH } from '@constants/paths';
+import {
+  WINE_APPS_PATH,
+  WINE_ASSETS_PATH,
+  WINE_ENGINES_PATH,
+  WINE_SCRIPTS_PATH
+} from '@constants/paths';
 import { DirsWatcherContext } from '@contexts/DirsWatcherContext';
 import { WatchDirEvent } from '@interfaces/WatchDirEvent';
 import { useWineEngineModel } from '@models/useWineEngineModel';
@@ -7,6 +12,7 @@ import { useWineInstalledAppModel } from '@models/useWineInstalledAppModel';
 import { createDirsWatcher } from '@utils/createDirsWatcher';
 import { useEnv } from '@hooks/useEnv';
 import { useWineAppConfigModel } from '@models/useWineAppConfigModel';
+import { useWineModel } from '@models/useWineModel';
 
 export interface DirsWatcherProviderProps {
   children?: React.ReactNode;
@@ -17,6 +23,7 @@ export const DirsWatcherProvider: React.FC<DirsWatcherProviderProps> = ({ childr
   const env = useEnv();
   const wineInstalledAppModel = useWineInstalledAppModel();
   const wineEngineModel = useWineEngineModel();
+  const wineModel = useWineModel();
   const wineAppConfigModel = useWineAppConfigModel();
   const [watchDirEvent, setWatchDirEvent] = useState<WatchDirEvent>();
   const dirsWatcher = useMemo(() => {
@@ -25,7 +32,12 @@ export const DirsWatcherProvider: React.FC<DirsWatcherProviderProps> = ({ childr
 
   useEffect(() => {
     const ENV = env.get();
-    dirsWatcher.watchDirs([ENV.WINE_APPS_PATH, ENV.WINE_ENGINES_PATH, ENV.WINE_SCRIPTS_PATH]);
+    dirsWatcher.watchDirs([
+      ENV.WINE_APPS_PATH,
+      ENV.WINE_ASSETS_PATH,
+      ENV.WINE_ENGINES_PATH,
+      ENV.WINE_SCRIPTS_PATH
+    ]);
     dirsWatcher.subscribeToWatchDirs((event) => {
       setWatchDirEvent(event);
       store.current.listenerId = event.listenerId;
@@ -48,6 +60,14 @@ export const DirsWatcherProvider: React.FC<DirsWatcherProviderProps> = ({ childr
 
     if (watchDirEvent?.from?.match(WINE_SCRIPTS_PATH)) {
       wineAppConfigModel.listAll();
+    }
+
+    if (
+      watchDirEvent?.from?.match(WINE_ASSETS_PATH) &&
+      watchDirEvent.path === `${env.get().WINE_ASSETS_PATH}/wine` &&
+      (watchDirEvent.type === 'addDir' || watchDirEvent.type === 'unlinkDir')
+    ) {
+      wineModel.checkWineRepository();
     }
 
     setWatchDirEvent(undefined);
