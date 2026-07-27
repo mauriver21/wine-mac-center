@@ -1,5 +1,5 @@
 import { useWineModel } from '@models/useWineModel';
-import { Autocomplete, AutocompleteProps, TextField } from '@mui/material';
+import { Autocomplete, AutocompleteProps, CircularProgress, TextField } from '@mui/material';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18n } from 'reactjs-shared-ui/i18next';
@@ -18,7 +18,8 @@ export const WineTagSelect: React.FC<WineTagSelectProps> = ({ label, disabled, .
   const wineModel = useWineModel();
   const repositoryDownloaded = useSelector(wineModel.selectRepositoryDownloaded);
   const wineTags = useSelector(wineModel.selectWineTags);
-  const { listingTags } = useSelector(wineModel.selectWineLoaders);
+  const { checkingOutTag, listingTags } = useSelector(wineModel.selectWineLoaders);
+  const loading = listingTags || checkingOutTag;
 
   useEffect(() => {
     if (repositoryDownloaded) wineModel.getWineTags();
@@ -28,7 +29,7 @@ export const WineTagSelect: React.FC<WineTagSelectProps> = ({ label, disabled, .
     <Autocomplete
       {...props}
       autoHighlight
-      disabled={listingTags || disabled}
+      disabled={loading || disabled}
       ListboxProps={{
         sx: {
           maxHeight: OPTION_HEIGHT * VISIBLE_OPTIONS + LIST_VERTICAL_PADDING,
@@ -38,9 +39,23 @@ export const WineTagSelect: React.FC<WineTagSelectProps> = ({ label, disabled, .
           }
         }
       }}
-      loading={listingTags}
+      loading={loading}
       options={wineTags}
-      renderInput={(params) => <TextField {...params} label={label || t('wineVersion')} />}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={label || t('wineVersion')}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {params.InputProps.endAdornment}
+              </>
+            )
+          }}
+        />
+      )}
       slotProps={{
         popper: {
           placement: 'bottom-start',
