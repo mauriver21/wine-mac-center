@@ -1,6 +1,9 @@
 import { WineActionType } from '@constants/actionTypes';
 import { WineAction } from '@interfaces/WineAction';
 import { WineState } from '@interfaces/WineState';
+import { Reducer } from '@reduxjs/toolkit';
+import { persistReducer, PersistConfig } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { loaders, setDependenciesInstallationOutput, setRepositoryDownloaded } from './handlers';
 
 const initialState: WineState = {
@@ -26,3 +29,14 @@ export const wineState = (state: WineState = initialState, action: WineAction): 
       return state;
   }
 };
+
+const persistConfig: PersistConfig<WineState> = {
+  key: 'wineState',
+  storage,
+  whitelist: ['dependenciesInstallationOutput']
+};
+
+export const persistedWineState = persistReducer<WineState>(
+  persistConfig,
+  wineState as Reducer<WineState>
+);

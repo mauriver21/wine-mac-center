@@ -5,7 +5,7 @@ import { wineAppConfigState } from '@states/wineAppConfigState';
 import { wineAppPipelineState } from '@states/wineAppPipelineState';
 import { winetrickState } from '@states/winetrickState';
 import { wineEngineState } from '@states/wineEngineState';
-import { wineState } from '@states/wineState';
+import { persistedWineState } from '@states/wineState';
 
 export const rootState = combineStates({
   appState,
@@ -14,5 +14,5 @@ export const rootState = combineStates({
   wineInstalledAppState,
   winetrickState,
   wineEngineState,
-  wineState
+  wineState: persistedWineState
 });

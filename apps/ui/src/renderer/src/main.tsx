@@ -9,8 +9,9 @@ import { I18nProvider } from 'reactjs-shared-ui/i18next';
 import { LoadingDialogProvider } from '@components/LoadingDialogProvider';
 import { NotificationsProvider } from '@components/NotificationsProvider';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { SteamCliProvider } from '@components/SteamCliProvider';
-import { store } from '@store';
+import { persistor, store } from '@store';
 import { ThemeProvider } from 'reactjs-shared-ui';
 import { WineAppPipelineProvider } from '@components/WineAppPipelineProvider';
 import * as resources from '@i18n/translations';
@@ -21,25 +22,27 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <I18nProvider language="es" resources={resources}>
     <ThemeProvider>
       <Provider store={store}>
-        <NotificationsProvider>
-          <EnvProvider>
-            <LoadingDialogProvider>
-              <VersionDialogProvider>
-                <SteamCliProvider>
-                  <DirsWatcherProvider>
-                    <WineAppPipelineProvider>
-                      <BrowserRouter>
-                        <AppSetup>
-                          <App />
-                        </AppSetup>
-                      </BrowserRouter>
-                    </WineAppPipelineProvider>
-                  </DirsWatcherProvider>
-                </SteamCliProvider>
-              </VersionDialogProvider>
-            </LoadingDialogProvider>
-          </EnvProvider>
-        </NotificationsProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <NotificationsProvider>
+            <EnvProvider>
+              <LoadingDialogProvider>
+                <VersionDialogProvider>
+                  <SteamCliProvider>
+                    <DirsWatcherProvider>
+                      <WineAppPipelineProvider>
+                        <BrowserRouter>
+                          <AppSetup>
+                            <App />
+                          </AppSetup>
+                        </BrowserRouter>
+                      </WineAppPipelineProvider>
+                    </DirsWatcherProvider>
+                  </SteamCliProvider>
+                </VersionDialogProvider>
+              </LoadingDialogProvider>
+            </EnvProvider>
+          </NotificationsProvider>
+        </PersistGate>
       </Provider>
     </ThemeProvider>
   </I18nProvider>

@@ -45,7 +45,7 @@ importers:
         version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       reactjs-shared-ui:
         specifier: ^0.0.3
-        version: 0.0.3(c8be30ab0821f91ff2c15923f9f2add0)
+        version: 0.0.3(eac24297e3eef18678a156868f7da94b)
       ui:
         specifier: workspace:^
         version: link:../ui
@@ -176,6 +176,9 @@ importers:
       reactjs-shared-ui:
         specifier: ^0.0.3
         version: 0.0.3(eac24297e3eef18678a156868f7da94b)
+      redux-persist:
+        specifier: ^6.0.0
+        version: 6.0.0(react@18.3.1)(redux@5.0.1)
       uuid:
         specifier: ^11.1.0
         version: 11.1.1
@@ -4021,6 +4024,15 @@ packages:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
 
+  redux-persist@6.0.0:
+    resolution: {integrity: sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==}
+    peerDependencies:
+      react: '>=16'
+      redux: '>4.0.0'
+    peerDependenciesMeta:
+      react:
+        optional: true
+
   redux-thunk@3.1.0:
     resolution: {integrity: sha512-NW2r5T6ksUKXCabzhL9z+h206HQw/NJkcLm1GPImRQ8IzfXwRGqjVhKJGauHirT0DAuyy6hjdnMZaRoAcy0Klw==}
     peerDependencies:
@@ -5497,15 +5509,6 @@ snapshots:
   '@heroicons/react@2.2.0(react@19.2.8)':
     dependencies:
       react: 19.2.8
-
-  '@hookform/resolvers@5.4.3(@standard-schema/spec@1.1.0)(ajv@6.15.0)(react-hook-form@7.83.0(react@18.3.1))(yup@1.7.1)':
-    dependencies:
-      '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.83.0(react@18.3.1)
-    optionalDependencies:
-      '@standard-schema/spec': 1.1.0
-      ajv: 6.15.0
-      yup: 1.7.1
 
   '@hookform/resolvers@5.4.3(@standard-schema/spec@1.1.0)(ajv@8.20.0)(react-hook-form@7.83.0(react@18.3.1))(yup@1.7.1)':
     dependencies:
@@ -9008,22 +9011,6 @@ snapshots:
 
   react@19.2.8: {}
 
-  reactjs-shared-ui@0.0.3(c8be30ab0821f91ff2c15923f9f2add0):
-    dependencies:
-      '@emotion/react': 11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1))(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1)
-      '@hookform/resolvers': 5.4.3(@standard-schema/spec@1.1.0)(ajv@6.15.0)(react-hook-form@7.83.0(react@18.3.1))(yup@1.7.1)
-      '@mui/icons-material': 5.18.0(@mui/material@5.18.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1))(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.31)(react@18.3.1)
-      '@mui/material': 5.18.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1))(@types/react@18.3.31)(react@18.3.1)(supports-color@8.1.1))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@types/react-syntax-highlighter': 15.5.13
-      i18next: 23.16.8
-      notistack: 3.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-i18next: 15.7.4(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.3)
-      react-router-dom: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react-syntax-highlighter: 15.6.6(react@18.3.1)
-      uuid: 9.0.1
-      yup: 1.7.1
-
   reactjs-shared-ui@0.0.3(d41cd742b6421ed8f373b3302a0e05e2):
     dependencies:
       '@emotion/react': 11.14.0(@types/react@19.2.17)(react@19.2.8)(supports-color@8.1.1)
@@ -9096,6 +9083,12 @@ snapshots:
       picomatch: 2.3.2
 
   readdirp@4.1.2: {}
+
+  redux-persist@6.0.0(react@18.3.1)(redux@5.0.1):
+    dependencies:
+      redux: 5.0.1
+    optionalDependencies:
+      react: 18.3.1
 
   redux-thunk@3.1.0(redux@5.0.1):
     dependencies:
