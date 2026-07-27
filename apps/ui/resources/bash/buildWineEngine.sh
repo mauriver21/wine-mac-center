@@ -19,8 +19,17 @@ echo "$$" > "$PID_FILE" || {
 trap cleanup EXIT
 trap 'exit 130' INT TERM
 
+play_sound() {
+    local SOUND_PATH="$1"
+
+    if command -v afplay >/dev/null 2>&1 && [[ -f "$SOUND_PATH" ]]; then
+        afplay "$SOUND_PATH" >/dev/null 2>&1 &
+    fi
+}
+
 fail() {
     echo "Error: $1"
+    play_sound "/System/Library/Sounds/Basso.aiff"
     exit 1
 }
 
@@ -131,11 +140,7 @@ package_engine() {
 }
 
 play_completion_sound() {
-    local SOUND_PATH="/System/Library/Sounds/Glass.aiff"
-
-    if command -v afplay >/dev/null 2>&1 && [[ -f "$SOUND_PATH" ]]; then
-        afplay "$SOUND_PATH" >/dev/null 2>&1 &
-    fi
+    play_sound "/System/Library/Sounds/Glass.aiff"
 }
 
 validate_environment
@@ -157,8 +162,13 @@ rm -rf "$BUILD_ROOT"
 mkdir -p "$BUNDLE_PATH" || fail "Could not create the Wine engine staging directory."
 git -C "$WINE_REPOSITORY_PATH" checkout --detach "refs/tags/$WINE_TAG" ||
     fail "Could not check out $WINE_TAG."
+CHECKED_OUT_TAG=$(git -C "$WINE_REPOSITORY_PATH" describe --tags --exact-match 2>/dev/null) ||
+    fail "The Wine repository is not checked out at an exact tag."
+[[ "$CHECKED_OUT_TAG" == "$WINE_TAG" ]] ||
+    fail "Expected $WINE_TAG but the repository is at $CHECKED_OUT_TAG."
 
-echo "Building $WINE_TAG for $WINE_ARCH..."
+echo "Verified Wine source tag: $CHECKED_OUT_TAG"
+echo "Building $WINE_TAG for $WINE_ARCH with $($CC --version | head -n 1)..."
 case "$WINE_ARCH" in
     wine32on64) build_wine32on64 || fail "Wine32on64 build failed." ;;
     wow64) build_wow64 || fail "WoW64 build failed." ;;

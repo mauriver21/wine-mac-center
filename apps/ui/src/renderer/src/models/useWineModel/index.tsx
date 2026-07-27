@@ -151,7 +151,7 @@ export const useWineModel = () => {
   };
 
   const buildWine = async (tag: string, arch: string) => {
-    let output = `$ buildWineEngine.sh ${tag} ${arch}\n`;
+    let output = `$ verifyWineBuildDependencies.sh ${tag} ${arch}\n`;
     let pendingOutput = '';
     let outputTimeout: ReturnType<typeof setTimeout> | undefined;
 
@@ -172,6 +172,14 @@ export const useWineModel = () => {
     try {
       dispatchLoader({ buildingWine: true });
       dispatch({ type: ActionType.SET_BUILD_OUTPUT, wineBuildOutput: output });
+      const dependenciesVerified = await wineApiClient.verifyWineBuildDependencies(
+        tag,
+        arch,
+        handleOutput
+      );
+      if (!dependenciesVerified) return;
+
+      handleOutput(`\nDependency verification passed.\n$ buildWineEngine.sh ${tag} ${arch}\n`);
       await wineApiClient.buildWine(tag, arch, handleOutput);
     } catch (error) {
       appModel.dispatchError(error);

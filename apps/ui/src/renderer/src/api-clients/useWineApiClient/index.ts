@@ -92,6 +92,36 @@ export const useWineApiClient = () => {
     });
   };
 
+  const verifyWineBuildDependencies = (
+    tag: string,
+    arch: string,
+    onOutput: OutputHandler
+  ) => {
+    const { SCRIPTS_PATH } = env.get();
+    wineBuildAbortRequested = false;
+
+    return new Promise<boolean>((resolve, reject) => {
+      void spawnProcess(
+        `${env.getEnvExports()} "${SCRIPTS_PATH}/verifyWineBuildDependencies.sh" "${tag}" "${arch}"`,
+        {
+          onStdOut: onOutput,
+          onStdErr: onOutput,
+          onExit: (exitCode) => {
+            if (wineBuildAbortRequested) {
+              wineBuildAbortRequested = false;
+              onOutput('\nWine build verification aborted.\n');
+              resolve(false);
+            } else if (exitCode === ExitCode.SuccessfulExecution) {
+              resolve(true);
+            } else {
+              reject(new Error(`Wine build dependency verification failed. Exit code: ${exitCode}`));
+            }
+          }
+        }
+      ).catch(reject);
+    });
+  };
+
   const abortWineBuild = async () => {
     const { SCRIPTS_PATH } = env.get();
     wineBuildAbortRequested = true;
@@ -174,5 +204,6 @@ export const useWineApiClient = () => {
     getWineArchs,
     installWineBuildDependencies,
     isWineRepositoryDownloaded,
+    verifyWineBuildDependencies,
   };
 };
