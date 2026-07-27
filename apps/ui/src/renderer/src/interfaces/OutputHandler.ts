@@ -1,0 +1,1 @@
+export type OutputHandler = (output: string) => void;

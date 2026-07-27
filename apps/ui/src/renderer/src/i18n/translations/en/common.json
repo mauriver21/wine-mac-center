@@ -224,5 +224,9 @@
   "buildWine": "Build Wine",
   "downloadWineRepository": "Download Wine repository",
   "wineRepository": "Wine repository",
-  "wineRepositoryDownloaded": "Wine repository downloaded"
+  "wineRepositoryDownloaded": "Wine repository downloaded",
+  "wineBuildDependencies": "Install Wine build dependencies",
+  "wineBuildDependenciesDescription": "Verify and install the tools and libraries required to build Wine on macOS.",
+  "installDependencies": "Install dependencies",
+  "installingDependencies": "Installing dependencies..."
 }

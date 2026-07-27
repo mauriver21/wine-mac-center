@@ -1,5 +1,6 @@
 import { ExitCode } from '@constants/enums';
 import { useEnv } from '@hooks/useEnv';
+import { OutputHandler } from '@interfaces/OutputHandler';
 import { dirExists } from '@utils/dirExists';
 import { spawnLog } from '@utils/spawnLog';
 import { spawnProcess } from '@utils/spawnProcess';
@@ -28,5 +29,33 @@ export const useWineApiClient = () => {
     });
   };
 
-  return { downloadWineRepository, isWineRepositoryDownloaded, wineRepositoryPath };
+  const installWineBuildDependencies = (onOutput: OutputHandler) => {
+    const { SCRIPTS_PATH } = env.get();
+
+    return new Promise<void>((resolve, reject) => {
+      void spawnProcess(
+        `${env.getEnvExports()} "${SCRIPTS_PATH}/installWineBuildDependencies.sh"`,
+        {
+          onStdOut: onOutput,
+          onStdErr: onOutput,
+          onExit: (exitCode) => {
+            if (exitCode === ExitCode.SuccessfulExecution) {
+              resolve();
+            } else {
+              reject(
+                new Error(`Wine build dependencies installation failed. Exit code: ${exitCode}`)
+              );
+            }
+          }
+        }
+      ).catch(reject);
+    });
+  };
+
+  return {
+    downloadWineRepository,
+    installWineBuildDependencies,
+    isWineRepositoryDownloaded,
+    wineRepositoryPath
+  };
 };

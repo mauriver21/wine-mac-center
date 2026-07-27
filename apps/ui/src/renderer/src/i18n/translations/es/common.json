@@ -224,5 +224,9 @@
   "buildWine": "Compilar Wine",
   "downloadWineRepository": "Descargar repositorio de Wine",
   "wineRepository": "Repositorio de Wine",
-  "wineRepositoryDownloaded": "Repositorio de Wine descargado"
+  "wineRepositoryDownloaded": "Repositorio de Wine descargado",
+  "wineBuildDependencies": "Instalar dependencias para compilar Wine",
+  "wineBuildDependenciesDescription": "Verifica e instala las herramientas y librerías necesarias para compilar Wine en macOS.",
+  "installDependencies": "Instalar dependencias",
+  "installingDependencies": "Instalando dependencias..."
 }

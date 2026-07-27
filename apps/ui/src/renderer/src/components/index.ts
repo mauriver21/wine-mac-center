@@ -30,6 +30,7 @@ export * from './FilePathInput';
 export * from './IconButton';
 export * from './IconInput';
 export * from './InstalledAppCard';
+export * from './InstallWineBuildDependencies';
 export * from './LauncherImgInput';
 export * from './NotFoundApp';
 export * from './NotificationsProvider';

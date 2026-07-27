@@ -1,4 +1,5 @@
 import { DownloadWineRepository } from '@components/DownloadWineRepository';
+import { InstallWineBuildDependencies } from '@components/InstallWineBuildDependencies';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { Box, ContentsClass, Stack } from 'reactjs-shared-ui';
 import { useI18n } from 'reactjs-shared-ui/i18next';
@@ -7,7 +8,7 @@ const ITEM_STYLE = { px: '20px !important' };
 
 export const BuildWine: React.FC = () => {
   const { t } = useI18n();
-  const modules = [<DownloadWineRepository />];
+  const modules = [<DownloadWineRepository />, <InstallWineBuildDependencies />];
 
   return (
     <ConfigLayout

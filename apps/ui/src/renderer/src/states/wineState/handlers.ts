@@ -5,6 +5,11 @@ export const setRepositoryDownloaded = (
   state: WineState
 ): WineState => ({ ...state, repositoryDownloaded });
 
+export const setDependenciesInstallationOutput = (
+  dependenciesInstallationOutput: WineState['dependenciesInstallationOutput'],
+  state: WineState
+): WineState => ({ ...state, dependenciesInstallationOutput });
+
 export const loaders = (
   nextLoaders: Partial<WineState['loaders']>,
   state: WineState

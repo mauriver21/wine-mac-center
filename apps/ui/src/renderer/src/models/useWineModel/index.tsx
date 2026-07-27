@@ -7,6 +7,8 @@ import { useAppModel } from '@models/useAppModel';
 import { Dispatch, createSelector } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
+const OUTPUT_DISPATCH_INTERVAL_MS = 100;
+
 export const useWineModel = () => {
   const appModel = useAppModel();
   const wineApiClient = useWineApiClient();
@@ -42,16 +44,65 @@ export const useWineModel = () => {
     }
   };
 
+  const dispatchDependenciesInstallationOutput = (
+    dependenciesInstallationOutput: WineState['dependenciesInstallationOutput']
+  ) => {
+    dispatch({
+      type: ActionType.SET_DEPENDENCIES_INSTALLATION_OUTPUT,
+      dependenciesInstallationOutput
+    });
+  };
+
+  const installWineBuildDependencies = async () => {
+    let output = '';
+    let pendingOutput = '';
+    let outputTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    const flushOutput = () => {
+      if (!pendingOutput) return;
+
+      output += pendingOutput;
+      pendingOutput = '';
+      outputTimeout = undefined;
+      dispatchDependenciesInstallationOutput(output);
+    };
+
+    const handleOutput = (data: string) => {
+      pendingOutput += data;
+      if (outputTimeout === undefined) {
+        outputTimeout = setTimeout(flushOutput, OUTPUT_DISPATCH_INTERVAL_MS);
+      }
+    };
+
+    try {
+      dispatchLoader({ installingDependencies: true });
+      dispatchDependenciesInstallationOutput('');
+      await wineApiClient.installWineBuildDependencies(handleOutput);
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      if (outputTimeout !== undefined) clearTimeout(outputTimeout);
+      flushOutput();
+      dispatchLoader({ installingDependencies: false });
+    }
+  };
+
   const selectWineState = (state: RootState) => state.wineState;
   const selectRepositoryDownloaded = createSelector(
     [selectWineState],
     (state) => state.repositoryDownloaded
   );
   const selectWineLoaders = createSelector([selectWineState], (state) => state.loaders);
+  const selectDependenciesInstallationOutput = createSelector(
+    [selectWineState],
+    (state) => state.dependenciesInstallationOutput
+  );
 
   return {
     checkWineRepository,
     downloadWineRepository,
+    installWineBuildDependencies,
+    selectDependenciesInstallationOutput,
     selectRepositoryDownloaded,
     selectWineLoaders,
     selectWineState,
