@@ -128,6 +128,42 @@ export const useWineModel = () => {
     }
   };
 
+  const selectWineArch = (selectedWineArch: string) => {
+    dispatch({ type: ActionType.SET_SELECTED_ARCH, selectedWineArch });
+  };
+
+  const buildWine = async (tag: string, arch: string) => {
+    let output = `$ buildWineEngine.sh ${tag} ${arch}\n`;
+    let pendingOutput = '';
+    let outputTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    const flushOutput = () => {
+      if (!pendingOutput) return;
+      output += pendingOutput;
+      pendingOutput = '';
+      outputTimeout = undefined;
+      dispatch({ type: ActionType.SET_BUILD_OUTPUT, wineBuildOutput: output });
+    };
+    const handleOutput = (data: string) => {
+      pendingOutput += data;
+      if (outputTimeout === undefined) {
+        outputTimeout = setTimeout(flushOutput, OUTPUT_DISPATCH_INTERVAL_MS);
+      }
+    };
+
+    try {
+      dispatchLoader({ buildingWine: true });
+      dispatch({ type: ActionType.SET_BUILD_OUTPUT, wineBuildOutput: output });
+      await wineApiClient.buildWine(tag, arch, handleOutput);
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      if (outputTimeout !== undefined) clearTimeout(outputTimeout);
+      flushOutput();
+      dispatchLoader({ buildingWine: false });
+    }
+  };
+
   const selectWineState = (state: RootState) => state.wineState;
   const selectRepositoryDownloaded = createSelector(
     [selectWineState],
@@ -147,9 +183,18 @@ export const useWineModel = () => {
     [selectWineState],
     (state) => state.wineCheckoutOutput
   );
+  const selectSelectedWineArch = createSelector(
+    [selectWineState],
+    (state) => state.selectedWineArch
+  );
+  const selectWineBuildOutput = createSelector(
+    [selectWineState],
+    (state) => state.wineBuildOutput
+  );
 
   return {
     abortWineBuildDependenciesInstallation,
+    buildWine,
     checkWineRepository,
     checkoutWineTag,
     downloadWineRepository,
@@ -158,9 +203,12 @@ export const useWineModel = () => {
     selectDependenciesInstallationOutput,
     selectRepositoryDownloaded,
     selectSelectedWineTag,
+    selectSelectedWineArch,
     selectWineLoaders,
     selectWineState,
     selectWineTags,
     selectWineCheckoutOutput,
+    selectWineBuildOutput,
+    selectWineArch,
   };
 };

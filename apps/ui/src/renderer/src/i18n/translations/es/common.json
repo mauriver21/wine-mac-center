@@ -232,5 +232,11 @@
   "abortInstallation": "Abortar instalación",
   "abortingInstallation": "Abortando instalación...",
   "wineVersion": "Versión de Wine",
-  "selectWineVersion": "Seleccionar versión de Wine"
+  "selectWineVersion": "Seleccionar versión de Wine",
+  "wineArchitecture": "Arquitectura de Wine",
+  "wine32on64Architecture": "Wine32on64 — WineCX 32 bits sobre 64 bits",
+  "wow64Architecture": "WoW64 — 32 y 64 bits",
+  "wine64Architecture": "Wine64 — solo 64 bits",
+  "buildWineEngine": "Compilar motor de Wine",
+  "buildingWine": "Compilando Wine..."
 }

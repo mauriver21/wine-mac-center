@@ -50,6 +50,31 @@ export const useWineApiClient = () => {
     });
   };
 
+  const buildWine = (tag: string, arch: string, onOutput: OutputHandler) => {
+    if (!/^[a-zA-Z0-9._/-]+$/.test(tag)) throw new Error(`Invalid Wine tag: ${tag}`);
+    if (!['wine32on64', 'wow64', 'wine64'].includes(arch)) {
+      throw new Error(`Invalid Wine architecture: ${arch}`);
+    }
+
+    const { SCRIPTS_PATH } = env.get();
+    return new Promise<void>((resolve, reject) => {
+      void spawnProcess(
+        `${env.getEnvExports()} "${SCRIPTS_PATH}/buildWineEngine.sh" "${tag}" "${arch}"`,
+        {
+          onStdOut: onOutput,
+          onStdErr: onOutput,
+          onExit: (exitCode) => {
+            if (exitCode === ExitCode.SuccessfulExecution) {
+              resolve();
+            } else {
+              reject(new Error(`Wine build failed. Exit code: ${exitCode}`));
+            }
+          }
+        }
+      ).catch(reject);
+    });
+  };
+
   const downloadWineRepository = async () => {
     if (await isWineRepositoryDownloaded()) return;
 
@@ -112,6 +137,7 @@ export const useWineApiClient = () => {
 
   return {
     abortWineBuildDependenciesInstallation,
+    buildWine,
     checkoutWineTag,
     downloadWineRepository,
     getWineTags,

@@ -9,6 +9,8 @@ import {
   setDependenciesInstallationOutput,
   setRepositoryDownloaded,
   setSelectedWineTag,
+  setSelectedWineArch,
+  setWineBuildOutput,
   setWineCheckoutOutput,
   setWineTags
 } from './handlers';
@@ -19,13 +21,16 @@ const initialState: WineState = {
   wineTags: [],
   selectedWineTag: '',
   wineCheckoutOutput: '',
+  selectedWineArch: 'wow64',
+  wineBuildOutput: '',
   loaders: {
     checkingRepository: false,
     downloadingRepository: false,
     installingDependencies: false,
     abortingDependenciesInstallation: false,
     listingTags: false,
-    checkingOutTag: false
+    checkingOutTag: false,
+    buildingWine: false
   }
 };
 
@@ -41,6 +46,10 @@ export const wineState = (state: WineState = initialState, action: WineAction): 
       return setSelectedWineTag(action.selectedWineTag, state);
     case WineActionType.SET_CHECKOUT_OUTPUT:
       return setWineCheckoutOutput(action.wineCheckoutOutput, state);
+    case WineActionType.SET_SELECTED_ARCH:
+      return setSelectedWineArch(action.selectedWineArch, state);
+    case WineActionType.SET_BUILD_OUTPUT:
+      return setWineBuildOutput(action.wineBuildOutput, state);
     case WineActionType.LOADING:
       return loaders(action.loaders, state);
     default:
@@ -51,7 +60,13 @@ export const wineState = (state: WineState = initialState, action: WineAction): 
 const persistConfig: PersistConfig<WineState> = {
   key: 'wineState',
   storage,
-  whitelist: ['dependenciesInstallationOutput', 'selectedWineTag', 'wineCheckoutOutput']
+  whitelist: [
+    'dependenciesInstallationOutput',
+    'selectedWineTag',
+    'wineCheckoutOutput',
+    'selectedWineArch',
+    'wineBuildOutput'
+  ]
 };
 
 export const persistedWineState = persistReducer<WineState>(

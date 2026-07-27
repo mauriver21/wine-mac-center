@@ -1,6 +1,7 @@
 import { DownloadWineRepository } from '@components/DownloadWineRepository';
 import { InstallWineBuildDependencies } from '@components/InstallWineBuildDependencies';
 import { SelectWineVersion } from '@components/SelectWineVersion';
+import { BuildWineEngine } from '@components/BuildWineEngine';
 import { ConfigLayout } from '@layouts/ConfigLayout';
 import { useWineModel } from '@models/useWineModel';
 import { useSelector } from 'react-redux';
@@ -16,7 +17,7 @@ export const BuildWine: React.FC = () => {
   const modules = [
     <DownloadWineRepository />,
     <InstallWineBuildDependencies />,
-    ...(repositoryDownloaded ? [<SelectWineVersion />] : [])
+    ...(repositoryDownloaded ? [<SelectWineVersion />, <BuildWineEngine />] : [])
   ];
 
   return (

@@ -232,5 +232,11 @@
   "abortInstallation": "Abort installation",
   "abortingInstallation": "Aborting installation...",
   "wineVersion": "Wine version",
-  "selectWineVersion": "Select Wine version"
+  "selectWineVersion": "Select Wine version",
+  "wineArchitecture": "Wine architecture",
+  "wine32on64Architecture": "Wine32on64 — WineCX 32-bit on 64-bit",
+  "wow64Architecture": "WoW64 — 32-bit and 64-bit",
+  "wine64Architecture": "Wine64 — 64-bit only",
+  "buildWineEngine": "Build Wine engine",
+  "buildingWine": "Building Wine..."
 }

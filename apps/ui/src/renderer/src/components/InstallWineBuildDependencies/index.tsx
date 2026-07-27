@@ -11,7 +11,7 @@ export const InstallWineBuildDependencies: React.FC = () => {
   const { t } = useI18n();
   const wineModel = useWineModel();
   const output = useSelector(wineModel.selectDependenciesInstallationOutput);
-  const { abortingDependenciesInstallation, installingDependencies } = useSelector(
+  const { abortingDependenciesInstallation, buildingWine, installingDependencies } = useSelector(
     wineModel.selectWineLoaders
   );
   const displayOutput = output.trim() || t('noOutputToDisplay');
@@ -22,7 +22,7 @@ export const InstallWineBuildDependencies: React.FC = () => {
         <Body1 color="text.secondary">{t('wineBuildDependenciesDescription')}</Body1>
         <Stack direction="row" justifyContent="flex-end">
           <Button            
-            disabled={abortingDependenciesInstallation}
+            disabled={abortingDependenciesInstallation || buildingWine}
             onClick={() =>
               installingDependencies
                 ? wineModel.abortWineBuildDependenciesInstallation()
