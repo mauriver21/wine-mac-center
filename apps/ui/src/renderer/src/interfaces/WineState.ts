@@ -5,6 +5,7 @@ export type WineState = {
   selectedWineTag: string;
   wineCheckoutOutput: string;
   selectedWineArch: string;
+  verifyBeforeBuild: boolean;
   wineBuildOutput: string;
   wineArchs: string[];
   loaders: {

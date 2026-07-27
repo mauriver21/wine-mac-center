@@ -150,8 +150,14 @@ export const useWineModel = () => {
     dispatch({ type: ActionType.SET_SELECTED_ARCH, selectedWineArch });
   };
 
-  const buildWine = async (tag: string, arch: string) => {
-    let output = `$ verifyWineBuildDependencies.sh ${tag} ${arch}\n`;
+  const setVerifyBeforeBuild = (verifyBeforeBuild: boolean) => {
+    dispatch({ type: ActionType.SET_VERIFY_BEFORE_BUILD, verifyBeforeBuild });
+  };
+
+  const buildWine = async (tag: string, arch: string, verifyBeforeBuild: boolean) => {
+    let output = verifyBeforeBuild
+      ? `$ verifyWineBuildDependencies.sh ${tag} ${arch}\n`
+      : `$ buildWineEngine.sh ${tag} ${arch}\n`;
     let pendingOutput = '';
     let outputTimeout: ReturnType<typeof setTimeout> | undefined;
 
@@ -172,14 +178,16 @@ export const useWineModel = () => {
     try {
       dispatchLoader({ buildingWine: true });
       dispatch({ type: ActionType.SET_BUILD_OUTPUT, wineBuildOutput: output });
-      const dependenciesVerified = await wineApiClient.verifyWineBuildDependencies(
-        tag,
-        arch,
-        handleOutput
-      );
-      if (!dependenciesVerified) return;
+      if (verifyBeforeBuild) {
+        const dependenciesVerified = await wineApiClient.verifyWineBuildDependencies(
+          tag,
+          arch,
+          handleOutput
+        );
+        if (!dependenciesVerified) return;
 
-      handleOutput(`\nDependency verification passed.\n$ buildWineEngine.sh ${tag} ${arch}\n`);
+        handleOutput(`\nDependency verification passed.\n$ buildWineEngine.sh ${tag} ${arch}\n`);
+      }
       await wineApiClient.buildWine(tag, arch, handleOutput);
     } catch (error) {
       appModel.dispatchError(error);
@@ -228,6 +236,10 @@ export const useWineModel = () => {
     [selectWineState],
     (state) => state.wineBuildOutput
   );
+  const selectVerifyBeforeBuild = createSelector(
+    [selectWineState],
+    (state) => state.verifyBeforeBuild
+  );
   const selectWineArchs = createSelector([selectWineState], (state) => state.wineArchs);
 
   return {
@@ -249,7 +261,9 @@ export const useWineModel = () => {
     selectWineTags,
     selectWineCheckoutOutput,
     selectWineBuildOutput,
+    selectVerifyBeforeBuild,
     selectWineArchs,
     selectWineArch,
+    setVerifyBeforeBuild
   };
 };

@@ -6,6 +6,7 @@ import { CpuChipIcon, StopIcon } from '@heroicons/react/24/solid';
 import { useWineModel } from '@models/useWineModel';
 import { useSelector } from 'react-redux';
 import { CircularProgress, Stack } from 'reactjs-shared-ui';
+import { FormControlLabel, Switch } from '@mui/material';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const BuildWineEngine: React.FC = () => {
@@ -14,6 +15,7 @@ export const BuildWineEngine: React.FC = () => {
   const selectedWineTag = useSelector(wineModel.selectSelectedWineTag);
   const selectedWineArch = useSelector(wineModel.selectSelectedWineArch);
   const wineBuildOutput = useSelector(wineModel.selectWineBuildOutput);
+  const verifyBeforeBuild = useSelector(wineModel.selectVerifyBeforeBuild);
   const {
     abortingWineBuild,
     buildingWine,
@@ -27,13 +29,23 @@ export const BuildWineEngine: React.FC = () => {
     <CardItem icon={CpuChipIcon} label={t('buildWineEngine')}>
       <Stack spacing={2}>
         <WineArchSelect disabled={buildingWine || conflictingOperation} />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={verifyBeforeBuild}
+              disabled={buildingWine || conflictingOperation}
+              onChange={(_, checked) => wineModel.setVerifyBeforeBuild(checked)}
+            />
+          }
+          label={t('verifyBeforeCompilation')}
+        />
         <Stack direction="row" justifyContent="flex-end">
           <Button            
             disabled={abortingWineBuild || conflictingOperation || !selectedWineTag}
             onClick={() =>
               buildingWine
                 ? wineModel.abortWineBuild()
-                : wineModel.buildWine(selectedWineTag, selectedWineArch)
+                : wineModel.buildWine(selectedWineTag, selectedWineArch, verifyBeforeBuild)
             }
           >
             {abortingWineBuild ? (

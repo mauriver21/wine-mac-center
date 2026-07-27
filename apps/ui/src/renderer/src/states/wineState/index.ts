@@ -10,6 +10,7 @@ import {
   setRepositoryDownloaded,
   setSelectedWineTag,
   setSelectedWineArch,
+  setVerifyBeforeBuild,
   setWineArchs,
   setWineBuildOutput,
   setWineCheckoutOutput,
@@ -23,6 +24,7 @@ const initialState: WineState = {
   selectedWineTag: '',
   wineCheckoutOutput: '',
   selectedWineArch: 'wow64',
+  verifyBeforeBuild: true,
   wineBuildOutput: '',
   wineArchs: [],
   loaders: {
@@ -52,6 +54,8 @@ export const wineState = (state: WineState = initialState, action: WineAction): 
       return setWineCheckoutOutput(action.wineCheckoutOutput, state);
     case WineActionType.SET_SELECTED_ARCH:
       return setSelectedWineArch(action.selectedWineArch, state);
+    case WineActionType.SET_VERIFY_BEFORE_BUILD:
+      return setVerifyBeforeBuild(action.verifyBeforeBuild, state);
     case WineActionType.SET_BUILD_OUTPUT:
       return setWineBuildOutput(action.wineBuildOutput, state);
     case WineActionType.SET_ARCHS:
@@ -71,6 +75,7 @@ const persistConfig: PersistConfig<WineState> = {
     'selectedWineTag',
     'wineCheckoutOutput',
     'selectedWineArch',
+    'verifyBeforeBuild',
     'wineBuildOutput'
   ]
 };

@@ -30,6 +30,11 @@ export const setSelectedWineArch = (
   state: WineState
 ): WineState => ({ ...state, selectedWineArch });
 
+export const setVerifyBeforeBuild = (
+  verifyBeforeBuild: WineState['verifyBeforeBuild'],
+  state: WineState
+): WineState => ({ ...state, verifyBeforeBuild });
+
 export const setWineBuildOutput = (
   wineBuildOutput: WineState['wineBuildOutput'],
   state: WineState

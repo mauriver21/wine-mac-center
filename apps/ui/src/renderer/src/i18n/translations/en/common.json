@@ -237,6 +237,7 @@
   "wine32on64Architecture": "Wine32on64 — WineCX 32-bit on 64-bit",
   "wow64Architecture": "WoW64 — 32-bit and 64-bit",
   "wine64Architecture": "Wine64 — 64-bit only",
+  "verifyBeforeCompilation": "Verify dependencies before compilation",
   "buildWineEngine": "Build Wine engine",
   "buildingWine": "Building Wine...",
   "abortWineBuild": "Abort Wine build",
