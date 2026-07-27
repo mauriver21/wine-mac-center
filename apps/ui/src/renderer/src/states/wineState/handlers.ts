@@ -10,6 +10,11 @@ export const setDependenciesInstallationOutput = (
   state: WineState
 ): WineState => ({ ...state, dependenciesInstallationOutput });
 
+export const setWineTags = (wineTags: WineState['wineTags'], state: WineState): WineState => ({
+  ...state,
+  wineTags
+});
+
 export const loaders = (
   nextLoaders: Partial<WineState['loaders']>,
   state: WineState

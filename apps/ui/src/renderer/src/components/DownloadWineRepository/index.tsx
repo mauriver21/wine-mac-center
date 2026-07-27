@@ -2,6 +2,7 @@ import { CardItem } from '@components/CardItem';
 import { IconButton } from '@components/IconButton';
 import { CheckIcon, CloudArrowDownIcon } from '@heroicons/react/24/solid';
 import { useConfigLayout } from '@hooks/useConfigLayout';
+import { useEnv } from '@hooks/useEnv';
 import { useWineModel } from '@models/useWineModel';
 import { Download, Folder } from '@mui/icons-material';
 import { TextField } from '@mui/material';
@@ -13,11 +14,12 @@ import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const DownloadWineRepository: React.FC = () => {
   const { t } = useI18n();
+  const env = useEnv()
+  const WINE_REPOSITORY_PATH = env.get().WINE_REPOSITORY_PATH
   const configLayout = useConfigLayout();
   const wineModel = useWineModel();
   const repositoryDownloaded = useSelector(wineModel.selectRepositoryDownloaded);
   const { checkingRepository, downloadingRepository } = useSelector(wineModel.selectWineLoaders);
-  const repositoryPath = wineModel.wineRepositoryPath();
 
   useEffect(() => {
     wineModel.checkWineRepository();
@@ -54,7 +56,7 @@ export const DownloadWineRepository: React.FC = () => {
                 <IconButton
                   className="repository-location"
                   title={t('openLocation')}
-                  onClick={() => showItemInFolder(repositoryPath)}
+                  onClick={() => showItemInFolder(WINE_REPOSITORY_PATH)}
                 >
                   <Icon render={Folder} />
                 </IconButton>
@@ -69,7 +71,7 @@ export const DownloadWineRepository: React.FC = () => {
             )
           }}
           label={t('wineRepository')}
-          value={repositoryPath}
+          value={WINE_REPOSITORY_PATH}
         />
       </Stack>
     </CardItem>

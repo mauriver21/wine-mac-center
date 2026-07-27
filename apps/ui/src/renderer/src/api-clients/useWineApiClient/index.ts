@@ -10,9 +10,21 @@ let dependenciesInstallationAbortRequested = false;
 
 export const useWineApiClient = () => {
   const env = useEnv();
-  const wineRepositoryPath = () => env.get().WINE_REPOSITORY_PATH;
+  const WINE_REPOSITORY_PATH = () => env.get().WINE_REPOSITORY_PATH;
 
-  const isWineRepositoryDownloaded = () => dirExists(`${wineRepositoryPath()}/.git`);
+  const isWineRepositoryDownloaded = () => dirExists(`${WINE_REPOSITORY_PATH()}/.git`);
+
+  const getWineTags = async () => {
+    if (!(await isWineRepositoryDownloaded())) return [];
+
+    const { stdOut } = await execCommand(
+      `git -C "${WINE_REPOSITORY_PATH()}" tag --list --sort=-creatordate`
+    );
+    return stdOut
+      .split('\n')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+  };
 
   const downloadWineRepository = async () => {
     if (await isWineRepositoryDownloaded()) return;
@@ -77,8 +89,8 @@ export const useWineApiClient = () => {
   return {
     abortWineBuildDependenciesInstallation,
     downloadWineRepository,
+    getWineTags,
     installWineBuildDependencies,
     isWineRepositoryDownloaded,
-    wineRepositoryPath
   };
 };

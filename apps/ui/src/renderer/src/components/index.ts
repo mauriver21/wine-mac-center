@@ -52,5 +52,6 @@ export * from './WineAppProvider';
 export * from './WineConfigModule';
 export * from './WineEnginesSelect';
 export * from './WineInstalledAppsList';
+export * from './WineTagSelect';
 export * from './WinetricksModule';
 export * from './WinetricksSelector';

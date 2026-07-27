@@ -98,6 +98,17 @@ export const useWineModel = () => {
     }
   };
 
+  const getWineTags = async () => {
+    try {
+      dispatchLoader({ listingTags: true });
+      dispatch({ type: ActionType.SET_TAGS, wineTags: await wineApiClient.getWineTags() });
+    } catch (error) {
+      appModel.dispatchError(error);
+    } finally {
+      dispatchLoader({ listingTags: false });
+    }
+  };
+
   const selectWineState = (state: RootState) => state.wineState;
   const selectRepositoryDownloaded = createSelector(
     [selectWineState],
@@ -108,16 +119,18 @@ export const useWineModel = () => {
     [selectWineState],
     (state) => state.dependenciesInstallationOutput
   );
+  const selectWineTags = createSelector([selectWineState], (state) => state.wineTags);
 
   return {
     abortWineBuildDependenciesInstallation,
     checkWineRepository,
     downloadWineRepository,
+    getWineTags,
     installWineBuildDependencies,
     selectDependenciesInstallationOutput,
     selectRepositoryDownloaded,
     selectWineLoaders,
     selectWineState,
-    wineRepositoryPath: wineApiClient.wineRepositoryPath
+    selectWineTags,
   };
 };

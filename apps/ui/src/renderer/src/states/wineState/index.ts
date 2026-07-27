@@ -4,16 +4,23 @@ import { WineState } from '@interfaces/WineState';
 import { Reducer } from '@reduxjs/toolkit';
 import { persistReducer, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { loaders, setDependenciesInstallationOutput, setRepositoryDownloaded } from './handlers';
+import {
+  loaders,
+  setDependenciesInstallationOutput,
+  setRepositoryDownloaded,
+  setWineTags
+} from './handlers';
 
 const initialState: WineState = {
   repositoryDownloaded: false,
   dependenciesInstallationOutput: '',
+  wineTags: [],
   loaders: {
     checkingRepository: false,
     downloadingRepository: false,
     installingDependencies: false,
-    abortingDependenciesInstallation: false
+    abortingDependenciesInstallation: false,
+    listingTags: false
   }
 };
 
@@ -23,6 +30,8 @@ export const wineState = (state: WineState = initialState, action: WineAction): 
       return setRepositoryDownloaded(action.repositoryDownloaded, state);
     case WineActionType.SET_DEPENDENCIES_INSTALLATION_OUTPUT:
       return setDependenciesInstallationOutput(action.dependenciesInstallationOutput, state);
+    case WineActionType.SET_TAGS:
+      return setWineTags(action.wineTags, state);
     case WineActionType.LOADING:
       return loaders(action.loaders, state);
     default:
