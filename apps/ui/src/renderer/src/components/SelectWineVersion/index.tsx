@@ -1,12 +1,11 @@
 import { CardItem } from '@components/CardItem';
 import { Code } from '@components/Code';
-import { WineTagSelect } from '@components/WineTagSelect';
+import { WineTagSelect, WineTagSelectProps } from '@components/WineTagSelect';
 import { TagIcon } from '@heroicons/react/24/solid';
 import { useWineModel } from '@models/useWineModel';
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Stack } from 'reactjs-shared-ui';
-import { SelectProps } from 'reactjs-shared-ui/forms';
 import { useI18n } from 'reactjs-shared-ui/i18next';
 
 export const SelectWineVersion: React.FC = () => {
@@ -27,8 +26,8 @@ export const SelectWineVersion: React.FC = () => {
     }
   }, [selectedWineTag, wineTags]);
 
-  const selectTag: SelectProps['onChange'] = (event) => {
-    wineModel.checkoutWineTag(event.target.value as string);
+  const selectTag: WineTagSelectProps['onChange'] = (_event, tag) => {
+    if (tag) wineModel.checkoutWineTag(tag);
   };
 
   return (
@@ -36,7 +35,7 @@ export const SelectWineVersion: React.FC = () => {
       <Stack spacing={2}>
         <WineTagSelect
           disabled={checkingOutTag}
-          value={selectedWineTag}
+          value={selectedWineTag || null}
           onChange={selectTag}
         />
         <Code
